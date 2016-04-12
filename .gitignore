@@ -1,0 +1,17 @@
+prover.iml
+.idea/.name
+.idea/compiler.xml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/uiDesigner.xml
+.idea/workspace.xml
+.idea/copyright/profiles_settings.xml
+.idea/libraries/Maven__com_beust_jcommander_1_27.xml
+.idea/libraries/Maven__junit_junit_4_10.xml
+.idea/libraries/Maven__org_beanshell_bsh_2_0b4.xml
+.idea/libraries/Maven__org_hamcrest_hamcrest_core_1_1.xml
+.idea/libraries/Maven__org_json_json_20160212.xml
+.idea/libraries/Maven__org_testng_testng_6_8.xml
+.idea/libraries/Maven__org_yaml_snakeyaml_1_6.xml
+target/

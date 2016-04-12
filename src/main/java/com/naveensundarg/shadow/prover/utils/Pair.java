@@ -1,0 +1,12 @@
+package com.naveensundarg.shadow.prover.utils;
+
+/**
+ * Created by naveensundarg on 4/9/16.
+ */
+public interface Pair<U,V> {
+
+    public U first();
+    public V second();
+
+
+}
