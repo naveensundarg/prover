@@ -1,6 +1,10 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
-import com.naveensundarg.shadow.prover.representations.Atom;
+import com.naveensundarg.shadow.prover.representations.Predicate;
+import com.naveensundarg.shadow.prover.representations.Value;
+import com.naveensundarg.shadow.prover.representations.Variable;
+
+import java.util.Map;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -8,16 +12,16 @@ import com.naveensundarg.shadow.prover.representations.Atom;
 public class Literal {
 
     private final boolean isNegated;
-    private final Atom atom;
+    private final Predicate predicate;
 
-    public Literal(Atom atom, boolean isNegated){
+    public Literal(Predicate atom, boolean isNegated){
 
-        this.atom = atom;
+        this.predicate = atom;
         this.isNegated = isNegated;
     }
 
-    public Atom getAtom() {
-        return atom;
+    public Predicate getPredicate() {
+        return predicate;
     }
 
     public boolean isNegated() {
@@ -32,19 +36,22 @@ public class Literal {
         Literal literal = (Literal) o;
 
         if (isNegated != literal.isNegated) return false;
-        return atom.equals(literal.atom);
+        return predicate.equals(literal.predicate);
 
     }
 
     @Override
     public int hashCode() {
         int result = (isNegated ? 1 : 0);
-        result = 31 * result + atom.hashCode();
+        result = 31 * result + predicate.hashCode();
         return result;
     }
 
+    public Literal apply(Map<Variable, Value> subsitution){
+        return new Literal((Predicate)predicate.apply(subsitution), isNegated);
+    }
     @Override
     public String toString() {
-        return  isNegated? "\u00AC"+ atom +"": atom+"";
+        return  isNegated? "\u00AC"+ predicate +"": predicate +"";
     }
 }

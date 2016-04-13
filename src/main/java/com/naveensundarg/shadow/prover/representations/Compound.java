@@ -1,6 +1,10 @@
 package com.naveensundarg.shadow.prover.representations;
 
+import com.naveensundarg.shadow.prover.utils.Sets;
+
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by naveensundarg on 4/11/16.
@@ -8,37 +12,72 @@ import java.util.Arrays;
 public class Compound extends Value {
 
     private final Value[] arguments;
-    private final String name;
-
+    private final Set<Variable> variables;
     public Compound(String name, Value[] arguments){
         super();
         this.arguments = arguments;
-        this.name = name;
+        super.name = name;
+        this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+    }
+
+    @Override
+    public boolean occurs(Variable variable){
+
+        return Arrays.stream(arguments).anyMatch(x-> {
+
+                    if (x.equals(variable)) {
+                        return true;
+                    }
+
+                    if (!x.isCompound()) {
+                        return false;
+                    } else {
+                        return x.occurs(variable);
+                    }
+
+                }
+        );
 
     }
 
     @Override
-    int arity() {
+    public Set<Variable> variablesPresent() {
+        return variables;
+    }
+
+    @Override
+    public Value apply(Map<Variable, Value> substitution) {
+        Value[] argumentTheta = new Value[arguments.length];
+
+        for(int i = 0; i< argumentTheta.length; i++){
+            argumentTheta[i] = arguments[i].apply(substitution);
+        }
+
+        return new Compound(name, argumentTheta);
+    }
+
+    @Override
+    public  int arity() {
         return arguments.length;
     }
 
     @Override
-    Value[] getArguments() {
+    public Value[] getArguments() {
         return Arrays.copyOf(arguments, arguments.length);
     }
 
     @Override
-    boolean isVariable() {
+    public boolean isVariable() {
         return false;
     }
 
     @Override
-    boolean isConstant() {
+    public  boolean isConstant() {
         return false;
     }
 
     @Override
-    boolean isCompound() {
+    public  boolean isCompound() {
         return true;
     }
 
@@ -64,6 +103,6 @@ public class Compound extends Value {
 
     @Override
     public String toString() {
-        return name + "(" +Arrays.toString(arguments) +")";
+        return name  +Arrays.toString(arguments);
     }
 }

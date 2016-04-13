@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.representations;
 
 import com.naveensundarg.shadow.prover.utils.Sets;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -12,6 +13,7 @@ public class Implication extends Formula{
     private final Formula antecedent;
     private final Formula consequent;
     private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
 
     public Implication(Formula antecedent, Formula consequent){
 
@@ -19,6 +21,7 @@ public class Implication extends Formula{
         this.consequent = consequent;
 
         this.subFormulae = Sets.union(antecedent.subFormulae(), consequent.subFormulae());
+        this.variables  = Sets.union(antecedent.variablesPresent(), consequent.variablesPresent());
     }
 
     public Formula getAntecedent() {
@@ -57,5 +60,15 @@ public class Implication extends Formula{
     @Override
     public Set<Formula> subFormulae() {
         return subFormulae;
+    }
+
+    @Override
+    public Set<Variable> variablesPresent() {
+        return variables;
+    }
+
+    @Override
+    public Formula apply(Map<Variable, Value> substitution) {
+        return new Implication(antecedent.apply(substitution), consequent.apply(substitution));
     }
 }

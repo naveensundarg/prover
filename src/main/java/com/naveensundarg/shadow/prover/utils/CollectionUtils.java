@@ -1,7 +1,9 @@
 package com.naveensundarg.shadow.prover.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -18,6 +20,10 @@ public class CollectionUtils {
         return list;
     }
 
+
+    public static <U,V> Map<U,V> newMap(){
+        return new HashMap<>();
+    }
     public static <T> List<T> add(List<T> list, T a){
         List<T> newList = newList();
         newList.addAll(list);

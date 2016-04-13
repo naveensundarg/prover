@@ -1,6 +1,7 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
 import com.naveensundarg.shadow.prover.representations.Atom;
+import com.naveensundarg.shadow.prover.representations.Predicate;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Collections;
@@ -14,9 +15,9 @@ public class CNFFormula {
     private final Set<Clause> clauses;
 
 
-    public CNFFormula(Atom atom){
+    public CNFFormula(Predicate P){
 
-        this.clauses = Sets.with(new Clause(atom));
+        this.clauses = Sets.with(new Clause(P));
     }
 
     public CNFFormula(Set<Clause> clauses){

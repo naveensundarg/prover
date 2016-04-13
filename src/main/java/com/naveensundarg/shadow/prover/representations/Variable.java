@@ -1,6 +1,10 @@
 package com.naveensundarg.shadow.prover.representations;
 
+import com.naveensundarg.shadow.prover.utils.Sets;
+
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by naveensundarg on 4/11/16.
@@ -8,7 +12,7 @@ import java.util.Arrays;
 public class Variable extends Value{
 
     private final Value[] arguments;
-    private final String name;
+    private final Set<Variable> variables;
 
     public Variable(String name){
 
@@ -18,33 +22,45 @@ public class Variable extends Value{
         }
 
         this.arguments = null;
-        this.name = name;
+        super.name = name;
+
+        this.variables = Sets.with(this);
 
     }
 
     @Override
-    int arity() {
+    public int arity() {
         return 0;
     }
 
     @Override
-    Value[] getArguments() {
+    public Value[] getArguments() {
         return arguments;
     }
 
     @Override
-    boolean isVariable() {
+    public boolean isVariable() {
         return true;
     }
 
     @Override
-    boolean isConstant() {
+    public boolean isConstant() {
         return false;
     }
 
     @Override
-    boolean isCompound() {
+    public boolean isCompound() {
         return false;
+    }
+
+    @Override
+    public Set<Variable> variablesPresent() {
+        return variables;
+    }
+
+    @Override
+    public Value apply(Map<Variable, Value> substitution) {
+        return substitution.getOrDefault(this, this);
     }
 
 

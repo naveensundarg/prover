@@ -1,12 +1,13 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
 import com.naveensundarg.shadow.prover.representations.Atom;
+import com.naveensundarg.shadow.prover.representations.Predicate;
+import com.naveensundarg.shadow.prover.representations.Value;
+import com.naveensundarg.shadow.prover.representations.Variable;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -15,8 +16,8 @@ public class Clause {
 
     private final Set<Literal> literals;
 
-    public Clause(Atom atom){
-        this.literals = Sets.with(new Literal(atom, false));
+    public Clause(Predicate P){
+        this.literals = Sets.with(new Literal(P, false));
     }
 
     public static Clause fromClauses(List<Clause> clauses){
@@ -49,6 +50,10 @@ public class Clause {
 
     }
 
+    public Clause apply(Map<Variable, Value> substitution){
+
+        return new Clause(literals.stream().map(l->l.apply(substitution)).collect(Collectors.toSet()));
+    }
     @Override
     public int hashCode() {
         return literals.hashCode();

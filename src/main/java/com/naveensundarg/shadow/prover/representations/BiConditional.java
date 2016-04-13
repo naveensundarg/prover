@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.representations;
 
 import com.naveensundarg.shadow.prover.utils.Sets;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -11,6 +12,7 @@ public class BiConditional extends Formula {
     private final Formula left;
     private final Formula right;
     private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
 
     public BiConditional(Formula left, Formula right){
 
@@ -18,6 +20,8 @@ public class BiConditional extends Formula {
         this.right = right;
 
         this.subFormulae = Sets.union(left.subFormulae(), right.subFormulae());
+
+        this.variables = Sets.union(left.variablesPresent(), right.variablesPresent());
     }
 
     public Formula getLeft() {
@@ -56,5 +60,15 @@ public class BiConditional extends Formula {
     @Override
     public Set<Formula> subFormulae() {
         return subFormulae;
+    }
+
+    @Override
+    public Set<Variable> variablesPresent() {
+        return variables;
+    }
+
+    @Override
+    public Formula apply(Map<Variable, Value> substitution) {
+        return new BiConditional(left.apply(substitution), right.apply(substitution));
     }
 }

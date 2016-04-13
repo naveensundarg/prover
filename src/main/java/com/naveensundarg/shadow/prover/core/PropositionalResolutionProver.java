@@ -7,9 +7,7 @@ import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
-import com.sun.tools.javac.util.Assert;
 
-import java.text.Normalizer;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,22 +92,6 @@ public class PropositionalResolutionProver implements Prover {
         return null;
     }
 
-    public static int randInt(int min, int max) {
-
-        // NOTE: This will (intentionally) not run as written so that folks
-        // copy-pasting have to think about how to initialize their
-        // Random instance.  Initialization of the Random instance is outside
-        // the main scope of the question, but some decent options are to have
-        // a field that is initialized once and then re-used as needed or to
-        // use ThreadLocalRandom (if using at least Java 1.7).
-        Random rand = new Random();
-
-        // nextInt is normally exclusive of the top value,
-        // so add 1 to make it inclusive
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-
-        return randomNum;
-    }
     public static CNFFormula convertToCNF(Formula formula){
 
         if(formula instanceof Atom){
@@ -261,7 +243,7 @@ public class PropositionalResolutionProver implements Prover {
 
     public boolean matches(Literal literal1, Literal literal2){
 
-        return  literal1.getAtom().equals(literal2.getAtom())
+        return  literal1.getPredicate().equals(literal2.getPredicate())
                 && (literal1.isNegated() ^ literal2.isNegated());
 
     }

@@ -14,7 +14,7 @@ public class ImmutablePair<U,V> implements Pair{
     }
 
 
-    public static <U,V> ImmutablePair<U,V> from(U first, V second){
+    public static <U,V> Pair<U,V> from(U first, V second){
         return new ImmutablePair<>(first, second);
     }
 

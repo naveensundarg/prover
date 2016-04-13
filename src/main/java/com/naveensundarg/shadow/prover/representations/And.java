@@ -5,7 +5,9 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -13,12 +15,15 @@ import java.util.Set;
 public class And extends Formula {
 
     private final Formula[] arguments;
-
     private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
+
     public And(Formula ... arguments){
         this.arguments = arguments;
-        this.subFormulae = Arrays.stream(arguments).map(x->x.subFormulae()).
-                reduce(Sets.newSet(), (x,y)-> Sets.union(x,y));
+        this.subFormulae = Arrays.stream(arguments).map(Formula::subFormulae).
+                reduce(Sets.newSet(), Sets::union);
+
+        this.variables = Arrays.stream(arguments).map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
     }
 
     public And(List<Formula> arguments){
@@ -28,8 +33,11 @@ public class And extends Formula {
             this.arguments[i] = arguments.get(i);
         }
 
-        this.subFormulae = Arrays.stream(this.arguments).map(x->x.subFormulae()).
-                reduce(Sets.newSet(), (x,y)-> Sets.union(x,y));
+        this.subFormulae = Arrays.stream(this.arguments).map(Formula::subFormulae).
+                reduce(Sets.newSet(), Sets::union);
+
+        this.variables = arguments.stream().map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
+
     }
     public Formula[] getArguments() {
         return arguments.clone();
@@ -60,5 +68,16 @@ public class And extends Formula {
     @Override
     public Set<Formula> subFormulae() {
         return subFormulae;
+    }
+
+    @Override
+    public Set<Variable> variablesPresent() {
+        return variables;
+    }
+
+    @Override
+    public Formula apply(Map<Variable, Value> substitution) {
+        return new And(Arrays.stream(arguments).map(x->x.apply(substitution)).collect(Collectors.toList()));
+
     }
 }

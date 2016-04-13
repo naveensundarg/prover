@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.representations;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -46,5 +47,15 @@ public class Not extends Formula {
     @Override
     public Set<Formula> subFormulae() {
         return subFormuale;
+    }
+
+    @Override
+    public Set<Variable> variablesPresent(){
+        return argument.variablesPresent();
+    }
+
+    @Override
+    public Formula apply(Map<Variable, Value> substitution) {
+        return new Not(argument.apply(substitution));
     }
 }
