@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -82,5 +83,10 @@ public class Or extends Formula {
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
         return new Or(Arrays.stream(arguments).map(x->x.apply(substitution)).collect(Collectors.toList()));
+    }
+
+    @Override
+    public Formula applyOperation(UnaryOperator<Formula> operator) {
+        return new Or(Arrays.stream(arguments).map(x->x.applyOperation(operator)).collect(Collectors.toList()));
     }
 }

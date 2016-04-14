@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -70,5 +71,10 @@ public class Implication extends Formula{
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
         return new Implication(antecedent.apply(substitution), consequent.apply(substitution));
+    }
+
+    @Override
+    public Formula applyOperation(UnaryOperator<Formula> operator) {
+        return new Implication(antecedent.applyOperation(operator), consequent.applyOperation(operator));
     }
 }

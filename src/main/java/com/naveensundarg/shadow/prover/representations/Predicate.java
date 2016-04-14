@@ -5,6 +5,7 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -54,6 +55,11 @@ public class Predicate extends Formula {
         }
 
         return new Predicate(name, argumentTheta);
+    }
+
+    @Override
+    public Formula applyOperation(UnaryOperator<Formula> operator) {
+        return operator.apply(this);
     }
 
     public Value[] getArguments() {

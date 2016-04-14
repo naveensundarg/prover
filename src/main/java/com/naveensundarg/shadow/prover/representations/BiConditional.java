@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -70,5 +71,10 @@ public class BiConditional extends Formula {
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
         return new BiConditional(left.apply(substitution), right.apply(substitution));
+    }
+
+    @Override
+    public Formula applyOperation(UnaryOperator<Formula> operator) {
+        return new BiConditional(left.applyOperation(operator), right.applyOperation(operator));
     }
 }

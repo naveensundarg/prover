@@ -150,7 +150,7 @@ public class Reader {
                 //FORALL
                 if(name.equals("exists")){
 
-                    return constructQuantifier(list, true);
+                    return constructQuantifier(list, false);
 
                 }
 
@@ -227,7 +227,7 @@ public class Reader {
 
         } else{
 
-            throw new ParsingException("Forall should have exactly 3 arguments: " + list);
+            throw new ParsingException("quantifiers should have exactly 3 arguments: " + list);
 
         }
     }

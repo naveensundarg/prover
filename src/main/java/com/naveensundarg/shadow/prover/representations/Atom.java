@@ -4,6 +4,8 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -12,7 +14,7 @@ public class Atom extends Predicate{
 
     private final String name;
     private final Set<Formula> subFormulae;
-    private final Set<Formula> variables;
+    private final Set<Variable> variables;
 
     public Atom(String name){
         super(name);
@@ -56,11 +58,16 @@ public class Atom extends Predicate{
 
     @Override
     public Set<Variable> variablesPresent() {
-        return variablesPresent();
+        return variables;
     }
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
         return this;
+    }
+
+    @Override
+    public Formula applyOperation(UnaryOperator<Formula> operator) {
+        return operator.apply(this);
     }
 }

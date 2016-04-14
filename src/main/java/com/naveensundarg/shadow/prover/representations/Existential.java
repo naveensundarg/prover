@@ -5,11 +5,12 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public class Existential extends Formula {
+public class Existential extends Formula implements Quantifier{
 
     private final Formula argument;
     private final Variable[] vars;
@@ -49,6 +50,11 @@ public class Existential extends Formula {
     public Formula apply(Map<Variable, Value> substitution) {
         //TODO: Variable capture
         return new Existential(vars, argument.apply(substitution));
+    }
+
+    @Override
+    public Formula applyOperation(UnaryOperator<Formula> operator) {
+        return new Existential(vars, argument.applyOperation(operator));
     }
 
     public Variable[] vars() {

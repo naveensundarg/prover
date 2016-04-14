@@ -11,6 +11,8 @@ import java.util.Set;
  */
 public class Constant extends Value {
 
+
+
     private final Value[] arguments;
     private final Set<Variable> variables;
     public Constant(String name){

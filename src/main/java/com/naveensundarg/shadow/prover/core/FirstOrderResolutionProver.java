@@ -28,12 +28,14 @@ public class FirstOrderResolutionProver implements Prover {
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
+        Problem problem = new Problem();
         Set<CNFFormula> formulas = assumptions.stream().
-                map(Converter::convertToCNF).
+                map(x->Converter.convertToCNF(x, problem)).
                 collect(Collectors.toSet());
 
+        //TODO: Factoring!
 
-        formulas.add(Converter.convertToCNF(Logic.negated(formula)));
+        formulas.add(Converter.convertToCNF(Logic.negated(formula), problem));
 
         Set<Clause> clauses = formulas.stream().
                 map(CNFFormula::getClauses).

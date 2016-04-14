@@ -4,14 +4,20 @@ import com.naveensundarg.shadow.prover.representations.*;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
+import com.naveensundarg.shadow.prover.utils.ImmutablePair;
 import com.naveensundarg.shadow.prover.utils.Logic;
+import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newList;
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
 /**
@@ -20,8 +26,13 @@ import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 public class Converter {
 
 
+    public static CNFFormula convertToCNF(Formula formula, Problem problem) {
 
-    public static CNFFormula convertToCNF(Formula formula){
+        return convertToCNFInternal(standardizeApart(skolemize(formula,problem), problem), problem);
+    }
+
+
+        private static CNFFormula convertToCNFInternal(Formula formula, Problem problem){
 
         if(formula instanceof Atom){
             return new CNFFormula((Atom) formula);
@@ -37,7 +48,7 @@ public class Converter {
             And and = (And) formula;
 
             Set<Clause> clauses = Arrays.stream(and.getArguments()).
-                    map(Converter::convertToCNF).
+                    map(x->convertToCNF(x, problem)).
                     map(CNFFormula::getClauses).
                     reduce(Sets.newSet(), Sets::union);
 
@@ -49,7 +60,7 @@ public class Converter {
             Or or = (Or) formula;
 
             List<Set<Clause>> clauses = Arrays.stream(or.getArguments()).
-                    map(Converter::convertToCNF).
+                    map(x->convertToCNF(x, problem)).
                     map(CNFFormula::getClauses).collect(Collectors.toList());
 
 
@@ -67,7 +78,7 @@ public class Converter {
             Formula antecedent = implication.getAntecedent();
             Formula consequent = implication.getConsequent();
 
-            return convertToCNF(new Or(Logic.negated(antecedent),consequent));
+            return convertToCNF(new Or(Logic.negated(antecedent),consequent), problem);
 
 
         }
@@ -79,7 +90,7 @@ public class Converter {
             Formula left = biConditional.getLeft();
             Formula right = biConditional.getRight();
 
-            return convertToCNF(new And(new Implication(left, right), new Implication(right, left)));
+            return convertToCNF(new And(new Implication(left, right), new Implication(right, left)), problem);
 
 
         }
@@ -87,8 +98,14 @@ public class Converter {
         if(formula instanceof Universal){
 
             Universal universal = (Universal) formula;
-            return convertToCNF(universal.getArgument());
+            return convertToCNF(universal.getArgument(), problem);
 
+        }
+
+        if(formula instanceof Existential){
+
+            Existential existential = (Existential) formula;
+            return convertToCNF(existential.getArgument(), problem);
 
         }
         if(isLiteral(formula)){
@@ -116,7 +133,7 @@ public class Converter {
 
             if(notArg instanceof Not){
 
-                return convertToCNF(((Not)notArg).getArgument());
+                return convertToCNF(((Not)notArg).getArgument(), problem);
             }
 
             if(notArg instanceof Implication){
@@ -125,7 +142,7 @@ public class Converter {
 
                 And and = new And(implication.getAntecedent(),
                         Logic.negated(implication.getConsequent()));
-                return convertToCNF(and);
+                return convertToCNF(and, problem);
             }
 
             if(notArg instanceof BiConditional){
@@ -135,7 +152,7 @@ public class Converter {
                 Formula left = biConditional.getLeft();
                 Formula right = biConditional.getRight();
 
-                return convertToCNF(new Or(new And(Logic.negated(left), right), new And(Logic.negated(right), left)));
+                return convertToCNF(new Or(new And(Logic.negated(left), right), new And(Logic.negated(right), left)), problem);
             }
             if(notArg instanceof Or){
 
@@ -143,7 +160,7 @@ public class Converter {
 
                 And and = new And(Arrays.stream(or.getArguments()).
                         map(Logic::negated).collect(Collectors.toList()));
-                return convertToCNF(and);
+                return convertToCNF(and, problem);
             }
 
             if(notArg instanceof And){
@@ -152,7 +169,7 @@ public class Converter {
 
                 Or or = new Or(Arrays.stream(and.getArguments()).
                         map(Logic::negated).collect(Collectors.toList()));
-                return convertToCNF(or);
+                return convertToCNF(or, problem);
             }
 
             if(notArg instanceof Existential){
@@ -162,7 +179,7 @@ public class Converter {
 
                 Universal universal = new Universal(existential.vars(), Logic.negated(existential.getArgument()));
 
-                return convertToCNF(universal);
+                return convertToCNF(universal, problem);
 
             }
 
@@ -173,7 +190,7 @@ public class Converter {
 
                 Existential existential = new Existential(universal.vars(), Logic.negated(universal.getArgument()));
 
-                return convertToCNF(existential);
+                return convertToCNF(existential, problem);
 
             }
 
@@ -184,6 +201,198 @@ public class Converter {
 
     }
 
+
+    private static Formula standardizeApart(Formula formula, Problem problem){
+
+
+        if(formula instanceof Universal){
+
+            Universal universal = (Universal) formula;
+
+            Variable[] vars = universal.vars();
+
+            List<Pair<Variable,Variable>> replacements = Arrays.stream(vars).
+                    map(x-> ImmutablePair.from(x, SymbolGenerator.newVariable(problem))).collect(Collectors.toList());
+
+            Map<Variable, Value> subs = newMap();
+
+            replacements.forEach(pair-> subs.put(pair.first(), pair.second()));
+
+            Formula argument = standardizeApart(universal.getArgument(), problem).apply(subs);
+
+            Variable[] newVars = new Variable[vars.length];
+
+            for(int i = 0; i<vars.length; i++){
+
+                newVars[i] = replacements.get(i).second();
+            }
+
+
+            return new Universal(newVars, argument);
+
+        }
+
+        if(formula instanceof Existential){
+
+            Existential existential = (Existential) formula;
+
+            Variable[] vars = existential.vars();
+
+            List<Pair<Variable,Variable>> replacements = Arrays.stream(vars).
+                    map(x-> ImmutablePair.from(x, SymbolGenerator.newVariable(problem))).collect(Collectors.toList());
+
+            Map<Variable, Value> subs = newMap();
+
+            replacements.forEach(pair-> subs.put(pair.first(), pair.second()));
+
+
+
+            Formula argument = standardizeApart(existential.getArgument(), problem).apply(subs);
+            Variable[] newVars = new Variable[vars.length];
+
+            for(int i = 0; i<vars.length; i++){
+
+                newVars[i] = replacements.get(i).second();
+            }
+
+
+            return new Existential(newVars, argument);
+
+        }
+
+        if(formula instanceof Not){
+
+            Not not = (Not) formula;
+            return new Not(standardizeApart(not.getArgument(),problem));
+        }
+
+        if(formula instanceof Implication){
+
+            Implication implication = (Implication) formula;
+
+            return  new Implication(standardizeApart(implication.getAntecedent(), problem),
+                    standardizeApart(implication.getConsequent(), problem));
+        }
+
+        if(formula instanceof BiConditional){
+
+            BiConditional biconditional = (BiConditional) formula;
+
+            return  new Implication(standardizeApart(biconditional.getLeft(), problem),
+                    standardizeApart(biconditional.getRight(), problem));
+        }
+
+
+        if(formula instanceof And){
+
+            And and = (And) formula;
+
+            return  new And(Arrays.stream(and.getArguments()).map(x->standardizeApart(x, problem)).collect(Collectors.toList()));
+        }
+
+        if(formula instanceof Or){
+
+            Or or = (Or) formula;
+
+            return  new And(Arrays.stream(or.getArguments()).map(x->standardizeApart(x, problem)).collect(Collectors.toList()));
+        }
+
+        else {
+
+            return formula;
+        }
+
+
+    }
+
+
+    public static Formula skolemize(Formula formula, Problem problem){
+
+        return skolemize(formula,  newList(), problem);
+    }
+
+
+
+
+    private static Formula skolemize(Formula formula, List<Variable> variable, Problem problem){
+
+        if(formula instanceof Predicate){
+            return formula;
+        }
+
+
+        if(formula instanceof Not){
+
+            Not not = (Not) formula;
+            return new Not(skolemize(not.getArgument(), variable, problem));
+        }
+        if(formula instanceof And){
+
+            And and = (And) formula;
+            return new And(
+                    Arrays.stream(and.getArguments()).
+                            map(x->skolemize(x, variable, problem)).collect(Collectors.toList()));
+        }
+
+        if(formula instanceof Or){
+
+            Or or = (Or) formula;
+            return new Or(
+                    Arrays.stream(or.getArguments()).
+                            map(x->skolemize(x, variable, problem)).collect(Collectors.toList()));
+        }
+
+        if(formula instanceof Implication){
+
+            Implication implication = (Implication) formula;
+
+            return new Implication(skolemize(implication.getAntecedent(), variable, problem),
+                    skolemize(implication.getConsequent(), variable, problem));
+        }
+
+        if(formula instanceof BiConditional){
+
+            BiConditional biConditional = (BiConditional) formula;
+
+            return new BiConditional(skolemize(biConditional.getLeft(), variable, problem),
+                    skolemize(biConditional.getRight(), variable, problem));
+        }
+
+        if(formula instanceof Universal){
+
+            Universal universal = (Universal) formula;
+
+            List<Variable> added = newList();
+            added.addAll(variable);
+            added.addAll(Arrays.stream(universal.vars()).collect(Collectors.toList()));
+
+            return new Universal(universal.vars(), skolemize(universal.getArgument(),
+                    added,   problem));
+        }
+
+        if(formula instanceof Existential){
+
+            Existential existential = (Existential) formula;
+
+            Variable[] vars = existential.vars();
+
+            //ToDo Skolemize
+            List<Pair<Variable,Value>> replacements = Arrays.stream(vars).
+                    map(x-> ImmutablePair.from(x, (Value)SymbolGenerator.newConstant(problem))).collect(Collectors.toList());
+
+            Map<Variable, Value> subs = newMap();
+
+            replacements.forEach(pair-> subs.put(pair.first(), pair.second()));
+
+
+
+            return existential.getArgument().apply(subs);
+        }
+
+
+        return  null;
+
+    }
 
     private static boolean isLiteral(Formula formula){
 
