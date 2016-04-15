@@ -1,6 +1,6 @@
 "begin" "*prop-nd-true-test-1"
 "assumption" P
-"goal" P
+"goal" (or P Q)
 "end"
 
 "begin" "*fol-true-test-1"
@@ -30,8 +30,20 @@
 
 "begin" "*fol-true-test-1"
 "assumption" (forall (?x ?y ?z) (if (and (R ?x ?y) (R ?y ?z)) (R ?x ?z)))
+"assumption" (forall (?x ?y) (if (R ?x ?y) (R ?y ?x)))
+"assumption" (forall (?x) (R ?x))
 "assumption" (R a b)
 "assumption" (R b c)
 "assumption" (R c d)
 "goal" (R a d)
+"end"
+
+"begin" "*fol-true-test-1"
+"assumption" (forall (?x ?y ?z) (if (and (R ?x ?y) (R ?y ?z)) (R ?x ?z)))
+"assumption" (forall (?x ?y) (if (R ?x ?y) (R ?y ?x)))
+"assumption" (forall (?x) (R ?x))
+"assumption" (R a b)
+"assumption" (R b c)
+"assumption" (R c d)
+"goal" (R d a)
 "end"

@@ -29,17 +29,18 @@ public class FirstOrderResolutionProver implements Prover {
 
     Map<Problem, Set<Pair<Clause, Clause>>> used;
 
-    public FirstOrderResolutionProver(){
+    public FirstOrderResolutionProver() {
 
         used = newMap();
 
     }
+
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
         Problem problem = new Problem();
         Set<CNFFormula> formulas = assumptions.stream().
-                map(x->Converter.convertToCNF(x, problem)).
+                map(x -> Converter.convertToCNF(x, problem)).
                 collect(Collectors.toSet());
 
         used.put(problem, newSet());
@@ -53,83 +54,82 @@ public class FirstOrderResolutionProver implements Prover {
                 reduce(newSet(), Sets::union);
 
 
-        while(!clauses.isEmpty()){
+        while (true) {
 
-            List<List<Clause>> matchingPairs = getMatchingClauses(clauses, problem);
-
-            if(matchingPairs.isEmpty()){
-                return Optional.empty();
-            }
-            else{
-                boolean expanded = false;
-                for(int i = 0; i<matchingPairs.size(); i++){
-
-                    List<Clause> pair = matchingPairs.get(i);
-
-                    Clause left = pair.get(0);
-                    Clause right = pair.get(1);
-
-                    Set<Clause> resolvands = resolve(left,right);
+            int size = 1;
+            while(size <= clauses.stream().mapToInt(x->x.getLiterals().size()).max().getAsInt()){
 
 
+                List<List<Clause>> matchingPairs = getMatchingClauses(clauses, problem, size);
 
-                    if(!resolvands.isEmpty()){
+                if(!matchingPairs.isEmpty()) {
+                    boolean expanded = false;
 
-                        List<Clause> resolvandsList = new ArrayList<>();
-                        resolvands.stream().forEach(resolvandsList::add);
+                    for (List<Clause> pair : matchingPairs) {
 
-                        for(int j = 0; j< resolvandsList.size();j++){
-                            Clause resolvand =  resolvandsList.get(j);
+                        Clause left = pair.get(0);
+                        Clause right = pair.get(1);
 
-                            if(resolvand.getLiterals().isEmpty()){
-                                return Optional.of(Justification.trivial(formula));
-                            }
-                            else{
-                                if(!clauses.contains(resolvand)){
-                                    clauses.add(resolvand);
-                                    used.put(problem, Sets.add(used.get(problem),ImmutablePair.from(left, right)));
-                                    expanded = true;
+                        Set<Clause> resolvands = resolve(left, right);
+
+
+                        if (!resolvands.isEmpty()) {
+
+                            List<Clause> resolvandsList = new ArrayList<>();
+                            resolvands.stream().forEach(resolvandsList::add);
+
+                            for (int j = 0; j < resolvandsList.size(); j++) {
+                                Clause resolvand = resolvandsList.get(j);
+
+                                if (resolvand.getLiterals().isEmpty()) {
+                                    return Optional.of(Justification.trivial(formula));
+                                } else {
+                                    if (!clauses.contains(resolvand)) {
+                                        clauses.add(resolvand);
+                                        used.put(problem, Sets.add(used.get(problem), ImmutablePair.from(left, right)));
+                                        expanded = true;
+                                    }
                                 }
                             }
                         }
-
-
-                    } else{
-                        return Optional.empty();
                     }
+
+                    if (!expanded) {
+                        return Optional.empty();
+
+                    }
+
+                } else {
+
+                    size++;
+
                 }
-
-                if(!expanded){
-                    return Optional.empty();
-
-                }
-
 
             }
 
+            return Optional.empty();
         }
 
-        return null;    }
+    }
 
 
-
-    public Map<Variable,Value> matches(Literal literal1, Literal literal2){
+    public Map<Variable, Value> matches(Literal literal1, Literal literal2) {
 
         boolean differ = (literal1.isNegated() ^ literal2.isNegated());
 
-        if(differ){
+        if (differ) {
 
             Predicate p1 = literal1.getPredicate();
             Predicate p2 = literal2.getPredicate();
 
             return Unifier.unify(p1, p2);
-        } else{
-            return  null;
+        } else {
+            return null;
         }
 
     }
 
-    public List<List<Clause>> getMatchingClauses(Set<Clause> clauses, Problem problem){
+    public List<List<Clause>> getMatchingClauses(Set<Clause> clauses, Problem problem, int size) {
 
         List<Set<Clause>> sets = newList();
         sets.add(clauses);
@@ -138,18 +138,17 @@ public class FirstOrderResolutionProver implements Prover {
         Set<List<Clause>> possiblePairs = cartesianProduct(sets);
 
 
-
-        return possiblePairs.stream().filter(possiblePair->{
+        return possiblePairs.stream().filter(possiblePair -> {
             Clause left = possiblePair.get(0);
             Clause right = possiblePair.get(1);
 
-           if (used.get(problem).contains(ImmutablePair.from(left, right))) {
-               return false;
-           }
+            if (used.get(problem).contains(ImmutablePair.from(left, right)) || right.getLiterals().size()> size) {
+                return false;
+            }
             Set<Clause> resolvends = resolve(left, right);
-            if(!resolvends.isEmpty()) {
+            if (!resolvends.isEmpty()) {
                 return true;
-            } else{
+            } else {
                 return false;
             }
         }).collect(Collectors.toList());
@@ -157,7 +156,7 @@ public class FirstOrderResolutionProver implements Prover {
 
     }
 
-    public Set<Clause> resolve(Clause clause1, Clause clause2){
+    public Set<Clause> resolve(Clause clause1, Clause clause2) {
 
         Set<Literal> literals1 = clause1.getLiterals();
         Set<Literal> literals2 = clause2.getLiterals();
@@ -169,14 +168,14 @@ public class FirstOrderResolutionProver implements Prover {
         Set<List<Literal>> pairsSet = cartesianProduct(pairs);
 
         Set<Pair<List<Literal>, Map<Variable, Value>>> matches =
-                pairsSet.stream().map(pair->{
+                pairsSet.stream().map(pair -> {
                     Literal left = pair.get(0);
                     Literal right = pair.get(1);
 
-                    return  ImmutablePair.from(pair, matches(left,right));
-                }).filter(x->x.second()!=null).collect(Collectors.toSet());
+                    return ImmutablePair.from(pair, matches(left, right));
+                }).filter(x -> x.second() != null).collect(Collectors.toSet());
 
-        return matches.stream().map(match->{
+        return matches.stream().map(match -> {
             Set<Literal> l1 = Sets.remove(literals1, match.first().get(0));
             Set<Literal> l2 = Sets.remove(literals2, match.first().get(1));
 

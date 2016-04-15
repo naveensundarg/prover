@@ -2,5 +2,6 @@
 "assumption" (forall (?x ?y ?z) (if (and (R ?x ?y) (R ?y ?z)) (R ?x ?z)))
 "assumption" (R a b)
 "assumption" (R b c)
-"goal" (R a c)
+"assumption" (R c d)
+"goal" (R a d)
 "end"
