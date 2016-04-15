@@ -61,4 +61,34 @@ public class FirstOrderResolutionProverTests {
 
     }
 
+
+    @DataProvider(name="soundnessTestsProvider")
+    public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
+
+        List<Pair<Set<Formula>, Formula>> tests = Common.readCases(Sandbox.class.getResourceAsStream("firstorder-soundness-tests.clj"));
+
+        Object[][] cases =  new Object[tests.size()][2];
+
+        for(int  i = 0; i < tests.size(); i++){
+
+            Pair<Set<Formula>, Formula> test = tests.get(i);
+
+            cases[i][0] =  test.first();
+            cases[i][1] = test.second();
+
+        }
+
+
+        return cases;
+
+    }
+
+
+    @Test(dataProvider = "soundnessTestsProvider")
+    public void testSoundess(Set<Formula> assumptions, Formula formula){
+
+        Assert.assertFalse(prover.prove(assumptions, formula).isPresent());
+
+    }
+
 }

@@ -1,15 +1,15 @@
-"begin" "*prop-nd-true-test-1"
+"begin" "kicking the tires"
 "assumption" P
 "goal" (or P Q)
 "end"
 
-"begin" "*fol-true-test-1"
+"begin" "socrates is mortal"
 "assumption" (forall (?x) (if (Man ?x) (Mortal ?x) ))
 "assumption" (Man socrates)
 "goal" (Mortal socrates)
 "end"
 
-"begin" "*fol-true-test-1"
+"begin" "Law of Excluded Middle"
 "goal" (forall (?x) (or (P ?x) (not (P ?x))))
 "end"
 
@@ -46,4 +46,13 @@
 "assumption" (R b c)
 "assumption" (R c d)
 "goal" (R d a)
+"end"
+
+"begin" "Universal implies Existential"
+"goal" (if (forall (?x) (P ?x)) (exists (?y) (P ?y)) )
+"end"
+
+
+"begin" "Renaming"
+"goal" (if (forall (?x) (P ?x)) (forall (?y) (P ?y)) )
 "end"

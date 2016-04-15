@@ -279,7 +279,7 @@ public class Converter {
 
             BiConditional biconditional = (BiConditional) formula;
 
-            return  new Implication(standardizeApart(biconditional.getLeft(), problem),
+            return  new BiConditional(standardizeApart(biconditional.getLeft(), problem),
                     standardizeApart(biconditional.getRight(), problem));
         }
 

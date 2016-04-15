@@ -95,7 +95,7 @@ public class FirstOrderResolutionProver implements Prover {
                     }
 
                     if (!expanded) {
-                        return Optional.empty();
+                       size++;
 
                     }
 
