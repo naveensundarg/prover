@@ -89,7 +89,7 @@ public class Predicate extends Formula {
     @Override
     public int hashCode() {
         int result = name.hashCode();
-        result = 31 * result + Arrays.hashCode(arguments);
+        result = 31 * result + Arrays.toString(arguments).hashCode();
         return result;
     }
 }

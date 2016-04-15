@@ -1,9 +1,11 @@
 package com.naveensundarg.shadow.prover;
 
 import com.naveensundarg.shadow.prover.core.FirstOrderResolutionProver;
+import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.PropositionalResolutionProver;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.representations.Formula;
+import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.utils.Common;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Reader;
@@ -12,7 +14,10 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 
 /**
  * Created by naveensundarg on 4/9/16.
@@ -21,7 +26,7 @@ public class FirstOrderResolutionProverTests {
 
 
     Prover prover;
-
+    Map<Problem, Pair<Clause, Clause>> used;
     FirstOrderResolutionProverTests(){
 
         prover = new FirstOrderResolutionProver();

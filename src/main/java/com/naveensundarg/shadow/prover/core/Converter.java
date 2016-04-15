@@ -28,7 +28,7 @@ public class Converter {
 
     public static CNFFormula convertToCNF(Formula formula, Problem problem) {
 
-        return convertToCNFInternal(standardizeApart(skolemize(formula,problem), problem), problem);
+        return convertToCNFInternal(standardizeApart(formula,problem), problem);
     }
 
 
@@ -104,8 +104,9 @@ public class Converter {
 
         if(formula instanceof Existential){
 
-            Existential existential = (Existential) formula;
-            return convertToCNF(existential.getArgument(), problem);
+            formula = skolemize(formula, problem);
+//            Existential existential = (Existential) formula;
+            return convertToCNF(formula, problem);
 
         }
         if(isLiteral(formula)){
@@ -294,7 +295,7 @@ public class Converter {
 
             Or or = (Or) formula;
 
-            return  new And(Arrays.stream(or.getArguments()).map(x->standardizeApart(x, problem)).collect(Collectors.toList()));
+            return  new Or(Arrays.stream(or.getArguments()).map(x->standardizeApart(x, problem)).collect(Collectors.toList()));
         }
 
         else {

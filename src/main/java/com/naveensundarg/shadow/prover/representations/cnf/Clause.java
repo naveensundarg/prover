@@ -58,4 +58,6 @@ public class Clause {
     public int hashCode() {
         return literals.hashCode();
     }
+
+
 }

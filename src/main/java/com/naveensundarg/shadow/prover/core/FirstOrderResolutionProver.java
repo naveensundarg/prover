@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newList;
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
@@ -25,6 +26,14 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
  * Created by naveensundarg on 4/12/16.
  */
 public class FirstOrderResolutionProver implements Prover {
+
+    Map<Problem, Set<Pair<Clause, Clause>>> used;
+
+    public FirstOrderResolutionProver(){
+
+        used = newMap();
+
+    }
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
@@ -32,6 +41,8 @@ public class FirstOrderResolutionProver implements Prover {
         Set<CNFFormula> formulas = assumptions.stream().
                 map(x->Converter.convertToCNF(x, problem)).
                 collect(Collectors.toSet());
+
+        used.put(problem, newSet());
 
         //TODO: Factoring!
 
@@ -44,7 +55,7 @@ public class FirstOrderResolutionProver implements Prover {
 
         while(!clauses.isEmpty()){
 
-            List<List<Clause>> matchingPairs = getMatchingClauses(clauses);
+            List<List<Clause>> matchingPairs = getMatchingClauses(clauses, problem);
 
             if(matchingPairs.isEmpty()){
                 return Optional.empty();
@@ -76,6 +87,7 @@ public class FirstOrderResolutionProver implements Prover {
                             else{
                                 if(!clauses.contains(resolvand)){
                                     clauses.add(resolvand);
+                                    used.put(problem, Sets.add(used.get(problem),ImmutablePair.from(left, right)));
                                     expanded = true;
                                 }
                             }
@@ -117,7 +129,7 @@ public class FirstOrderResolutionProver implements Prover {
 
     }
 
-    public List<List<Clause>> getMatchingClauses(Set<Clause> clauses){
+    public List<List<Clause>> getMatchingClauses(Set<Clause> clauses, Problem problem){
 
         List<Set<Clause>> sets = newList();
         sets.add(clauses);
@@ -125,9 +137,15 @@ public class FirstOrderResolutionProver implements Prover {
 
         Set<List<Clause>> possiblePairs = cartesianProduct(sets);
 
+
+
         return possiblePairs.stream().filter(possiblePair->{
             Clause left = possiblePair.get(0);
             Clause right = possiblePair.get(1);
+
+           if (used.get(problem).contains(ImmutablePair.from(left, right))) {
+               return false;
+           }
             Set<Clause> resolvends = resolve(left, right);
             if(!resolvends.isEmpty()) {
                 return true;

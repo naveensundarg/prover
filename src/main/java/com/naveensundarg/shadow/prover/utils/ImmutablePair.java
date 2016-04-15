@@ -35,4 +35,23 @@ public class ImmutablePair<U,V> implements Pair{
                 ", second=" + second +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ImmutablePair<?, ?> that = (ImmutablePair<?, ?>) o;
+
+        if (!first.equals(that.first)) return false;
+        return second.equals(that.second);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = first.hashCode();
+        result = 31 * result + second.hashCode();
+        return result;
+    }
 }

@@ -65,9 +65,7 @@ public class Constant extends Value {
 
         Constant constant = (Constant) o;
 
-        // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(arguments, constant.arguments)) return false;
-        return variables.equals(constant.variables);
+        return name.equals(constant.getName());
 
     }
 

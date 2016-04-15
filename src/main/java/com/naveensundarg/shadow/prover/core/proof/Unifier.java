@@ -97,7 +97,7 @@ public class Unifier {
             return theta;
         }
 
-        return unify(arr1, arr1, unify(arr1[start], arr2[start], theta), start + 1);
+        return unify(arr1, arr2, unify(arr1[start], arr2[start], theta), start + 1);
 
     }
 
