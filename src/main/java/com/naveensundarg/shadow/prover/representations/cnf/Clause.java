@@ -50,6 +50,11 @@ public class Clause {
 
     }
 
+    public Clause replace(Value value1, Value value2){
+
+        return new Clause(literals.stream().map(literal -> literal.replace(value1, value2)).collect(Collectors.toSet()));
+    }
+
     public Clause apply(Map<Variable, Value> substitution){
 
         return new Clause(literals.stream().map(l->l.apply(substitution)).collect(Collectors.toSet()));

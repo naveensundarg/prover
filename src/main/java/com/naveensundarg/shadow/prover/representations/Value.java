@@ -28,5 +28,6 @@ public abstract class Value {
     public abstract Set<Variable> variablesPresent();
 
     public abstract Value apply(Map<Variable, Value> substitution);
+    public abstract Value replace(Value value1, Value value2);
 
  }

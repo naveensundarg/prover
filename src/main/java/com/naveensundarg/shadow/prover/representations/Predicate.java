@@ -92,4 +92,15 @@ public class Predicate extends Formula {
         result = 31 * result + Arrays.toString(arguments).hashCode();
         return result;
     }
+
+    public Predicate replace(Value value1, Value value2){
+        Value[] argumentTheta = new Value[arguments.length];
+
+        for(int i = 0; i< argumentTheta.length; i++){
+            argumentTheta[i] = arguments[i].replace(value1, value2);
+        }
+
+        return new Predicate(name, argumentTheta);
+
+    }
 }

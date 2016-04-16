@@ -52,7 +52,30 @@
 "goal" (if (forall (?x) (P ?x)) (exists (?y) (P ?y)) )
 "end"
 
-
-"begin" "Renaming"
-"goal" (if (forall (?x) (P ?x)) (forall (?y) (P ?y)) )
+"begin" "Bird theorem"
+"goal" (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y))))
 "end"
+
+"begin" "Everyone likes anyone who likes someone."
+"assumption" (likes a b)
+"assumption" (forall (?x) (if (exists (?z) (likes ?x ?z)) (forall (?y) (likes ?y ?x))))
+"goal" (forall (?x ?y) (likes ?x ?y))
+"end"
+
+"begin" "Demodulation Test 1"
+"assumption" (= a b)
+"assumption" (P a)
+"goal" (P b)
+"end"
+
+"begin" "Demodulation Test 1"
+"assumption" (and (= a b) (= c d))
+"assumption" (Q d)
+"assumption" (P a)
+"assumption" (forall (?x) (if (and (P b) (Q c)) (R ?x)))
+"goal" (forall (?x) (R ?x))
+"end"
+
+
+
+

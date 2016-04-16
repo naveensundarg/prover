@@ -1,14 +1,12 @@
 package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.core.proof.Unifier;
+import com.naveensundarg.shadow.prover.core.rule.DeModulationImplementation;
+import com.naveensundarg.shadow.prover.core.rule.FirstOrderResolutionImplementation;
+import com.naveensundarg.shadow.prover.core.rule.RuleImplementation;
 import com.naveensundarg.shadow.prover.representations.Formula;
-import com.naveensundarg.shadow.prover.representations.Predicate;
-import com.naveensundarg.shadow.prover.representations.Value;
-import com.naveensundarg.shadow.prover.representations.Variable;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.utils.ImmutablePair;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Pair;
@@ -27,42 +25,67 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
  */
 public class FirstOrderResolutionProver implements Prover {
 
-    Map<Problem, Set<Pair<Clause, Clause>>> used;
+    private enum Rule {
+
+        RESOLUTION(FirstOrderResolutionImplementation.INSTANCE),
+        DEMODULATION(DeModulationImplementation.INSTANCE);
+
+
+        private RuleImplementation ruleImplementation;
+        Rule(RuleImplementation ruleImplementation){
+            this.ruleImplementation = ruleImplementation;
+        }
+
+        public RuleImplementation getRuleImplementation() {
+            return ruleImplementation;
+        }
+    }
+    private final Map<Problem, Set<Pair<Clause, Clause>>> used;
+    private final Set<Rule> rules;
+
+    public FirstOrderResolutionProver(Set<Rule> rules) {
+
+        used = newMap();
+        this.rules = rules;
+    }
 
     public FirstOrderResolutionProver() {
 
         used = newMap();
-
+        this.rules = Sets.with(Rule.RESOLUTION);
+        this.rules.add(Rule.DEMODULATION);
     }
+
 
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
         Problem problem = new Problem();
-        Set<CNFFormula> formulas = assumptions.stream().
+        used.put(problem, newSet());
+
+        Set<CNFFormula> formulas = assumptions.
+                stream().
                 map(x -> Converter.convertToCNF(x, problem)).
                 collect(Collectors.toSet());
 
-        used.put(problem, newSet());
+        formulas.add(Converter.convertToCNF(Logic.negated(formula), problem));
+
 
         //TODO: Factoring!
 
-        formulas.add(Converter.convertToCNF(Logic.negated(formula), problem));
-
-        Set<Clause> clauses = formulas.stream().
+        Set<Clause> clauses = formulas.
+                stream().
                 map(CNFFormula::getClauses).
                 reduce(newSet(), Sets::union);
 
 
-        while (true) {
-
             int size = 1;
-            while(size <= clauses.stream().mapToInt(x->x.getLiterals().size()).max().getAsInt()){
+            while (size <= clauses.stream().mapToInt(x -> x.getLiterals().size()).max().getAsInt()) {
 
 
-                List<List<Clause>> matchingPairs = getMatchingClauses(clauses, problem, size);
+                List<List<Clause>> matchingPairs = getUsableClauses(clauses, problem, size);
 
-                if(!matchingPairs.isEmpty()) {
+                if (!matchingPairs.isEmpty()) {
                     boolean expanded = false;
 
                     for (List<Clause> pair : matchingPairs) {
@@ -70,8 +93,10 @@ public class FirstOrderResolutionProver implements Prover {
                         Clause left = pair.get(0);
                         Clause right = pair.get(1);
 
-                        Set<Clause> resolvands = resolve(left, right);
-
+                        Set<Clause> resolvands = rules.
+                                stream().
+                                map(ruleType -> ruleType.getRuleImplementation().apply(left, right)).
+                                reduce(newSet(), Sets::union);
 
                         if (!resolvands.isEmpty()) {
 
@@ -95,7 +120,7 @@ public class FirstOrderResolutionProver implements Prover {
                     }
 
                     if (!expanded) {
-                       size++;
+                        size++;
 
                     }
 
@@ -108,35 +133,16 @@ public class FirstOrderResolutionProver implements Prover {
             }
 
             return Optional.empty();
-        }
 
     }
 
-
-    public Map<Variable, Value> matches(Literal literal1, Literal literal2) {
-
-        boolean differ = (literal1.isNegated() ^ literal2.isNegated());
-
-        if (differ) {
-
-            Predicate p1 = literal1.getPredicate();
-            Predicate p2 = literal2.getPredicate();
-
-            return Unifier.unify(p1, p2);
-        } else {
-            return null;
-        }
-
-    }
-
-    public List<List<Clause>> getMatchingClauses(Set<Clause> clauses, Problem problem, int size) {
+    public List<List<Clause>> getUsableClauses(Set<Clause> clauses, Problem problem, int size) {
 
         List<Set<Clause>> sets = newList();
         sets.add(clauses);
         sets.add(clauses);
 
         Set<List<Clause>> possiblePairs = cartesianProduct(sets);
-
 
         return possiblePairs.stream().filter(possiblePair -> {
             Clause left = possiblePair.get(0);
@@ -145,46 +151,14 @@ public class FirstOrderResolutionProver implements Prover {
             if (used.get(problem).contains(ImmutablePair.from(left, right)) || right.getLiterals().size()> size) {
                 return false;
             }
-            Set<Clause> resolvends = resolve(left, right);
-            if (!resolvends.isEmpty()) {
+            else{
                 return true;
-            } else {
-                return false;
             }
         }).collect(Collectors.toList());
 
 
     }
 
-    public Set<Clause> resolve(Clause clause1, Clause clause2) {
 
-        Set<Literal> literals1 = clause1.getLiterals();
-        Set<Literal> literals2 = clause2.getLiterals();
-
-        List<Set<Literal>> pairs = newList();
-        pairs.add(literals2);
-        pairs.add(literals1);
-
-        Set<List<Literal>> pairsSet = cartesianProduct(pairs);
-
-        Set<Pair<List<Literal>, Map<Variable, Value>>> matches =
-                pairsSet.stream().map(pair -> {
-                    Literal left = pair.get(0);
-                    Literal right = pair.get(1);
-
-                    return ImmutablePair.from(pair, matches(left, right));
-                }).filter(x -> x.second() != null).collect(Collectors.toSet());
-
-        return matches.stream().map(match -> {
-            Set<Literal> l1 = Sets.remove(literals1, match.first().get(0));
-            Set<Literal> l2 = Sets.remove(literals2, match.first().get(1));
-
-            Set<Literal> literals = Sets.union(l1, l2);
-            return (new Clause(literals)).apply(match.second());
-
-        }).collect(Collectors.toSet());
-
-
-    }
 }
 

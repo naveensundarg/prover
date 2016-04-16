@@ -18,7 +18,7 @@ public class Constant extends Value {
     public Constant(String name){
 
         super();
-        this.arguments = null;
+        this.arguments = new Value[0];
         super.name = name;
         this.variables = Sets.newSet();
 
@@ -56,6 +56,11 @@ public class Constant extends Value {
     @Override
     public Value apply(Map<Variable, Value> substitution) {
         return this;
+    }
+
+    @Override
+    public Value replace(Value value1, Value value2) {
+        return value1.equals(this)? value2 : this;
     }
 
     @Override

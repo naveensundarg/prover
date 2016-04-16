@@ -21,7 +21,7 @@ public class Variable extends Value{
             throw new AssertionError("Variables should start with ?: "+ name);
         }
 
-        this.arguments = null;
+        this.arguments = new Value[0];
         super.name = name;
 
         this.variables = Sets.with(this);
@@ -63,6 +63,10 @@ public class Variable extends Value{
         return substitution.getOrDefault(this, this);
     }
 
+    @Override
+    public Value replace(Value value1, Value value2) {
+        return value1.equals(this)? value2 : this;
+    }
 
     @Override
     public String toString() {

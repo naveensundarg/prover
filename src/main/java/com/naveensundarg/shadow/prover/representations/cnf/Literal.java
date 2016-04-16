@@ -40,6 +40,11 @@ public class Literal {
 
     }
 
+    public  Literal replace(Value x, Value y){
+
+        return new Literal(predicate.replace(x,y), isNegated);
+    }
+
     @Override
     public int hashCode() {
         int result = (isNegated ? 1 : 0);

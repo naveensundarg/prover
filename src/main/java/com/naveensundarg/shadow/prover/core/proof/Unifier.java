@@ -1,12 +1,15 @@
 package com.naveensundarg.shadow.prover.core.proof;
 
+import com.naveensundarg.shadow.prover.representations.Compound;
 import com.naveensundarg.shadow.prover.representations.Predicate;
 import com.naveensundarg.shadow.prover.representations.Value;
 import com.naveensundarg.shadow.prover.representations.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 
@@ -121,8 +124,16 @@ public class Unifier {
             theta.put(var, x);
             return theta;
         }
+    }
 
+    public static Set<Map<Variable, Value>> subUnify(Value x, Value Z){
 
+        Map<Variable, Value> theta = unify(x, Z);
+        if(theta!=null){
+            return Sets.with(theta);
+        } else  {
+            return Arrays.stream(Z.getArguments()).map(zArg-> subUnify(x, zArg)).reduce(Sets.newSet(), Sets::union);
+        }
 
     }
 }

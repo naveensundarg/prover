@@ -57,6 +57,23 @@ public class Compound extends Value {
     }
 
     @Override
+    public Value replace(Value value1, Value value2) {
+
+        if(value1.equals(this)){
+            return value2;
+        }
+
+        Value[] argumentTheta = new Value[arguments.length];
+
+        for(int i = 0; i< argumentTheta.length; i++){
+            argumentTheta[i] = arguments[i].replace(value1, value2);
+        }
+
+        return new Compound(name, argumentTheta);
+
+
+    }
+    @Override
     public  int arity() {
         return arguments.length;
     }
