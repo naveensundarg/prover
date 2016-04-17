@@ -1,6 +1,3 @@
-"begin" "simple equality"
-"assumption" (= a b)
-"assumption" (P a)
-"goal" (P b)
+"begin" "Bird theorem"
+"goal" (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y))))
 "end"
-

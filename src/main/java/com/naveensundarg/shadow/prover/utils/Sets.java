@@ -67,6 +67,19 @@ public class Sets {
         return newSet;
     }
 
+    public static <T> Set<T> intersection(Set<T> X, Set<T> Y){
+
+        Set<T> newSet = newSet();
+
+        X.stream().forEach(x-> {
+            if(Y.contains(x)){
+                newSet.add(x);
+            }
+        });
+
+        return newSet;
+    }
+
     public static <T> Set<List<T>> cartesianProduct(List<Set<T>> sets){
 
 

@@ -1,8 +1,9 @@
 package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.core.rule.DeModulationImplementation;
+import com.naveensundarg.shadow.prover.core.rule.DemodulationImplementation;
 import com.naveensundarg.shadow.prover.core.rule.FirstOrderResolutionImplementation;
+import com.naveensundarg.shadow.prover.core.rule.ParamodulationImplementation;
 import com.naveensundarg.shadow.prover.core.rule.RuleImplementation;
 import com.naveensundarg.shadow.prover.representations.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
@@ -28,8 +29,8 @@ public class FirstOrderResolutionProver implements Prover {
     private enum Rule {
 
         RESOLUTION(FirstOrderResolutionImplementation.INSTANCE),
-        DEMODULATION(DeModulationImplementation.INSTANCE);
-
+        DEMODULATION(DemodulationImplementation.INSTANCE),
+        PARAMODULATION(ParamodulationImplementation.INSTANCE);
 
         private RuleImplementation ruleImplementation;
         Rule(RuleImplementation ruleImplementation){
@@ -54,6 +55,8 @@ public class FirstOrderResolutionProver implements Prover {
         used = newMap();
         this.rules = Sets.with(Rule.RESOLUTION);
         this.rules.add(Rule.DEMODULATION);
+        this.rules.add(Rule.PARAMODULATION);
+
     }
 
 

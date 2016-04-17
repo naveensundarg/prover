@@ -115,7 +115,13 @@ public class Unifier {
 
             return unify(var, val, theta);
         }
-        else if (x.occurs(var)) {
+
+        Value xx = x;
+        if(theta.values().stream().anyMatch(b-> b.occurs(var))){
+            xx = x.apply(theta);
+        }
+
+         if (xx.occurs(var)) {
             return  null;
         }
 

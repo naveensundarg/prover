@@ -3,6 +3,7 @@ package com.naveensundarg.shadow.prover.representations;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,6 +14,17 @@ public class Compound extends Value {
 
     private final Value[] arguments;
     private final Set<Variable> variables;
+
+
+    public Compound(String name, List<Value> argumentsList){
+        super();
+        this.arguments = new Value[argumentsList.size()];
+        super.name = name;
+        for(int i = 0; i<argumentsList.size(); i++){
+            arguments[i] = argumentsList.get(i);
+        }
+        this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+    }
     public Compound(String name, Value[] arguments){
         super();
         this.arguments = arguments;

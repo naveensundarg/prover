@@ -16,39 +16,40 @@ import java.util.stream.Collectors;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
 /**
- * Created by naveensundarg on 4/15/16.
+ * Created by naveensundarg on 4/16/16.
  */
-public enum DemodulationImplementation implements RuleImplementation {
+public enum  ParamodulationImplementation implements RuleImplementation {
 
     INSTANCE;
 
+    private Set<Literal> getIdentityLiterals(Clause clause){
 
-    private boolean isEquals(Clause clause){
-
-        return clause.getLiterals().size()==1 &&
-                clause.getLiterals().stream().allMatch(x->x.getPredicate().getName().equals("="));
+        return clause.getLiterals().stream().
+                filter(literal->literal.getPredicate().getName().equals("=") && !literal.isNegated()).
+                collect(Collectors.toSet());
 
     }
 
-    private Value getLeft(Clause clause){
+    private Value getLeft(Predicate predicate){
 
-        assert isEquals(clause);
-        return clause.getLiterals().stream().map(Literal::getPredicate).map(x->x.getArguments()[0]).findAny().get();
+        return predicate.getArguments()[0];
     }
 
-    private Value getRight(Clause clause){
+    private Value getRight(Predicate predicate){
 
-        assert isEquals(clause);
-        return clause.getLiterals().stream().map(Literal::getPredicate).map(x->x.getArguments()[1]).findAny().get();
+        return predicate.getArguments()[1];
     }
 
     @Override
     public Set<Clause> apply(Clause clause1, Clause clause2) {
 
+        Set<Literal> identityLiterals = getIdentityLiterals(clause1);
 
-        if(isEquals(clause1)){
-            Value x = getLeft(clause1);
-            Value y = getRight(clause1);
+        return identityLiterals.stream().map(identityLiteral->{
+
+            Value x = getLeft(identityLiteral.getPredicate());
+            Value y = getRight(identityLiteral.getPredicate());
+
 
             Set<Map<Variable, Value>> subUnifications =
 
@@ -59,17 +60,11 @@ public enum DemodulationImplementation implements RuleImplementation {
                             map(Z-> Unifier.subUnify(x, Z)).
                             reduce(newSet(), Sets::union);
 
+            Clause clause = new Clause(Sets.union(Sets.remove(clause1.getLiterals(),identityLiteral), clause2.getLiterals()));
+            return subUnifications.stream().map(theta-> clause.replace(x.apply(theta), y.apply(theta))).collect(Collectors.toSet());
 
-            return subUnifications.stream().map(theta-> clause2.replace(x.apply(theta), y.apply(theta))).collect(Collectors.toSet());
-
-        } else {
-
-            return newSet();
-        }
-
-
+        }).reduce(newSet(), Sets::union);
 
     }
-
-
 }
+

@@ -28,11 +28,11 @@ public class Converter {
 
     public static CNFFormula convertToCNF(Formula formula, Problem problem) {
 
-        return convertToCNFInternal(standardizeApart(formula,problem), problem);
+        return convertToCNFInternal(FolConverter.preProcess(formula,problem), newList(), problem);
     }
 
 
-        private static CNFFormula convertToCNFInternal(Formula formula, Problem problem){
+        private static CNFFormula convertToCNFInternal(Formula formula, List<Variable> variables, Problem problem){
 
         if(formula instanceof Atom){
             return new CNFFormula((Atom) formula);
@@ -48,7 +48,7 @@ public class Converter {
             And and = (And) formula;
 
             Set<Clause> clauses = Arrays.stream(and.getArguments()).
-                    map(x->convertToCNF(x, problem)).
+                    map(x->convertToCNFInternal(x, variables, problem)).
                     map(CNFFormula::getClauses).
                     reduce(Sets.newSet(), Sets::union);
 
@@ -60,7 +60,7 @@ public class Converter {
             Or or = (Or) formula;
 
             List<Set<Clause>> clauses = Arrays.stream(or.getArguments()).
-                    map(x->convertToCNF(x, problem)).
+                    map(x->convertToCNFInternal(x, variables, problem)).
                     map(CNFFormula::getClauses).collect(Collectors.toList());
 
 
@@ -78,7 +78,7 @@ public class Converter {
             Formula antecedent = implication.getAntecedent();
             Formula consequent = implication.getConsequent();
 
-            return convertToCNF(new Or(Logic.negated(antecedent),consequent), problem);
+            return convertToCNFInternal(new Or(Logic.negated(antecedent),consequent), variables, problem);
 
 
         }
@@ -90,7 +90,7 @@ public class Converter {
             Formula left = biConditional.getLeft();
             Formula right = biConditional.getRight();
 
-            return convertToCNF(new And(new Implication(left, right), new Implication(right, left)), problem);
+            return convertToCNFInternal(new And(new Implication(left, right), new Implication(right, left)), variables, problem);
 
 
         }
@@ -98,15 +98,48 @@ public class Converter {
         if(formula instanceof Universal){
 
             Universal universal = (Universal) formula;
-            return convertToCNF(universal.getArgument(), problem);
+
+            Set<Variable> topVars = variables.stream().collect(Collectors.toSet());
+
+            Arrays.stream(((Universal) formula).vars()).forEach(topVars::add);
+
+            if(universal.getArgument() instanceof  And){
+                And and = (And) universal.getArgument();
+
+                return convertToCNFInternal(new And(
+
+                        Arrays.stream(and.getArguments()).map(conjunct->{
+                            Set<Variable> thisVars = Sets.intersection(topVars, conjunct.variablesPresent());
+
+                            if(thisVars.isEmpty()){
+                                return conjunct;
+                            } else{
+
+                                Variable[] thisVarsArray = new Variable[thisVars.size()];
+                                int count = 0;
+                                for(Variable v: thisVars){
+                                    thisVarsArray[count] = v;
+                                    count  = count +1;
+                                }
+                                return new Universal(thisVarsArray, conjunct);
+                            }
+                        }).collect(Collectors.toList())
+                ), variables, problem);
+
+
+            } else{
+
+                return convertToCNFInternal(universal.getArgument(), topVars.stream().collect(Collectors.toList()), problem);
+
+            }
 
         }
 
         if(formula instanceof Existential){
 
-            formula = skolemize(formula, problem);
+            formula = skolemize(formula, variables, problem);
 //            Existential existential = (Existential) formula;
-            return convertToCNF(formula, problem);
+            return convertToCNFInternal(formula, variables, problem);
 
         }
         if(isLiteral(formula)){
@@ -134,7 +167,7 @@ public class Converter {
 
             if(notArg instanceof Not){
 
-                return convertToCNF(((Not)notArg).getArgument(), problem);
+                return convertToCNFInternal(((Not)notArg).getArgument(), variables, problem);
             }
 
             if(notArg instanceof Implication){
@@ -143,7 +176,7 @@ public class Converter {
 
                 And and = new And(implication.getAntecedent(),
                         Logic.negated(implication.getConsequent()));
-                return convertToCNF(and, problem);
+                return convertToCNFInternal(and, variables, problem);
             }
 
             if(notArg instanceof BiConditional){
@@ -153,7 +186,7 @@ public class Converter {
                 Formula left = biConditional.getLeft();
                 Formula right = biConditional.getRight();
 
-                return convertToCNF(new Or(new And(Logic.negated(left), right), new And(Logic.negated(right), left)), problem);
+                return convertToCNFInternal(new Or(new And(Logic.negated(left), right), new And(Logic.negated(right), left)), variables, problem);
             }
             if(notArg instanceof Or){
 
@@ -161,7 +194,7 @@ public class Converter {
 
                 And and = new And(Arrays.stream(or.getArguments()).
                         map(Logic::negated).collect(Collectors.toList()));
-                return convertToCNF(and, problem);
+                return convertToCNFInternal(and, variables, problem);
             }
 
             if(notArg instanceof And){
@@ -170,7 +203,7 @@ public class Converter {
 
                 Or or = new Or(Arrays.stream(and.getArguments()).
                         map(Logic::negated).collect(Collectors.toList()));
-                return convertToCNF(or, problem);
+                return convertToCNFInternal(or, variables, problem);
             }
 
             if(notArg instanceof Existential){
@@ -180,7 +213,7 @@ public class Converter {
 
                 Universal universal = new Universal(existential.vars(), Logic.negated(existential.getArgument()));
 
-                return convertToCNF(universal, problem);
+                return convertToCNFInternal(universal, variables, problem);
 
             }
 
@@ -191,7 +224,7 @@ public class Converter {
 
                 Existential existential = new Existential(universal.vars(), Logic.negated(universal.getArgument()));
 
-                return convertToCNF(existential, problem);
+                return convertToCNFInternal(existential,variables, problem);
 
             }
 
@@ -203,7 +236,7 @@ public class Converter {
     }
 
 
-    private static Formula standardizeApart(Formula formula, Problem problem){
+    public static Formula standardizeApart(Formula formula, Problem problem){
 
 
         if(formula instanceof Universal){
@@ -379,7 +412,7 @@ public class Converter {
 
             //ToDo Skolemize
             List<Pair<Variable,Value>> replacements = Arrays.stream(vars).
-                    map(x-> ImmutablePair.from(x, (Value)SymbolGenerator.newConstant(problem))).collect(Collectors.toList());
+                    map(x-> ImmutablePair.from(x, SymbolGenerator.skolem(variable, problem))).collect(Collectors.toList());
 
             Map<Variable, Value> subs = newMap();
 
@@ -395,7 +428,7 @@ public class Converter {
 
     }
 
-    private static boolean isLiteral(Formula formula){
+    public static boolean isLiteral(Formula formula){
 
         return (formula instanceof Predicate) ||
                 ((formula instanceof Not) &&

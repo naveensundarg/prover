@@ -44,3 +44,4 @@
 "begin" "*prop-nd-false-test-10*"
 "goal" (if p (not p))
 "end"
+

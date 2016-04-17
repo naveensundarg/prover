@@ -76,6 +76,29 @@
 "goal" (forall (?x) (R ?x))
 "end"
 
+"begin" "Demodulation Test 2: socrates is mortal"
+"assumption" (= socrates (husband xanthippe))
+"assumption" (forall (?x) (if (Man ?x) (Mortal ?x) ))
+"assumption" (Man socrates)
+"goal" (Mortal (husband xanthippe))
+"end"
 
+"begin" "Demodulation Test 3: socrates is mortal"
+"assumption" (= (husband xanthippe) socrates)
+"assumption" (forall (?x) (if (Man ?x) (Mortal ?x) ))
+"assumption" (Man socrates)
+"goal" (Mortal (husband xanthippe))
+"end"
 
+"begin" "Demodulation Test 3"
+"assumption" (Culprit john)
+"goal" (if (= jack john) (Culprit jack))
+"end"
+
+"begin" "Suppes Theorem"
+"assumption" (forall (?x) (= ?x ?x))
+"assumption" (forall (?y) (exists (?x) (or (In ?x ?y) (= ?y EmptySet))))
+"assumption" (forall (?z) (exists (?x) (forall (?y) (iff (In ?y ?x) (and (In ?y ?z) (not (= ?y ?y)))))))
+"goal" (forall (?x) (not (In ?x EmptySet)))
+"end"
 
