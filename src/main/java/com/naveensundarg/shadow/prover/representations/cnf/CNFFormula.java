@@ -1,11 +1,14 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
+import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.representations.Atom;
 import com.naveensundarg.shadow.prover.representations.Predicate;
+import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -28,6 +31,10 @@ public class CNFFormula {
         return clauses;
     }
 
+    public CNFFormula renameVars(Problem problem){
+
+        return new CNFFormula(clauses.stream().map(x->Logic.renameVars(x, problem)).collect(Collectors.toSet()));
+    }
 
     @Override
     public String toString() {

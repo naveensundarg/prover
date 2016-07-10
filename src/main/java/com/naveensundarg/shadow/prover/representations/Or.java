@@ -86,6 +86,11 @@ public class Or extends Formula {
     }
 
     @Override
+    public Formula shadow(int level) {
+        return new Or(Arrays.stream(arguments).map(f->shadow(level)).collect(Collectors.toList()));
+    }
+
+    @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new Or(Arrays.stream(arguments).map(x->x.applyOperation(operator)).collect(Collectors.toList()));
     }

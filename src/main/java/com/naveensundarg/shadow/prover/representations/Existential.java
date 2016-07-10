@@ -53,6 +53,20 @@ public class Existential extends Formula implements Quantifier{
     }
 
     @Override
+    public Formula shadow(int level) {
+        if (level == 0) {
+
+            new Atom("#"+this.toString()+"#");
+
+        } else if (level == 1) {
+
+            return new Existential(vars, argument.shadow(level));
+        }
+
+        throw new AssertionError("Invalid shadow level: " + level);
+    }
+
+    @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new Existential(vars, argument.applyOperation(operator));
     }

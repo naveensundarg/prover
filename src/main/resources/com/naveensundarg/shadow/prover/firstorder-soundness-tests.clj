@@ -51,13 +51,6 @@
 "goal" (if (exists (?x) (P ?x)) (forall (?y) (P ?y)) )
 "end"
 
-"begin" "Suppes Theorem"
-"assumption" (forall (?x) (= ?x ?x))
-"assumption" (forall (?y) (exists (?x) (or (In ?x ?y) (= ?y EmptySet))))
-"assumption" (forall (?z) (exists (?x) (forall (?y) (iff (In ?y ?x) (and (In ?y ?z) (not (= ?y ?y)))))))
-"goal" (forall (?x) (not (In ?x U)))
-"end"
-
 "begin" "occurs"
 "goal" (if (forall (?x) (exists (?y) (Loves ?x ?y))) (exists (?y) (forall (?x) (Loves ?x ?y))))
 "end"

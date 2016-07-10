@@ -58,6 +58,18 @@ public class Predicate extends Formula {
     }
 
     @Override
+    public Formula shadow(int level) {
+        if(level == 1){
+            return this;
+        }
+        else if (level == 0){
+          return new Atom("#"+this.toString()+"#");
+        }
+
+        throw new AssertionError("Not a valid level for shadowing: "+level);
+    }
+
+    @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return operator.apply(this);
     }
@@ -92,6 +104,8 @@ public class Predicate extends Formula {
         result = 31 * result + Arrays.toString(arguments).hashCode();
         return result;
     }
+
+
 
     public Predicate replace(Value value1, Value value2){
         Value[] argumentTheta = new Value[arguments.length];

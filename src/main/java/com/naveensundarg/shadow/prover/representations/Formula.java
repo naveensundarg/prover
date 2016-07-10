@@ -11,10 +11,12 @@ import java.util.function.UnaryOperator;
 public abstract class Formula {
 
     public abstract Set<Formula> subFormulae();
+
     public abstract Set<Variable> variablesPresent();
 
     public abstract Formula apply(Map<Variable, Value> substitution);
 
+    public abstract Formula shadow(int level);
 
     public abstract Formula applyOperation(UnaryOperator<Formula> operator);
 }

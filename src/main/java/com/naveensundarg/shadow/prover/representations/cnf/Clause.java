@@ -1,13 +1,18 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
+import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.representations.Atom;
 import com.naveensundarg.shadow.prover.representations.Predicate;
 import com.naveensundarg.shadow.prover.representations.Value;
 import com.naveensundarg.shadow.prover.representations.Variable;
+import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.naveensundarg.shadow.prover.utils.Sets.binaryProduct;
+import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -22,7 +27,7 @@ public class Clause {
 
     public static Clause fromClauses(List<Clause> clauses){
 
-        return new Clause(clauses.stream().map(Clause::getLiterals).reduce(Sets.newSet(), Sets::union));
+        return new Clause(clauses.stream().map(Clause::getLiterals).reduce(newSet(), Sets::union));
     }
 
     public Clause(Set<Literal> literals){
@@ -55,6 +60,8 @@ public class Clause {
         return new Clause(literals.stream().map(literal -> literal.replace(value1, value2)).collect(Collectors.toSet()));
     }
 
+
+
     public Clause apply(Map<Variable, Value> substitution){
 
         return new Clause(literals.stream().map(l->l.apply(substitution)).collect(Collectors.toSet()));
@@ -65,4 +72,40 @@ public class Clause {
     }
 
 
+    public Clause refactor(){
+
+        Set<Literal> tempLiterals = newSet();
+        tempLiterals.addAll(literals);
+        boolean changed = true;
+        while(changed){
+
+            Set<List<Literal>> literalPairs = binaryProduct(tempLiterals);
+            changed = false;
+            for(List<Literal> literalPair: literalPairs){
+
+                Literal first = literalPair.get(0);
+                Literal second = literalPair.get(1);
+
+                if(!first.equals(second)){
+
+                   Map<Variable, Value> theta = first.unify(second);
+
+                    if(theta!=null){
+
+                       // tempLiterals.remove(first);
+                      //  tempLiterals.remove(second);
+                     //   tempLiterals.add(first.apply(theta));
+
+                        tempLiterals = tempLiterals.stream().map(x->x.apply(theta)).collect(Collectors.toSet());
+                        changed = true;
+                    }
+                }
+
+
+
+            }
+
+        }
+        return new Clause(tempLiterals);
+    }
 }

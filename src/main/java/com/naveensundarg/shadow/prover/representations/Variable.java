@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public class Variable extends Value{
+public class Variable extends Value {
 
     private final Value[] arguments;
     private final Set<Variable> variables;

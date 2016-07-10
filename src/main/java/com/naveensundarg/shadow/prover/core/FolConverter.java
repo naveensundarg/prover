@@ -1,7 +1,6 @@
 package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.representations.*;
-import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.utils.Logic;
 
 import java.util.Arrays;
@@ -58,9 +57,11 @@ public class FolConverter {
         if(formula instanceof BiConditional){
             BiConditional biConditional = (BiConditional) formula;
 
+            Formula left = biConditional.getLeft();
+            Formula right = biConditional.getRight();
 
-            return new And(new Or(Step1_EliminateImplicationsInt(Logic.negated(biConditional.getLeft())), Step1_EliminateImplicationsInt( biConditional.getRight())),
-                    new Or(Step1_EliminateImplicationsInt(Logic.negated(biConditional.getRight())), Step1_EliminateImplicationsInt(biConditional.getLeft())));
+            return Step1_EliminateImplicationsInt(new And(Step1_EliminateImplicationsInt(new Implication(left,right)),
+                           Step1_EliminateImplicationsInt(new Implication(right, left))));
         }
         else{
             throw new AssertionError("Unknown formula type");

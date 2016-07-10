@@ -1,10 +1,13 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
+import com.naveensundarg.shadow.prover.core.proof.Unifier;
+import com.naveensundarg.shadow.prover.representations.Formula;
 import com.naveensundarg.shadow.prover.representations.Predicate;
 import com.naveensundarg.shadow.prover.representations.Value;
 import com.naveensundarg.shadow.prover.representations.Variable;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -58,5 +61,22 @@ public class Literal {
     @Override
     public String toString() {
         return  isNegated? "\u00AC"+ predicate +"": predicate +"";
+    }
+
+
+    public Map<Variable, Value> unify(Literal other){
+
+        if(!this.isNegated && !other.isNegated){
+
+            Map<Variable, Value> theta = Unifier.unify(this.predicate, other.predicate);
+
+            return theta;
+
+
+        }
+
+        return null;
+
+
     }
 }

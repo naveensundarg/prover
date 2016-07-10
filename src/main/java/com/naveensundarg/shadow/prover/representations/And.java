@@ -83,6 +83,11 @@ public class And extends Formula {
     }
 
     @Override
+    public Formula shadow(int level) {
+        return new And(Arrays.stream(arguments).map(f->shadow(level)).collect(Collectors.toList()));
+    }
+
+    @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new And(Arrays.stream(arguments).map(x->x.applyOperation(operator)).collect(Collectors.toList()));
 

@@ -74,6 +74,10 @@ public class Implication extends Formula{
     }
 
     @Override
+    public Formula shadow(int level) {
+        return new Implication(antecedent.shadow(level), consequent.shadow(level));
+    }
+    @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new Implication(antecedent.applyOperation(operator), consequent.applyOperation(operator));
     }

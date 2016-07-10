@@ -1,10 +1,17 @@
 package com.naveensundarg.shadow.prover.utils;
 
-import com.naveensundarg.shadow.prover.representations.Formula;
-import com.naveensundarg.shadow.prover.representations.Not;
-import com.naveensundarg.shadow.prover.representations.Value;
+import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.core.SymbolGenerator;
+import com.naveensundarg.shadow.prover.representations.*;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
+
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
+import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -21,6 +28,23 @@ public class Logic {
             return new Not(f);
         }
     }
+
+
+    public static Clause renameVars(Clause clause, Problem problem){
+
+        Set<Variable> vars = clause.getLiterals().stream().map(Literal::getPredicate).map(Predicate::variablesPresent).reduce(newSet(), Sets::union);
+
+        Map<Variable, Value> theta = newMap();
+
+        vars.stream().forEach(variable -> theta.put(variable, SymbolGenerator.newVariable(problem)));
+
+
+        return new Clause(clause.getLiterals().stream().map(literal ->
+                new Literal((Predicate)literal.getPredicate().apply(theta), literal.isNegated())).
+                collect(Collectors.toSet()));
+
+    }
+
 
 
 

@@ -10,7 +10,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public class Universal extends Formula implements Quantifier{
+public class Universal extends Formula implements Quantifier {
 
     private final Formula argument;
     private final Variable[] vars;
@@ -18,9 +18,9 @@ public class Universal extends Formula implements Quantifier{
     private final Set<Variable> variables;
 
 
-    public Universal(Variable[] vars, Formula argument){
+    public Universal(Variable[] vars, Formula argument) {
 
-        if(!(vars.length>0)){
+        if (!(vars.length > 0)) {
             throw new AssertionError("Existential should have at least one variable");
         }
 
@@ -53,6 +53,21 @@ public class Universal extends Formula implements Quantifier{
     }
 
     @Override
+    public Formula shadow(int level) {
+        if (level == 0) {
+
+            new Atom("#"+this.toString()+"#");
+
+        } else if (level == 1) {
+
+            return new Universal(vars, argument.shadow(level));
+        }
+
+        throw new AssertionError("Invalid shadow level: " + level);
+    }
+
+
+    @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new Universal(vars, argument.applyOperation(operator));
     }
@@ -63,8 +78,8 @@ public class Universal extends Formula implements Quantifier{
 
     @Override
     public String toString() {
-        return "(\u2200 " + Arrays.toString(vars) +" "
-                 + argument.toString() +")";
+        return "(\u2200 " + Arrays.toString(vars) + " "
+                + argument.toString() + ")";
     }
 
     @Override

@@ -74,6 +74,11 @@ public class BiConditional extends Formula {
     }
 
     @Override
+    public Formula shadow(int level) {
+        return new BiConditional(left.shadow(level), right.shadow(level));
+    }
+
+    @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new BiConditional(left.applyOperation(operator), right.applyOperation(operator));
     }

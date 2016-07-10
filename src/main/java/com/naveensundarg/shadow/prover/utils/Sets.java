@@ -80,6 +80,15 @@ public class Sets {
         return newSet;
     }
 
+    public static <T> Set<List<T>> binaryProduct(Set<T> set){
+
+        List<Set<T>> sets = newList();
+
+        sets.add(set);
+        sets.add(set);
+        return cartesianProduct(sets);
+    }
+
     public static <T> Set<List<T>> cartesianProduct(List<Set<T>> sets){
 
 

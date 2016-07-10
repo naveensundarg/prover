@@ -1,5 +1,8 @@
 package com.naveensundarg.shadow.prover.core;
 
+import com.naveensundarg.shadow.prover.core.FolConverter;
+import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.core.SymbolGenerator;
 import com.naveensundarg.shadow.prover.representations.*;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;

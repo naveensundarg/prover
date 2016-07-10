@@ -21,9 +21,9 @@ import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 /**
  * Created by naveensundarg on 4/15/16.
  */
- public enum FirstOrderResolutionImplementation implements RuleImplementation {
+public enum FirstOrderResolutionImplementation implements RuleImplementation {
 
-     INSTANCE;
+    INSTANCE;
 
 
     private Map<Variable, Value> matches(Literal literal1, Literal literal2) {
@@ -42,6 +42,7 @@ import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
         }
 
     }
+
     @Override
     public Set<Clause> apply(Clause clause1, Clause clause2) {
         Set<Literal> literals1 = clause1.getLiterals();
@@ -68,7 +69,8 @@ import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
             Set<Literal> literals = Sets.union(l1, l2);
             return (new Clause(literals)).apply(match.second());
 
-        }).collect(Collectors.toSet());    }
+        }).collect(Collectors.toSet());
+    }
 
 
 }
