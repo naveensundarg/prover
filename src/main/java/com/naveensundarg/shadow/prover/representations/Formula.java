@@ -19,4 +19,6 @@ public abstract class Formula {
     public abstract Formula shadow(int level);
 
     public abstract Formula applyOperation(UnaryOperator<Formula> operator);
+
+    public abstract int getLevel();
 }

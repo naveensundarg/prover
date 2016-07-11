@@ -23,6 +23,8 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
  */
 public class FirstOrderResolutionProver implements Prover {
 
+    private Prover propositionalProver;
+
     private enum Rule {
 
         RESOLUTION(FirstOrderResolutionImplementation.INSTANCE),
@@ -47,6 +49,7 @@ public class FirstOrderResolutionProver implements Prover {
 
         used = newMap();
         this.rules = rules;
+        this.propositionalProver = new PropositionalResolutionProver();
     }
 
     public FirstOrderResolutionProver() {
@@ -54,12 +57,20 @@ public class FirstOrderResolutionProver implements Prover {
         used = newMap();
         this.rules = Sets.with(Rule.RESOLUTION);
         this.rules.add(Rule.PARAMODULATION);
+        this.propositionalProver = new PropositionalResolutionProver();
 
     }
 
 
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
+
+
+        /*Optional<Justification> propJustOpt = propositionalProver.prove(assumptions.stream().map(f -> f.shadow(0)).collect(Collectors.toSet()), formula.shadow(0));
+
+        if (propJustOpt.isPresent()) {
+            return propJustOpt;
+        }*/
 
         Problem problem = new Problem();
         used.put(problem, newSet());

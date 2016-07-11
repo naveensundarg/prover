@@ -66,12 +66,17 @@ public class Predicate extends Formula {
           return new Atom("#"+this.toString()+"#");
         }
 
-        throw new AssertionError("Not a valid level for shadowing: "+level);
+        throw new AssertionError("Not a valid getLevel for shadowing: "+level);
     }
 
     @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return operator.apply(this);
+    }
+
+    @Override
+    public int getLevel() {
+        return 1;
     }
 
     public Value[] getArguments() {

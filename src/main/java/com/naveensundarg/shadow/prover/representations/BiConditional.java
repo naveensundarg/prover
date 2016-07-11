@@ -82,4 +82,9 @@ public class BiConditional extends Formula {
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new BiConditional(left.applyOperation(operator), right.applyOperation(operator));
     }
+
+    @Override
+    public int getLevel() {
+        return Math.max(left.getLevel(), right.getLevel());
+    }
 }

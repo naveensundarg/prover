@@ -8,7 +8,15 @@ import java.util.Set;
 /**
  * Created by naveensundarg on 7/7/16.
  */
-public class Agent extends Value {
+public class Agent extends Constant {
+
+
+    private String name;
+
+    public Agent(String name) {
+        super(name);
+
+    }
 
 
     @Override

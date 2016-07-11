@@ -81,4 +81,9 @@ public class Implication extends Formula{
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new Implication(antecedent.applyOperation(operator), consequent.applyOperation(operator));
     }
+
+    @Override
+    public int getLevel() {
+        return Math.max(antecedent.getLevel(),consequent.getLevel());
+    }
 }

@@ -102,8 +102,6 @@
 "goal" (forall (?x) (not (In ?x EmptySet)))
 "end"
 
-
-
 "begin" "distribution"
 "goal" (if (and (forall (?x) (P ?x)) (exists (?y) (not (Q ?y)))) (forall (?x) (and (P ?x) (exists (?y) (not (Q ?y))))) )
 "end"

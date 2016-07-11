@@ -3,10 +3,7 @@ package com.naveensundarg.shadow.prover.utils;
 import com.naveensundarg.shadow.prover.representations.Formula;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 import static com.naveensundarg.shadow.prover.utils.Reader.extractForms;
 import static com.naveensundarg.shadow.prover.utils.Reader.read;
@@ -79,6 +76,13 @@ public class Common {
         return cases;
 
 
+    }
+
+    public static int maxLevel(Formula[] formulas){
+
+        OptionalInt optionalInt = Arrays.stream(formulas).mapToInt(Formula::getLevel).max();
+
+        return optionalInt.orElseGet(()->0);
     }
 
 

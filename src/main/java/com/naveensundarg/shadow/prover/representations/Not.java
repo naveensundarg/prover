@@ -69,4 +69,9 @@ public class Not extends Formula {
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new Not(argument.applyOperation(operator));
     }
+
+    @Override
+    public int getLevel() {
+        return argument.getLevel();
+    }
 }

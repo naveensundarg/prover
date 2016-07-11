@@ -75,4 +75,9 @@ public class Atom extends Predicate{
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return operator.apply(this);
     }
+
+    @Override
+    public int getLevel() {
+        return 0;
+    }
 }

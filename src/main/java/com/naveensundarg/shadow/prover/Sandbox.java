@@ -15,9 +15,15 @@ import static com.naveensundarg.shadow.prover.utils.Reader.readFormula;
     public static void main(String[] args) throws Exception{
         Formula f;
 
+        f = readFormula(read("(Knows! a 0  P)"));
+        System.out.println(f);
+
+/*
         f = readFormula(read("(if (forall (?x) (and (P ?x) (exists (?y) (not (Q ?y))))) (and (forall (?x) (P ?x)) (exists (?y) (not (Q ?y)))))"));
         System.out.println(Converter.convertToCNF(f,new Problem()).renameVars(new Problem()));
+*/
 
+/*
         System.out.println("--------");
         f = readFormula(read("(if (and (forall (?x) (P ?x)) (exists (?y) (not (Q ?y)))) (forall (?x) (and (P ?x) (exists (?y) (not (Q ?y))))) )"));
 
@@ -30,6 +36,7 @@ import static com.naveensundarg.shadow.prover.utils.Reader.readFormula;
 
         System.out.println("--------");
 
+*/
         // System.out.println(Unifier.subUnify(v1, v2));
 
     }

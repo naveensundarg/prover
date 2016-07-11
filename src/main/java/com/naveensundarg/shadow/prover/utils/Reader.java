@@ -154,8 +154,17 @@ public class Reader {
 
                 }
 
-                //
+                //Believes
+                if(name.equals("Believes!")){
 
+                    return constructBelief(list);
+                }
+
+                //Knows
+                if(name.equals("Knows!")){
+
+                    return constructKnowledge(list);
+                }
 
                 return constructPredicate(list);
 
@@ -166,6 +175,42 @@ public class Reader {
 
         return null;
 
+    }
+
+    // (K! agent time P)
+    private static Formula constructKnowledge(List list) throws ParsingException{
+        if(list.isEmpty()){
+            throw new ParsingException("Knowledge expresion cannot be empty!");
+        }  else if(list.size() != 4){
+            throw new ParsingException("Knowledge expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            String operator = (String) list.get(0);
+            String agent = (String) list.get(1);
+            String time = (String) list.get(2);
+            Object formula =  list.get(3);
+
+            return new Knowledge(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+        }
+    }
+
+    // (B! agent time strength P)
+    private static Formula constructBelief(List list) throws ParsingException{
+        if(list.isEmpty()){
+            throw new ParsingException("Belief expresion cannot be empty!");
+        }  else if(list.size() != 4){
+            throw new ParsingException("Belief expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            String operator = (String) list.get(0);
+            String agent = (String) list.get(1);
+            String time = (String) list.get(2);
+            Object formula =  list.get(3);
+
+            return new Belief(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+        }
     }
 
     private static Formula constructPredicate(List list) throws ParsingException {

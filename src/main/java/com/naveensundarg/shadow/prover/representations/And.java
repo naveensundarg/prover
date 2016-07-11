@@ -18,13 +18,14 @@ public class And extends Formula {
     private final Formula[] arguments;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
-
+    private final int level;
     public And(Formula ... arguments){
         this.arguments = arguments;
         this.subFormulae = Arrays.stream(arguments).map(Formula::subFormulae).
                 reduce(Sets.newSet(), Sets::union);
 
         this.variables = Arrays.stream(arguments).map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
+        this.level = Common.maxLevel(arguments);
     }
 
     public And(List<Formula> arguments){
@@ -38,6 +39,8 @@ public class And extends Formula {
                 reduce(Sets.newSet(), Sets::union);
 
         this.variables = arguments.stream().map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
+        this.level = Common.maxLevel(this.arguments);
+
 
     }
     public Formula[] getArguments() {
@@ -84,12 +87,17 @@ public class And extends Formula {
 
     @Override
     public Formula shadow(int level) {
-        return new And(Arrays.stream(arguments).map(f->shadow(level)).collect(Collectors.toList()));
+        return new And(Arrays.stream(arguments).map(f->f.shadow(level)).collect(Collectors.toList()));
     }
 
     @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return new And(Arrays.stream(arguments).map(x->x.applyOperation(operator)).collect(Collectors.toList()));
 
+    }
+
+    @Override
+    public int getLevel() {
+        return level;
     }
 }
