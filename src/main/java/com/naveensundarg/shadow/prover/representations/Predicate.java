@@ -18,6 +18,8 @@ public class Predicate extends Formula {
     private final Set<Variable> variables;
 
     public Predicate(String name){
+
+
         this.name = name;
         this.arguments  = new Value[0];
         this.subFormulae = Sets.with(this);
@@ -25,10 +27,19 @@ public class Predicate extends Formula {
 
     }
     public Predicate(String name, Value[] arguments){
+
+
         this.name = name;
         this.arguments = arguments;
         this.subFormulae = Sets.with(this);
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+    }
+
+    private static void validateName(String name){
+        if(name.startsWith("$") || name.endsWith("$")){
+
+            throw new AssertionError("Invalid name: "+name);
+        }
     }
 
     public String getName() {

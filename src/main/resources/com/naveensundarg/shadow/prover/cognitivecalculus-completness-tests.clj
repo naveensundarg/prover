@@ -68,3 +68,22 @@
 "assumption" (Believes! a now P)
 "goal"(Believes! a now (Knows! b now Q))
 "end"
+
+"begin" "dt11"
+"assumption" (or (Knows! a now P) (Knows! b now P))
+"assumption" (if P (Knows! b now (and  (Knows! c t1 Q1) (Knows! c t2 Q2))))
+"goal" (and Q1 Q2)
+"end"
+
+"begin" "dt12 Lemma 6 from http://kryten.mm.rpi.edu/arkoudas.bringsjord.clima.crc.pdf"
+"assumption" (not (Knows! a now P))
+"assumption" (Knows! a now (if (not Q) P))
+"assumption" (if (not Q) (Knows! a now (not Q)))
+"goal" Q
+"end"
+
+"begin" "dt15"
+"assumption" (if P (Knows! jack now (not (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))))))
+"goal" (not P)
+"end"
+

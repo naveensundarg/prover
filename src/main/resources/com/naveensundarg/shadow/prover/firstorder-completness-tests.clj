@@ -105,3 +105,11 @@
 "begin" "distribution"
 "goal" (if (and (forall (?x) (P ?x)) (exists (?y) (not (Q ?y)))) (forall (?x) (and (P ?x) (exists (?y) (not (Q ?y))))) )
 "end"
+
+
+"begin" "dt16: fol is transparent with Knows!"
+"assumption" (not (Knows a now (= morning_star evening_star)))
+"assumption" (= morning_star evening_star)
+"assumption" (Knows a now (= morning_star morning_star))
+"goal" (and P (not P))
+"end"

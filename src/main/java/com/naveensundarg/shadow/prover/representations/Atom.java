@@ -80,4 +80,13 @@ public class Atom extends Predicate{
     public int getLevel() {
         return 0;
     }
+
+    private static int generatedCount = 0;
+    public static Atom generate(){
+
+        generatedCount++;
+        return new Atom("$Gen_"+generatedCount+"$");
+
+
+    }
 }

@@ -226,6 +226,10 @@ public class Reader {
 
                 String name = (String) nameObject;
 
+                if(name.startsWith("$")){
+                    throw new AssertionError("Atom and predicate names cannot start with a $: "+ name);
+                }
+
                 Value[] values = new Value[list.size()-1];
 
                 for(int i = 1; i< list.size() ; i++){

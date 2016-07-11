@@ -34,6 +34,14 @@ public class Knowledge extends Formula {
         }
     }
 
+    public Value getAgent() {
+        return agent;
+    }
+
+    public Value getTime() {
+        return time;
+    }
+
     public Formula getFormula(){
         return formula;
     }

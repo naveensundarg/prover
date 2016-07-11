@@ -4,6 +4,8 @@ import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.*;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Common;
+import com.naveensundarg.shadow.prover.utils.Logic;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,13 +43,21 @@ public class CognitiveCalculusProver implements Prover {
 
             Optional<Justification> caseProofOpt  =  tryOR(base, formula);
 
-            
+
             if(caseProofOpt.isPresent()){
                 return caseProofOpt;
+            }
+
+            Optional<Justification> reductioProofOpt  =  tryReductio(base, formula);
+
+
+            if(reductioProofOpt.isPresent()){
+                return reductioProofOpt;
             }
             if (sizeAfterExpansion <= sizeBeforeExpansion) {
                 return Optional.empty();
             }
+
 
             shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
         }
@@ -96,10 +106,31 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
+    private Optional<Justification> tryReductio(Set<Formula> base, Formula formula){
+
+        Formula negated = Logic.negated(formula);
+        if(base.contains(negated) || formula.toString().startsWith("$")) {
+            return Optional.empty();
+        }
+
+        Atom atom = Atom.generate();
+
+
+
+        Set<Formula> augmented = CollectionUtils.setFrom(base);
+
+        augmented.add(negated);
+        CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+
+        Optional<Justification> reductioJustOpt = cognitiveCalculusProver.prove(augmented, atom);
+
+        return reductioJustOpt;
+    }
 
     private Set<Formula> expand(Set<Formula> base) {
         expandR4(base);
         expandR11a(base);
+        expandDR6(base);
         expandModalConjunctions(base);
         expandModalImplications(base);
         return base;
@@ -133,6 +164,20 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
+    private void expandDR6(Set<Formula> base) {
+
+        Set<Knowledge> implicationKnowledge =
+                level2FormulaeOfTypeWithConstraint(base, Knowledge.class, b -> ((Knowledge) b).getFormula() instanceof Implication);
+
+
+        Set<Formula> validConsequentKnowledge = implicationKnowledge.stream().
+                filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getAntecedent()))).
+                map(b -> new Knowledge(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getConsequent())).collect(Collectors.toSet());
+
+        base.addAll(validConsequentKnowledge);
+
+    }
+
     private void expandModalConjunctions(Set<Formula> base) {
 
         Set<And> level2Ands = level2FormulaeOfType(base, And.class);
@@ -156,7 +201,10 @@ public class CognitiveCalculusProver implements Prover {
             Formula antecedent = implication.getAntecedent();
 
             CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
-            Optional<Justification> antecedentJustificationOpt = cognitiveCalculusProver.prove(base, antecedent);
+
+            Set<Formula> reducedBase = CollectionUtils.setFrom(base);
+            reducedBase.remove(implication);
+            Optional<Justification> antecedentJustificationOpt = cognitiveCalculusProver.prove(reducedBase, antecedent);
             if (antecedentJustificationOpt.isPresent()) {
                 base.add(implication.getConsequent());
             }
