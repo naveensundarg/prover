@@ -1,14 +1,11 @@
 package com.naveensundarg.shadow.prover.utils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.add;
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.listOf;
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newList;
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newEmptyList;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -82,7 +79,7 @@ public class Sets {
 
     public static <T> Set<List<T>> binaryProduct(Set<T> set){
 
-        List<Set<T>> sets = newList();
+        List<Set<T>> sets = newEmptyList();
 
         sets.add(set);
         sets.add(set);
@@ -130,7 +127,7 @@ public class Sets {
         set2.add("y");
         set2.add("z");
 
-        List<Set<String>> sets = newList();
+        List<Set<String>> sets = newEmptyList();
 
         sets.add(set2);
       sets.add(set1);

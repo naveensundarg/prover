@@ -4,9 +4,10 @@ import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.*;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.Common;
+import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Logic;
 
+import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -133,6 +134,7 @@ public class CognitiveCalculusProver implements Prover {
         expandDR6(base);
         expandModalConjunctions(base);
         expandModalImplications(base);
+        expandDR1(base);
         return base;
     }
 
@@ -164,6 +166,24 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
+    private void expandDR1(Set<Formula> base){
+        Set<Common> commons = level2FormulaeOfType(base, Common.class);
+        Set<Value> agents = Logic.allAgents(base);
+        List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, 2);
+
+        for(Common c: commons){
+            for(List<Value> agentPair :agent1Agent2){
+                Formula formula = c.getFormula();
+                Value time = c.getTime();
+                Knowledge inner = new Knowledge(agentPair.get(1), time, formula);
+                Knowledge outer = new Knowledge(agentPair.get(0), time, inner);
+
+                base.add(outer);
+            }
+        }
+
+
+    }
     private void expandDR6(Set<Formula> base) {
 
         Set<Knowledge> implicationKnowledge =
@@ -199,15 +219,26 @@ public class CognitiveCalculusProver implements Prover {
         for (Implication implication : level2Ifs) {
 
             Formula antecedent = implication.getAntecedent();
+            Formula consequent = implication.getConsequent();
 
             CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
 
             Set<Formula> reducedBase = CollectionUtils.setFrom(base);
+
             reducedBase.remove(implication);
+
             Optional<Justification> antecedentJustificationOpt = cognitiveCalculusProver.prove(reducedBase, antecedent);
             if (antecedentJustificationOpt.isPresent()) {
-                base.add(implication.getConsequent());
+                base.add(consequent);
             }
+
+           /* Set<Formula> newReducedBase = CollectionUtils.setFrom(base);
+            newReducedBase.remove(implication);
+            Optional<Justification> negatedConsequentJustificationOpt = cognitiveCalculusProver.prove(newReducedBase, Logic.negated(consequent));
+            if (negatedConsequentJustificationOpt.isPresent()) {
+                base.add(Logic.negated(antecedent));
+            }*/
+
 
         }
 

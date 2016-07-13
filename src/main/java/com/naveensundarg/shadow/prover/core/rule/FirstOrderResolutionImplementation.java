@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newList;
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newEmptyList;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
 /**
@@ -48,7 +48,7 @@ public enum FirstOrderResolutionImplementation implements RuleImplementation {
         Set<Literal> literals1 = clause1.getLiterals();
         Set<Literal> literals2 = clause2.getLiterals();
 
-        List<Set<Literal>> pairs = newList();
+        List<Set<Literal>> pairs = newEmptyList();
         pairs.add(literals2);
         pairs.add(literals1);
 

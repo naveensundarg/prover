@@ -25,7 +25,9 @@ public class Belief extends Formula{
         this.agent = agent;
         this.time = time;
         this.formula = formula;
-        this.subFormulae = formula.subFormulae();
+        this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
+        this.subFormulae.add(this);
+
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
@@ -60,7 +62,7 @@ public class Belief extends Formula{
 
     @Override
     public Set<Formula> subFormulae() {
-        return null;
+        return subFormulae;
     }
 
     @Override
@@ -106,9 +108,7 @@ public class Belief extends Formula{
 
         if (!agent.equals(belief.agent)) return false;
         if (!time.equals(belief.time)) return false;
-        if (!formula.equals(belief.formula)) return false;
-        if (subFormulae != null ? !subFormulae.equals(belief.subFormulae) : belief.subFormulae != null) return false;
-        return variables != null ? variables.equals(belief.variables) : belief.variables == null;
+        return formula.equals(belief.formula);
 
     }
 

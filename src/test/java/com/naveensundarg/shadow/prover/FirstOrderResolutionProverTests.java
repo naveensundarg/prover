@@ -3,7 +3,7 @@ package com.naveensundarg.shadow.prover;
 import com.naveensundarg.shadow.prover.core.*;
 import com.naveensundarg.shadow.prover.representations.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.utils.Common;
+import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import junit.framework.Assert;
@@ -30,8 +30,8 @@ public class FirstOrderResolutionProverTests {
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-       List<Pair<Set<Formula>, Formula>> tests = Common.readCases(Sandbox.class.getResourceAsStream("firstorder-completness-tests.clj"));
-       // List<Pair<Set<Formula>, Formula>> tests = Common.readCases(Sandbox.class.getResourceAsStream("temp.clj"));
+       List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("firstorder-completness-tests.clj"));
+       // List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("temp.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -60,7 +60,7 @@ public class FirstOrderResolutionProverTests {
     @DataProvider(name="soundnessTestsProvider")
     public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
 
-        List<Pair<Set<Formula>, Formula>> tests = Common.readCases(Sandbox.class.getResourceAsStream("firstorder-soundness-tests.clj"));
+        List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("firstorder-soundness-tests.clj"));
 
         Object[][] cases =  new Object[tests.size()][2];
 

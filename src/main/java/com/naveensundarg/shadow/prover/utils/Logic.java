@@ -8,6 +8,7 @@ import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
@@ -18,19 +19,19 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
  */
 public class Logic {
 
-    public static Formula negated(Formula f){
+    public static Formula negated(Formula f) {
 
-        if(f instanceof Not){
+        if (f instanceof Not) {
 
             return ((Not) f).getArgument();
-        }
-        else {
+        } else {
             return new Not(f);
         }
     }
 
+    private static final  Value I = new Constant("I");
 
-    public static Clause renameVars(Clause clause, Problem problem){
+    public static Clause renameVars(Clause clause, Problem problem) {
 
         Set<Variable> vars = clause.getLiterals().stream().map(Literal::getPredicate).map(Predicate::variablesPresent).reduce(newSet(), Sets::union);
 
@@ -40,12 +41,36 @@ public class Logic {
 
 
         return new Clause(clause.getLiterals().stream().map(literal ->
-                new Literal((Predicate)literal.getPredicate().apply(theta), literal.isNegated())).
+                new Literal((Predicate) literal.getPredicate().apply(theta), literal.isNegated())).
                 collect(Collectors.toSet()));
 
     }
 
+    private static Set<Value> agentsInFormula(Formula formula) {
 
+        Set<Value> agents = CollectionUtils.newEmptySet();
+        if (formula instanceof Belief) {
+            agents.add(((Belief) formula).getAgent());
+        }
+        if (formula instanceof Knowledge) {
+            agents.add(((Knowledge) formula).getAgent());
+        }
+
+        Set<Formula> forms =  formula.subFormulae().stream().filter(x->!x.equals(formula)).collect(Collectors.toSet());;
+
+        forms.forEach(x->agents.addAll(agentsInFormula(x)));
+
+
+        return agents;
+    }
+
+    public static Set<Value> allAgents(Set<Formula> base) {
+
+        Set<Value> agents = base.stream().map(Logic::agentsInFormula).reduce(CollectionUtils.newEmptySet(), CollectionUtils::union);
+        agents.add(I);
+
+        return agents;
+    }
 
 
 }

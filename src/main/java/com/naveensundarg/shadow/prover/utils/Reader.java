@@ -166,6 +166,11 @@ public class Reader {
                     return constructKnowledge(list);
                 }
 
+                if(name.equals("Common!")){
+
+                    return constructCommon(list);
+                }
+
                 return constructPredicate(list);
 
 
@@ -212,6 +217,24 @@ public class Reader {
             return new Belief(readLogicValue(agent), readLogicValue(time),readFormula(formula));
         }
     }
+
+    // (CommonUtils!  time  P)
+    private static Formula constructCommon(List list) throws ParsingException{
+        if(list.isEmpty()){
+            throw new ParsingException("CommonUtils expresion cannot be empty!");
+        }  else if(list.size() != 3){
+            throw new ParsingException("CommonUtils expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            String operator = (String) list.get(0);
+            String time = (String) list.get(1);
+            Object formula =  list.get(2);
+
+            return new Common(readLogicValue(time),readFormula(formula));
+        }
+    }
+
 
     private static Formula constructPredicate(List list) throws ParsingException {
 

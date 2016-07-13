@@ -11,7 +11,7 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newList;
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newEmptyList;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
@@ -250,7 +250,7 @@ public class PropositionalResolutionProver implements Prover {
 
     public List<List<Clause>> getMatchingClauses(Set<Clause> clauses){
 
-        List<Set<Clause>> sets = newList();
+        List<Set<Clause>> sets = newEmptyList();
         sets.add(clauses);
         sets.add(clauses);
 
@@ -275,7 +275,7 @@ public class PropositionalResolutionProver implements Prover {
         Set<Literal> literals1 = clause1.getLiterals();
         Set<Literal> literals2 = clause2.getLiterals();
 
-        List<Set<Literal>> pairs = newList();
+        List<Set<Literal>> pairs = newEmptyList();
         pairs.add(literals2);
         pairs.add(literals1);
 

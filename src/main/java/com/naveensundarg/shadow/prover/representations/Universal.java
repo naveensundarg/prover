@@ -28,7 +28,7 @@ public class Universal extends Formula implements Quantifier {
         this.argument = argument;
         this.subFormulae = Sets.with(argument);
         this.variables = argument.variablesPresent();
-
+        this.subFormulae.add(this);
         Arrays.stream(vars).forEach(this.variables::add);
     }
 
@@ -94,18 +94,16 @@ public class Universal extends Formula implements Quantifier {
 
         Universal universal = (Universal) o;
 
-        if (argument != null ? !argument.equals(universal.argument) : universal.argument != null) return false;
+        if (!argument.equals(universal.argument)) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(vars, universal.vars)) return false;
-        return subFormulae != null ? subFormulae.equals(universal.subFormulae) : universal.subFormulae == null;
+        return Arrays.equals(vars, universal.vars);
 
     }
 
     @Override
     public int hashCode() {
-        int result = argument != null ? argument.hashCode() : 0;
+        int result = argument.hashCode();
         result = 31 * result + Arrays.hashCode(vars);
-        result = 31 * result + (subFormulae != null ? subFormulae.hashCode() : 0);
         return result;
     }
 }

@@ -7,27 +7,24 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 /**
- * Created by naveensundarg on 7/9/16.
+ * Created by naveensundarg on 5/4/16.
  */
-public class Knowledge extends Formula {
-    Value agent;
+public class Common extends Formula{
+
     Value time;
     Formula formula;
     Set<Formula> subFormulae;
     Set<Variable> variables;
 
-    public Knowledge(Value agent, Value time, Formula formula) {
 
+    public Common(Value time, Formula formula) {
 
-        this.agent = agent;
         this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        subFormulae.add(this);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        if (agent instanceof Variable) {
-            variables.add((Variable) agent);
-        }
+
+        this.subFormulae.add(this);
 
         if (time instanceof Variable) {
             variables.add((Variable) time);
@@ -35,16 +32,17 @@ public class Knowledge extends Formula {
         }
     }
 
-    public Value getAgent() {
-        return agent;
+    public Formula getFormula(){
+        return formula;
     }
 
     public Value getTime() {
         return time;
     }
 
-    public Formula getFormula(){
-        return formula;
+
+    public Set<Variable> getVariables() {
+        return variables;
     }
 
     @Override
@@ -65,7 +63,6 @@ public class Knowledge extends Formula {
     @Override
     public Formula shadow(int level) {
         return new Atom("#"+toString()+"#");
-
     }
 
     @Override
@@ -81,8 +78,7 @@ public class Knowledge extends Formula {
 
     @Override
     public String toString() {
-        return "(Knows! "
-                + agent + " "
+        return "(Common! "
                 + time + " "+
                 formula + ")";
     }
@@ -92,18 +88,16 @@ public class Knowledge extends Formula {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Knowledge knowledge = (Knowledge) o;
+        Common common = (Common) o;
 
-        if (!agent.equals(knowledge.agent)) return false;
-        if (!time.equals(knowledge.time)) return false;
-        return formula.equals(knowledge.formula);
+        if (!time.equals(common.time)) return false;
+        return formula.equals(common.formula);
 
     }
 
     @Override
     public int hashCode() {
-        int result = agent.hashCode();
-        result = 31 * result + time.hashCode();
+        int result = time.hashCode();
         result = 31 * result + formula.hashCode();
         return result;
     }

@@ -27,6 +27,8 @@ public class Existential extends Formula implements Quantifier{
         this.vars = vars;
         this.argument = argument;
         this.subFormulae = Sets.with(argument);
+        this.subFormulae.add(this);
+
         this.variables = argument.variablesPresent();
 
         Arrays.stream(vars).forEach(this.variables::add);
@@ -91,20 +93,18 @@ public class Existential extends Formula implements Quantifier{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Existential existential = (Existential) o;
+        Existential that = (Existential) o;
 
-        if (argument != null ? !argument.equals(existential.argument) : existential.argument != null) return false;
+        if (!argument.equals(that.argument)) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        if (!Arrays.equals(vars, existential.vars)) return false;
-        return subFormulae != null ? subFormulae.equals(existential.subFormulae) : existential.subFormulae == null;
+        return Arrays.equals(vars, that.vars);
 
     }
 
     @Override
     public int hashCode() {
-        int result = argument != null ? argument.hashCode() : 0;
+        int result = argument.hashCode();
         result = 31 * result + Arrays.hashCode(vars);
-        result = 31 * result + (subFormulae != null ? subFormulae.hashCode() : 0);
         return result;
     }
 }

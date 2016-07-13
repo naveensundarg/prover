@@ -7,14 +7,25 @@ import java.util.*;
  */
 public class CollectionUtils {
 
-    public static <T> List<T> newList(){
+    public static <T> List<T> newEmptyList(){
         return new ArrayList<>();
     }
 
+    public static <T> Set<T> newEmptySet(){
+        return new HashSet<>();
+    }
+
     public static <T> List<T> listOf(T a){
-        List<T> list = newList();
+        List<T> list = newEmptyList();
         list.add(a);
         return list;
+    }
+
+    public static <T> List<T> addToList(List<T> list, T a){
+        List<T> newlist = newEmptyList();
+        newlist.addAll(list);
+        newlist.add(a);
+        return newlist;
     }
 
 
@@ -23,10 +34,19 @@ public class CollectionUtils {
     }
 
     public static <T> List<T> add(List<T> list, T a){
-        List<T> newList = newList();
+        List<T> newList = newEmptyList();
         newList.addAll(list);
         newList.add(a);
         return newList;
+    }
+
+    public static <T> Set<T> union(Set<T> x, Set<T> y){
+
+        Set<T> result = newEmptySet();
+
+        result.addAll(x);
+        result.addAll(y);
+        return result;
     }
 
     public static <T> Set<T> setFrom(Set<T> set){

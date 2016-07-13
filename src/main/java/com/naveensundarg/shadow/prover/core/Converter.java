@@ -1,8 +1,5 @@
 package com.naveensundarg.shadow.prover.core;
 
-import com.naveensundarg.shadow.prover.core.FolConverter;
-import com.naveensundarg.shadow.prover.core.Problem;
-import com.naveensundarg.shadow.prover.core.SymbolGenerator;
 import com.naveensundarg.shadow.prover.representations.*;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
@@ -16,10 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newList;
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newEmptyList;
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
@@ -31,7 +27,7 @@ public class Converter {
 
     public static CNFFormula convertToCNF(Formula formula, Problem problem) {
 
-        return convertToCNFInternal(FolConverter.preProcess(formula,problem), newList(), problem);
+        return convertToCNFInternal(FolConverter.preProcess(formula,problem), newEmptyList(), problem);
     }
 
 
@@ -345,7 +341,7 @@ public class Converter {
 
     public static Formula skolemize(Formula formula, Problem problem){
 
-        return skolemize(formula,  newList(), problem);
+        return skolemize(formula,  newEmptyList(), problem);
     }
 
 
@@ -399,7 +395,7 @@ public class Converter {
 
             Universal universal = (Universal) formula;
 
-            List<Variable> added = newList();
+            List<Variable> added = newEmptyList();
             added.addAll(variable);
             added.addAll(Arrays.stream(universal.vars()).collect(Collectors.toList()));
 

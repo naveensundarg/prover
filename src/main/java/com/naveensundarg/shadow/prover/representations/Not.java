@@ -1,5 +1,7 @@
 package com.naveensundarg.shadow.prover.representations;
 
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -12,10 +14,11 @@ public class Not extends Formula {
 
     private final Formula argument;
 
-    private final Set<Formula> subFormuale;
+    private final Set<Formula> subFormulae;
     public Not(Formula argument){
         this.argument = argument;
-        this.subFormuale = argument.subFormulae();
+        this.subFormulae = CollectionUtils.setFrom(argument.subFormulae());
+        this.subFormulae.add(this);
     }
 
 
@@ -48,7 +51,7 @@ public class Not extends Formula {
 
     @Override
     public Set<Formula> subFormulae() {
-        return subFormuale;
+        return subFormulae;
     }
 
     @Override

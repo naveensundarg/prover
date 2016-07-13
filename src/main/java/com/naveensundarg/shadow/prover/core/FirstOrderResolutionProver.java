@@ -13,7 +13,7 @@ import com.naveensundarg.shadow.prover.utils.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newList;
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newEmptyList;
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
@@ -153,7 +153,7 @@ public class FirstOrderResolutionProver implements Prover {
 
     public List<List<Clause>> getUsableClauses(Set<Clause> clauses, Problem problem, int size) {
 
-        List<Set<Clause>> sets = newList();
+        List<Set<Clause>> sets = newEmptyList();
         sets.add(clauses);
         sets.add(clauses);
 

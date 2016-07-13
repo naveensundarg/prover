@@ -1,6 +1,6 @@
 package com.naveensundarg.shadow.prover.representations;
 
-import com.naveensundarg.shadow.prover.utils.Common;
+import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class And extends Formula {
                 reduce(Sets.newSet(), Sets::union);
 
         this.variables = Arrays.stream(arguments).map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
-        this.level = Common.maxLevel(arguments);
+        this.level = CommonUtils.maxLevel(arguments);
     }
 
     public And(List<Formula> arguments){
@@ -38,8 +38,10 @@ public class And extends Formula {
         this.subFormulae = Arrays.stream(this.arguments).map(Formula::subFormulae).
                 reduce(Sets.newSet(), Sets::union);
 
+        this.subFormulae.add(this);
+
         this.variables = arguments.stream().map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
-        this.level = Common.maxLevel(this.arguments);
+        this.level = CommonUtils.maxLevel(this.arguments);
 
 
     }
@@ -49,7 +51,7 @@ public class And extends Formula {
 
     @Override
     public String toString() {
-        return "(and "  + Common.toString(arguments) + ")";
+        return "(and "  + CommonUtils.toString(arguments) + ")";
     }
 
     @Override

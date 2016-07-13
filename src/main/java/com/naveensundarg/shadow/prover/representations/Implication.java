@@ -22,6 +22,7 @@ public class Implication extends Formula{
         this.consequent = consequent;
 
         this.subFormulae = Sets.union(antecedent.subFormulae(), consequent.subFormulae());
+        this.subFormulae.add(this);
         this.variables  = Sets.union(antecedent.variablesPresent(), consequent.variablesPresent());
     }
 
