@@ -67,7 +67,11 @@ public class Logic {
     public static Set<Value> allAgents(Set<Formula> base) {
 
         Set<Value> agents = base.stream().map(Logic::agentsInFormula).reduce(CollectionUtils.newEmptySet(), CollectionUtils::union);
-        agents.add(I);
+
+        if(agents.isEmpty()) {
+
+            agents.add(I);
+        }
 
         return agents;
     }

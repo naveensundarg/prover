@@ -33,7 +33,7 @@ public class CognitiveCalculusProverTests {
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
        List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
-       // List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("temp.clj"));
+    //    List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("temp.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
