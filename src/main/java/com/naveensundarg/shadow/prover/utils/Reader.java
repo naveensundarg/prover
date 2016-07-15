@@ -170,6 +170,10 @@ public class Reader {
 
                     return constructCommon(list);
                 }
+                if(name.equals("Says!")){
+
+                    return constructSays(list);
+                }
 
                 return constructPredicate(list);
 
@@ -215,6 +219,24 @@ public class Reader {
             Object formula =  list.get(3);
 
             return new Belief(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+        }
+    }
+
+    // (Says! agent time strength P)
+    private static Formula constructSays(List list) throws ParsingException{
+        if(list.isEmpty()){
+            throw new ParsingException("Says expresion cannot be empty!");
+        }  else if(list.size() != 4){
+            throw new ParsingException("Says expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            String operator = (String) list.get(0);
+            String agent = (String) list.get(1);
+            String time = (String) list.get(2);
+            Object formula =  list.get(3);
+
+            return new Says(readLogicValue(agent), readLogicValue(time),readFormula(formula));
         }
     }
 
