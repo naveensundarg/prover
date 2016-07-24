@@ -7,6 +7,7 @@ import com.naveensundarg.shadow.prover.representations.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Pair;
+import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import junit.framework.Assert;
 import org.testng.annotations.DataProvider;
@@ -32,16 +33,15 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-       List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
-    //    List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("temp.clj"));
+       List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
 
-            Pair<Set<Formula>, Formula> test = tests.get(i);
+            Problem test = tests.get(i);
 
-            cases[i][0] =  test.first();
-            cases[i][1] = test.second();
+            cases[i][0] =  test.getAssumptions();
+            cases[i][1] = test.getGoal();
 
         }
 
@@ -62,16 +62,15 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="soundnessTestsProvider")
     public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
 
-        List<Pair<Set<Formula>, Formula>> tests = CommonUtils.readCases(Sandbox.class.getResourceAsStream("cognitivecalculus-soundness-tests.clj"));
-
+        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("cognitivecalculus-soundness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
 
-            Pair<Set<Formula>, Formula> test = tests.get(i);
+            Problem test = tests.get(i);
 
-            cases[i][0] =  test.first();
-            cases[i][1] = test.second();
+            cases[i][0] =  test.getAssumptions();
+            cases[i][1] = test.getGoal();
 
         }
 

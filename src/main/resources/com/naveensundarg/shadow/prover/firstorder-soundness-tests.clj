@@ -1,56 +1,89 @@
 ;;; these should not be proven!
 
-"begin" "*prop-nd-false-test-1*"
-"goal" P
-"end"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-"begin" "*prop-nd-false-test-2*"
-"assumption" (or p q)
-"goal" P
-"end"
+{:name        "*prop-nd-false-test-1*"
+ :description "Can't prove an atom from no premises"
+ :assumptions {}
+ :goal        P}
 
-"begin" "*prop-nd-false-test-3*"
-"assumption" (and p q)
-"goal" r
-"end"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-"begin" "*prop-nd-false-test-4*"
-"assumption" (if p q)
-"goal" p
-"end"
+{:name        ""
+ :description "Case sensitivity check"
+ :assumptions {1 (or p q)}
+ :goal        P}
 
-"begin" "*prop-nd-false-test-5*"
-"assumption" (if p q)
-"goal" q
-"end"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-"begin" "*prop-nd-false-test-6*"
-"assumption" (if p q)
-"goal" (not (or p (not q)))
-"end"
+{:name        ""
+ :description ""
+ :assumptions {1 (and p q)}
+ :goal        r}
 
-"begin" "*prop-nd-false-test-7*"
-"assumption" (if p q)
-"assumption" (not (not (or p (not q))))
-"goal" (not (or p (not q)))
-"end"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-"begin" "*prop-nd-false-test-8*"
-"goal" (and p (not p))
-"end"
+{:name        ""
+ :description ""
+ :assumptions {1 (if p q)}
+ :goal        p}
 
-"begin" "*prop-nd-false-test-9*"
-"goal" (not (not (and p (not P))))
-"end"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-"begin" "*prop-nd-false-test-10*"
-"goal" (if p (not p))
-"end"
+{:name        ""
+ :description ""
+ :assumptions {1 (if p q)}
+ :goal        q}
 
-"begin" "Universal implies Existential"
-"goal" (if (exists (?x) (P ?x)) (forall (?y) (P ?y)) )
-"end"
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-"begin" "occurs"
-"goal" (if (forall (?x) (exists (?y) (Loves ?x ?y))) (exists (?y) (forall (?x) (Loves ?x ?y))))
-"end"
+{:name        ""
+ :description ""
+ :assumptions {1 (if p q)}
+ :goal        (not (or p (not q)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        ""
+ :description ""
+ :assumptions {1 (if p q)
+               2 (not (not (or p (not q))))}
+ :goal        (not (or p (not q)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        ""
+ :description ""
+ :assumptions {}
+ :goal        (and p (not p))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        ""
+ :description ""
+ :assumptions {}
+ :goal        (not (not (and p (not P))))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        ""
+ :description ""
+ :assumptions {}
+ :goal        (if p (not p))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        ""
+ :description "existential implies universal"
+ :assumptions {}
+ :goal        (if (exists (?x)  (P ?x)) (forall (?y)  (P ?y)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        ""
+ :description ""
+ :assumptions {}
+ :goal        (if (forall (?x) (exists (?y)  (Loves ?x, ?y)))
+                (exists (?y) (forall (?x)  (Loves ?x, ?y))))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,14 +1,19 @@
 package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.representations.Formula;
+import us.bpsm.edn.parser.Parseable;
+import us.bpsm.edn.parser.Parser;
+import us.bpsm.edn.parser.Parsers;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.Reader.extractForms;
 import static com.naveensundarg.shadow.prover.utils.Reader.read;
 import static com.naveensundarg.shadow.prover.utils.Reader.readFormula;
+import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -34,6 +39,8 @@ public class CommonUtils {
         List<Pair<Set<Formula>, Formula>> cases = new ArrayList<>();
         Scanner scanner = new Scanner(testFile);
 
+
+
         while (scanner.hasNext()) {
 
             String line = scanner.nextLine();
@@ -49,12 +56,20 @@ public class CommonUtils {
                         List<String> parts = extractForms(line);
                         if (parts.get(0).startsWith(" \"assumption")) {
 
-                            assumptions.add(readFormula(read(parts.get(1))));
+
+                            Parseable pbr = Parsers.newParseable(parts.get(1));
+                            Parser p = Parsers.newParser(defaultConfiguration());
+
+
+                            assumptions.add(readFormula(p.nextValue(pbr)));
                         }
 
                         if (parts.get(0).equals(" \"goal\" ")) {
 
-                            formula = (readFormula(read(parts.get(1))));
+                            Parseable pbr = Parsers.newParseable(parts.get(1));
+                            Parser p = Parsers.newParser(defaultConfiguration());
+
+                            formula = (readFormula(p.nextValue(pbr)));
                         }
 
 

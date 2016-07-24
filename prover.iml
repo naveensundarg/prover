@@ -18,6 +18,8 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.beanshell:bsh:2.0b4" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.beust:jcommander:1.27" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.yaml:snakeyaml:1.6" level="project" />
+    <orderEntry type="library" name="Maven: us.bpsm:edn-java:0.4.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.clojure:clojure:1.8.0" level="project" />
   </component>
 </module>

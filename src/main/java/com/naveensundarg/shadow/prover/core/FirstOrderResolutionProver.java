@@ -72,7 +72,7 @@ public class FirstOrderResolutionProver implements Prover {
             return propJustOpt;
         }*/
 
-        Problem problem = new Problem();
+        Problem problem = new Problem(assumptions, formula);
         used.put(problem, newSet());
 
         Set<CNFFormula> formulas = assumptions.

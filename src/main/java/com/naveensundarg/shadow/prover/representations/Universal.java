@@ -83,7 +83,7 @@ public class Universal extends Formula implements Quantifier {
 
     @Override
     public String toString() {
-        return "(\u2200 " + Arrays.toString(vars) + " "
+        return "(forall " + Arrays.toString(vars) + " "
                 + argument.toString() + ")";
     }
 

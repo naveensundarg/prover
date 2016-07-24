@@ -84,7 +84,7 @@ public class Existential extends Formula implements Quantifier{
 
     @Override
     public String toString() {
-        return "(\u2203 " + Arrays.toString(vars) +" "
+        return "(exists" + Arrays.toString(vars) +" "
                 + argument.toString() +")";
     }
 

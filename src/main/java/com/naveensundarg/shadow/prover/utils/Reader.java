@@ -1,6 +1,8 @@
 package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.representations.*;
+import sun.jvm.hotspot.debugger.cdbg.Sym;
+import us.bpsm.edn.Symbol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +13,20 @@ import java.util.stream.Collectors;
  * Created by naveensundarg on 4/8/16.
  */
 public class Reader {
+
+    private static final Symbol NOT = Symbol.newSymbol("not");
+    private static final Symbol AND = Symbol.newSymbol("and");
+    private static final Symbol OR = Symbol.newSymbol("or");
+    private static final Symbol IF = Symbol.newSymbol("if");
+    private static final Symbol IFF = Symbol.newSymbol("iff");
+
+    private static final Symbol EXISTS = Symbol.newSymbol("exists");
+    private static final Symbol FORALL = Symbol.newSymbol("forall");
+
+    private static final Symbol BELIEVES = Symbol.newSymbol("Believes!");
+    private static final Symbol KNOWS = Symbol.newSymbol("Knows!");
+    private static final Symbol COMMON = Symbol.newSymbol("Common!");
+    private static final Symbol SAYS = Symbol.newSymbol("Says!");
 
     public static class ParsingException extends Exception{
 
@@ -30,8 +46,8 @@ public class Reader {
     public static Value readLogicValue(Object input) throws ParsingException{
 
 
-        if(input instanceof String){
-            String name = (String) input;
+        if(input instanceof Symbol){
+            String name =  ((Symbol) input).getName();
             return name.startsWith("?") ? new Variable(name): new Constant(name);
         }
 
@@ -47,8 +63,8 @@ public class Reader {
 
             Object nameObject = list.get(0);
 
-            if(nameObject instanceof String){
-                String name = (String) nameObject;
+            if(nameObject instanceof Symbol){
+                String name =  ((Symbol) nameObject).getName();
                 Value[] arguments = new Value[list.size()-1];
 
                 for(int i = 1; i< list.size(); i++){
@@ -67,8 +83,8 @@ public class Reader {
 
     public static Formula readFormula(Object input) throws ParsingException {
 
-        if(input instanceof String){
-            return new Atom((String) input);
+        if(input instanceof Symbol){
+            return new Atom(((Symbol) input).getName());
         }
 
         if(input instanceof List){
@@ -79,10 +95,10 @@ public class Reader {
             }
             Object first = list.get(0);
 
-            if(first instanceof String){
-                String name = (String) first;
+            if(first instanceof Symbol){
+                Symbol name = (Symbol) first;
 
-                if(name.equals("not") ){
+                if(name.equals(NOT) ){
                     if(list.size()==2){
                         return new Not(readFormula(list.get(1)));
 
@@ -91,7 +107,7 @@ public class Reader {
                     }
                 }
 
-                if(name.equals("if")){
+                if(name.equals(IF)){
                     if(list.size()==3){
                         return new Implication(readFormula(list.get(1)),readFormula(list.get(2)));
 
@@ -100,7 +116,7 @@ public class Reader {
                     }
                 }
 
-                if(name.equals("iff")){
+                if(name.equals(IFF)){
                     if(list.size()==3){
                         return new BiConditional(readFormula(list.get(1)),readFormula(list.get(2)));
 
@@ -109,7 +125,7 @@ public class Reader {
                     }
                 }
 
-                if(name.equals("or")){
+                if(name.equals(OR)){
                     if(list.size()>=3){
 
                         Formula[] subs = new Formula[list.size()-1];
@@ -124,7 +140,7 @@ public class Reader {
                     }
                 }
 
-                if(name.equals("and")){
+                if(name.equals(AND)){
                     if(list.size()>=3){
 
                         Formula[] subs = new Formula[list.size()-1];
@@ -141,36 +157,36 @@ public class Reader {
                     }
                 }
                 //FORALL
-                if(name.equals("forall")){
+                if(name.equals(FORALL)){
 
                     return constructQuantifier(list, true);
 
                 }
 
                 //FORALL
-                if(name.equals("exists")){
+                if(name.equals(EXISTS)){
 
                     return constructQuantifier(list, false);
 
                 }
 
                 //Believes
-                if(name.equals("Believes!")){
+                if(name.equals(BELIEVES)){
 
                     return constructBelief(list);
                 }
 
                 //Knows
-                if(name.equals("Knows!")){
+                if(name.equals(KNOWS)){
 
                     return constructKnowledge(list);
                 }
 
-                if(name.equals("Common!")){
+                if(name.equals(COMMON)){
 
                     return constructCommon(list);
                 }
-                if(name.equals("Says!")){
+                if(name.equals(SAYS)){
 
                     return constructSays(list);
                 }
@@ -195,9 +211,8 @@ public class Reader {
 
         } else {
 
-            String operator = (String) list.get(0);
-            String agent = (String) list.get(1);
-            String time = (String) list.get(2);
+            Object agent =  list.get(1);
+            Object time =  list.get(2);
             Object formula =  list.get(3);
 
             return new Knowledge(readLogicValue(agent), readLogicValue(time),readFormula(formula));
@@ -213,9 +228,8 @@ public class Reader {
 
         } else {
 
-            String operator = (String) list.get(0);
-            String agent = (String) list.get(1);
-            String time = (String) list.get(2);
+            Object agent =  list.get(1);
+            Object time =  list.get(2);
             Object formula =  list.get(3);
 
             return new Belief(readLogicValue(agent), readLogicValue(time),readFormula(formula));
@@ -231,9 +245,8 @@ public class Reader {
 
         } else {
 
-            String operator = (String) list.get(0);
-            String agent = (String) list.get(1);
-            String time = (String) list.get(2);
+            Object agent =  list.get(1);
+            Object time =  list.get(2);
             Object formula =  list.get(3);
 
             return new Says(readLogicValue(agent), readLogicValue(time),readFormula(formula));
@@ -249,10 +262,8 @@ public class Reader {
 
         } else {
 
-            String operator = (String) list.get(0);
-            String time = (String) list.get(1);
+            Object time =  list.get(1);
             Object formula =  list.get(2);
-
             return new Common(readLogicValue(time),readFormula(formula));
         }
     }
@@ -267,9 +278,9 @@ public class Reader {
 
             Object nameObject = list.get(0);
 
-            if(nameObject instanceof String){
+            if(nameObject instanceof Symbol){
 
-                String name = (String) nameObject;
+                String name =  ((Symbol) nameObject).getName();
 
                 if(name.startsWith("$")){
                     throw new AssertionError("Atom and predicate names cannot start with a $: "+ name);
@@ -302,9 +313,9 @@ public class Reader {
 
                 for(int i = 0; i<variables.length; i++){
                     Object varObject = listOfVars.get(i);
-                    if(varObject instanceof String){
+                    if(varObject instanceof Symbol){
 
-                        variables[i] = new Variable((String) varObject);
+                        variables[i] = new Variable(((Symbol) varObject).getName());
                     } else{
 
                         throw new ParsingException("Variable should be a string: " + varObject);

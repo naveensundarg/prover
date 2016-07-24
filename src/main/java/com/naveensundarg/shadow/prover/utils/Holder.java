@@ -1,5 +1,7 @@
 package com.naveensundarg.shadow.prover.utils;
 
+import java.util.function.Function;
+
 /**
  * Created by naveensundarg on 4/15/16.
  */
@@ -24,4 +26,10 @@ public class Holder<T>{
     public void set(T value){
         this.value = value;
     }
+
+    public void mutateWith(Function<T,T> mutator) {
+
+        this.value = mutator.apply(this.value);
+    }
+
 }
