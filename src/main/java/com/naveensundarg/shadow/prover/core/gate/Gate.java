@@ -7,8 +7,8 @@ import com.naveensundarg.shadow.prover.representations.Expression;
  */
 public class Gate {
 
-    private final Expression[] inputs;
-    private final Expression output;
+    private  Expression[] inputs;
+    private  Expression output;
 
     public Gate(Expression[] inputs, Expression output) {
 

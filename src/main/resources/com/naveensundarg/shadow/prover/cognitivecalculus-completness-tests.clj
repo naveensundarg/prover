@@ -2,6 +2,10 @@
 
 {:name        "*cognitive-calculus-completeness-test-1*"
  :description "kicking the tires"
+ :sorts [Agent Time Proposition]
+ :definitions [(a1 Agent)
+               (t1 Time)
+               (P Proposition)]
  :assumptions {1 (Knows! a1 t1 P)}
  :goal        P}
 

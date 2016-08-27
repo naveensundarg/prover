@@ -140,7 +140,7 @@ public class CognitiveCalculusProver implements Prover {
     private Set<Formula> expand(Set<Formula> base, Set<Formula> added) {
         breakUpBiConditionals(base);
 
-       // expandR4(base, added);
+        expandR4(base, added);
         expandR11a(base, added);
         expandDR6(base, added);
         expandDR6a(base, added);
