@@ -2,7 +2,7 @@ package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.Sandbox;
 import com.naveensundarg.shadow.prover.core.Problem;
-import com.naveensundarg.shadow.prover.representations.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import us.bpsm.edn.Keyword;
 import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;

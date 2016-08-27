@@ -1,9 +1,11 @@
 package com.naveensundarg.shadow.prover.core;
 
-import com.naveensundarg.shadow.prover.representations.*;
+import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.ImmutablePair;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Pair;

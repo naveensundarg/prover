@@ -1,6 +1,6 @@
 package com.naveensundarg.shadow.prover.core.proof;
 
-import com.naveensundarg.shadow.prover.representations.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 
 /**
  * Created by naveensundarg on 4/8/16.

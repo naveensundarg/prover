@@ -1,33 +1,31 @@
-package com.naveensundarg.shadow.prover.representations;
+package com.naveensundarg.shadow.prover.representations.formula;
 
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
 /**
- * Created by naveensundarg on 5/4/16.
+ * Created by naveensundarg on 7/9/16.
  */
-public class Belief extends Formula{
-
+public class Knowledge extends Formula {
     Value agent;
     Value time;
     Formula formula;
     Set<Formula> subFormulae;
     Set<Variable> variables;
 
-
-    public Belief(Value agent, Value time, Formula formula) {
+    public Knowledge(Value agent, Value time, Formula formula) {
 
 
         this.agent = agent;
         this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        this.subFormulae.add(this);
-
+        subFormulae.add(this);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
@@ -39,11 +37,6 @@ public class Belief extends Formula{
         }
     }
 
-    public Formula getFormula(){
-        return formula;
-    }
-
-
     public Value getAgent() {
         return agent;
     }
@@ -52,12 +45,8 @@ public class Belief extends Formula{
         return time;
     }
 
-    public Set<Formula> getSubFormulae() {
-        return subFormulae;
-    }
-
-    public Set<Variable> getVariables() {
-        return variables;
+    public Formula getFormula(){
+        return formula;
     }
 
     @Override
@@ -78,6 +67,7 @@ public class Belief extends Formula{
     @Override
     public Formula shadow(int level) {
         return new Atom("#"+toString()+"#");
+
     }
 
     @Override
@@ -93,7 +83,7 @@ public class Belief extends Formula{
 
     @Override
     public String toString() {
-        return "(Believes! "
+        return "(Knows! "
                 + agent + " "
                 + time + " "+
                 formula + ")";
@@ -104,11 +94,11 @@ public class Belief extends Formula{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Belief belief = (Belief) o;
+        Knowledge knowledge = (Knowledge) o;
 
-        if (!agent.equals(belief.agent)) return false;
-        if (!time.equals(belief.time)) return false;
-        return formula.equals(belief.formula);
+        if (!agent.equals(knowledge.agent)) return false;
+        if (!time.equals(knowledge.time)) return false;
+        return formula.equals(knowledge.formula);
 
     }
 

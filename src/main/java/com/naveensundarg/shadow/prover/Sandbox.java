@@ -1,26 +1,14 @@
 package com.naveensundarg.shadow.prover;
 
-import clojure.lang.RT;
-import clojure.lang.Var;
-import com.naveensundarg.shadow.prover.core.Converter;
-import com.naveensundarg.shadow.prover.core.Problem;
-import com.naveensundarg.shadow.prover.representations.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Holder;
 import com.naveensundarg.shadow.prover.utils.Pair;
-import us.bpsm.edn.parser.Parseable;
-import us.bpsm.edn.parser.Parser;
-import us.bpsm.edn.parser.Parsers;
 
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import static com.naveensundarg.shadow.prover.utils.Reader.read;
-import static com.naveensundarg.shadow.prover.utils.Reader.readFormula;
 import static us.bpsm.edn.Keyword.newKeyword;
-import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
 
 /**
  * Created by naveensundarg on 4/8/16.

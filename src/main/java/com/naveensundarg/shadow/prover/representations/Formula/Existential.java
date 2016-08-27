@@ -1,5 +1,7 @@
-package com.naveensundarg.shadow.prover.representations;
+package com.naveensundarg.shadow.prover.representations.formula;
 
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
@@ -10,7 +12,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public class Universal extends Formula implements Quantifier {
+public class Existential extends Formula implements Quantifier {
 
     private final Formula argument;
     private final Variable[] vars;
@@ -18,17 +20,19 @@ public class Universal extends Formula implements Quantifier {
     private final Set<Variable> variables;
 
 
-    public Universal(Variable[] vars, Formula argument) {
+    public Existential(Variable[] vars, Formula argument){
 
-        if (!(vars.length > 0)) {
+        if(!(vars.length>0)){
             throw new AssertionError("Existential should have at least one variable");
         }
 
         this.vars = vars;
         this.argument = argument;
         this.subFormulae = Sets.with(argument);
-        this.variables = argument.variablesPresent();
         this.subFormulae.add(this);
+
+        this.variables = argument.variablesPresent();
+
         Arrays.stream(vars).forEach(this.variables::add);
     }
 
@@ -48,33 +52,32 @@ public class Universal extends Formula implements Quantifier {
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        //TODO:
-        return new Universal(vars, argument.apply(substitution));
+        //TODO: Variable capture
+        return new Existential(vars, argument.apply(substitution));
     }
 
     @Override
     public Formula shadow(int level) {
         if (level == 0) {
 
-            return new Atom("#"+this.toString()+"#");
+          return new Atom("#"+this.toString()+"#");
 
         } else if (level == 1) {
 
-            return new Universal(vars, argument.shadow(level));
+            return new Existential(vars, argument.shadow(level));
         }
 
         throw new AssertionError("Invalid shadow getLevel: " + level);
     }
 
-
     @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
-        return new Universal(vars, argument.applyOperation(operator));
+        return new Existential(vars, argument.applyOperation(operator));
     }
 
     @Override
     public int getLevel() {
-        return 1;
+        return argument.getLevel();
     }
 
     public Variable[] vars() {
@@ -83,8 +86,8 @@ public class Universal extends Formula implements Quantifier {
 
     @Override
     public String toString() {
-        return "(forall " + Arrays.toString(vars) + " "
-                + argument.toString() + ")";
+        return "(exists" + Arrays.toString(vars) +" "
+                + argument.toString() +")";
     }
 
     @Override
@@ -92,11 +95,11 @@ public class Universal extends Formula implements Quantifier {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Universal universal = (Universal) o;
+        Existential that = (Existential) o;
 
-        if (!argument.equals(universal.argument)) return false;
+        if (!argument.equals(that.argument)) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(vars, universal.vars);
+        return Arrays.equals(vars, that.vars);
 
     }
 

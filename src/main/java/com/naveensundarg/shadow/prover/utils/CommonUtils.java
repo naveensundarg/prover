@@ -1,17 +1,15 @@
 package com.naveensundarg.shadow.prover.utils;
 
-import com.naveensundarg.shadow.prover.representations.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
 import us.bpsm.edn.parser.Parsers;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.Reader.extractForms;
-import static com.naveensundarg.shadow.prover.utils.Reader.read;
 import static com.naveensundarg.shadow.prover.utils.Reader.readFormula;
 import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
 

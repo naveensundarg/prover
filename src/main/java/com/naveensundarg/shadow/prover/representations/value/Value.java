@@ -1,4 +1,6 @@
-package com.naveensundarg.shadow.prover.representations;
+package com.naveensundarg.shadow.prover.representations.value;
+
+import com.naveensundarg.shadow.prover.representations.Expression;
 
 import java.util.Map;
 import java.util.Set;
@@ -6,7 +8,7 @@ import java.util.Set;
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public abstract class Value {
+public abstract class Value extends Expression {
 
     protected String name;
 

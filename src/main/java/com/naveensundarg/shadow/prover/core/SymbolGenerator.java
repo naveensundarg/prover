@@ -1,9 +1,9 @@
 package com.naveensundarg.shadow.prover.core;
 
-import com.naveensundarg.shadow.prover.representations.Compound;
-import com.naveensundarg.shadow.prover.representations.Constant;
-import com.naveensundarg.shadow.prover.representations.Value;
-import com.naveensundarg.shadow.prover.representations.Variable;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 
 import java.util.List;
 import java.util.Map;

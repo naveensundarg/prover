@@ -2,13 +2,15 @@ package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.SymbolGenerator;
-import com.naveensundarg.shadow.prover.representations.*;
+import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
@@ -29,7 +31,7 @@ public class Logic {
         }
     }
 
-    private static final  Value I = new Constant("I");
+    private static final Value I = new Constant("I");
 
     public static Clause renameVars(Clause clause, Problem problem) {
 

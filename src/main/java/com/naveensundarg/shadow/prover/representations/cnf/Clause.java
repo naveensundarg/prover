@@ -1,11 +1,8 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
-import com.naveensundarg.shadow.prover.core.Problem;
-import com.naveensundarg.shadow.prover.representations.Atom;
-import com.naveensundarg.shadow.prover.representations.Predicate;
-import com.naveensundarg.shadow.prover.representations.Value;
-import com.naveensundarg.shadow.prover.representations.Variable;
-import com.naveensundarg.shadow.prover.utils.Logic;
+import com.naveensundarg.shadow.prover.representations.formula.Predicate;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;

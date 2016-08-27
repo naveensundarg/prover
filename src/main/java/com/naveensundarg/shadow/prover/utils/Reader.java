@@ -1,7 +1,10 @@
 package com.naveensundarg.shadow.prover.utils;
 
-import com.naveensundarg.shadow.prover.representations.*;
-import sun.jvm.hotspot.debugger.cdbg.Sym;
+import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import us.bpsm.edn.Symbol;
 
 import java.util.ArrayList;

@@ -1,11 +1,11 @@
 package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.core.rule.DemodulationImplementation;
-import com.naveensundarg.shadow.prover.core.rule.FirstOrderResolutionImplementation;
-import com.naveensundarg.shadow.prover.core.rule.ParamodulationImplementation;
-import com.naveensundarg.shadow.prover.core.rule.RuleImplementation;
-import com.naveensundarg.shadow.prover.representations.Formula;
+import com.naveensundarg.shadow.prover.core.resolutionrule.DemodulationImplementation;
+import com.naveensundarg.shadow.prover.core.resolutionrule.FirstOrderResolutionImplementation;
+import com.naveensundarg.shadow.prover.core.resolutionrule.ParamodulationImplementation;
+import com.naveensundarg.shadow.prover.core.resolutionrule.RuleImplementation;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.utils.*;

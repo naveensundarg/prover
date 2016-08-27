@@ -1,5 +1,7 @@
-package com.naveensundarg.shadow.prover.representations;
+package com.naveensundarg.shadow.prover.representations.formula;
 
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;

@@ -1,9 +1,9 @@
-package com.naveensundarg.shadow.prover.core.rule;
+package com.naveensundarg.shadow.prover.core.resolutionrule;
 
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
-import com.naveensundarg.shadow.prover.representations.Predicate;
-import com.naveensundarg.shadow.prover.representations.Value;
-import com.naveensundarg.shadow.prover.representations.Variable;
+import com.naveensundarg.shadow.prover.representations.formula.Predicate;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.utils.ImmutablePair;

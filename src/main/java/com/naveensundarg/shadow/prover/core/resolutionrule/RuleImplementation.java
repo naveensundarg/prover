@@ -1,4 +1,4 @@
-package com.naveensundarg.shadow.prover.core.rule;
+package com.naveensundarg.shadow.prover.core.resolutionrule;
 
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 

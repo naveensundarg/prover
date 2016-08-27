@@ -2,12 +2,12 @@ package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.representations.*;
+import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Logic;
 
-import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +39,7 @@ public class CognitiveCalculusProver implements Prover {
         FirstOrderResolutionProver folProver = new FirstOrderResolutionProver();
 
         Set<Formula> base = CollectionUtils.setFrom(assumptions);
+
         Formula shadowedGoal = formula.shadow(1);
 
         Optional<Justification> shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
@@ -48,6 +49,8 @@ public class CognitiveCalculusProver implements Prover {
             int sizeBeforeExpansion = base.size();
             base = expand(base, added);
             int sizeAfterExpansion = base.size();
+
+
 
             Optional<Justification> caseProofOpt = tryOR(base, formula, added);
 
@@ -62,10 +65,10 @@ public class CognitiveCalculusProver implements Prover {
             if (reductioProofOpt.isPresent()) {
                 return reductioProofOpt;
             }
+
             if (sizeAfterExpansion <= sizeBeforeExpansion) {
                 return Optional.empty();
             }
-
 
             shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
         }
@@ -137,7 +140,7 @@ public class CognitiveCalculusProver implements Prover {
     private Set<Formula> expand(Set<Formula> base, Set<Formula> added) {
         breakUpBiConditionals(base);
 
-        expandR4(base, added);
+       // expandR4(base, added);
         expandR11a(base, added);
         expandDR6(base, added);
         expandDR6a(base, added);

@@ -1,14 +1,17 @@
-package com.naveensundarg.shadow.prover.representations;
+package com.naveensundarg.shadow.prover.representations.formula;
+
+import com.naveensundarg.shadow.prover.representations.Expression;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 /**
  * Created by naveensundarg on 4/8/16.
  */
-public abstract class Formula {
+public abstract class Formula extends Expression {
 
     public abstract Set<Formula> subFormulae();
 

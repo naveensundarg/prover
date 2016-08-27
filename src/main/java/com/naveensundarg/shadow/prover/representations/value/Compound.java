@@ -1,4 +1,4 @@
-package com.naveensundarg.shadow.prover.representations;
+package com.naveensundarg.shadow.prover.representations.value;
 
 import com.naveensundarg.shadow.prover.utils.Sets;
 

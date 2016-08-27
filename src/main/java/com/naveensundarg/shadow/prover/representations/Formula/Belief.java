@@ -1,5 +1,7 @@
-package com.naveensundarg.shadow.prover.representations;
+package com.naveensundarg.shadow.prover.representations.formula;
 
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 
 import java.util.Map;
@@ -9,7 +11,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Says extends Formula{
+public class Belief extends Formula{
 
     Value agent;
     Value time;
@@ -18,7 +20,7 @@ public class Says extends Formula{
     Set<Variable> variables;
 
 
-    public Says(Value agent, Value time, Formula formula) {
+    public Belief(Value agent, Value time, Formula formula) {
 
 
         this.agent = agent;
@@ -92,7 +94,7 @@ public class Says extends Formula{
 
     @Override
     public String toString() {
-        return "(Says! "
+        return "(Believes! "
                 + agent + " "
                 + time + " "+
                 formula + ")";
@@ -103,11 +105,11 @@ public class Says extends Formula{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Says says = (Says) o;
+        Belief belief = (Belief) o;
 
-        if (!agent.equals(says.agent)) return false;
-        if (!time.equals(says.time)) return false;
-        return formula.equals(says.formula);
+        if (!agent.equals(belief.agent)) return false;
+        if (!time.equals(belief.time)) return false;
+        return formula.equals(belief.formula);
 
     }
 

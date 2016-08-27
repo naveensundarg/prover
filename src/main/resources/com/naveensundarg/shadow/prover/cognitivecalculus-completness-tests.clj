@@ -137,3 +137,11 @@
  :goal        (and (Marked a2) (not (Marked a1)))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-completeness-test-3*"
+ :description "Bird Theorem and Jack"
+ :assumptions {1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y))))
+                   (Knows! jack t0 BirdTheorem))}
+ :goal        (Knows! jack t0 BirdTheorem)}

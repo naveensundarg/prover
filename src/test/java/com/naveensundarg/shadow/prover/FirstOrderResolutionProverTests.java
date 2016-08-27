@@ -1,9 +1,8 @@
 package com.naveensundarg.shadow.prover;
 
 import com.naveensundarg.shadow.prover.core.*;
-import com.naveensundarg.shadow.prover.representations.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;

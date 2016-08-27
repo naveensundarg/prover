@@ -1,17 +1,8 @@
-package com.naveensundarg.shadow.prover.representations;
+package com.naveensundarg.shadow.prover.representations.formula;
 
-import com.naveensundarg.shadow.prover.core.SymbolGenerator;
-import com.naveensundarg.shadow.prover.utils.ImmutablePair;
-import com.naveensundarg.shadow.prover.utils.Pair;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 
 /**
  * Created by naveensundarg on 4/13/16.

@@ -1,6 +1,6 @@
 package com.naveensundarg.shadow.prover.core;
 
-import com.naveensundarg.shadow.prover.representations.*;
+import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.utils.Logic;
 
 import java.util.Arrays;

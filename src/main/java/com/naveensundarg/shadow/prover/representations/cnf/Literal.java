@@ -1,13 +1,11 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
-import com.naveensundarg.shadow.prover.representations.Formula;
-import com.naveensundarg.shadow.prover.representations.Predicate;
-import com.naveensundarg.shadow.prover.representations.Value;
-import com.naveensundarg.shadow.prover.representations.Variable;
+import com.naveensundarg.shadow.prover.representations.formula.Predicate;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Created by naveensundarg on 4/10/16.

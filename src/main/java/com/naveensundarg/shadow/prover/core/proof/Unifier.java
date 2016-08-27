@@ -1,14 +1,18 @@
 package com.naveensundarg.shadow.prover.core.proof;
 
-import com.naveensundarg.shadow.prover.representations.Compound;
-import com.naveensundarg.shadow.prover.representations.Predicate;
-import com.naveensundarg.shadow.prover.representations.Value;
-import com.naveensundarg.shadow.prover.representations.Variable;
+import com.naveensundarg.shadow.prover.representations.Expression;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.FormulaVariable;
+import com.naveensundarg.shadow.prover.representations.formula.Predicate;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
@@ -26,7 +30,7 @@ public class Unifier {
             return null;
         }
 
-        if(p1.getArguments().length!= p2.getArguments().length){
+        if(p1.getArguments().length != p2.getArguments().length){
             return null;
         }
 

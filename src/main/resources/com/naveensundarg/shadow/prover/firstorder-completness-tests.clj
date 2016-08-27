@@ -149,3 +149,15 @@
                2 (= morning_star evening_star)
                3 (Knows a now (= morning_star morning_star))}
  :goal (and P (not P))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name "mode1-prob1"
+ :description "dt16: fol is transparent with Knows!"
+ :assumptions {                                             ;;1 (forall (?a ?time ?P) (if (HOLDS (Knows ?a ?time  ?P)) (HOLDS ?P)))
+               1 (forall (?a ?time) (HOLDS (if raining (Knows jack now raining))))
+               2 (forall (?A ?C) (if (and (HOLDS (if ?A ?C)) (HOLDS ?A)) (HOLDS ?C)))
+               3 (forall (?a1 ?a2) (iff (and (HOLDS ?a1) (HOLDS ?a2)) (HOLDS (and ?a1 ?a2))))
+               4 (HOLDS (and cloudy wet))
+               5 (if (and (HOLDS cloudy) (HOLDS wet)) (HOLDS raining))}
+ :goal (HOLDS  (Knows jack now raining)) }

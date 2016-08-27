@@ -1,8 +1,7 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
 import com.naveensundarg.shadow.prover.core.Problem;
-import com.naveensundarg.shadow.prover.representations.Atom;
-import com.naveensundarg.shadow.prover.representations.Predicate;
+import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
