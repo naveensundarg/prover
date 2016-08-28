@@ -18,10 +18,11 @@ public class Predicate extends Formula {
     private final Value[] arguments;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final boolean sorted;
 
     public Predicate(String name){
 
-
+        this.sorted = false;
         this.name = name;
         this.arguments  = new Value[0];
         this.subFormulae = Sets.with(this);
@@ -30,7 +31,7 @@ public class Predicate extends Formula {
     }
     public Predicate(String name, Value[] arguments){
 
-
+        this.sorted = false;
         this.name = name;
         this.arguments = arguments;
         this.subFormulae = Sets.with(this);
