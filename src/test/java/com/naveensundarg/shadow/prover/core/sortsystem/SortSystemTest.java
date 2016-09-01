@@ -41,8 +41,9 @@ public class SortSystemTest {
 
         SortSystem sortSystem = SortSystem.buildFrom((Map<?,?>)p.nextValue(pbr));
 
-        sortSystem.checkTypeOfArguments("a1", new Value[0]);
+        sortSystem.checkTypeOfArguments("a1", new Value[0], new Category("Agent"));
 
+        sortSystem.checkTypeOfArguments("a1", new Value[0], new Category("Object"));
 
     }
 }

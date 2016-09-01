@@ -31,7 +31,7 @@ public final class Ontology {
 
     protected boolean isDescendant(Category c1, Category c2){
 
-        return parentMap.get(c1).stream().anyMatch(c -> c.equals(c2) || isDescendant(c, c2));
+        return parentMap.getOrDefault(c1, CollectionUtils.newEmptySet()).stream().anyMatch(c -> c.equals(c2) || isDescendant(c, c2));
     }
 
     protected boolean isAncestor(Category c1, Category c2){

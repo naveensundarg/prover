@@ -6,6 +6,7 @@ import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import us.bpsm.edn.Keyword;
 import us.bpsm.edn.Symbol;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class SortSystem {
     }
 
     //Returns true
-    public void checkTypeOfArguments(String functorName, Value[] arguments) {
+    public void checkTypeOfArguments(String functorName, Value[] arguments, Category expectedType) {
 
         if (!declarations.containsKey(functorName)) {
 
@@ -35,45 +36,29 @@ public class SortSystem {
 
             Category[] declaration = declarations.get(functorName);
 
-            if (declaration.length != arguments.length) {
+            if (declaration.length - 1 != arguments.length) {
 
                 throw new AssertionError(functorName + " needs " +
                         declaration.length + " arguments, but was given " +
                         arguments.length + " arguments");
             }
 
-            boolean allMatch = true;
+            //TODO: deuglify this.
+            Category actualType = declaration[declaration.length-1];
 
-            for (int i = 0; i < declaration.length; i++) {
+            if(!expectedType.equals(actualType) && !ontology.isAncestor(expectedType, actualType )) {
+
+                throw new AssertionError("Expected type [" + expectedType + "], but got ["+actualType+"] in "
+                + functorName +"(" + Arrays.toString(arguments) + ")");
+
+            }
+
+            for (int i = 0; i < declaration.length-1; i++) {
 
                 Value argument = arguments[i];
                 Category declaredCategory = declaration[i];
 
-                if (argument.isCompound()) {
-
-                    checkTypeOfArguments(argument.getName(), argument.getArguments());
-
-                } else {
-
-                    String name = argument.getName();
-
-                    Category[] arg_declaration = declarations.get(name);
-
-                    if (arg_declaration.length != 1) {
-
-                        throw new AssertionError(name + " needs " +
-                                declaration.length + " arguments, but was given " +
-                                arguments.length + " arguments");
-                    }
-
-                    Category arg_category = arg_declaration[0];
-
-                    //TODO: subcategory check;
-                    if (ontology.isAncestor(declaredCategory, arg_category)) {
-
-                        throw new AssertionError("Type mismatch at: " + name);
-                    }
-                }
+                checkTypeOfArguments(argument.getName(), argument.getArguments(), declaredCategory);
 
             }
 
