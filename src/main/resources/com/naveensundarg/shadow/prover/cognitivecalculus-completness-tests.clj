@@ -2,10 +2,6 @@
 
 {:name        "*cognitive-calculus-completeness-test-1*"
  :description "kicking the tires"
- :sorts [Agent Time Proposition]
- :definitions [(a1 Agent)
-               (t1 Time)
-               (P Proposition)]
  :assumptions {1 (Knows! a1 t1 P)}
  :goal        P}
 
@@ -149,3 +145,12 @@
  :assumptions {1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y))))
                    (Knows! jack t0 BirdTheorem))}
  :goal        (Knows! jack t0 BirdTheorem)}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-ought-test-1*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Believes! jack t0 P)
+               2 (Believes! jack t0 (Ought! jack t0 P A)) }
+ :goal        (happens (action jack A) t0)}

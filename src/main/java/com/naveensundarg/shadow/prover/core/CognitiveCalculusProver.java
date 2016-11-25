@@ -3,6 +3,8 @@ package com.naveensundarg.shadow.prover.core;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.formula.Predicate;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
@@ -34,7 +36,7 @@ public class CognitiveCalculusProver implements Prover {
     }
 
 
-    public Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
+    private Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
         FirstOrderResolutionProver folProver = new FirstOrderResolutionProver();
 
@@ -49,7 +51,6 @@ public class CognitiveCalculusProver implements Prover {
             int sizeBeforeExpansion = base.size();
             base = expand(base, added);
             int sizeAfterExpansion = base.size();
-
 
 
             Optional<Justification> caseProofOpt = tryOR(base, formula, added);
@@ -149,7 +150,7 @@ public class CognitiveCalculusProver implements Prover {
         expandDR1(base, added);
         expandDR2(base, added);
         expandDR3(base, added);
-
+        expandOughtRule(base, added);
         return base;
     }
 
@@ -196,6 +197,62 @@ public class CognitiveCalculusProver implements Prover {
 
         base.addAll(validConsequentBeliefss);
         added.addAll(added);
+
+    }
+
+    private void expandOughtRule(Set<Formula> base, Set<Formula> added) {
+
+        java.util.function.Predicate<Formula> filterSelfOughts = f -> {
+
+            if (!(f instanceof Belief)) {
+
+                return false;
+            }
+
+            Belief b = (Belief) f;
+            Formula believed = b.getFormula();
+            if(!(believed instanceof Ought)){
+                return false;
+            }
+            Ought ought = (Ought) believed;
+            Formula precondition = ought.getFormula();
+            Value outerAgent = b.getAgent();
+            Value innerAgent = ought.getAgent();
+            if(!innerAgent.equals(outerAgent)) {
+                return false;
+            }
+
+
+            return true;
+        };
+
+        Set<Belief> obligationBeliefs =
+                level2FormulaeOfTypeWithConstraint(base,
+                        Belief.class,
+                        filterSelfOughts);
+
+
+        for (Belief b : obligationBeliefs) {
+            Ought ought = (Ought) b.getFormula();
+            Formula precondition = ought.getFormula();
+            Value outerTime = b.getTime();
+            Value agent = b.getAgent();
+            Belief preConditionBelief = new Belief(agent, outerTime, precondition);
+            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+
+            Optional<Justification> preconditionBelievedOpt = cognitiveCalculusProver.prove(base, preConditionBelief);
+
+            if(preconditionBelievedOpt.isPresent()) {
+                Value actionType = ought.getActionType();
+                Value action = new Compound("action", new Value[]{agent, actionType});
+                Formula happens = new Predicate("happens", new Value[]{action, ought.getTime()});
+                added.add(happens);
+                base.add(happens);
+            }
+
+
+        }
+
 
     }
 
@@ -265,7 +322,7 @@ public class CognitiveCalculusProver implements Prover {
         Set<Formula> validConsequentKnowledge = implicationKnowledge.stream().
                 filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getAntecedent()))).
                 map(b -> new Knowledge(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getConsequent())).
-                filter(x->!added.contains(x)).
+                filter(x -> !added.contains(x)).
                 collect(Collectors.toSet());
 
         added.addAll(validConsequentKnowledge);
@@ -282,7 +339,7 @@ public class CognitiveCalculusProver implements Prover {
         Set<Formula> validRights = biConditionalKnowledge.stream().
                 filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getLeft()))).
                 map(b -> new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getRight())).
-                filter(x->!added.contains(x)).
+                filter(x -> !added.contains(x)).
                 collect(Collectors.toSet());
 
         added.addAll(validRights);
@@ -291,7 +348,7 @@ public class CognitiveCalculusProver implements Prover {
         Set<Formula> validLefts = biConditionalKnowledge.stream().
                 filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getRight()))).
                 map(b -> new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getLeft())).
-                filter(x->!added.contains(x)).
+                filter(x -> !added.contains(x)).
                 collect(Collectors.toSet());
 
         added.addAll(validLefts);
@@ -307,7 +364,7 @@ public class CognitiveCalculusProver implements Prover {
 
             Set<Formula> level2Conjuncts = Arrays.stream(and.getArguments()).
                     filter(conjunct -> conjunct.getLevel() == 2).
-                    filter(x->!added.contains(x)).
+                    filter(x -> !added.contains(x)).
                     collect(Collectors.toSet());
 
             added.addAll(level2Conjuncts);
@@ -335,7 +392,7 @@ public class CognitiveCalculusProver implements Prover {
 
             Optional<Justification> antecedentJustificationOpt = cognitiveCalculusProver.prove(reducedBase, antecedent, CollectionUtils.setFrom(added));
             if (antecedentJustificationOpt.isPresent()) {
-                if(!added.contains(consequent)){
+                if (!added.contains(consequent)) {
                     base.add(consequent);
                     added.add(consequent);
                 }
@@ -345,7 +402,7 @@ public class CognitiveCalculusProver implements Prover {
             newReducedBase.remove(implication);
             Optional<Justification> negatedConsequentJustificationOpt = cognitiveCalculusProver.prove(newReducedBase, Logic.negated(consequent), CollectionUtils.setFrom(added));
             if (negatedConsequentJustificationOpt.isPresent()) {
-                if(!added.contains(consequent)){
+                if (!added.contains(consequent)) {
                     base.add(Logic.negated(antecedent));
                     added.add(Logic.negated(antecedent));
                 }

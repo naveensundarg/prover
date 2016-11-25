@@ -2,7 +2,10 @@ package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.Sandbox;
 import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.core.sortsystem.Ontology;
+import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import us.bpsm.edn.Keyword;
 import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
@@ -24,6 +27,7 @@ public class ProblemReader {
 
     private static final Keyword ASSUMPTIONS_KEY = Keyword.newKeyword("assumptions");
     private static final Keyword GOAL_KEY = Keyword.newKeyword("goal");
+    private static final Keyword SORTSYSTEM_KEY = Keyword.newKeyword("sortsystem");
 
     public static List<Problem> readFrom(InputStream inputStream) throws Reader.ParsingException {
 
@@ -33,7 +37,7 @@ public class ProblemReader {
 
         List<Problem> problems = CollectionUtils.newEmptyList();
 
-        Object problemDesc = (Map<?, ?> ) p.nextValue(pbr);
+        Object problemDesc = p.nextValue(pbr);
 
         while (problemDesc != Parser.END_OF_INPUT) {
 
@@ -51,7 +55,19 @@ public class ProblemReader {
         Set<Formula> assumptions = readAssumptions((Map<?, ?>) map.get(ASSUMPTIONS_KEY));
         Formula goal = Reader.readFormula(map.get(GOAL_KEY));
 
-        return new Problem(assumptions, goal);
+        if(map.containsKey(SORTSYSTEM_KEY)){
+            //TODO: Create a sorted problem
+            //TODO: Define the class
+
+            SortSystem sortSystem = SortSystem.buildFrom((Map<?, ?>) map.get(SORTSYSTEM_KEY));
+            throw new NotImplementedException();
+
+        } else {
+
+            return new Problem(assumptions, goal);
+        }
+
+
     }
 
     private static Set<Formula> readAssumptions(Map<?, ?> map) {

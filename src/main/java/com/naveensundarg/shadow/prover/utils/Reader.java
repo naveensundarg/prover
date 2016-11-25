@@ -30,6 +30,7 @@ public class Reader {
     private static final Symbol KNOWS = Symbol.newSymbol("Knows!");
     private static final Symbol COMMON = Symbol.newSymbol("Common!");
     private static final Symbol SAYS = Symbol.newSymbol("Says!");
+    private static final Symbol OUGHT = Symbol.newSymbol("Ought!");
 
     public static class ParsingException extends Exception{
 
@@ -194,6 +195,11 @@ public class Reader {
                     return constructSays(list);
                 }
 
+                if(name.equals(OUGHT)){
+
+                    return constructOught(list);
+                }
+
                 return constructPredicate(list);
 
 
@@ -239,6 +245,24 @@ public class Reader {
         }
     }
 
+    // (Ought! agent time strength P)
+    private static Formula constructOught(List list) throws ParsingException{
+        if(list.isEmpty()){
+            throw new ParsingException("Ought expresion cannot be empty!");
+        }  else if(list.size() != 5){
+            throw new ParsingException("Ought expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            Object agent =  list.get(1);
+            Object time =  list.get(2);
+            Object formula =  list.get(3);
+
+            Object action =  list.get(4);
+
+            return new Ought(readLogicValue(agent), readLogicValue(time),readFormula(formula), readLogicValue(action));
+        }
+    }
     // (Says! agent time strength P)
     private static Formula constructSays(List list) throws ParsingException{
         if(list.isEmpty()){

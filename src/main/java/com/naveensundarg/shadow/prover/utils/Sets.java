@@ -113,26 +113,4 @@ public class Sets {
         }
     }
 
-
-    public static void main(String[] args){
-
-        Set<String> set1 = newSet();
-        Set<String> set2 = newSet();
-        Set<String> set3 = newSet();
-
-        set1.add("a");
-        set1.add("b");
-
-        set2.add("x");
-        set2.add("y");
-        set2.add("z");
-
-        List<Set<String>> sets = newEmptyList();
-
-        sets.add(set2);
-      sets.add(set1);
-
-        System.out.println(cartesianProduct(sets));
-
-    }
 }

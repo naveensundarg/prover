@@ -1,4 +1,4 @@
-package com.naveensundarg.shadow.prover.core.gate;
+package com.naveensundarg.shadow.prover.core.calculus;
 
 import com.naveensundarg.shadow.prover.representations.Expression;
 
