@@ -136,4 +136,6 @@ public class Predicate extends Formula {
         return new Predicate(name, argumentTheta);
 
     }
+
+
 }
