@@ -1,6 +1,7 @@
-{:name "mode1-prob1"
- :description "dt16: fol is transparent with Knows!"
- :assumptions {                                             ;;1 (forall (?a ?time ?P) (if (HOLDS (Knows ?a ?time  ?P)) (HOLDS ?P)))
-               1 (forall (?a1 ?a2) (iff (and (HOLDS ?a1) (HOLDS ?a2)) (HOLDS (and ?a1 ?a2))))
-               2 (HOLDS (and cloudy wet))
- :goal (and (HOLDS cloudy) (HOLDS wet))}
+
+{:name        "*cognitive-calculus-ouginjuredht-test-4*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Believes! robot now INJURED)
+               2 (Common! now (Ought! robot now INJURED HELP))
+               }
+ :goal        (happens (action robot HELP) now)}

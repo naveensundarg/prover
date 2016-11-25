@@ -154,3 +154,33 @@
  :assumptions {1 (Believes! jack t0 P)
                2 (Believes! jack t0 (Ought! jack t0 P A)) }
  :goal        (happens (action jack A) t0)}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-ouginjuredht-test-2*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Believes! robot now (if (cries soldier) (injured soldier)))
+               2 (Believes! robot now (cries soldier))
+               3 (Believes! robot now (Ought! robot now (injured soldier) (help soldier)))
+               }
+ :goal        (happens (action robot (help soldier)) now)}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-ouginjuredht-test-3*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Common! now (if (cries soldier) (injured soldier)))
+               2 (Knows! robot now (cries soldier))
+               3 (Common! now (Ought! robot now (injured soldier) (help soldier)))
+               }
+ :goal        (happens (action robot (help soldier)) now)}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-ouginjuredht-test-4*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Believes! robot now INJURED)
+               2 (Common! now (Ought! robot now INJURED HELP))
+               }
+ :goal        (happens (action robot HELP) now)}

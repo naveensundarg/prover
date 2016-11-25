@@ -150,6 +150,7 @@ public class CognitiveCalculusProver implements Prover {
         expandDR1(base, added);
         expandDR2(base, added);
         expandDR3(base, added);
+        expandDR5(base, added);
         expandOughtRule(base, added);
         return base;
     }
@@ -211,14 +212,14 @@ public class CognitiveCalculusProver implements Prover {
 
             Belief b = (Belief) f;
             Formula believed = b.getFormula();
-            if(!(believed instanceof Ought)){
+            if (!(believed instanceof Ought)) {
                 return false;
             }
             Ought ought = (Ought) believed;
             Formula precondition = ought.getFormula();
             Value outerAgent = b.getAgent();
             Value innerAgent = ought.getAgent();
-            if(!innerAgent.equals(outerAgent)) {
+            if (!innerAgent.equals(outerAgent)) {
                 return false;
             }
 
@@ -239,10 +240,11 @@ public class CognitiveCalculusProver implements Prover {
             Value agent = b.getAgent();
             Belief preConditionBelief = new Belief(agent, outerTime, precondition);
             CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+            Set<Formula> smaller = CollectionUtils.setFrom(base);
+            smaller.remove(b);
+            Optional<Justification> preconditionBelievedOpt = cognitiveCalculusProver.prove(smaller, preConditionBelief);
 
-            Optional<Justification> preconditionBelievedOpt = cognitiveCalculusProver.prove(base, preConditionBelief);
-
-            if(preconditionBelievedOpt.isPresent()) {
+            if (preconditionBelievedOpt.isPresent()) {
                 Value actionType = ought.getActionType();
                 Value action = new Compound("action", new Value[]{agent, actionType});
                 Formula happens = new Predicate("happens", new Value[]{action, ought.getTime()});
@@ -278,6 +280,25 @@ public class CognitiveCalculusProver implements Prover {
 
 
     }
+
+    private void expandDR5(Set<Formula> base, Set<Formula> added) {
+        Set<Knowledge> knows = level2FormulaeOfType(base, Knowledge.class);
+
+        for (Knowledge k : knows) {
+
+            Value agent = k.getAgent();
+            Value time = k.getTime();
+            Formula formula = k.getFormula();
+
+            Belief belief = new Belief(agent, time, formula);
+            if (!added.contains(belief)) {
+                base.add(belief);
+                added.add(belief);
+            }
+
+        }
+    }
+
 
     private void expandDR2(Set<Formula> base, Set<Formula> added) {
         Set<Common> commons = level2FormulaeOfType(base, Common.class);
