@@ -34,7 +34,7 @@ public class CognitiveCalculusProver implements Prover {
     }
 
 
-    public Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
+    private Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
         FirstOrderResolutionProver folProver = new FirstOrderResolutionProver();
 

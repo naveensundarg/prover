@@ -7,10 +7,13 @@
                        Agent       #{Object}
                        Time        #{Object}
                        Proposition #{}
+                       Person {Agent}
                        }
 
                :declarations
                       [
+                       (mother (Person) -> Person)
+                       (married (Person, Person) -> Person)
                        (a1 () -> Agent)
                        (t1 () -> Time)
                        (P () -> Proposition)

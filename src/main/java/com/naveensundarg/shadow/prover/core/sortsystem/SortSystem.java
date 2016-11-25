@@ -6,10 +6,8 @@ import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import us.bpsm.edn.Keyword;
 import us.bpsm.edn.Symbol;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 8/27/16.
@@ -18,10 +16,17 @@ public class SortSystem {
 
     private final Ontology ontology;
     private final Map<String, Category[]> declarations;
+    private final Set<Functor> functors;
 
     public SortSystem(Ontology ontology, Map<String, Category[]> declarations) {
         this.ontology = ontology;
+
         this.declarations = Collections.unmodifiableMap(declarations);
+
+        this.functors = declarations.entrySet().stream().map(stringEntry -> new Functor(stringEntry.getKey(), stringEntry.getValue())).
+                collect(Collectors.toSet());
+
+
     }
 
     //Returns true
