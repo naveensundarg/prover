@@ -152,35 +152,74 @@
 {:name        "*cognitive-calculus-ought-test-1*"
  :description "Testing the ought rule"
  :assumptions {1 (Believes! jack t0 P)
-               2 (Believes! jack t0 (Ought! jack t0 P A)) }
+               2 (Believes! jack t0 (Ought! jack t0 P (happens (action jack A) t0))) }
  :goal        (happens (action jack A) t0)}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name        "*cognitive-calculus-ouginjuredht-test-2*"
+{:name        "*cognitive-calculus-ought-injured-test-2*"
  :description "Testing the ought rule"
  :assumptions {1 (Believes! robot now (if (cries soldier) (injured soldier)))
                2 (Believes! robot now (cries soldier))
-               3 (Believes! robot now (Ought! robot now (injured soldier) (help soldier)))
+               3 (Believes! robot now (Ought! robot now (injured soldier) (happens (action robot (help soldier)) now)))
                }
  :goal        (happens (action robot (help soldier)) now)}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name        "*cognitive-calculus-ouginjuredht-test-3*"
+{:name        "*cognitive-calculus-ought-injured-test-3*"
  :description "Testing the ought rule"
  :assumptions {1 (Common! now (if (cries soldier) (injured soldier)))
                2 (Knows! robot now (cries soldier))
-               3 (Common! now (Ought! robot now (injured soldier) (help soldier)))
+               3 (Common! now (Ought! robot now (injured soldier) (happens (action robot (help soldier)) now)))
                }
  :goal        (happens (action robot (help soldier)) now)}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name        "*cognitive-calculus-ouginjuredht-test-4*"
+{:name        "*cognitive-calculus-ought-injured-test-3-complex*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Common! t0 (forall (?x) (if (cries ?x) (injured ?x))) )
+               2 (Knows! robot t1 (cries soldier))
+               3 (Common! t2 (Ought! robot t2 (injured soldier) (happens (action robot (help soldier)) t2)))
+               }
+ :goal        (happens (action robot (help soldier)) t2)}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "*cognitive-calculus-ought-injured-test-4*"
  :description "Testing the ought rule"
  :assumptions {1 (Believes! robot now INJURED)
-               2 (Common! now (Ought! robot now INJURED HELP))
+               2 (Common! now (Ought! robot now INJURED (happens (action robot HELP) now)))
                }
  :goal        (happens (action robot HELP) now)}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-ought-injured-test-4*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Believes! robot now INJURED)
+               2 (Common! now (Ought! robot now INJURED (happens (action robot HELP) now)))
+               }
+ :goal        (happens (action robot HELP) now)}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-closure-test-1*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Believes! robot t1 (forall (?x) (if (Man ?x) (Mortal ?x))))
+               2 (Believes! robot t2 (Man socrates))
+               }
+ :goal        (Believes! robot t3 (Mortal socrates))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-closure-test-2*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Common! t1 (forall (?x) (if (Man ?x) (Mortal ?x))))
+               2 (Common! t2 (Man socrates))
+               }
+ :goal        (Believes! robot t1 (forall (?x) (if (Man ?x) (Mortal ?x))))}

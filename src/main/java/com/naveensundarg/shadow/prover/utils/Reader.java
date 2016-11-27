@@ -81,7 +81,7 @@ public class Reader {
 
         }
 
-        throw new ParsingException("Cannot build logic value from this object " + input + "of class "+ input.getClass());
+        throw new ParsingException("Cannot build logic value from this object " + input + " of class "+ input.getClass());
     }
 
 
@@ -258,9 +258,9 @@ public class Reader {
             Object time =  list.get(2);
             Object formula =  list.get(3);
 
-            Object action =  list.get(4);
+            Object ought =  list.get(4);
 
-            return new Ought(readLogicValue(agent), readLogicValue(time),readFormula(formula), readLogicValue(action));
+            return new Ought(readLogicValue(agent), readLogicValue(time),readFormula(formula), readFormula(ought));
         }
     }
     // (Says! agent time strength P)

@@ -92,4 +92,17 @@ public class Variable extends Value {
     public int hashCode() {
         return name.hashCode();
     }
+
+    @Override
+    public int compareTo(Object o) {
+        if(!(o instanceof  Variable)) {
+            return 0;
+        }
+        else {
+            Variable other = (Variable) o;
+
+            return this.name.compareTo(((Variable) o).name);
+
+        }
+    }
 }

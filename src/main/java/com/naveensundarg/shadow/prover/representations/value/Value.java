@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public abstract class Value extends Expression {
+public abstract class Value extends Expression  implements  Comparable{
 
     protected String name;
 

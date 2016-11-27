@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.core;
 
+import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.*;
@@ -46,7 +47,9 @@ public class CognitiveCalculusProver implements Prover {
 
         Optional<Justification> shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
 
-        while (!shadowedJustificationOpt.isPresent()) {
+        Optional<Justification> agentClosureJustificationOpt = this.proveAgentClosure(base, formula);
+
+        while (!shadowedJustificationOpt.isPresent() && !agentClosureJustificationOpt.isPresent()) {
 
             int sizeBeforeExpansion = base.size();
             base = expand(base, added);
@@ -72,10 +75,20 @@ public class CognitiveCalculusProver implements Prover {
             }
 
             shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
+            agentClosureJustificationOpt = proveAgentClosure(base, formula);
         }
 
-        return shadowedJustificationOpt;
+         if(shadowedJustificationOpt.isPresent()){
 
+            return shadowedJustificationOpt;
+         }
+
+        if(agentClosureJustificationOpt.isPresent()){
+
+            return agentClosureJustificationOpt;
+        }
+
+        return Optional.empty();
     }
 
 
@@ -136,6 +149,56 @@ public class CognitiveCalculusProver implements Prover {
         Optional<Justification> reductioJustOpt = cognitiveCalculusProver.prove(augmented, atom, added);
 
         return reductioJustOpt;
+    }
+
+    private Optional<Justification> proveAgentClosure(Set<Formula> base, Formula goal) {
+
+        if (goal instanceof Belief){
+
+            Belief belief = (Belief) goal;
+            Value agent = belief.getAgent();
+            Value time = belief.getTime();
+            Formula goalBelief = belief.getFormula();
+
+            AgentSnapShot agentSnapShot = AgentSnapShot.from(base);
+
+            Set<Formula> allBelievedTillTime = agentSnapShot.allBelievedByAgentTillTime(agent, time);
+
+
+            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+            Optional<Justification> inner = cognitiveCalculusProver.prove(allBelievedTillTime, goalBelief);
+            if(inner.isPresent()){
+                //TODO: Augment this
+
+                return inner;
+            }
+
+        }
+
+        if (goal instanceof Knowledge){
+
+
+            Knowledge knowledge = (Knowledge) goal;
+            Value agent = knowledge.getAgent();
+            Value time = knowledge.getTime();
+            Formula goalKnowledge = knowledge.getFormula();
+
+            AgentSnapShot agentSnapShot = AgentSnapShot.from(base);
+
+            Set<Formula> allKnownByTillTime = agentSnapShot.allKnownByAgentTillTime(agent, time);
+
+
+            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+            Optional<Justification> inner = cognitiveCalculusProver.prove(allKnownByTillTime, goalKnowledge);
+            if(inner.isPresent()){
+                //TODO: Augment this
+
+                return inner;
+            }
+        }
+
+        return Optional.empty();
+
     }
 
     private Set<Formula> expand(Set<Formula> base, Set<Formula> added) {
@@ -216,7 +279,7 @@ public class CognitiveCalculusProver implements Prover {
                 return false;
             }
             Ought ought = (Ought) believed;
-            Formula precondition = ought.getFormula();
+            Formula precondition = ought.getPrecondition();
             Value outerAgent = b.getAgent();
             Value innerAgent = ought.getAgent();
             if (!innerAgent.equals(outerAgent)) {
@@ -235,7 +298,7 @@ public class CognitiveCalculusProver implements Prover {
 
         for (Belief b : obligationBeliefs) {
             Ought ought = (Ought) b.getFormula();
-            Formula precondition = ought.getFormula();
+            Formula precondition = ought.getPrecondition();
             Value outerTime = b.getTime();
             Value agent = b.getAgent();
             Belief preConditionBelief = new Belief(agent, outerTime, precondition);
@@ -245,11 +308,11 @@ public class CognitiveCalculusProver implements Prover {
             Optional<Justification> preconditionBelievedOpt = cognitiveCalculusProver.prove(smaller, preConditionBelief);
 
             if (preconditionBelievedOpt.isPresent()) {
-                Value actionType = ought.getActionType();
-                Value action = new Compound("action", new Value[]{agent, actionType});
-                Formula happens = new Predicate("happens", new Value[]{action, ought.getTime()});
-                added.add(happens);
-                base.add(happens);
+                Formula oughtAction = ought.getOught();
+              //  Value action = new Compound("action", new Value[]{agent, actionType});
+                //Formula happens = new Predicate("happens", new Value[]{action, ought.getTime()});
+                added.add(oughtAction);
+                base.add(oughtAction);
             }
 
 

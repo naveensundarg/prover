@@ -134,4 +134,9 @@ public class Compound extends Value {
     public String toString() {
         return name  +Arrays.toString(arguments);
     }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
+    }
 }

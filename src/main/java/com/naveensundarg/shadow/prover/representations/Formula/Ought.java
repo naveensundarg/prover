@@ -16,22 +16,22 @@ public class Ought extends Formula{
 
     Value agent;
     Value time;
-    Formula formula;
-    Value action;
+    Formula precondition;
+    Formula ought;
 
     Set<Formula> subFormulae;
     Set<Variable> variables;
 
 
-    public Ought(Value agent, Value time, Formula formula, Value action) {
+    public Ought(Value agent, Value time, Formula formula, Formula ought) {
 
 
         this.agent = agent;
         this.time = time;
-        this.formula = formula;
+        this.precondition = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         this.subFormulae.add(this);
-        this.action = action;
+        this.ought = ought;
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
         if (agent instanceof Variable) {
@@ -44,10 +44,14 @@ public class Ought extends Formula{
         }
     }
 
-    public Formula getFormula(){
-        return formula;
+    public Formula getPrecondition(){
+        return precondition;
     }
 
+
+    public Formula getOught() {
+        return ought;
+    }
 
     public Value getAgent() {
         return agent;
@@ -95,17 +99,14 @@ public class Ought extends Formula{
         return 2;
     }
 
-    public Value getActionType() {
-        return action;
-    }
 
     @Override
     public String toString() {
         return "(Ought! "
                 + agent + " "
                 + time + " "+
-                formula +
-                action + ")";
+                precondition + " " +
+                 ought + ")";
     }
 
     @Override
@@ -117,7 +118,7 @@ public class Ought extends Formula{
 
         if (!agent.equals(belief.agent)) return false;
         if (!time.equals(belief.time)) return false;
-        return formula.equals(belief.formula);
+        return precondition.equals(belief.formula);
 
     }
 
@@ -125,7 +126,7 @@ public class Ought extends Formula{
     public int hashCode() {
         int result = agent.hashCode();
         result = 31 * result + time.hashCode();
-        result = 31 * result + formula.hashCode();
+        result = 31 * result + precondition.hashCode();
         return result;
     }
 }

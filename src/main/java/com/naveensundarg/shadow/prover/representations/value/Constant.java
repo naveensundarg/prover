@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public class Constant extends Value {
+public class Constant extends Value implements Comparable{
 
 
 
@@ -84,5 +84,18 @@ public class Constant extends Value {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if(!(o instanceof  Constant)) {
+            return 0;
+        }
+        else {
+            Constant other = (Constant) o;
+
+            return this.name.compareTo(((Constant) o).name);
+
+        }
     }
 }

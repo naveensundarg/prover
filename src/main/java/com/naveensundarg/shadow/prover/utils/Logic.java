@@ -32,6 +32,7 @@ public class Logic {
     }
 
     private static final Value I = new Constant("I");
+    private static final Value now = new Constant("now");
 
     public static Clause renameVars(Clause clause, Problem problem) {
 
@@ -58,6 +59,9 @@ public class Logic {
             agents.add(((Knowledge) formula).getAgent());
         }
 
+        if (formula instanceof Ought) {
+            agents.add(((Ought) formula).getAgent());
+        }
         Set<Formula> forms =  formula.subFormulae().stream().filter(x->!x.equals(formula)).collect(Collectors.toSet());;
 
         forms.forEach(x->agents.addAll(agentsInFormula(x)));
@@ -66,6 +70,31 @@ public class Logic {
         return agents;
     }
 
+    private static Set<Value> timesInFormula(Formula formula) {
+
+        Set<Value> times = CollectionUtils.newEmptySet();
+        if (formula instanceof Belief) {
+            times.add(((Belief) formula).getTime());
+        }
+        if (formula instanceof Knowledge) {
+            times.add(((Knowledge) formula).getTime());
+        }
+
+        if (formula instanceof Common) {
+            times.add(((Common) formula).getTime());
+        }
+
+        if (formula instanceof Ought) {
+            times.add(((Ought) formula).getTime());
+        }
+
+        Set<Formula> forms =  formula.subFormulae().stream().filter(x->!x.equals(formula)).collect(Collectors.toSet());;
+
+        forms.forEach(x->times.addAll(timesInFormula(x)));
+
+
+        return times;
+    }
     public static Set<Value> allAgents(Set<Formula> base) {
 
         Set<Value> agents = base.stream().map(Logic::agentsInFormula).reduce(CollectionUtils.newEmptySet(), CollectionUtils::union);
@@ -76,6 +105,18 @@ public class Logic {
         }
 
         return agents;
+    }
+
+    public static Set<Value> allTimes(Set<Formula> base) {
+
+        Set<Value> times = base.stream().map(Logic::timesInFormula).reduce(CollectionUtils.newEmptySet(), CollectionUtils::union);
+
+        if(times.isEmpty()) {
+
+            times.add(now);
+        }
+
+        return times;
     }
 
 
