@@ -209,7 +209,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name        "*cognitive-calculus-closure-test-1*"
- :description "Testing the ought rule"
+ :description "Testing closure"
  :assumptions {1 (Believes! robot t1 (forall (?x) (if (Man ?x) (Mortal ?x))))
                2 (Believes! robot t2 (Man socrates))
                }
@@ -218,8 +218,67 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name        "*cognitive-calculus-closure-test-2*"
- :description "Testing the ought rule"
+ :description "Testing closure"
  :assumptions {1 (Common! t1 (forall (?x) (if (Man ?x) (Mortal ?x))))
                2 (Common! t2 (Man socrates))
                }
  :goal        (Believes! robot t1 (forall (?x) (if (Man ?x) (Mortal ?x))))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-closure-test-3*"
+ :description "Testing closure"
+ :assumptions {1 (Believes!  robot t1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))) BirdTtheorem))
+               }
+ :goal        (Believes! robot t2 BirdTtheorem)}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-closure-test-4*"
+ :description "Testing closure"
+ :assumptions {1 (Believes!  robot1 t1  (Believes! robot2 t1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))) BirdTtheorem)))
+               }
+ :goal        (Believes! robot1 t2 (Believes! robot2 t1 BirdTtheorem))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-closure-test-5*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Common! t0 (forall (?x) (if (and (honest ?x) (criesForHelp ?x)) (injured ?x))))
+               2 (Common! t0 (Ought! robot2 t2 (injured mary) (happens (action robot2 (help mary)) t2)))
+               3 (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))
+               4 (Common! t1 (criesForHelp mary))
+               }
+ :goal        (Believes! robot1 t2 (happens (action robot2 (help mary)) t2)) }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "*cognitive-calculus-closure-test-5*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Common! t0 P)}
+ :goal         (and (Knows! a1 t1 P) (Knows! a2 t1 P))
+
+ }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "*cognitive-calculus-closure-test-5*"
+ :description "Testing the ought rule"
+ :assumptions {1 (Common! t0 (forall (?x) (if (and (honest ?x) (criesForHelp ?x)) (injured ?x))))
+               2 (Common! t0 (Ought! robot2 t2 (injured mary) (happens (action robot2 (help mary)) t2)))
+               3 (Believes! robot1 t0 (Believes! robot2 t2 (honest mary)))
+               4 (Common! t1 (criesForHelp mary))
+
+               }
+ :goal         (and (Believes! robot1 t2 (Believes! robot2 t2 (honest mary)))
+                    (Believes! robot1 t2 (Believes! robot2 t2 (criesForHelp mary)))
+                    (Believes! robot1 t2 (Believes! robot2 t2 (honest mary))))
+
+                    }
+

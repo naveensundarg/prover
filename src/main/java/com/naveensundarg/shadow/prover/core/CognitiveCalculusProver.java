@@ -52,8 +52,16 @@ public class CognitiveCalculusProver implements Prover {
         while (!shadowedJustificationOpt.isPresent() && !agentClosureJustificationOpt.isPresent()) {
 
             int sizeBeforeExpansion = base.size();
-            base = expand(base, added);
+            base = expand(base, added, formula);
             int sizeAfterExpansion = base.size();
+
+
+            Optional<Justification> andProofOpt = tryAND(base, formula, added);
+
+
+            if (andProofOpt.isPresent()) {
+                return andProofOpt;
+            }
 
 
             Optional<Justification> caseProofOpt = tryOR(base, formula, added);
@@ -78,12 +86,12 @@ public class CognitiveCalculusProver implements Prover {
             agentClosureJustificationOpt = proveAgentClosure(base, formula);
         }
 
-         if(shadowedJustificationOpt.isPresent()){
+        if (shadowedJustificationOpt.isPresent()) {
 
             return shadowedJustificationOpt;
-         }
+        }
 
-        if(agentClosureJustificationOpt.isPresent()){
+        if (agentClosureJustificationOpt.isPresent()) {
 
             return agentClosureJustificationOpt;
         }
@@ -91,6 +99,31 @@ public class CognitiveCalculusProver implements Prover {
         return Optional.empty();
     }
 
+
+    private Optional<Justification> tryAND(Set<Formula> base, Formula formula, Set<Formula> added) {
+
+        if(formula instanceof And){
+
+            And and = (And) formula;
+
+            Formula conjuncts[] = and.getArguments();
+
+            List<Optional<Justification>> conjunctProofsOpt = Arrays.stream(conjuncts).map(conjunct-> {
+
+                CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+                return cognitiveCalculusProver.prove(base, conjunct);
+            }).collect(Collectors.toList());
+
+
+            if(conjunctProofsOpt.stream().allMatch(Optional::isPresent)){
+
+                return Optional.of(
+                        new CompoundJustification("and",
+                        conjunctProofsOpt.stream().map(Optional::get).collect(Collectors.toList())));
+            }
+        }
+        return Optional.empty();
+    }
 
     private Optional<Justification> tryOR(Set<Formula> base, Formula formula, Set<Formula> added) {
 
@@ -153,7 +186,7 @@ public class CognitiveCalculusProver implements Prover {
 
     private Optional<Justification> proveAgentClosure(Set<Formula> base, Formula goal) {
 
-        if (goal instanceof Belief){
+        if (goal instanceof Belief) {
 
             Belief belief = (Belief) goal;
             Value agent = belief.getAgent();
@@ -167,7 +200,7 @@ public class CognitiveCalculusProver implements Prover {
 
             CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
             Optional<Justification> inner = cognitiveCalculusProver.prove(allBelievedTillTime, goalBelief);
-            if(inner.isPresent()){
+            if (inner.isPresent()) {
                 //TODO: Augment this
 
                 return inner;
@@ -175,7 +208,7 @@ public class CognitiveCalculusProver implements Prover {
 
         }
 
-        if (goal instanceof Knowledge){
+        if (goal instanceof Knowledge) {
 
 
             Knowledge knowledge = (Knowledge) goal;
@@ -190,7 +223,7 @@ public class CognitiveCalculusProver implements Prover {
 
             CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
             Optional<Justification> inner = cognitiveCalculusProver.prove(allKnownByTillTime, goalKnowledge);
-            if(inner.isPresent()){
+            if (inner.isPresent()) {
                 //TODO: Augment this
 
                 return inner;
@@ -201,7 +234,7 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private Set<Formula> expand(Set<Formula> base, Set<Formula> added) {
+    private Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
         breakUpBiConditionals(base);
 
         expandR4(base, added);
@@ -210,8 +243,8 @@ public class CognitiveCalculusProver implements Prover {
         expandDR6a(base, added);
         expandModalConjunctions(base, added);
         expandModalImplications(base, added);
-        expandDR1(base, added);
-        expandDR2(base, added);
+        expandDR1(base, added, goal);
+        expandDR2(base, added, goal);
         expandDR3(base, added);
         expandDR5(base, added);
         expandOughtRule(base, added);
@@ -305,11 +338,12 @@ public class CognitiveCalculusProver implements Prover {
             CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
             Set<Formula> smaller = CollectionUtils.setFrom(base);
             smaller.remove(b);
+            smaller = smaller.stream().filter(x -> !x.subFormulae().contains(ought)).collect(Collectors.toSet());
             Optional<Justification> preconditionBelievedOpt = cognitiveCalculusProver.prove(smaller, preConditionBelief);
 
             if (preconditionBelievedOpt.isPresent()) {
                 Formula oughtAction = ought.getOught();
-              //  Value action = new Compound("action", new Value[]{agent, actionType});
+                //  Value action = new Compound("action", new Value[]{agent, actionType});
                 //Formula happens = new Predicate("happens", new Value[]{action, ought.getTime()});
                 added.add(oughtAction);
                 base.add(oughtAction);
@@ -321,9 +355,10 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private void expandDR1(Set<Formula> base, Set<Formula> added) {
+    private void expandDR1(Set<Formula> base, Set<Formula> added, Formula goal) {
         Set<Common> commons = level2FormulaeOfType(base, Common.class);
-        Set<Value> agents = Logic.allAgents(base);
+        Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
+        ;
         List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, 2);
 
         for (Common c : commons) {
@@ -363,9 +398,9 @@ public class CognitiveCalculusProver implements Prover {
     }
 
 
-    private void expandDR2(Set<Formula> base, Set<Formula> added) {
+    private void expandDR2(Set<Formula> base, Set<Formula> added, Formula goal) {
         Set<Common> commons = level2FormulaeOfType(base, Common.class);
-        Set<Value> agents = Logic.allAgents(base);
+        Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
 
         for (Common c : commons) {
             for (Value agent : agents) {

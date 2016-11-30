@@ -30,8 +30,8 @@ public class Ought extends Formula{
         this.time = time;
         this.precondition = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        this.subFormulae.add(this);
         this.ought = ought;
+        this.subFormulae.add(this);
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
         if (agent instanceof Variable) {
@@ -114,12 +114,12 @@ public class Ought extends Formula{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Belief belief = (Belief) o;
+        Ought ought1 = (Ought) o;
 
-        if (!agent.equals(belief.agent)) return false;
-        if (!time.equals(belief.time)) return false;
-        return precondition.equals(belief.formula);
-
+        if (!agent.equals(ought1.agent)) return false;
+        if (!time.equals(ought1.time)) return false;
+        if (!precondition.equals(ought1.precondition)) return false;
+        return ought.equals(ought1.ought);
     }
 
     @Override
@@ -127,6 +127,7 @@ public class Ought extends Formula{
         int result = agent.hashCode();
         result = 31 * result + time.hashCode();
         result = 31 * result + precondition.hashCode();
+        result = 31 * result + ought.hashCode();
         return result;
     }
 }

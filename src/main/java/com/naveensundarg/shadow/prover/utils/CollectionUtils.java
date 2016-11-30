@@ -28,6 +28,14 @@ public class CollectionUtils {
         return newlist;
     }
 
+    public static <T> Set<T> addToSet(Set<T> set, T a){
+        Set<T> newSet = newEmptySet();
+        newSet.addAll(set);
+        newSet.add(a);
+        return newSet;
+    }
+
+
 
     public static <U,V> Map<U,V> newMap(){
         return new HashMap<>();

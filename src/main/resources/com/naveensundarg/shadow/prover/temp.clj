@@ -1,7 +1,8 @@
-
-{:name        "*cognitive-calculus-ouginjuredht-cl-4*"
+{:name        "*cognitive-calculus-closure-test-5*"
  :description "Testing the ought rule"
- :assumptions {1 (Believes! robot t1 (forall (?x) (if (Man ?x) (Mortal ?x))))
-               2 (Believes! robot t2 (Man socrates))
+ :assumptions {
+               1 (Common! t0 (Ought! robot2 t2 (injured mary) (happens (action robot2 (help mary)) t2)))
+
+
                }
- :goal        (Believes! robot t3 (Mortal socrates))}
+ :goal        (Believes! robot1 t2 (Ought! robot2 t2 (injured mary) (happens (action robot2 (help mary)) t2))) }
