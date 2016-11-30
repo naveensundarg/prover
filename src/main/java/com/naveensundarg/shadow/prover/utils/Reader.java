@@ -228,6 +228,23 @@ public class Reader {
         }
     }
 
+    // (K! agent time P)
+    private static Formula constructPerceives(List list) throws ParsingException{
+        if(list.isEmpty()){
+            throw new ParsingException("Perceieves expresion cannot be empty!");
+        }  else if(list.size() != 4){
+            throw new ParsingException("Perceieves expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            Object agent =  list.get(1);
+            Object time =  list.get(2);
+            Object formula =  list.get(3);
+
+            return new Perception(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+        }
+    }
+
     // (B! agent time strength P)
     private static Formula constructBelief(List list) throws ParsingException{
         if(list.isEmpty()){

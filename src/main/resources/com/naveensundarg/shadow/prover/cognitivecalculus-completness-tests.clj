@@ -15,6 +15,38 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+{:name        "conjunction-test-1"
+ :description "Conjunctions"
+ :assumptions {1 (Common! t0 P)}
+ :goal         (and (Knows! a1 t1 P) (Knows! a2 t1 P))
+
+ }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "conjunction-test-2"
+ :description "Conjunctions"
+ :assumptions {1 (and (Common! t0 P) (Common! t0 Q) ) }
+ :goal         (Knows! a1 t1 (and P Q))
+
+ }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "conjunction-test-3"
+ :description "Conjunctions"
+ :assumptions {1 (and (Common! t0 (forall (?x) (if (human ?x) (mortal ?x))))
+                      (Common! t0 (human socrates)))
+               }
+ :goal         (Knows! a1 t1 (mortal socrates))
+
+ }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 {:name        "*cognitive-calculus-completeness-test-3*"
  :description "Bird Theorem and Jack"
  :assumptions {1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y))))
@@ -247,38 +279,39 @@
 {:name        "*cognitive-calculus-closure-test-5*"
  :description "Testing the ought rule"
  :assumptions {1 (Common! t0 (forall (?x) (if (and (honest ?x) (criesForHelp ?x)) (injured ?x))))
-               2 (Common! t0 (Ought! robot2 t2 (injured mary) (happens (action robot2 (help mary)) t2)))
+               ;; It is commonly known that if someone is honest and cries for help, then they are injured.
+
+               2 (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action robot2 (help mary)) t2)))
+
                3 (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))
+
                4 (Common! t1 (criesForHelp mary))
                }
  :goal        (Believes! robot1 t2 (happens (action robot2 (help mary)) t2)) }
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-{:name        "*cognitive-calculus-closure-test-5*"
- :description "Testing the ought rule"
- :assumptions {1 (Common! t0 P)}
- :goal         (and (Knows! a1 t1 P) (Knows! a2 t1 P))
-
- }
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-{:name        "*cognitive-calculus-closure-test-5*"
+{:name        "*cognitive-calculus-closure-test-6*"
  :description "Testing the ought rule"
  :assumptions {1 (Common! t0 (forall (?x) (if (and (honest ?x) (criesForHelp ?x)) (injured ?x))))
-               2 (Common! t0 (Ought! robot2 t2 (injured mary) (happens (action robot2 (help mary)) t2)))
-               3 (Believes! robot1 t0 (Believes! robot2 t2 (honest mary)))
+               ;; It is commonly known that if someone is honest and cries for help, then they are injured.
+
+               2 (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action robot2 (help mary)) t2)))
+
+               3 (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))
+
                4 (Common! t1 (criesForHelp mary))
 
-               }
- :goal         (and (Believes! robot1 t2 (Believes! robot2 t2 (honest mary)))
-                    (Believes! robot1 t2 (Believes! robot2 t2 (criesForHelp mary)))
-                    (Believes! robot1 t2 (Believes! robot2 t2 (honest mary))))
 
-                    }
+               }
+ :goal        (Believes! robot1 t2 (happens (action robot2 (help mary)) t2)) }
+
+
+
+
+
+
 

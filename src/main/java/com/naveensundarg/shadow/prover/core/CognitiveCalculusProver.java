@@ -238,6 +238,7 @@ public class CognitiveCalculusProver implements Prover {
         breakUpBiConditionals(base);
 
         expandR4(base, added);
+        expandPerceptionToKnowledge(base, added);
         expandR11a(base, added);
         expandDR6(base, added);
         expandDR6a(base, added);
@@ -250,6 +251,8 @@ public class CognitiveCalculusProver implements Prover {
         expandOughtRule(base, added);
         return base;
     }
+
+
 
     private void breakUpBiConditionals(Set<Formula> base) {
 
@@ -273,6 +276,22 @@ public class CognitiveCalculusProver implements Prover {
                 filter(f -> f instanceof Knowledge).
                 map(f -> ((Knowledge) f).getFormula()).
                 filter(f -> !added.contains(f)).
+                collect(Collectors.toSet());
+
+        base.addAll(derived);
+        added.addAll(derived);
+
+    }
+
+    private void expandPerceptionToKnowledge(Set<Formula> base, Set<Formula> added) {
+
+        Set<Formula> derived = base.
+                stream().
+                filter(f -> f instanceof Perception).
+                map(f -> {
+                    Perception p = (Perception) f;
+                    return new Knowledge(p.getAgent(), p.getTime(), p.getFormula());
+                }).
                 collect(Collectors.toSet());
 
         base.addAll(derived);
