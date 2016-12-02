@@ -21,9 +21,20 @@ import java.util.stream.Collectors;
  */
 public final class UniversalInstantiation {
 
-    public static final Set<Value> smartHints(Universal universal, Set<Formula> formulae){
+    public static final List<Set<Value>> smartHints(Universal universal, Set<Formula> formulae) {
 
-        Variable firstVariable = universal.vars()[0];
+        List<Set<Value>> smartHints = CollectionUtils.newEmptyList();
+
+        for(int i = 0; i<universal.vars().length; i++){
+            smartHints.add(i, smartHintsForVariableAt(i, universal,formulae));
+        }
+
+        return smartHints;
+
+    }
+    public static final Set<Value> smartHintsForVariableAt(int position, Universal universal, Set<Formula> formulae){
+
+        Variable firstVariable = universal.vars()[position];
 
         Set<Predicate> allPredicates = Logic.predicates(formulae);
 

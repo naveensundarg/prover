@@ -19,6 +19,8 @@ import sun.rmi.runtime.Log;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
+
 /**
  * Created by naveensundarg on 4/21/16.
  */
@@ -73,7 +75,7 @@ public class CognitiveCalculusProver implements Prover {
                 return caseProofOpt;
             }
 
-           Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
+            Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
 
 
             if (reductioProofOpt.isPresent()) {
@@ -563,38 +565,44 @@ public class CognitiveCalculusProver implements Prover {
 
         Set<Universal> universals = base.stream().filter(f -> f instanceof Universal).map(f -> (Universal) f).collect(Collectors.toSet());
 
-//        Set<Value> values = Logic.predicates(formulae).stream().
-//                map(Predicate::allValues).
-//                reduce(Sets.newSet(), Sets::union).stream().filter(v -> !(v instanceof Variable) ).
-//
-//                collect(Collectors.toSet());
+/*
+        Set<Value> values = Logic.predicates(formulae).stream().
+                map(Predicate::allValues).
+                reduce(Sets.newSet(), Sets::union).stream().filter(v -> !(v instanceof Variable) ).
+
+                collect(Collectors.toSet());
+*/
 
 
         universals.stream().forEach(universal -> {
 
             Formula formula = universal.getArgument();
 
-            Set<Value> smartValues = UniversalInstantiation.smartHints(universal,formulae);
+            List<Set<Value>> smartValues = UniversalInstantiation.smartHints(universal, formulae);
 
-            smartValues.stream().forEach(value -> {
+            Set<List<Value>> substitutions = cartesianProduct(smartValues);
+            Variable[] vars = universal.vars();
 
-                Set<Value> subValues = value.subValues();
+            Map<Variable, Value> mapping = CollectionUtils.newMap();
+            substitutions.stream().forEach(substitution -> {
+
+                        for (int i = 0; i < vars.length; i++) {
+
+                            mapping.put(vars[i],substitution.get(vars.length-1-i));
 
 
-                subValues.stream().forEach(subValue -> {
+                        }
 
-                    Map<Variable, Value> map = CollectionUtils.newMap();
+                        Formula derived = universal.getArgument().apply(mapping);
 
-                    map.put(universal.vars()[0], subValue);
+                       if(!added.contains(derived)){
+                            base.add(derived);
+                            added.add(derived);
+                        }
 
-                    Formula derived =formula.apply(map);
-                    if(!added.contains(derived)){
-                        base.add(derived);
-                        added.add(derived);
                     }
-                });
-            });
 
+            );
 
 
         });

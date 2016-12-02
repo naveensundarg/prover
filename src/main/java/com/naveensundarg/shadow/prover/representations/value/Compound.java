@@ -26,7 +26,7 @@ public class Compound extends Value {
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
 
         this.subValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
-        this.subValues().add(this);
+    //    this.subValues().add(this);
     }
     public Compound(String name, Value[] arguments){
         super();
@@ -34,7 +34,7 @@ public class Compound extends Value {
         super.name = name;
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.subValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
-        this.subValues().add(this);
+//        this.subValues().add(this);
 
     }
 
