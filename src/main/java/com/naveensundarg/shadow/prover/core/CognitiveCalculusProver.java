@@ -1,20 +1,22 @@
 package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
+import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Logic;
+import com.naveensundarg.shadow.prover.utils.Sets;
+import sun.rmi.runtime.Log;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -71,7 +73,7 @@ public class CognitiveCalculusProver implements Prover {
                 return caseProofOpt;
             }
 
-            Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
+           Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
 
 
             if (reductioProofOpt.isPresent()) {
@@ -102,24 +104,24 @@ public class CognitiveCalculusProver implements Prover {
 
     private Optional<Justification> tryAND(Set<Formula> base, Formula formula, Set<Formula> added) {
 
-        if(formula instanceof And){
+        if (formula instanceof And) {
 
             And and = (And) formula;
 
             Formula conjuncts[] = and.getArguments();
 
-            List<Optional<Justification>> conjunctProofsOpt = Arrays.stream(conjuncts).map(conjunct-> {
+            List<Optional<Justification>> conjunctProofsOpt = Arrays.stream(conjuncts).map(conjunct -> {
 
                 CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
                 return cognitiveCalculusProver.prove(base, conjunct);
             }).collect(Collectors.toList());
 
 
-            if(conjunctProofsOpt.stream().allMatch(Optional::isPresent)){
+            if (conjunctProofsOpt.stream().allMatch(Optional::isPresent)) {
 
                 return Optional.of(
                         new CompoundJustification("and",
-                        conjunctProofsOpt.stream().map(Optional::get).collect(Collectors.toList())));
+                                conjunctProofsOpt.stream().map(Optional::get).collect(Collectors.toList())));
             }
         }
         return Optional.empty();
@@ -249,9 +251,9 @@ public class CognitiveCalculusProver implements Prover {
         expandDR3(base, added);
         expandDR5(base, added);
         expandOughtRule(base, added);
+        expandUniversalElim(base, added, goal);
         return base;
     }
-
 
 
     private void breakUpBiConditionals(Set<Formula> base) {
@@ -549,6 +551,53 @@ public class CognitiveCalculusProver implements Prover {
 
         }
 
+
+    }
+
+    private void expandUniversalElim(Set<Formula> base, Set<Formula> added, Formula goal) {
+
+        //TODO: Less stupid elimination
+
+        Set<Formula> formulae = CollectionUtils.setFrom(base);
+        formulae.add(goal);
+
+        Set<Universal> universals = base.stream().filter(f -> f instanceof Universal).map(f -> (Universal) f).collect(Collectors.toSet());
+
+//        Set<Value> values = Logic.predicates(formulae).stream().
+//                map(Predicate::allValues).
+//                reduce(Sets.newSet(), Sets::union).stream().filter(v -> !(v instanceof Variable) ).
+//
+//                collect(Collectors.toSet());
+
+
+        universals.stream().forEach(universal -> {
+
+            Formula formula = universal.getArgument();
+
+            Set<Value> smartValues = UniversalInstantiation.smartHints(universal,formulae);
+
+            smartValues.stream().forEach(value -> {
+
+                Set<Value> subValues = value.subValues();
+
+
+                subValues.stream().forEach(subValue -> {
+
+                    Map<Variable, Value> map = CollectionUtils.newMap();
+
+                    map.put(universal.vars()[0], subValue);
+
+                    Formula derived =formula.apply(map);
+                    if(!added.contains(derived)){
+                        base.add(derived);
+                        added.add(derived);
+                    }
+                });
+            });
+
+
+
+        });
 
     }
 

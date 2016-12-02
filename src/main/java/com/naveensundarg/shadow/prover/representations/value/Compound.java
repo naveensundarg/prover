@@ -14,7 +14,7 @@ public class Compound extends Value {
 
     private final Value[] arguments;
     private final Set<Variable> variables;
-
+    private final Set<Value> subValues;
 
     public Compound(String name, List<Value> argumentsList){
         super();
@@ -24,12 +24,18 @@ public class Compound extends Value {
             arguments[i] = argumentsList.get(i);
         }
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+
+        this.subValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
+        this.subValues().add(this);
     }
     public Compound(String name, Value[] arguments){
         super();
         this.arguments = arguments;
         super.name = name;
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+        this.subValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
+        this.subValues().add(this);
+
     }
 
     @Override
@@ -85,6 +91,12 @@ public class Compound extends Value {
 
 
     }
+
+    @Override
+    public Set<Value> subValues() {
+        return subValues;
+    }
+
     @Override
     public  int arity() {
         return arguments.length;

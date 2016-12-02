@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Created by naveensundarg on 11/25/16.
  */
-public class AgentSnapShot {
+public final class AgentSnapShot {
 
     private final Map<Value, Map<Value, Set<Formula>>> knowledgeSnapshots;
     private final Map<Value, Map<Value, Set<Formula>>> beliefSnapshots;

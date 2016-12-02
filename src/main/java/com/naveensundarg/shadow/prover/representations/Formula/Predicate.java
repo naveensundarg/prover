@@ -19,7 +19,7 @@ public class Predicate extends Formula {
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
     private final boolean sorted;
-
+    private final Set<Value> allValues;
     public Predicate(String name){
 
         this.sorted = false;
@@ -27,6 +27,7 @@ public class Predicate extends Formula {
         this.arguments  = new Value[0];
         this.subFormulae = Sets.with(this);
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+        this.allValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
 
     }
     public Predicate(String name, Value[] arguments){
@@ -36,6 +37,8 @@ public class Predicate extends Formula {
         this.arguments = arguments;
         this.subFormulae = Sets.with(this);
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+        this.allValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
+
     }
 
     private static void validateName(String name){
@@ -69,6 +72,12 @@ public class Predicate extends Formula {
         }
 
         return new Predicate(name, argumentTheta);
+    }
+
+    public Set<Value> allValues() {
+
+        return allValues;
+
     }
 
     @Override

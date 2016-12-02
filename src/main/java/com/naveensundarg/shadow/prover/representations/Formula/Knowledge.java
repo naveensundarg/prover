@@ -61,7 +61,7 @@ public class Knowledge extends Formula {
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return null;
+        return new Knowledge(agent.apply(substitution), time.apply(substitution), formula.apply(substitution));
     }
 
     @Override

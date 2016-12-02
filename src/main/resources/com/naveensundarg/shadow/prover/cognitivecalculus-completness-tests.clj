@@ -7,6 +7,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+{:name        "*cognitive-calculus-completeness-test-1-a*"
+ :description "testing short hand rules"
+ :assumptions {1 (Knows! a1 P)}
+ :goal        (Believes! a1 now P)}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 {:name        "*cognitive-calculus-completeness-test-2*"
  :description "kicking the tires"
  :assumptions {1 (Believes! a1 t0 P)
@@ -309,6 +316,40 @@
                }
  :goal        (Believes! robot1 t2 (happens (action robot2 (help mary)) t2)) }
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*licato*"
+ :description "from licato's paper"
+ :assumptions {1  (Knows! a t (or (isExit A) (isExit B)))
+
+               2 (Perceives! a t (not (isExit A)))
+               }
+ :goal        (Knows! a t (isExit B)) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{
+ :name "universal intro inside a knows"
+ :description ""
+ :assumptions {
+               1 (forall (?x) (if (P ?x) (Knows! ?x U)) )
+               2 (P a)
+               }
+
+ :goal (Knows! a U)
+
+ }
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name "false-belief-task-M1"
+ :description "Method 1 in the False Belief Task Paper"
+ :assumptions {1 (Perceives! a1 (happens (action a2 alpha) t))
+               2 (Common! (forall (?a) (if (happens (action ?a alpha) t)
+                                         (Knows! ?a  (happens (action ?a alpha) t)))))}
+
+ :goal (Knows! a1 (Knows! a2 (happens (action a2 alpha) t)))}
 
 
 

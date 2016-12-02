@@ -1,6 +1,9 @@
 package com.naveensundarg.shadow.prover.utils;
 
+import com.naveensundarg.shadow.prover.representations.value.Value;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -59,5 +62,29 @@ public class CollectionUtils {
 
     public static <T> Set<T> setFrom(Set<T> set){
         return new HashSet<>(set);
+    }
+
+    public static <T>  boolean contains(T[] array, T value){
+        return Arrays.stream(array).anyMatch(x->x.equals(value));
+    }
+    public static   List<Integer> matchingIndices(Value[] array, Value value){
+
+        List<Integer> positions = CollectionUtils.newEmptyList();
+
+        for(int i = 0;  i < array.length; i++){
+
+            if(array[i].subValues().contains(value)){
+                positions.add(i);
+            }
+        }
+
+        return positions;
+    }
+
+    public static <T>  Set<T> fetchAtIndices(T[] array, List<Integer> positions){
+
+        return positions.stream().map(position -> array[position]).collect(Collectors.toSet());
+
+
     }
 }

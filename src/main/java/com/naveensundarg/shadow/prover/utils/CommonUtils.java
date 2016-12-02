@@ -6,6 +6,7 @@ import us.bpsm.edn.parser.Parser;
 import us.bpsm.edn.parser.Parsers;
 
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,16 @@ import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
  */
 public class CommonUtils {
 
+    public static Formula readFromString(String formulaStr) throws Reader.ParsingException {
+
+
+            Parseable pbr = Parsers.newParseable(new StringReader(formulaStr));
+            Parser p = Parsers.newParser(defaultConfiguration());
+
+            return Reader.readFormula(p.nextValue(pbr));
+
+
+    }
     public static String toString(Object[] objects) {
 
         StringBuilder stringBuilder = new StringBuilder();

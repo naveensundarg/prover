@@ -15,13 +15,15 @@ public class Constant extends Value implements Comparable{
 
     private final Value[] arguments;
     private final Set<Variable> variables;
+    private final Set<Value> subValues;
+
     public Constant(String name){
 
         super();
         this.arguments = new Value[0];
         super.name = name;
         this.variables = Sets.newSet();
-
+        this.subValues = Sets.with(this);
     }
     @Override
     public  int arity() {
@@ -61,6 +63,11 @@ public class Constant extends Value implements Comparable{
     @Override
     public Value replace(Value value1, Value value2) {
         return value1.equals(this)? value2 : this;
+    }
+
+    @Override
+    public Set<Value> subValues() {
+        return subValues;
     }
 
     @Override

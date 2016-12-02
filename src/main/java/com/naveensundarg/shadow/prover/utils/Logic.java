@@ -67,7 +67,7 @@ public class Logic {
         forms.forEach(x->agents.addAll(agentsInFormula(x)));
 
 
-        return agents;
+        return agents.stream().filter(x-> !(x instanceof Variable)).collect(Collectors.toSet());
     }
 
     private static Set<Value> timesInFormula(Formula formula) {
@@ -119,5 +119,26 @@ public class Logic {
         return times;
     }
 
+    public static Set<Predicate> variationsOf(Predicate predicate, Set<Formula> base) {
 
+        return predicates(base).stream().
+                filter(p -> p.getName().equals(predicate.getName())).collect(Collectors.toSet());
+
+    }
+
+    public static Set<Predicate> predicates(Formula formula) {
+
+        return formula.subFormulae().stream().
+                filter(f -> f instanceof Predicate).
+                map(f -> (Predicate) f).
+                collect(Collectors.toSet());
+    }
+
+    public static Set<Predicate> predicates(Set<Formula> base) {
+
+        return base.stream().
+                map(Logic::predicates).
+                reduce(Sets.newSet(), Sets::union);
+
+    }
 }

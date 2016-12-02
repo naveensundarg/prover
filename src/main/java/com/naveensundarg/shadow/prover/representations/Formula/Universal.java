@@ -28,7 +28,7 @@ public class Universal extends Formula implements Quantifier {
 
         this.vars = vars;
         this.argument = argument;
-        this.subFormulae = Sets.with(argument);
+        this.subFormulae = Sets.copy(argument.subFormulae());
         this.variables = argument.variablesPresent();
         this.subFormulae.add(this);
         Arrays.stream(vars).forEach(this.variables::add);

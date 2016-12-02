@@ -6,11 +6,18 @@ import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import us.bpsm.edn.Symbol;
+import us.bpsm.edn.parser.Parseable;
+import us.bpsm.edn.parser.Parser;
+import us.bpsm.edn.parser.Parsers;
 
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
+
+import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -28,10 +35,25 @@ public class Reader {
 
     private static final Symbol BELIEVES = Symbol.newSymbol("Believes!");
     private static final Symbol KNOWS = Symbol.newSymbol("Knows!");
+    private static final Symbol PERCEIVES = Symbol.newSymbol("Perceives!");
+
     private static final Symbol COMMON = Symbol.newSymbol("Common!");
     private static final Symbol SAYS = Symbol.newSymbol("Says!");
     private static final Symbol OUGHT = Symbol.newSymbol("Ought!");
 
+    private static final Value NOW ;
+
+    static {
+        try {
+
+            Parseable pbr = Parsers.newParseable(new StringReader("now"));
+            Parser p = Parsers.newParser(defaultConfiguration());
+
+            NOW = readLogicValue(p.nextValue(pbr));
+        } catch (Exception e) {
+            throw new AssertionError("Could not instantiate basic constant: now");
+        }
+    }
     public static class ParsingException extends Exception{
 
         private String message;
@@ -186,6 +208,11 @@ public class Reader {
                     return constructKnowledge(list);
                 }
 
+                //Perceives
+                if(name.equals(PERCEIVES)){
+
+                    return constructPerceives(list);
+                }
                 if(name.equals(COMMON)){
 
                     return constructCommon(list);
@@ -215,16 +242,26 @@ public class Reader {
     private static Formula constructKnowledge(List list) throws ParsingException{
         if(list.isEmpty()){
             throw new ParsingException("Knowledge expresion cannot be empty!");
-        }  else if(list.size() != 4){
+        }  else if(list.size() != 4 && list.size() != 3){
             throw new ParsingException("Knowledge expresion has wrong number of arguments! "+list);
 
         } else {
 
-            Object agent =  list.get(1);
-            Object time =  list.get(2);
-            Object formula =  list.get(3);
+            if(list.size() == 4) {
+                Object agent =  list.get(1);
+                Object time =  list.get(2);
+                Object formula =  list.get(3);
 
-            return new Knowledge(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+                return new Knowledge(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+
+            } else {
+
+                Object agent =  list.get(1);
+                Object formula =  list.get(2);
+
+                return new Knowledge(readLogicValue(agent), NOW,readFormula(formula));
+
+            }
         }
     }
 
@@ -232,16 +269,27 @@ public class Reader {
     private static Formula constructPerceives(List list) throws ParsingException{
         if(list.isEmpty()){
             throw new ParsingException("Perceieves expresion cannot be empty!");
-        }  else if(list.size() != 4){
+        }  else if(list.size() != 4 && list.size() != 3){
             throw new ParsingException("Perceieves expresion has wrong number of arguments! "+list);
 
         } else {
 
-            Object agent =  list.get(1);
-            Object time =  list.get(2);
-            Object formula =  list.get(3);
+            if (list.size()==4){
+                Object agent =  list.get(1);
+                Object time =  list.get(2);
+                Object formula =  list.get(3);
 
-            return new Perception(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+                return new Perception(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+
+            } else {
+
+                Object agent =  list.get(1);
+                Object formula =  list.get(2);
+
+                return new Perception(readLogicValue(agent), NOW, readFormula(formula));
+
+            }
+
         }
     }
 
@@ -249,16 +297,28 @@ public class Reader {
     private static Formula constructBelief(List list) throws ParsingException{
         if(list.isEmpty()){
             throw new ParsingException("Belief expresion cannot be empty!");
-        }  else if(list.size() != 4){
+        }  else if(list.size() != 4 && list.size() != 3){
             throw new ParsingException("Belief expresion has wrong number of arguments! "+list);
 
         } else {
 
-            Object agent =  list.get(1);
-            Object time =  list.get(2);
-            Object formula =  list.get(3);
+            if(list.size()==4) {
 
-            return new Belief(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+                Object agent =  list.get(1);
+                Object time =  list.get(2);
+                Object formula =  list.get(3);
+
+                return new Belief(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+
+            }
+            else {
+
+                Object agent =  list.get(1);
+                Object formula =  list.get(2);
+
+                return new Belief(readLogicValue(agent), NOW,readFormula(formula));
+
+            }
         }
     }
 
@@ -266,34 +326,57 @@ public class Reader {
     private static Formula constructOught(List list) throws ParsingException{
         if(list.isEmpty()){
             throw new ParsingException("Ought expresion cannot be empty!");
-        }  else if(list.size() != 5){
+        }  else if(list.size() != 5 && list.size()!=4){
             throw new ParsingException("Ought expresion has wrong number of arguments! "+list);
 
         } else {
 
-            Object agent =  list.get(1);
-            Object time =  list.get(2);
-            Object formula =  list.get(3);
+            if(list.size()==5) {
+                Object agent =  list.get(1);
+                Object time =  list.get(2);
+                Object formula =  list.get(3);
 
-            Object ought =  list.get(4);
+                Object ought =  list.get(4);
 
-            return new Ought(readLogicValue(agent), readLogicValue(time),readFormula(formula), readFormula(ought));
+                return new Ought(readLogicValue(agent), readLogicValue(time),readFormula(formula), readFormula(ought));
+
+            } else {
+
+                Object agent =  list.get(1);
+                Object formula =  list.get(2);
+
+                Object ought =  list.get(3);
+
+                return new Ought(readLogicValue(agent), NOW,readFormula(formula), readFormula(ought));
+
+            }
         }
     }
     // (Says! agent time strength P)
     private static Formula constructSays(List list) throws ParsingException{
         if(list.isEmpty()){
             throw new ParsingException("Says expresion cannot be empty!");
-        }  else if(list.size() != 4){
+        }  else if(list.size() != 4 && list.size()!=3){
             throw new ParsingException("Says expresion has wrong number of arguments! "+list);
 
         } else {
 
-            Object agent =  list.get(1);
-            Object time =  list.get(2);
-            Object formula =  list.get(3);
+            if(list.size()==4) {
+                Object agent =  list.get(1);
+                Object time =  list.get(2);
+                Object formula =  list.get(3);
 
-            return new Says(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+                return new Says(readLogicValue(agent), readLogicValue(time),readFormula(formula));
+
+            } else{
+
+                Object agent =  list.get(1);
+                Object formula =  list.get(2);
+
+                return new Says(readLogicValue(agent), NOW,readFormula(formula));
+
+            }
+
         }
     }
 
@@ -301,14 +384,21 @@ public class Reader {
     private static Formula constructCommon(List list) throws ParsingException{
         if(list.isEmpty()){
             throw new ParsingException("CommonUtils expresion cannot be empty!");
-        }  else if(list.size() != 3){
+        }  else if(list.size() != 3 && list.size()!=2){
             throw new ParsingException("CommonUtils expresion has wrong number of arguments! "+list);
 
         } else {
 
-            Object time =  list.get(1);
-            Object formula =  list.get(2);
-            return new Common(readLogicValue(time),readFormula(formula));
+            if(list.size() == 3) {
+                Object time =  list.get(1);
+                Object formula =  list.get(2);
+                return new Common(readLogicValue(time),readFormula(formula));
+            } else {
+
+                Object formula =  list.get(1);
+                return new Common(NOW,readFormula(formula));
+
+            }
         }
     }
 

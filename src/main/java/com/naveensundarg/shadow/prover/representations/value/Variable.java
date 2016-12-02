@@ -12,7 +12,7 @@ public class Variable extends Value {
 
     private final Value[] arguments;
     private final Set<Variable> variables;
-
+    private final Set<Value> subValues;
     public Variable(String name){
 
         super();
@@ -24,6 +24,7 @@ public class Variable extends Value {
         super.name = name;
 
         this.variables = Sets.with(this);
+        this.subValues = Sets.with(this);
 
     }
 
@@ -65,6 +66,11 @@ public class Variable extends Value {
     @Override
     public Value replace(Value value1, Value value2) {
         return value1.equals(this)? value2 : this;
+    }
+
+    @Override
+    public Set<Value> subValues() {
+        return subValues;
     }
 
     @Override
