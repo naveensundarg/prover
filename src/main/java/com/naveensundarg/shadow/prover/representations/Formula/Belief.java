@@ -3,6 +3,7 @@ package com.naveensundarg.shadow.prover.representations.formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.CommonUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -78,7 +79,7 @@ public class Belief extends Formula{
 
     @Override
     public Formula shadow(int level) {
-        return new Atom("#"+toString()+"#");
+        return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
     }
 
     @Override

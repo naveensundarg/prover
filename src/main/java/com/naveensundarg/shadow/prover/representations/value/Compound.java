@@ -144,7 +144,7 @@ public class Compound extends Value {
 
     @Override
     public String toString() {
-        return name  +Arrays.toString(arguments);
+        return "("+ name +" " + Arrays.stream(arguments).map(Value::toString).reduce("", (x,y) -> x + " " +y) + ")"  ;
     }
 
     @Override

@@ -8,6 +8,8 @@ import com.naveensundarg.shadow.prover.core.resolutionrule.RuleImplementation;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
+import com.naveensundarg.shadow.prover.representations.formula.Not;
+import com.naveensundarg.shadow.prover.representations.formula.Or;
 import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;

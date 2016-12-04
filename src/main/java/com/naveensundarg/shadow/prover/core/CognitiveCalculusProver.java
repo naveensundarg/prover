@@ -43,7 +43,7 @@ public class CognitiveCalculusProver implements Prover {
 
     private Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
-        FirstOrderResolutionProver folProver = new FirstOrderResolutionProver();
+        Prover folProver = new SnarkWrapper();
 
         Set<Formula> base = CollectionUtils.setFrom(assumptions);
 

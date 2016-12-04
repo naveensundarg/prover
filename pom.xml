@@ -9,7 +9,16 @@
     <version>1.0-SNAPSHOT</version>
 
 
+
     <dependencies>
+
+        <dependency>
+            <groupId>org.armedbear.lisp</groupId>
+            <artifactId>abcl</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

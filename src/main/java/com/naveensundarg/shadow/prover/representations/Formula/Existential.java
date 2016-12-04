@@ -60,7 +60,7 @@ public class Existential extends Formula implements Quantifier {
     public Formula shadow(int level) {
         if (level == 0) {
 
-          return new Atom("#"+this.toString()+"#");
+          return new Atom("|"+this.toString()+"|");
 
         } else if (level == 1) {
 
@@ -86,7 +86,7 @@ public class Existential extends Formula implements Quantifier {
 
     @Override
     public String toString() {
-        return "(exists" + Arrays.toString(vars) +" "
+        return "(exists " + Arrays.stream(vars).map(Variable::toString).reduce("(", (x,y) -> x + " " +y) + ")" + " "
                 + argument.toString() +")";
     }
 

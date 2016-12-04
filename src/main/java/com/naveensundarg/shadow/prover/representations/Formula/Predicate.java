@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.representations.formula;
 
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
@@ -86,7 +87,7 @@ public class Predicate extends Formula {
             return this;
         }
         else if (level == 0){
-          return new Atom("#"+this.toString()+"#");
+          return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
         }
 
         throw new AssertionError("Not a valid getLevel for shadowing: "+level);
@@ -108,8 +109,8 @@ public class Predicate extends Formula {
 
     @Override
     public String toString() {
-        return name + "(" + Arrays.stream(arguments).map(Value::toString).
-                reduce("", (x,y)-> x.isEmpty()? y: x + ", " +y) +")";
+        return "(" + name + " "+ Arrays.stream(arguments).map(Value::toString).
+                reduce("", (x,y)-> x.isEmpty()? y: x + " " +y) +")";
     }
 
     @Override

@@ -48,6 +48,34 @@ public class FirstOrderResolutionProverTests {
     }
 
 
+    @Test(dataProvider = "debugTestsProvider")
+    public void debugTests(Set<Formula> assumptions, Formula formula){
+
+       // Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
+
+    }
+
+    @DataProvider(name="debugTestsProvider")
+    public Object[][] debugTestsProvider() throws Reader.ParsingException {
+
+        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("firstorder-debug-tests.clj"));
+        Object[][] cases =  new Object[tests.size()][2];
+
+        for(int  i = 0; i < tests.size(); i++){
+
+            Problem test = tests.get(i);
+
+            cases[i][0] =  test.getAssumptions();
+            cases[i][1] = test.getGoal();
+
+        }
+
+
+        return cases;
+
+    }
+
+
     @Test(dataProvider = "completenessTestsProvider")
     public void testCompleteness(Set<Formula> assumptions, Formula formula){
 

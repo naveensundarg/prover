@@ -19,6 +19,11 @@ import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
  */
 public class CommonUtils {
 
+    public static String sanitizeShadowedString(String formula) {
+
+        return formula.replaceAll("\\(", "_").replaceAll("\\)", "_").replaceAll(" ", "_");
+
+    }
     public static Formula readFromString(String formulaStr) throws Reader.ParsingException {
 
 

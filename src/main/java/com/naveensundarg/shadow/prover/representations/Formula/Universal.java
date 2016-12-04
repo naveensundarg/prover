@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.representations.formula;
 
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public class Universal extends Formula implements Quantifier {
     public Formula shadow(int level) {
         if (level == 0) {
 
-            return new Atom("#"+this.toString()+"#");
+            return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
 
         } else if (level == 1) {
 
@@ -85,7 +86,7 @@ public class Universal extends Formula implements Quantifier {
 
     @Override
     public String toString() {
-        return "(forall " + Arrays.toString(vars) + " "
+        return "(forall " + Arrays.stream(vars).map(Variable::toString).reduce("(", (x,y) -> x + " " +y) + ")" + " "
                 + argument.toString() + ")";
     }
 
