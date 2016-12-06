@@ -1,3 +1,4 @@
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name        "*cognitive-calculus-completeness-test-1*"
@@ -354,5 +355,26 @@
 
 
 
+
+
+{:name "false-belief-task-M2"
+ :description "Method 2 in the False Belief Task Paper"
+ :assumptions {P1 (Common! (forall (?t) (initiates e f ?t)))
+               P2 (Knows! a1 (Knows! a2 (happens e t1)))
+               P3 (Common! (< t1 t2))
+               P4 (Knows! a1 (Knows! a2 (not (exists (?e ?t) (and (happens ?e ?t) (< t1 ?t) (< ?t t2) (terminates ?e f ?t))))))
+               A2 (Common! (forall (?e ?f ?t1 ?t2)
+                                   (if  (and (happens ?e ?t1) (initiates ?e ?f ?t1) (< ?t1 ?t2) (not (clipped ?t1 ?f ?t2)))
+                                     (holds ?f ?t2))))
+               A3 (Common! (forall (?t1 ?f ?t2)
+                                   (iff (clipped ?t1 ?f ?t2)
+                                        (exists (?e ?t)
+                                                (and (happens ?e ?t)
+                                                     (< ?t1 ?t)
+                                                     (< ?t ?t2)
+                                                     (terminates ?e ?f ?t))))))
+               }
+
+ :goal  (Knows! a1 (Knows! a2 (holds f t2))) }
 
 
