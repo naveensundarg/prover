@@ -118,26 +118,26 @@ public class Logic {
 
         return times;
     }
-
+/*
     public static Set<Predicate> variationsOf(Predicate predicate, Set<Formula> base) {
 
-        return predicates(base).stream().
+        return baseFormulae(base).stream().
                 filter(p -> p.getName().equals(predicate.getName())).collect(Collectors.toSet());
 
-    }
+    }*/
 
-    public static Set<Predicate> predicates(Formula formula) {
+    public static Set<BaseFormula> baseFormulae(Formula formula) {
 
         return formula.subFormulae().stream().
-                filter(f -> f instanceof Predicate).
-                map(f -> (Predicate) f).
+                filter(f -> f instanceof  BaseFormula).
+                map(f -> (BaseFormula) f).
                 collect(Collectors.toSet());
     }
 
-    public static Set<Predicate> predicates(Set<Formula> base) {
+    public static Set<BaseFormula> baseFormulae(Set<Formula> base) {
 
         return base.stream().
-                map(Logic::predicates).
+                map(Logic::baseFormulae).
                 reduce(Sets.newSet(), Sets::union);
 
     }

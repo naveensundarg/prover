@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public class Universal extends Formula implements Quantifier {
+public class Universal extends Formula implements Quantifier{
 
     private final Formula argument;
     private final Variable[] vars;

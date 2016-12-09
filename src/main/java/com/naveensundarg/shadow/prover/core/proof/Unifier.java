@@ -1,9 +1,7 @@
 package com.naveensundarg.shadow.prover.core.proof;
 
 import com.naveensundarg.shadow.prover.representations.Expression;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.representations.formula.FormulaVariable;
-import com.naveensundarg.shadow.prover.representations.formula.Predicate;
+import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
@@ -22,6 +20,170 @@ import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
  */
 public class Unifier {
 
+
+    public static Map<Variable, Value> unify(BaseFormula bf1, BaseFormula bf2) {
+
+        if(!bf1.getClass().equals(bf2.getClass())) {
+            return null;
+        }
+
+        if(bf1 instanceof Predicate){
+
+            Predicate p1 = (Predicate) bf1;
+            Predicate p2 = (Predicate) bf2;
+
+
+            return unify(p1, p2);
+        }
+
+        if(bf1 instanceof Common) {
+
+            Common c1 = (Common) bf1;
+            Common c2 = (Common) bf2;
+
+            Value t1 = c1.getTime();
+            Value t2 = c2.getTime();
+
+
+            Map<Variable, Value> s1 = unify(t1, t2);
+
+            return s1;
+
+
+        }
+
+        if(bf1 instanceof Knowledge) {
+
+            Knowledge k1 = (Knowledge) bf1;
+            Knowledge k2 = (Knowledge) bf2;
+
+
+            Value t1 = k1.getTime();
+            Value t2 = k2.getTime();
+
+            Value a1 = k1.getAgent();
+            Value a2 = k2.getAgent();
+
+
+            Map<Variable, Value> m1 = unify(t1, t2);
+            Map<Variable, Value> m2  = unify(a1, a2);
+
+            return combineVariableValueMap(m1, m2);
+
+
+        }
+
+        if(bf1 instanceof Belief) {
+
+            Belief b1 = (Belief) bf1;
+            Belief b2 = (Belief) bf2;
+
+
+            Value t1 = b1.getTime();
+            Value t2 = b2.getTime();
+
+            Value a1 = b1.getAgent();
+            Value a2 = b2.getAgent();
+
+
+            if(!b1.getFormula().getClass().equals(b2.getFormula().getClass())){
+                return CollectionUtils.newMap();
+            }
+            Map<Variable, Value> m1 = unify(t1, t2);
+            Map<Variable, Value> m2  = unify(a1, a2);
+
+            return combineVariableValueMap(m1, m2);
+
+
+
+        }
+
+        if(bf1 instanceof Perception) {
+
+            Perception p1 = (Perception) bf1;
+            Perception p2 = (Perception) bf2;
+
+
+            Value t1 = p1.getTime();
+            Value t2 = p2.getTime();
+
+            Value a1 = p1.getAgent();
+            Value a2 = p2.getAgent();
+
+
+            Map<Variable, Value> m1 = unify(t1, t2);
+            Map<Variable, Value> m2  = unify(a1, a2);
+
+
+            return combineVariableValueMap(m1, m2);
+
+
+
+        }
+
+        if(bf1 instanceof Ought) {
+
+            Ought o1 = (Ought) bf1;
+            Ought o2 = (Ought) bf2;
+
+
+            Value t1 = o1.getTime();
+            Value t2 = o2.getTime();
+
+            Value a1 = o1.getAgent();
+            Value a2 = o2.getAgent();
+
+
+            Map<Variable, Value> m1 = unify(t1, t2);
+            Map<Variable, Value> m2  = unify(a1, a2);
+
+            return combineVariableValueMap(m1, m2);
+
+
+
+        }
+
+        if(bf1 instanceof Says) {
+
+            Says s1 = (Says) bf1;
+            Says s2 = (Says) bf2;
+
+
+            Value t1 = s1.getTime();
+            Value t2 = s2.getTime();
+
+            Value a1 = s1.getAgent();
+            Value a2 = s2.getAgent();
+
+
+            Map<Variable, Value> m1 = unify(t1, t2);
+            Map<Variable, Value> m2  = unify(a1, a2);
+
+            return combineVariableValueMap(m1, m2);
+
+
+
+        }
+
+        throw new AssertionError("Unaccounted base formula encountered during unification: " + bf1 + " and " +bf2);
+
+    }
+
+    private static Map<Variable, Value> combineVariableValueMap(Map<Variable, Value> s1, Map<Variable, Value> s2) {
+        if(s1==null) {
+            s1 = CollectionUtils.newMap();
+        }
+        if(s2==null) {
+            s2 = CollectionUtils.newMap();
+        }
+
+        Map<Variable, Value> all = CollectionUtils.newMap();
+
+        all.putAll(s1);
+        all.putAll(s2);
+
+        return all;
+    }
 
     public static Map<Variable, Value> unify(Predicate p1, Predicate p2) {
 

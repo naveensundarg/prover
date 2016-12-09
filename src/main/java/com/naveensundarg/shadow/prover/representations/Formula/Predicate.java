@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 4/8/16.
  */
-public class Predicate extends Formula {
+public class Predicate extends Formula implements BaseFormula {
 
     private final String name;
     private final Value[] arguments;

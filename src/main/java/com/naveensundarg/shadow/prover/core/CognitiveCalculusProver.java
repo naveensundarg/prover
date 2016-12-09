@@ -32,6 +32,12 @@ public class CognitiveCalculusProver implements Prover {
 
     public CognitiveCalculusProver() {
 
+        prohibited  = Sets.newSet();
+    }
+
+    private CognitiveCalculusProver(CognitiveCalculusProver parent) {
+
+        prohibited  = CollectionUtils.setFrom(parent.prohibited);
     }
 
     @Override
@@ -40,6 +46,7 @@ public class CognitiveCalculusProver implements Prover {
         return prove(assumptions, formula, CollectionUtils.newEmptySet());
     }
 
+    Set<Formula> prohibited ;
 
     private Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
@@ -74,13 +81,16 @@ public class CognitiveCalculusProver implements Prover {
             if (caseProofOpt.isPresent()) {
                 return caseProofOpt;
             }
+            if(base.size()<20) {
 
-            Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
+                Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
 
 
-            if (reductioProofOpt.isPresent()) {
-                return reductioProofOpt;
+                if (reductioProofOpt.isPresent()) {
+                    return reductioProofOpt;
+                }
             }
+
 
             if (sizeAfterExpansion <= sizeBeforeExpansion) {
                 return Optional.empty();
@@ -114,7 +124,7 @@ public class CognitiveCalculusProver implements Prover {
 
             List<Optional<Justification>> conjunctProofsOpt = Arrays.stream(conjuncts).map(conjunct -> {
 
-                CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+                CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
                 return cognitiveCalculusProver.prove(base, conjunct);
             }).collect(Collectors.toList());
 
@@ -144,7 +154,7 @@ public class CognitiveCalculusProver implements Prover {
             reducedBase.remove(someOr);
 
             List<Optional<Justification>> casesOpt = Arrays.stream(disjuncts).map(disjunct -> {
-                CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+                CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
 
                 Set<Formula> newBase = CollectionUtils.setFrom(reducedBase);
                 newBase.add(disjunct);
@@ -181,7 +191,7 @@ public class CognitiveCalculusProver implements Prover {
         Set<Formula> augmented = CollectionUtils.setFrom(base);
 
         augmented.add(negated);
-        CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+        CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
 
         Optional<Justification> reductioJustOpt = cognitiveCalculusProver.prove(augmented, atom, added);
 
@@ -202,7 +212,7 @@ public class CognitiveCalculusProver implements Prover {
             Set<Formula> allBelievedTillTime = agentSnapShot.allBelievedByAgentTillTime(agent, time);
 
 
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allBelievedTillTime, goalBelief);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -225,7 +235,7 @@ public class CognitiveCalculusProver implements Prover {
             Set<Formula> allKnownByTillTime = agentSnapShot.allKnownByAgentTillTime(agent, time);
 
 
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allKnownByTillTime, goalKnowledge);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -254,6 +264,7 @@ public class CognitiveCalculusProver implements Prover {
         expandDR5(base, added);
         expandOughtRule(base, added);
         expandUniversalElim(base, added, goal);
+        if(prohibited!=null) base.removeAll(prohibited);
         return base;
     }
 
@@ -358,7 +369,7 @@ public class CognitiveCalculusProver implements Prover {
             Value outerTime = b.getTime();
             Value agent = b.getAgent();
             Belief preConditionBelief = new Belief(agent, outerTime, precondition);
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
             Set<Formula> smaller = CollectionUtils.setFrom(base);
             smaller.remove(b);
             smaller = smaller.stream().filter(x -> !x.subFormulae().contains(ought)).collect(Collectors.toSet());
@@ -523,14 +534,25 @@ public class CognitiveCalculusProver implements Prover {
 
         for (Implication implication : level2Ifs) {
 
+            if(prohibited.contains(implication)) {
+                continue;
+            }
+
             Formula antecedent = implication.getAntecedent();
             Formula consequent = implication.getConsequent();
 
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+            cognitiveCalculusProver.prohibited.addAll(prohibited);
+            cognitiveCalculusProver.prohibited.add(implication);
 
             Set<Formula> reducedBase = CollectionUtils.setFrom(base);
 
             reducedBase.remove(implication);
+
+            //TODO: use actual ancestors
+            Set<Formula> possibleAncestors = base.stream().map(Formula::subFormulae).reduce(Sets.newSet(),Sets::union).stream().
+                    filter(x->x.subFormulae().contains(implication)).collect(Collectors.toSet());
+            reducedBase.remove(possibleAncestors);
 
             Optional<Justification> antecedentJustificationOpt = cognitiveCalculusProver.prove(reducedBase, antecedent, CollectionUtils.setFrom(added));
             if (antecedentJustificationOpt.isPresent()) {
@@ -542,6 +564,11 @@ public class CognitiveCalculusProver implements Prover {
 
             Set<Formula> newReducedBase = CollectionUtils.setFrom(base);
             newReducedBase.remove(implication);
+            Set<Formula> newPossibleAncestors = base.stream().map(Formula::subFormulae).reduce(Sets.newSet(),Sets::union).stream().
+                    filter(x->x.subFormulae().contains(implication)).collect(Collectors.toSet());
+            newReducedBase.remove(newPossibleAncestors);
+
+
             Optional<Justification> negatedConsequentJustificationOpt = cognitiveCalculusProver.prove(newReducedBase, Logic.negated(consequent), CollectionUtils.setFrom(added));
             if (negatedConsequentJustificationOpt.isPresent()) {
                 if (!added.contains(consequent)) {
@@ -566,7 +593,7 @@ public class CognitiveCalculusProver implements Prover {
         Set<Universal> universals = base.stream().filter(f -> f instanceof Universal).map(f -> (Universal) f).collect(Collectors.toSet());
 
 /*
-        Set<Value> values = Logic.predicates(formulae).stream().
+        Set<Value> values = Logic.baseFormulae(formulae).stream().
                 map(Predicate::allValues).
                 reduce(Sets.newSet(), Sets::union).stream().filter(v -> !(v instanceof Variable) ).
 

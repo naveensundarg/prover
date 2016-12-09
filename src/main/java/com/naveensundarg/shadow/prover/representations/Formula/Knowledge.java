@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
 import java.util.Set;
@@ -12,12 +13,13 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Knowledge extends Formula {
+public class Knowledge extends Formula implements BaseFormula{
     Value agent;
     Value time;
     Formula formula;
     Set<Formula> subFormulae;
     Set<Variable> variables;
+    private final Set<Value> allValues;
 
     public Knowledge(Value agent, Value time, Formula formula) {
 
@@ -28,6 +30,10 @@ public class Knowledge extends Formula {
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         subFormulae.add(this);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.allValues = Sets.newSet();
+        this.allValues.add(agent);
+        this.allValues.add(time);
+
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
         }
@@ -109,5 +115,15 @@ public class Knowledge extends Formula {
         result = 31 * result + time.hashCode();
         result = 31 * result + formula.hashCode();
         return result;
+    }
+
+    @Override
+    public Set<Value> allValues() {
+        return allValues;
+    }
+
+    @Override
+    public String getName() {
+        return "Knowledge";
     }
 }

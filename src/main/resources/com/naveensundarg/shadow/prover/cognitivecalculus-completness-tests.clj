@@ -352,10 +352,7 @@
 
  :goal (Knows! a1 (Knows! a2 (happens (action a2 alpha) t)))}
 
-
-
-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name "false-belief-task-M2"
  :description "Method 2 in the False Belief Task Paper"
@@ -378,3 +375,29 @@
  :goal  (Knows! a1 (Knows! a2 (holds f t2))) }
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name "false-belief-task-M3 ** "
+ :description "Method 3 ** in the False Belief Task Paper. "
+ :assumptions {P1 (Common! (< t1 t2))
+               P2 (Knows! a1 (Knows! a2 (holds f t1)))
+               P3 (Believes! a1 (not (exists (?e ?t)
+                                             (and (Believes! a2 (happens ?e ?t))
+                                                  (Believes! a2 (and (< t1 ?t) (< ?t t2)))
+                                                  (Believes! a2 (terminates ?e f ?t))))))
+               A6 (if (and (Believes! a1 (Believes! a2 (holds f t1)))
+                           (Believes! a1 (not (exists (?e ?t)
+                                                      (and (Believes! a2 (happens ?e ?t))
+                                                           (Believes! a2 (and (< t1 ?t) (< ?t t2)))
+                                                           (Believes! a2 (terminates ?e f ?t)))))))
+                    (Believes! a1 (not (Believes! a2 (clipped t1 f t2)))))
+
+               A5  (Common! (if (and (Believes! a2 (holds f t1))
+                                    (Believes! a2(< t1 t2))
+                                    (not (Believes! a2 (clipped t1 f t2))))
+                             (Believes! a2 (holds f t2))))
+
+
+               }
+
+ :goal  (Believes! a1 (Believes! a2 (holds f t2)) ) }

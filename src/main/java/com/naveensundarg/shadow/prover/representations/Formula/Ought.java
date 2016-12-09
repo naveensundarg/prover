@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 11/24/16.
  */
-public class Ought extends Formula{
+public class Ought extends Formula implements BaseFormula{
 
 
     Value agent;
@@ -22,6 +23,7 @@ public class Ought extends Formula{
 
     Set<Formula> subFormulae;
     Set<Variable> variables;
+    private final Set<Value> allValues;
 
 
     public Ought(Value agent, Value time, Formula formula, Formula ought) {
@@ -33,6 +35,9 @@ public class Ought extends Formula{
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         this.ought = ought;
         this.subFormulae.add(this);
+        this.allValues = Sets.newSet();
+        this.allValues.add(agent);
+        this.allValues.add(time);
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
         if (agent instanceof Variable) {
@@ -130,5 +135,15 @@ public class Ought extends Formula{
         result = 31 * result + precondition.hashCode();
         result = 31 * result + ought.hashCode();
         return result;
+    }
+
+    @Override
+    public Set<Value> allValues() {
+        return allValues;
+    }
+
+    @Override
+    public String getName() {
+        return "Ought";
     }
 }

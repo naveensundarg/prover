@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
 import java.util.Set;
@@ -12,13 +13,14 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Common extends Formula {
+public class Common extends Formula implements BaseFormula{
 
     Value time;
     Formula formula;
     Set<Formula> subFormulae;
     Set<Variable> variables;
 
+    private final Set<Value> allValues;
 
     public Common(Value time, Formula formula) {
 
@@ -26,6 +28,8 @@ public class Common extends Formula {
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.allValues = Sets.newSet();
+        this.allValues.add(time);
 
         this.subFormulae.add(this);
 
@@ -60,7 +64,8 @@ public class Common extends Formula {
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return null;
+        return   new Common(time.apply(substitution), formula.apply(substitution));
+
     }
 
     @Override
@@ -103,5 +108,15 @@ public class Common extends Formula {
         int result = time.hashCode();
         result = 31 * result + formula.hashCode();
         return result;
+    }
+
+    @Override
+    public Set<Value> allValues() {
+        return allValues;
+    }
+
+    @Override
+    public String getName() {
+        return "Common";
     }
 }

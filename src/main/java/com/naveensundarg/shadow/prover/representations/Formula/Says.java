@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
 import java.util.Set;
@@ -12,13 +13,14 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Says extends Formula{
+public class Says extends Formula implements BaseFormula{
 
     Value agent;
     Value time;
     Formula formula;
     Set<Formula> subFormulae;
     Set<Variable> variables;
+    private final Set<Value> allValues;
 
 
     public Says(Value agent, Value time, Formula formula) {
@@ -29,6 +31,10 @@ public class Says extends Formula{
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         this.subFormulae.add(this);
+
+        this.allValues = Sets.newSet();
+        this.allValues.add(agent);
+        this.allValues.add(time);
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
         if (agent instanceof Variable) {
@@ -120,5 +126,15 @@ public class Says extends Formula{
         result = 31 * result + time.hashCode();
         result = 31 * result + formula.hashCode();
         return result;
+    }
+
+    @Override
+    public Set<Value> allValues() {
+        return allValues;
+    }
+
+    @Override
+    public String getName() {
+        return "Says";
     }
 }

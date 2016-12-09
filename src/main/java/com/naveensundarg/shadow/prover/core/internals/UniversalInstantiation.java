@@ -1,6 +1,7 @@
 package com.naveensundarg.shadow.prover.core.internals;
 
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
+import com.naveensundarg.shadow.prover.representations.formula.BaseFormula;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.formula.Universal;
@@ -9,10 +10,9 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
+import com.sun.xml.internal.rngom.parse.host.Base;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,19 +36,19 @@ public final class UniversalInstantiation {
 
         Variable firstVariable = universal.vars()[position];
 
-        Set<Predicate> allPredicates = Logic.predicates(formulae);
+        Set<BaseFormula> allBaseFormulae = Logic.baseFormulae(formulae);
 
-        Set<Predicate> predicatesContainingFirstVariable = Logic.predicates(universal).
+        Set<BaseFormula> baseFormulaeContainingVariable = Logic.baseFormulae(universal).
                 stream().
-                filter(predicate -> predicate.allValues().
+                filter(baseFormulae -> baseFormulae.allValues().
                         contains(firstVariable)).
                 collect(Collectors.toSet());
 
 
 
-        Set<Value>   allValues = predicatesContainingFirstVariable.stream().
+        Set<Value>   allValues = baseFormulaeContainingVariable.stream().
                 map(predicate -> {
-                   Set<Predicate> matches = allPredicates.stream().
+                   Set<BaseFormula> matches = allBaseFormulae.stream().
                            filter(predicate1 -> predicate.getName().
                                    equals(predicate1.getName())).collect(Collectors.toSet());
 
