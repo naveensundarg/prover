@@ -1,4 +1,3 @@
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name        "*cognitive-calculus-completeness-test-1*"
@@ -27,7 +26,7 @@
 {:name        "conjunction-test-1"
  :description "Conjunctions"
  :assumptions {1 (Common! t0 P)}
- :goal         (and (Knows! a1 t1 P) (Knows! a2 t1 P))
+ :goal        (and (Knows! a1 t1 P) (Knows! a2 t1 P))
 
  }
 
@@ -36,8 +35,8 @@
 
 {:name        "conjunction-test-2"
  :description "Conjunctions"
- :assumptions {1 (and (Common! t0 P) (Common! t0 Q) ) }
- :goal         (Knows! a1 t1 (and P Q))
+ :assumptions {1 (and (Common! t0 P) (Common! t0 Q))}
+ :goal        (Knows! a1 t1 (and P Q))
 
  }
 
@@ -49,7 +48,7 @@
  :assumptions {1 (and (Common! t0 (forall (?x) (if (human ?x) (mortal ?x))))
                       (Common! t0 (human socrates)))
                }
- :goal         (Knows! a1 t1 (mortal socrates))
+ :goal        (Knows! a1 t1 (mortal socrates))
 
  }
 
@@ -192,7 +191,7 @@
 {:name        "*cognitive-calculus-ought-test-1*"
  :description "Testing the ought rule"
  :assumptions {1 (Believes! jack t0 P)
-               2 (Believes! jack t0 (Ought! jack t0 P (happens (action jack A) t0))) }
+               2 (Believes! jack t0 (Ought! jack t0 P (happens (action jack A) t0)))}
  :goal        (happens (action jack A) t0)}
 
 
@@ -220,7 +219,7 @@
 
 {:name        "*cognitive-calculus-ought-injured-test-3-complex*"
  :description "Testing the ought rule"
- :assumptions {1 (Common! t0 (forall (?x) (if (cries ?x) (injured ?x))) )
+ :assumptions {1 (Common! t0 (forall (?x) (if (cries ?x) (injured ?x))))
                2 (Knows! robot t1 (cries soldier))
                3 (Common! t2 (Ought! robot t2 (injured soldier) (happens (action robot (help soldier)) t2)))
                }
@@ -269,7 +268,7 @@
 
 {:name        "*cognitive-calculus-closure-test-3*"
  :description "Testing closure"
- :assumptions {1 (Believes!  robot t1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))) BirdTtheorem))
+ :assumptions {1 (Believes! robot t1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))) BirdTtheorem))
                }
  :goal        (Believes! robot t2 BirdTtheorem)}
 
@@ -278,7 +277,7 @@
 
 {:name        "*cognitive-calculus-closure-test-4*"
  :description "Testing closure"
- :assumptions {1 (Believes!  robot1 t1  (Believes! robot2 t1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))) BirdTtheorem)))
+ :assumptions {1 (Believes! robot1 t1 (Believes! robot2 t1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))) BirdTtheorem)))
                }
  :goal        (Believes! robot1 t2 (Believes! robot2 t1 BirdTtheorem))}
 
@@ -295,7 +294,7 @@
 
                4 (Common! t1 (criesForHelp mary))
                }
- :goal        (Believes! robot1 t2 (happens (action robot2 (help mary)) t2)) }
+ :goal        (Believes! robot1 t2 (happens (action robot2 (help mary)) t2))}
 
 
 
@@ -313,9 +312,8 @@
 
                4 (Common! t1 (criesForHelp mary))
 
-
                }
- :goal        (Believes! robot1 t2 (happens (action robot2 (help mary)) t2)) }
+ :goal        (Believes! robot1 t2 (happens (action robot2 (help mary)) t2))}
 
 
 
@@ -323,45 +321,45 @@
 
 {:name        "*licato*"
  :description "from licato's paper"
- :assumptions {1  (Knows! a t (or (isExit A) (isExit B)))
+ :assumptions {1 (Knows! a t (or (isExit A) (isExit B)))
 
                2 (Perceives! a t (not (isExit A)))
                }
- :goal        (Knows! a t (isExit B)) }
+ :goal        (Knows! a t (isExit B))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {
- :name "universal intro inside a knows"
+ :name        "universal intro inside a knows"
  :description ""
  :assumptions {
-               1 (forall (?x) (if (P ?x) (Knows! ?x U)) )
+               1 (forall (?x) (if (P ?x) (Knows! ?x U)))
                2 (P a)
                }
 
- :goal (Knows! a U)
+ :goal        (Knows! a U)
 
  }
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "false-belief-task-M1"
+{:name        "false-belief-task-M1"
  :description "Method 1 in the False Belief Task Paper"
  :assumptions {1 (Perceives! a1 (happens (action a2 alpha) t))
                2 (Common! (forall (?a ?alpha ?t) (if (happens (action ?a ?alpha) ?t)
-                                                   (Knows! ?a  (happens (action ?a ?alpha) ?t)))))}
+                                                   (Knows! ?a (happens (action ?a ?alpha) ?t)))))}
 
- :goal (Knows! a1 (Knows! a2 (happens (action a2 alpha) t)))}
+ :goal        (Knows! a1 (Knows! a2 (happens (action a2 alpha) t)))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "false-belief-task-M2"
+{:name        "false-belief-task-M2"
  :description "Method 2 in the False Belief Task Paper"
  :assumptions {P1 (Common! (forall (?t) (initiates e f ?t)))
                P2 (Knows! a1 (Knows! a2 (happens e t1)))
                P3 (Common! (< t1 t2))
                P4 (Knows! a1 (Knows! a2 (not (exists (?e ?t) (and (happens ?e ?t) (< t1 ?t) (< ?t t2) (terminates ?e f ?t))))))
                A2 (Common! (forall (?e ?f ?t1 ?t2)
-                                   (if  (and (happens ?e ?t1) (initiates ?e ?f ?t1) (< ?t1 ?t2) (not (clipped ?t1 ?f ?t2)))
+                                   (if (and (happens ?e ?t1) (initiates ?e ?f ?t1) (< ?t1 ?t2) (not (clipped ?t1 ?f ?t2)))
                                      (holds ?f ?t2))))
                A3 (Common! (forall (?t1 ?f ?t2)
                                    (iff (clipped ?t1 ?f ?t2)
@@ -372,32 +370,49 @@
                                                      (terminates ?e ?f ?t))))))
                }
 
- :goal  (Knows! a1 (Knows! a2 (holds f t2))) }
-
+ :goal        (Believes! a1 (Believes! a2 (holds f t2)))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "false-belief-task-M3 ** "
- :description "Method 3 ** in the False Belief Task Paper. "
- :assumptions {P1 (Common! (< t1 t2))
-               P2 (Knows! a1 (Knows! a2 (holds f t1)))
-               P3 (Believes! a1 (not (exists (?e ?t)
-                                             (and (Believes! a2 (happens ?e ?t))
-                                                  (Believes! a2 (and (< t1 ?t) (< ?t t2)))
-                                                  (Believes! a2 (terminates ?e f ?t))))))
-               A6 (if (and (Believes! a1 (Believes! a2 (holds f t1)))
-                           (Believes! a1 (not (exists (?e ?t)
-                                                      (and (Believes! a2 (happens ?e ?t))
-                                                           (Believes! a2 (and (< t1 ?t) (< ?t t2)))
-                                                           (Believes! a2 (terminates ?e f ?t)))))))
-                    (Believes! a1 (not (Believes! a2 (clipped t1 f t2)))))
+{:name        "false-belief-task"
+ :description "full false belief task"
+ :assumptions {
 
-               A5  (Common! (if (and (Believes! a2 (holds f t1))
-                                    (Believes! a2(< t1 t2))
-                                    (not (Believes! a2 (clipped t1 f t2))))
-                             (Believes! a2 (holds f t2))))
+               ;; a1 sees a2 perform action alpha at time t
+               P1 (Perceives! a1 (happens (action a2 alpha) t))
 
+               ;; It is common knowledge that for all agents, actions and times, that if an agent performs an action, then
+               ;; the agent knows that it performs that action.
+               P2 (Common! (forall (?a ?alpha ?t) (if (happens (action ?a ?alpha) ?t)
+                                                   (Knows! ?a (happens (action ?a ?alpha) ?t)))))
 
+               ;; It is common knowledge that action alpha by any agent initiates f
+               P3 (Common! (forall (?a ?t) (initiates (action ?a alpha) f ?t)))
+
+               ;; a1 knows that a2 performs action alpha
+               P4 (Knows! a1 (Knows! a2 (happens (action a2 alpha) t1)))
+
+               ;; It is common knowledge that t1 < t2
+               P5 (Common! (< t1 t2))
+
+               ;; a1 knows that a2 knows that nothing happens between t1 and t2 that makes f not hold
+               P6 (Knows! a1 (Knows! a2 (not (exists (?e ?t) (and (happens ?e ?t) (< t1 ?t) (< ?t t2) (terminates ?e f ?t))))))
+
+               ;; EC Axiom 2: It is common knowledge that if an event happens at t1 and if it initiates f and f is not
+               ;; clipped between t1 and t1, then f holds at t2
+               A2 (Common! (forall (?e ?f ?t1 ?t2)
+                                   (if (and (happens ?e ?t1) (initiates ?e ?f ?t1) (< ?t1 ?t2) (not (clipped ?t1 ?f ?t2)))
+                                     (holds ?f ?t2))))
+
+               ;; EC Axiom 3: It is common knowledge that if a fluent is clipped between t1 and t2, there is an event
+               ;; that happens between t1 and t2 that terminates f. 
+               A3 (Common! (forall (?t1 ?f ?t2)
+                                   (iff (clipped ?t1 ?f ?t2)
+                                        (exists (?e ?t)
+                                                (and (happens ?e ?t)
+                                                     (< ?t1 ?t)
+                                                     (< ?t ?t2)
+                                                     (terminates ?e ?f ?t))))))
                }
 
- :goal  (Believes! a1 (Believes! a2 (holds f t2)) ) }
+ :goal        (Believes! a1 (Believes! a2 (holds f t2)))}

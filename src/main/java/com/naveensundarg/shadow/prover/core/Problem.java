@@ -14,6 +14,7 @@ public class Problem {
 
     private final Formula goal;
 
+
     public Problem(Set<Formula> assumptions, Formula goal) {
 
         this.assumptions = assumptions;

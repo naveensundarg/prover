@@ -69,7 +69,7 @@ public class Perception extends Formula implements BaseFormula{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return null;
+        return new Perception(agent.apply(substitution), time.apply(substitution), formula.apply(substitution));
     }
 
     @Override
