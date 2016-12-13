@@ -13,6 +13,8 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 import com.sun.xml.internal.rngom.parse.host.Base;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -54,8 +56,19 @@ public final class UniversalInstantiation {
 
 
                     Set<Value> values = matches.stream().
-                            map(predicate1 -> Unifier.unify(predicate1, predicate).getOrDefault(firstVariable, null)).
-                            filter(x-> x!=null).
+                            map(predicate1 -> {
+
+                                Map<Variable, Value> map = Unifier.unify(predicate1, predicate);
+
+                                        if(map==null){
+                                            return null;
+                                        } else {
+
+                                          return  map.getOrDefault(firstVariable, null);
+                                        }
+
+                            }).
+                            filter(Objects::nonNull).
                             collect(Collectors.toSet());
                     return values;
 
