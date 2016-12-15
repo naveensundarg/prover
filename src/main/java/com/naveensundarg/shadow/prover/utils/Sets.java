@@ -86,6 +86,11 @@ public class Sets {
         return cartesianProduct(sets);
     }
 
+    public static <T> boolean subset(Set<T> P, Set<T> Q){
+
+        return difference(P,Q).size()==0;
+    }
+
     public static <T> Set<List<T>> cartesianProduct(List<Set<T>> sets){
 
 
@@ -112,5 +117,7 @@ public class Sets {
 
         }
     }
+
+
 
 }

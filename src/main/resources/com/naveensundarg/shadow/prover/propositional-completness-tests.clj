@@ -7,6 +7,13 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+{:name "*prop-nd-true-test-1a"
+ :description ""
+ :assumptions {1 P}
+ :goal (or P Q)}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 {:name "*prop-nd-true-test-2"
  :description ""
  :assumptions {1 P
@@ -339,5 +346,17 @@
  :goal (if (iff (iff p q) r) (iff p (iff q r)))}
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name "*prop-nd-true-test-simple-proof-by-cases-1*"
+ :description ""
+ :assumptions {1 (or (and P Q) (and P R))}
+ :goal  P}
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name "*prop-nd-true-test-simple-proof-by-cases-1*"
+ :description ""
+ :assumptions {1 (or (or  P Q) R )}
+ :goal (or P (or Q R))}
