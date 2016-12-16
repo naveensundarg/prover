@@ -533,20 +533,21 @@ public class NDProver implements Prover {
                         filter(x -> x instanceof Atom || x instanceof Predicate).collect(Collectors.toSet());
 
 
-        Set<Formula> absurds = atomicFormulae.stream().map(x -> new And(x, Logic.negated(x))).collect(Collectors.toSet());
+        Set<Formula> absurdTargets = atomicFormulae.stream().collect(Collectors.toSet());
 
         workSpace.addNode(negatedNode);
 
-        absurds = Sets.union(absurds, assumptions.stream().map(Logic::negated).collect(Collectors.toSet()));
+        absurdTargets = Sets.union(absurdTargets, assumptions.stream().collect(Collectors.toSet()));
 
-        for (Formula absurd : absurds) {
+        for (Formula absurdTarget : absurdTargets) {
 
 
-            Optional<Node> provedConsequent = prove(workSpace, Sets.add(assumptions, negated), absurd);
+            Optional<Node> provedConsequent = prove(workSpace, Sets.add(assumptions, negated), absurdTarget);
+            Optional<Node> provedConsequentNegated = prove(workSpace, Sets.add(assumptions, negated), Logic.negated(absurdTarget));
 
-            if(provedConsequent.isPresent()){
+            if(provedConsequent.isPresent() && provedConsequentNegated.isPresent()){
 
-                Node proved = new Node(formula, NDRule.NOT_ELIM, CollectionUtils.listOf(provedConsequent.get()), negated);
+                Node proved = new Node(formula, NDRule.NOT_ELIM, CollectionUtils.listOf(provedConsequent.get(), provedConsequentNegated.get()), negated);
 
                 workSpace.addNode(proved);
 
