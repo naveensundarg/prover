@@ -93,6 +93,9 @@ public class WorkSpace {
 
     }
 
+    public Set<Formula> getCurrentReductioSet() {
+        return currentReductioSet;
+    }
 
     public void removeFromCurrentReductioSet(Formula formula){
 
@@ -120,6 +123,10 @@ public class WorkSpace {
 
     public Set<Formula> getExpanded() {
         return expanded;
+    }
+
+    public Set<Pair<Set<Formula>, Formula>> getAlreadyFailed() {
+        return alreadyFailed;
     }
 
     public boolean inReductio(){

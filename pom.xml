@@ -18,6 +18,14 @@
             <version>1.0.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/guru.nidi/graphviz-java -->
+        <dependency>
+            <groupId>guru.nidi</groupId>
+            <artifactId>graphviz-java</artifactId>
+            <version>0.0.2</version>
+        </dependency>
+
+
 
         <dependency>
             <groupId>org.json</groupId>

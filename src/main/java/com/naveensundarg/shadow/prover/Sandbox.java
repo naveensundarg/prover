@@ -1,15 +1,12 @@
 package com.naveensundarg.shadow.prover;
 
-import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
-import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
-import com.naveensundarg.shadow.prover.representations.formula.Predicate;
-import com.naveensundarg.shadow.prover.representations.formula.Universal;
-import com.naveensundarg.shadow.prover.representations.value.Constant;
-import com.naveensundarg.shadow.prover.representations.value.Value;
-import com.naveensundarg.shadow.prover.utils.*;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Graph;
+import guru.nidi.graphviz.model.Node;
 
+import static guru.nidi.graphviz.model.Factory.*;
+
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
@@ -22,28 +19,23 @@ public class Sandbox {
 
     public static void main(String[] args) throws Exception{
 
+        System.loadLibrary("gv");
+        Graph g = graph("example").directed();
 
-        Formula P1 = CommonUtils.readFromString("(forall (?x) (P (f ?x)))");
-        Formula P2 = CommonUtils.readFromString("(P (f a))");
+        Node a  = Node.named("a");
+        Node b = Node.named("b");
+        g.link(a,b);
 
-        System.out.println(UniversalInstantiation.smartHints((Universal)P1, Sets.with(P2)));
-    }
+        a.link(b);
 
-    private static String getAssumptionsMap(Set<Formula> formulas){
+        g.node(a);
+       // g.node(b);
 
-
-        String ans = "    {";
-        int count = 1;
-
-        for(Formula formula : formulas) {
-
-            ans = ans + count + " " + formula + "\n     ";
-            count++;
-        }
-        ans  = ans + "}";
-
-        return ans;
+        System.out.println(g.getLinks());
 
 
-    }
+
+        Graphviz.fromGraph(g).renderToFile(new File("example.png"));    }
+
+
 }

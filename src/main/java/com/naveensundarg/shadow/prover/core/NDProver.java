@@ -6,7 +6,9 @@ import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
+import com.naveensundarg.shadow.prover.utils.Visualizer;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,8 @@ public class NDProver implements Prover {
     }
 
 
+
+
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
@@ -48,6 +52,19 @@ public class NDProver implements Prover {
 
 
         if (provedOpt.isPresent()) {
+
+            boolean visualize = false;
+
+            visualize = true;
+
+            if(visualize){
+                try {
+                    Visualizer.renderToDot(provedOpt.get());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
             return Optional.of(new TrivialJustification(formula));
 
         } else {
@@ -61,16 +78,19 @@ public class NDProver implements Prover {
 
         int currentSize = workSpace.size(), previousSize = workSpace.size();
 
+
         do {
             previousSize = workSpace.size();
             andElim(workSpace);
             ifElim(workSpace, assumptions, formula);
+            iffElim(workSpace, assumptions, formula);
+
             orElim(workSpace, assumptions, formula);
 
-            Optional<Node> trivialOpt = workSpace.fetch(assumptions, formula);
+            Optional<Node> trivialOpt1 = workSpace.fetch(assumptions, formula);
 
-            if (trivialOpt.isPresent()) {
-                return trivialOpt;
+            if (trivialOpt1.isPresent()) {
+                return trivialOpt1;
             }
             currentSize = workSpace.size();
 
@@ -102,11 +122,34 @@ public class NDProver implements Prover {
             return ifIntroOpt;
         }
 
+        Optional<Node> iffIntroOpt = tryIffIntro(workSpace, assumptions, formula);
+
+        if (iffIntroOpt.isPresent()) {
+            return iffIntroOpt;
+        }
+
+
         Optional<Node> reductioOpt = tryReductio(workSpace, assumptions, formula);
 
         if (reductioOpt.isPresent()) {
             return reductioOpt;
         }
+        do {
+            previousSize = workSpace.size();
+            andElim(workSpace);
+            ifElim(workSpace, assumptions, formula);
+            iffElim(workSpace, assumptions, formula);
+
+            orElim(workSpace, assumptions, formula);
+
+            Optional<Node> trivialOpt1 = workSpace.fetch(assumptions, formula);
+
+            if (trivialOpt1.isPresent()) {
+                return trivialOpt1;
+            }
+            currentSize = workSpace.size();
+
+        } while (currentSize != previousSize);
 
 
         return Optional.empty();
@@ -156,7 +199,9 @@ public class NDProver implements Prover {
                     if (antecedentProvedOpt.isPresent()) {
 
                         workSpace.addNode(antecedentProvedOpt.get());
-                        Node consequentNode = new Node(consequent, NDRule.IF_ELIM, CollectionUtils.listOf(antecedentProvedOpt.get()));
+                        List<Node> parents = CollectionUtils.listOf(antecedentProvedOpt.get());
+                        parents.add(node);
+                        Node consequentNode = new Node(consequent, NDRule.IF_ELIM, parents);
 
 
                         return consequentNode;
@@ -173,6 +218,83 @@ public class NDProver implements Prover {
                 }).filter(Objects::nonNull).collect(Collectors.toSet());
 
         workSpace.getNodes().addAll(toBeAdded);
+
+
+    }
+
+
+    private void iffElim(WorkSpace workSpace, Set<Formula> assumptions, Formula goal) {
+
+
+        Set<Node> newNodes = workSpace.
+                getNodes().
+                stream().
+                filter(node -> !workSpace.alreadyExpanded(node.getFormula())).
+                filter(node -> node.getFormula() instanceof BiConditional).collect(Collectors.toSet());
+
+
+        Set<Node> rightToBeAdded = newNodes.stream().
+                map(node -> {
+                    BiConditional biConditional = (BiConditional) node.getFormula();
+                    Formula left = biConditional.getLeft();
+                    Formula right = biConditional.getRight();
+
+
+                    workSpace.addToExpanded(biConditional);
+
+                    Optional<Node> antecedentProvedOpt = prove(workSpace,  Sets.add(assumptions,right), left);
+
+                    if (antecedentProvedOpt.isPresent()) {
+
+                        workSpace.addNode(antecedentProvedOpt.get());
+                        Node consequentNode = new Node(right, NDRule.IFF_ELIM, CollectionUtils.listOf(antecedentProvedOpt.get()));
+
+                        return consequentNode;
+
+
+                    }
+
+                    workSpace.getExpanded().remove(biConditional);
+
+
+                    return null;
+
+
+                }).filter(Objects::nonNull).collect(Collectors.toSet());
+
+
+        Set<Node> leftToBeAdded = newNodes.stream().
+                map(node -> {
+                    BiConditional biConditional = (BiConditional) node.getFormula();
+                    Formula left = biConditional.getLeft();
+                    Formula right = biConditional.getRight();
+
+
+                    workSpace.addToExpanded(biConditional);
+
+                    Optional<Node> antecedentProvedOpt = prove(workSpace, Sets.add(assumptions,left), right);
+
+                    if (antecedentProvedOpt.isPresent()) {
+
+                        workSpace.addNode(antecedentProvedOpt.get());
+                        Node consequentNode = new Node(left, NDRule.IFF_ELIM, CollectionUtils.listOf(antecedentProvedOpt.get()));
+
+                        return consequentNode;
+
+
+                    }
+
+                    workSpace.getExpanded().remove(biConditional);
+
+
+                    return null;
+
+
+                }).filter(Objects::nonNull).collect(Collectors.toSet());
+
+        workSpace.getNodes().addAll(leftToBeAdded);
+
+        workSpace.getNodes().addAll(rightToBeAdded);
 
 
     }
@@ -341,6 +463,56 @@ public class NDProver implements Prover {
 
     }
 
+
+    private Optional<Node> tryIffIntro(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
+
+
+        if (formula instanceof BiConditional) {
+            BiConditional biConditional = (BiConditional) formula;
+
+            Formula left = biConditional.getLeft();
+            Formula right = biConditional.getRight();
+
+
+            Formula leftImplication = new Implication(left, right);
+            Formula rightImplication = new Implication(right, left);
+
+            WorkSpace workSpace1 = WorkSpace.createWorkSpaceFromAssumptions(assumptions);
+            WorkSpace workSpace2 = WorkSpace.createWorkSpaceFromAssumptions(assumptions);
+
+            workSpace1.getCurrentReductioSet().addAll(workSpace.getCurrentReductioSet());
+            workSpace2.getCurrentReductioSet().addAll(workSpace.getCurrentReductioSet());
+
+            workSpace1.getExpanded().addAll(workSpace.getExpanded());
+            workSpace2.getExpanded().addAll(workSpace.getExpanded());
+
+            workSpace1.getAlreadyFailed().addAll(workSpace.getAlreadyFailed());
+            workSpace2.getAlreadyFailed().addAll(workSpace.getAlreadyFailed());
+
+            Optional<Node> provedConsequentRight = prove(workSpace, assumptions, leftImplication);
+            Optional<Node> provedConsequentLeft  = prove(workSpace, assumptions, rightImplication);
+
+            if (provedConsequentLeft.isPresent() && provedConsequentRight.isPresent()) {
+
+                List<Node> proved = CollectionUtils.newEmptyList();
+                proved.add(provedConsequentLeft.get());
+                proved.add(provedConsequentRight.get());
+                Node biConditionalNode = new Node(biConditional, NDRule.IFF_INTRO, proved);
+
+                workSpace.addNode(biConditionalNode);
+
+                return Optional.of(biConditionalNode);
+            }
+
+
+
+
+        }
+
+        return Optional.empty();
+
+
+    }
 
     private Optional<Node> tryReductio(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
         Formula negated = Logic.negated(formula);

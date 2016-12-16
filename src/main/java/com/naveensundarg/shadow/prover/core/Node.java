@@ -1,9 +1,6 @@
 package com.naveensundarg.shadow.prover.core;
 
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.representations.formula.Implication;
-import com.naveensundarg.shadow.prover.representations.formula.Not;
-import com.naveensundarg.shadow.prover.representations.formula.Or;
+import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
@@ -111,6 +108,14 @@ public class Node {
             if(ndRule.equals(NDRule.IF_INTRO)){
                 Implication implication = (Implication) formula;
                 return Sets.remove(base, implication.getAntecedent());
+            }
+
+            if(ndRule.equals(NDRule.IFF_INTRO)){
+                BiConditional biConditional = (BiConditional) formula;
+                Set<Formula> newBase = Sets.remove(base, biConditional.getLeft());
+                newBase = Sets.remove(base, biConditional.getRight());
+
+                return newBase;
             }
 
             if(ndRule.equals(NDRule.OR_ELIM)){

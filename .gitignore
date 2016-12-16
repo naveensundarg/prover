@@ -15,3 +15,9 @@
 .idea/libraries/Maven__org_testng_testng_6_8.xml
 .idea/libraries/Maven__org_yaml_snakeyaml_1_6.xml
 target/
+example.png
+graph1.pdf
+graph1.png
+graph1.ps
+temp.dot
+temp.gz
