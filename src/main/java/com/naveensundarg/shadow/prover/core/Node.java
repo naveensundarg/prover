@@ -98,7 +98,7 @@ public class Node {
         return this.formula.equals(f);
     }
     private Set<Formula> computeDerivedFrom(){
-        if(ndRule.equals(NDRule.ASSUMPTION)){
+        if(ndRule.equals(NDRule.ASSUMPTION) || ndRule.equals(NDRule.GIVEN)){
             return Sets.with(formula);
         }
         else {
@@ -110,13 +110,13 @@ public class Node {
                 return Sets.remove(base, implication.getAntecedent());
             }
 
-            if(ndRule.equals(NDRule.IFF_INTRO)){
+           /* if(ndRule.equals(NDRule.IFF_INTRO)){
                 BiConditional biConditional = (BiConditional) formula;
                 Set<Formula> newBase = Sets.remove(base, biConditional.getLeft());
-                newBase = Sets.remove(base, biConditional.getRight());
+                newBase = Sets.remove(newBase, biConditional.getRight());
 
                 return newBase;
-            }
+            }*/
 
             if(ndRule.equals(NDRule.OR_ELIM)){
 

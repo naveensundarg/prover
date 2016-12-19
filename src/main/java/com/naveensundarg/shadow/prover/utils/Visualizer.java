@@ -60,17 +60,67 @@ public class Visualizer {
 
     private static List<String> getNodeDefs(Node node){
 
+
+        if(node.getNdRule().equals(NDRule.GIVEN)){
+            return getGivenNodeDefs(node);
+        } else if (node.getNdRule().equals(NDRule.ASSUMPTION)) {
+            return getAssumptionNodeDefs(node);
+        } else {
+            return getNormalNodeDefs(node);
+        }
+
+
+
+
+    }
+
+    private static List<String> getGivenNodeDefs(Node node){
+
         int id = node.getId();
-        String line1 =  "N"+id+ "[label=<<FONT COLOR=\"orange\"><B>["+ id
-                +"] </B></FONT> <FONT>"+  node.getFormula() + "</FONT>  <BR/> <FONT COLOR=\"gray\"><B>" +
+        String line1 =  "N"+id+ "[label= <<FONT COLOR=\"white\">"+  node.getFormula() + "</FONT> >];";
+        String line2 = "N" +id+"[shape=box; style=filled, color=\"darkgreen\"];";
+
+        List<String> lines =  CollectionUtils.newEmptyList();
+        lines.add(line1);
+        lines.add(line2);
+
+        for (Node parent: node.getParents()){
+
+            lines.add("N"+parent.getId() + " -> " + "R"+id +";");
+        }
+
+        return lines;
+    }
+
+    private static List<String> getAssumptionNodeDefs(Node node){
+
+        int id = node.getId();
+        String line1 =  "N"+id+ "[label= <<FONT COLOR=\"white\">"+  node.getFormula() + "</FONT> >];";
+        String line2 = "N" +id+"[shape=box; style=filled, color=\"orange\"];";
+
+        List<String> lines =  CollectionUtils.newEmptyList();
+        lines.add(line1);
+        lines.add(line2);
+
+        for (Node parent: node.getParents()){
+
+            lines.add("N"+parent.getId() + " -> " + "R"+id +";");
+        }
+
+        return lines;
+    }
+
+    private static List<String> getNormalNodeDefs(Node node){
+
+        int id = node.getId();
+        String line1 =  "N"+id+ "[label=< <FONT>"+  node.getFormula() + "</FONT>  <BR/> <FONT COLOR=\"gray\"><B>" +
                 node.getDerivedFrom()+
                 "</B></FONT>>];";
         String line2 = "N" +id+"[shape=box];";
-        String line3 = "R"+id+"[label=" + node.getNdRule()+ "];";
+        String line3 = "R"+id+"[label=\"" + node.getNdRule()+ "\"];";
 
         String line4 = "R"+id + " -> " + "N"+id +";";
-        String line5 = "R" +id+"[shape=box,style=filled,color=\".7 .3 1.0\"];";
-        String line6 = "R" +id+"[fontsize=8];";
+        String line5 = "R" +id+"[shape=oval,style=filled,color=\".7 .3 1.0\"];";
         String line7 = "R" +id+"[margin=.05];";
 
         List<String> lines =  CollectionUtils.newEmptyList();
@@ -78,8 +128,8 @@ public class Visualizer {
         lines.add(line2);
         lines.add(line3);
         lines.add(line4);
-        lines.add(line5);
-        lines.add(line6);
+       lines.add(line5);
+      //  lines.add(line6);
         lines.add(line7);
 
         for (Node parent: node.getParents()){

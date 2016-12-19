@@ -24,6 +24,14 @@ public class CollectionUtils {
         return list;
     }
 
+    public static <T> List<T> listOf(T... A){
+        List<T> list = newEmptyList();
+        for (T a:A){
+            list.add(a);
+        }
+
+        return list;
+    }
     public static <T> List<T> addToList(List<T> list, T a){
         List<T> newlist = newEmptyList();
         newlist.addAll(list);

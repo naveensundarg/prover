@@ -41,9 +41,9 @@ public class WorkSpace {
 
 
 
-    public static WorkSpace createWorkSpaceFromAssumptions(Set<Formula> assumptions){
+    public static WorkSpace createWorkSpaceFromGiven(Set<Formula> assumptions){
 
-        Set<Node> assumptionNodes = assumptions.stream().map(assumption-> new Node(assumption, NDRule.ASSUMPTION)).collect(Collectors.toSet());
+        Set<Node> assumptionNodes = assumptions.stream().map(assumption-> new Node(assumption, NDRule.GIVEN)).collect(Collectors.toSet());
 
         WorkSpace workSpace = new WorkSpace();
 
@@ -75,6 +75,10 @@ public class WorkSpace {
         nodes.add(Node.newAssumption(formula));
     }
 
+    public void assume(Node formula){
+        nodes.add(formula);
+    }
+
     public Optional<Node> fetch(Set<Formula> assumptions, Formula formula){
 
         return nodes.stream().filter(node-> node.formulaEquals(formula) && assumptions.containsAll(node.getDerivedFrom())).findAny();
@@ -82,6 +86,7 @@ public class WorkSpace {
     }
 
     public void addNode(Node node){
+
 
         nodes.add(node);
 
