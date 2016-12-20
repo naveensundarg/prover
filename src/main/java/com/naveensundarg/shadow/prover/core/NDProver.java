@@ -18,24 +18,10 @@ import java.util.stream.Collectors;
 public class NDProver implements Prover {
 
 
-    private final Set<Formula> expanded;
-
-    private final Stack<Formula> context;
-
     public NDProver() {
 
-        this.expanded = Sets.newSet();
-        this.context = new Stack<>();
     }
 
-
-    public NDProver(NDProver parent) {
-
-        this.expanded = CollectionUtils.setFrom(parent.expanded);
-        this.context = new Stack<>();
-
-
-    }
 
 
 
@@ -55,7 +41,7 @@ public class NDProver implements Prover {
 
             boolean visualize = false;
 
-           visualize = true;
+        //   visualize = true;
 
             if(visualize){
                 try {
@@ -268,13 +254,11 @@ public class NDProver implements Prover {
                     }else{
 
 
-                        Node newAssumption = Node.newAssumption(left);
-                        workSpace.assume(newAssumption);
+                        Node newAssumption = workSpace.assumeAndFetch(left);
                         List<Node> parents = CollectionUtils.listOf(newAssumption);
                         parents.add(node);
                         Node consequentNode = new Node(right, NDRule.IFF_ELIM, parents);
 
-                        workSpace.getExpanded().remove(biConditional);
                         workSpace.getExpanded().remove(biConditional);
 
                         return consequentNode;
@@ -308,8 +292,7 @@ public class NDProver implements Prover {
                     }else{
 
 
-                        Node newAssumption = Node.newAssumption(right);
-                        workSpace.assume(newAssumption);
+                        Node newAssumption = workSpace.assumeAndFetch(right);
                         List<Node> parents = CollectionUtils.listOf(newAssumption);
                         parents.add(node);
                         Node consequentNode = new Node(left, NDRule.IFF_ELIM, parents);
@@ -417,7 +400,10 @@ public class NDProver implements Prover {
 
                 Formula conjunct = conjuncts[i];
 
-                Optional<Node> provedConjunct = prove(workSpace, assumptions, conjunct);
+
+                WorkSpace copyWorkSpace = workSpace.copy();
+
+                Optional<Node> provedConjunct = prove(copyWorkSpace, assumptions, conjunct);
 
                 if (!provedConjunct.isPresent()) {
                     return Optional.empty();
@@ -517,8 +503,8 @@ public class NDProver implements Prover {
             Formula leftImplication = new Implication(left, right);
             Formula rightImplication = new Implication(right, left);
 
-            WorkSpace workSpace1 = WorkSpace.createWorkSpaceFromGiven(assumptions);
-            WorkSpace workSpace2 = WorkSpace.createWorkSpaceFromGiven(assumptions);
+            WorkSpace workSpace1 = WorkSpace.createWorkSpaceFromAssumptions(assumptions);
+            WorkSpace workSpace2 = WorkSpace.createWorkSpaceFromAssumptions(assumptions);
 
             workSpace1.getCurrentReductioSet().addAll(workSpace.getCurrentReductioSet());
             workSpace2.getCurrentReductioSet().addAll(workSpace.getCurrentReductioSet());
@@ -529,8 +515,8 @@ public class NDProver implements Prover {
             workSpace1.getAlreadyFailed().addAll(workSpace.getAlreadyFailed());
             workSpace2.getAlreadyFailed().addAll(workSpace.getAlreadyFailed());
 
-            Optional<Node> provedConsequentRight = prove(workSpace, assumptions, leftImplication);
-            Optional<Node> provedConsequentLeft  = prove(workSpace, assumptions, rightImplication);
+            Optional<Node> provedConsequentRight = prove(workSpace1, assumptions, leftImplication);
+            Optional<Node> provedConsequentLeft  = prove(workSpace2, assumptions, rightImplication);
 
             if (provedConsequentLeft.isPresent() && provedConsequentRight.isPresent()) {
 
@@ -585,7 +571,7 @@ public class NDProver implements Prover {
             Optional<Node> provedConsequent = prove(workSpace, Sets.add(assumptions, negated), absurdTarget);
             Optional<Node> provedConsequentNegated = prove(workSpace, Sets.add(assumptions, negated), Logic.negated(absurdTarget));
 
-            if(provedConsequent.isPresent() && provedConsequentNegated.isPresent()){
+            if(provedConsequent.isPresent() && provedConsequentNegated.isPresent() && (provedConsequent.get().getDerivedFrom().contains(negated) || provedConsequentNegated.get().getDerivedFrom().contains(negated))){
 
                 NDRule ndRule = formula instanceof Not? NDRule.NOT_INTRO:NDRule.NOT_ELIM;
                 Node proved = new Node(formula, ndRule, CollectionUtils.listOf(provedConsequent.get(), provedConsequentNegated.get()), negated);
@@ -600,7 +586,7 @@ public class NDProver implements Prover {
         }
 
         workSpace.removeFromCurrentReductioSet(formula);
-       workSpace.getNodes().remove(negatedNode);
+        workSpace.getNodes().remove(negatedNode);
 
         workSpace.addToAlreadyFailed(assumptions, formula);
 

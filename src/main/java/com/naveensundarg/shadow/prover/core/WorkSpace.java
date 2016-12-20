@@ -6,7 +6,9 @@ import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
+import java.util.Comparator;
 import java.util.Optional;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ public class WorkSpace {
     private final AtomicBoolean inAReductioNow;
     private final Set<Formula> currentReductioSet;
     private final Set<Pair<Set<Formula>, Formula>> alreadyFailed;
+    private final PriorityQueue<Node> inferenceQueue;
 
     private WorkSpace() {
         this.nodes = Sets.newSet();
@@ -29,6 +32,7 @@ public class WorkSpace {
         this.currentReductioSet = Sets.newSet();
         this.inAReductioNow = new AtomicBoolean();
         this.alreadyFailed = Sets.newSet();
+        this.inferenceQueue = new PriorityQueue<>();
     }
 
 
@@ -38,28 +42,54 @@ public class WorkSpace {
     }
 
 
+    static WorkSpace createWorkSpaceFromAssumptions(Set<Formula> assumptions){
 
-
-
-    public static WorkSpace createWorkSpaceFromGiven(Set<Formula> assumptions){
-
-        Set<Node> assumptionNodes = assumptions.stream().map(assumption-> new Node(assumption, NDRule.GIVEN)).collect(Collectors.toSet());
-
+        Set<Node> assumptionNodes = assumptions.stream().map(assumption-> new Node(assumption, NDRule.ASSUMPTION)).collect(Collectors.toSet());
         WorkSpace workSpace = new WorkSpace();
-
         workSpace.nodes.addAll(assumptionNodes);
+
 
         return workSpace;
 
     }
 
+
+    static WorkSpace createWorkSpaceFromGiven(Set<Formula> assumptions){
+
+        Set<Node> assumptionNodes = assumptions.stream().map(assumption-> new Node(assumption, NDRule.GIVEN)).collect(Collectors.toSet());
+        WorkSpace workSpace = new WorkSpace();
+        workSpace.nodes.addAll(assumptionNodes);
+
+
+        return workSpace;
+
+    }
+
+
+    public WorkSpace copy(){
+
+        WorkSpace copy = WorkSpace.createEmptyWorkSpace();
+
+        copy.getNodes().addAll(getNodes());
+
+        copy.getCurrentReductioSet().addAll(getCurrentReductioSet());
+
+        copy.getExpanded().addAll(getExpanded());
+
+        copy.getAlreadyFailed().addAll(getAlreadyFailed());
+
+        return copy;
+
+    }
+
+
     /*** Already Seen ***/
-    public void addToAlreadyFailed(Set<Formula> assumptions, Formula formula) {
+    void addToAlreadyFailed(Set<Formula> assumptions, Formula formula) {
 
         alreadyFailed.add(ImmutablePair.from(assumptions,formula));
     }
 
-    public boolean hasAlreadyFailed(Set<Formula> assumptions, Formula formula){
+    boolean hasAlreadyFailed(Set<Formula> assumptions, Formula formula){
         return alreadyFailed.stream().anyMatch(pair->{
 
             Set<Formula> seenAssumptions = pair.first();
@@ -73,6 +103,22 @@ public class WorkSpace {
     /*** Already Seen ***/
     public void assume(Formula formula){
         nodes.add(Node.newAssumption(formula));
+    }
+
+    public Node assumeAndFetch(Formula formula){
+        Optional<Node> nodeOptional = nodes.stream().filter(x->x.getFormula().equals(formula) && x.getNdRule().equals(NDRule.ASSUMPTION)).findAny();
+
+        if(nodeOptional.isPresent()){
+            return nodeOptional.get();
+        }
+        else {
+
+
+            Node node = Node.newAssumption(formula);
+            nodes.add(node);
+            return node;
+        }
+
     }
 
     public void assume(Node formula){

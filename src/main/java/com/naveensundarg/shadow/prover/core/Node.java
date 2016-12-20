@@ -21,7 +21,7 @@ public class Node {
     private final List<Node> parents;
 
     private final Set<Formula> derivedFrom;
-    private final int id;
+    public int id;
 
 
     private static AtomicInteger Node_ID_COUNTER = new AtomicInteger(0);
@@ -158,6 +158,19 @@ public class Node {
         return derivedFrom;
     }
 
+    public List<Node> ancestors(){
+
+        List<Node> ancestors = CollectionUtils.newEmptyList();
+
+        ancestors.addAll(parents);
+
+        for(Node parent: parents){
+
+            ancestors.addAll(parent.ancestors());
+
+        }
+        return ancestors;
+    }
     @Override
     public String toString() {
         return "[" + id +": " + formula + "; " + ndRule +"; " +  parents.stream().map(Node::getId).collect(Collectors.toSet()) +"]";

@@ -3,10 +3,7 @@ package com.naveensundarg.shadow.prover.utils;
 import com.naveensundarg.shadow.prover.core.NDRule;
 import com.naveensundarg.shadow.prover.core.Node;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +23,8 @@ public class Visualizer {
 
         Map<Integer, Node> usedNodes = CollectionUtils.newMap();
 
-        Set<List<String>> lines =getAllNodesInTree(node).stream().map(Visualizer::getNodeDefs).collect(Collectors.toSet());
+        node.id = 0;
+        Set<List<String>> lines = getNodeMaps(node).entrySet().stream().map(e->getNodeDefs(e.getValue())).collect(Collectors.toSet());
 
 
         StringBuilder builder = new StringBuilder();
@@ -43,13 +41,55 @@ public class Visualizer {
         out.flush();
         out.close();
 
-
+        Runtime rt = Runtime.getRuntime();
+        try {
+            Process pr = rt.exec("dot -Tpdf temp.gz -o graph.pdf");
+            rt.exec("open graph.pdf");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
 
 
-    private static Set<Node> getAllNodesInTree(Node node){
+
+    public static Map<Integer, Node> getNodeMaps(Node node){
+
+        Map<Integer, Node> map = CollectionUtils.newMap();
+
+        List<Node> ancestors = node.ancestors();
+
+
+        int smallestSimilarAncestorSize = Integer.MAX_VALUE;
+        Node smallestSimilarAncestor = null;
+        for(Node ancestor: ancestors){
+            if(ancestor.formulaEquals(node.getFormula()) && Sets.subset( ancestor.getDerivedFrom(), node.getDerivedFrom()) && ancestor.ancestors().size() < smallestSimilarAncestorSize){
+                smallestSimilarAncestor = ancestor;
+                smallestSimilarAncestorSize  = ancestor.ancestors().size();
+            }
+        }
+
+        if(smallestSimilarAncestor!=null){
+            int oldID = node.id;
+            node = smallestSimilarAncestor;
+            smallestSimilarAncestor.id = oldID;
+        }
+
+        map.put(node.getId(), node);
+
+        for(Node parent: node.getParents()){
+
+
+            map.putAll(getNodeMaps(parent));
+
+        }
+
+        return map;
+
+
+    }
+    public static Set<Node> getAllNodesInTree(Node node){
 
 
         return Sets.add(
@@ -112,6 +152,7 @@ public class Visualizer {
 
     private static List<String> getNormalNodeDefs(Node node){
 
+
         int id = node.getId();
         String line1 =  "N"+id+ "[label=< <FONT>"+  node.getFormula() + "</FONT>  <BR/> <FONT COLOR=\"gray\"><B>" +
                 node.getDerivedFrom()+
@@ -131,6 +172,11 @@ public class Visualizer {
        lines.add(line5);
       //  lines.add(line6);
         lines.add(line7);
+
+        if (node.id == 0) {
+            lines.add("N" +id+"[peripheries=2, color=\"darkgreen\"];");
+        }
+
 
         for (Node parent: node.getParents()){
 

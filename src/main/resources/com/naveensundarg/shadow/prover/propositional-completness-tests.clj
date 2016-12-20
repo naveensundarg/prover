@@ -251,11 +251,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "*prop-nd-true-test-33* Problem 12"
- :description ""
- :assumptions
- {}
- :goal (iff (iff (iff p q) r) (iff p (iff q r)))}
+;{:name "*prop-nd-true-test-33* Problem 12"
+; :description ""
+; :assumptions
+; {}
+; :goal (iff (iff (iff p q) r) (iff p (iff q r)))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -348,11 +348,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "*prop-nd-true-test-46* direction 1 of 33"
- :description ""
- :assumptions {}
- :goal (if (iff (iff p q) r) (iff p (iff q r)))}
-
+;{:name "*prop-nd-true-test-46* direction 1 of 33"
+; :description ""
+; :assumptions {}
+; :goal (if (iff (iff p q) r) (iff p (iff q r)))}
+;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

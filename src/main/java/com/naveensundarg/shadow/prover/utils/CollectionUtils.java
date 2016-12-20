@@ -46,6 +46,15 @@ public class CollectionUtils {
         return newSet;
     }
 
+    public static <T> PriorityQueue<T> newPriorityQueue(){
+
+        return new PriorityQueue<T>();
+    }
+
+    public static <T> PriorityQueue<T> newPriorityQueue(Comparator<T> comparator){
+
+        return new PriorityQueue<T>(comparator);
+    }
 
 
     public static <U,V> Map<U,V> newMap(){
