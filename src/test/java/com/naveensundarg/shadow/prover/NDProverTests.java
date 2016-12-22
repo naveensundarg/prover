@@ -20,7 +20,7 @@ import java.util.Set;
 public class NDProverTests {
 
 
-    Prover prover;
+    final NDProver prover;
 
     NDProverTests(){
 
@@ -51,7 +51,9 @@ public class NDProverTests {
     @Test(dataProvider = "completenessTestsProvider")
     public void testCompleteness(Set<Formula> assumptions, Formula formula){
 
-        Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
+        synchronized (prover){
+            Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
+        }
 
     }
 
@@ -80,7 +82,13 @@ public class NDProverTests {
     @Test(dataProvider = "debugTestProvider")
     public void testDebug(Set<Formula> assumptions, Formula formula){
 
-       Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
+        synchronized (prover){
+            prover.visualize = true;
+
+            Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
+            prover.visualize = false;
+
+        }
 
     }
     @DataProvider(name="soundnessTestsProvider")
@@ -106,7 +114,9 @@ public class NDProverTests {
     @Test(dataProvider = "soundnessTestsProvider")
     public void testSoundess(Set<Formula> assumptions, Formula formula){
 
-        Assert.assertFalse(prover.prove(assumptions, formula).isPresent());
+        synchronized (prover){
+            Assert.assertFalse(prover.prove(assumptions, formula).isPresent());
+        }
 
     }
 }

@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class NDProver implements Prover {
 
 
+    public boolean visualize = false;
     public NDProver() {
 
     }
@@ -30,18 +31,14 @@ public class NDProver implements Prover {
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
 
-        Set<Node> assumptionNodes = assumptions.stream().map(assumption -> new Node(assumption, NDRule.ASSUMPTION)).collect(Collectors.toSet());
-
 
         WorkSpace workSpace = WorkSpace.createWorkSpaceFromGiven(assumptions);
+
         Optional<Node> provedOpt = prove(workSpace, assumptions, formula);
 
 
         if (provedOpt.isPresent()) {
 
-            boolean visualize = false;
-
-        //   visualize = true;
 
             if(visualize){
                 try {
@@ -396,6 +393,7 @@ public class NDProver implements Prover {
             Formula[] conjuncts = and.getArguments();
 
             List<Node> conjunctsProved = CollectionUtils.newEmptyList();
+
             for (int i = 0; i < conjuncts.length; i++) {
 
                 Formula conjunct = conjuncts[i];
@@ -503,17 +501,8 @@ public class NDProver implements Prover {
             Formula leftImplication = new Implication(left, right);
             Formula rightImplication = new Implication(right, left);
 
-            WorkSpace workSpace1 = WorkSpace.createWorkSpaceFromAssumptions(assumptions);
-            WorkSpace workSpace2 = WorkSpace.createWorkSpaceFromAssumptions(assumptions);
-
-            workSpace1.getCurrentReductioSet().addAll(workSpace.getCurrentReductioSet());
-            workSpace2.getCurrentReductioSet().addAll(workSpace.getCurrentReductioSet());
-
-            workSpace1.getExpanded().addAll(workSpace.getExpanded());
-            workSpace2.getExpanded().addAll(workSpace.getExpanded());
-
-            workSpace1.getAlreadyFailed().addAll(workSpace.getAlreadyFailed());
-            workSpace2.getAlreadyFailed().addAll(workSpace.getAlreadyFailed());
+            WorkSpace workSpace1 = workSpace.copy();
+            WorkSpace workSpace2 = workSpace.copy();
 
             Optional<Node> provedConsequentRight = prove(workSpace1, assumptions, leftImplication);
             Optional<Node> provedConsequentLeft  = prove(workSpace2, assumptions, rightImplication);
@@ -542,6 +531,32 @@ public class NDProver implements Prover {
 
     private Optional<Node> tryReductio(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
         Formula negated = Logic.negated(formula);
+
+
+        Set<Node> relevantNodes  = workSpace.getNodes().stream().filter(node->Sets.subset(node.getDerivedFrom(),assumptions)).collect(Collectors.toSet());
+        Set<Formula> relevantFormula = relevantNodes.stream().map(Node::getFormula).collect(Collectors.toSet());
+
+        Optional<Node> alreadyOpt = relevantNodes.stream().filter(n-> relevantFormula.contains(Logic.negated(n.getFormula()))).findAny();
+
+        if(alreadyOpt.isPresent()){
+
+            Optional<Node> negatedAlreadyOpt = relevantNodes.stream().filter(n-> alreadyOpt.get().getFormula().equals(Logic.negated(n.getFormula()))).findAny();
+
+            Node n1 = alreadyOpt.get();
+
+            Node n2 = negatedAlreadyOpt.get();
+
+
+            NDRule ndRule = formula instanceof Not? NDRule.NOT_INTRO:NDRule.NOT_ELIM;
+            Node proved = new Node(formula, ndRule, CollectionUtils.listOf(n1,n2), negated);
+
+            workSpace.addNode(proved);
+
+            workSpace.removeFromCurrentReductioSet(formula);
+            return Optional.of(proved);
+
+
+        }
 
         if(workSpace.isReductioBeingTriedOn(formula) || workSpace.hasAlreadyFailed(assumptions, formula)){
             return Optional.empty();
