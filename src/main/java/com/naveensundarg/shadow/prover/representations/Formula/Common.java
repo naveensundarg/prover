@@ -22,6 +22,8 @@ public class Common extends Formula implements BaseFormula{
 
     private final Set<Value> allValues;
 
+    private final int weight;
+
     public Common(Value time, Formula formula) {
 
         this.time = time;
@@ -37,6 +39,8 @@ public class Common extends Formula implements BaseFormula{
             variables.add((Variable) time);
 
         }
+
+        this.weight =  time.getWeight() + formula.getWeight();
     }
 
     public Formula getFormula(){
@@ -81,6 +85,11 @@ public class Common extends Formula implements BaseFormula{
     @Override
     public int getLevel() {
         return 2;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 
 

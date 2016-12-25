@@ -17,6 +17,7 @@ public class BiConditional extends Formula {
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
 
+    private final int weight;
     public BiConditional(Formula left, Formula right){
 
         this.left = left;
@@ -25,6 +26,8 @@ public class BiConditional extends Formula {
         this.subFormulae = Sets.union(left.subFormulae(), right.subFormulae());
 
         this.variables = Sets.union(left.variablesPresent(), right.variablesPresent());
+
+        this.weight = 1 + 2 * (1 + left.getWeight() + right.getWeight());
     }
 
     public Formula getLeft() {
@@ -88,5 +91,10 @@ public class BiConditional extends Formula {
     @Override
     public int getLevel() {
         return Math.max(left.getLevel(), right.getLevel());
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 }

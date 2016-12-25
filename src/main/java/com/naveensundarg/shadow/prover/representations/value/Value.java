@@ -34,4 +34,6 @@ public abstract class Value extends Expression  implements  Comparable{
 
     public abstract Set<Value> subValues();
 
+    public abstract int getWeight();
+
  }

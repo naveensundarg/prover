@@ -22,4 +22,9 @@ public class Time extends Constant implements Comparable {
             return 0;
         }
     }
+
+    @Override
+    public int getWeight() {
+        return 1;
+    }
 }

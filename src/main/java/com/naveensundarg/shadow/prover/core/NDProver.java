@@ -465,10 +465,14 @@ public class NDProver implements Prover {
             Formula antecedent = implication.getAntecedent();
             Formula consequent = implication.getConsequent();
 
-            workSpace.assume(antecedent);
+            WorkSpace workSpace1 = workSpace.copy();
 
-            Optional<Node> provedConsequent = prove(workSpace, Sets.add(assumptions, antecedent), consequent);
+            Node antecedentNode = new Node(antecedent, NDRule.GIVEN);
+            workSpace1.addNode(antecedentNode);
 
+            Optional<Node> provedConsequent = prove(workSpace1, Sets.add(assumptions, antecedent), consequent);
+
+            antecedentNode.setNdRule(NDRule.ASSUMPTION);
             if (provedConsequent.isPresent()) {
 
                 List<Node> proved = CollectionUtils.newEmptyList();

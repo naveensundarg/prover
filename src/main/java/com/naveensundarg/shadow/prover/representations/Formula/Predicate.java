@@ -21,6 +21,8 @@ public class Predicate extends Formula implements BaseFormula {
     private final Set<Variable> variables;
     private final boolean sorted;
     private final Set<Value> allValues;
+
+    private final int weight;
     public Predicate(String name){
 
         this.sorted = false;
@@ -29,6 +31,8 @@ public class Predicate extends Formula implements BaseFormula {
         this.subFormulae = Sets.with(this);
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.allValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
+
+        this.weight = 1;
 
     }
     public Predicate(String name, Value[] arguments){
@@ -39,6 +43,9 @@ public class Predicate extends Formula implements BaseFormula {
         this.subFormulae = Sets.with(this);
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.allValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
+
+        this.weight = 1 + Arrays.stream(arguments).mapToInt(Value::getWeight).reduce(0, Integer::sum);
+
 
     }
 
@@ -101,6 +108,11 @@ public class Predicate extends Formula implements BaseFormula {
     @Override
     public int getLevel() {
         return 1;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 
     public Value[] getArguments() {

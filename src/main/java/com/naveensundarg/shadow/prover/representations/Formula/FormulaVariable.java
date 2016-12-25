@@ -66,6 +66,11 @@ public class FormulaVariable extends Formula {
     }
 
     @Override
+    public int getWeight() {
+        return 1;
+    }
+
+    @Override
     public String toString() {
         return name;
     }

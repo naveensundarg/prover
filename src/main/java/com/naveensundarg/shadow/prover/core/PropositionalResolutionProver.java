@@ -43,30 +43,30 @@ public class PropositionalResolutionProver implements Prover {
             }
             else{
                 boolean expanded = false;
-                for(int i = 0; i<matchingPairs.size(); i++){
-
-                    List<Clause> pair = matchingPairs.get(i);
+                for (List<Clause> pair : matchingPairs) {
 
                     Clause left = pair.get(0);
                     Clause right = pair.get(1);
+                    boolean leftIsAllPositive = left.getLiterals().stream().noneMatch(Literal::isNegated);
+                    boolean righIsAllPositive = right.getLiterals().stream().noneMatch(Literal::isNegated);
 
-                    Set<Clause> resolvands = resolve(left,right);
+
+                    if (!leftIsAllPositive && !righIsAllPositive) {
+                        continue;
+                    }
+                    Set<Clause> resolvands = resolve(left, right);
 
 
-
-                    if(!resolvands.isEmpty()){
+                    if (!resolvands.isEmpty()) {
 
                         List<Clause> resolvandsList = new ArrayList<>();
-                        resolvands.stream().forEach(resolvandsList::add);
+                        resolvands.forEach(resolvandsList::add);
 
-                        for(int j = 0; j< resolvandsList.size();j++){
-                            Clause resolvand =  resolvandsList.get(j);
-
-                            if(resolvand.getLiterals().isEmpty()){
+                        for (Clause resolvand : resolvandsList) {
+                            if (resolvand.getLiterals().isEmpty()) {
                                 return Optional.of(Justification.trivial(formula));
-                            }
-                            else{
-                                if(!clauses.contains(resolvand)){
+                            } else {
+                                if (!clauses.contains(resolvand)) {
                                     clauses.add(resolvand);
                                     expanded = true;
                                 }
@@ -74,7 +74,7 @@ public class PropositionalResolutionProver implements Prover {
                         }
 
 
-                    } else{
+                    } else {
                         return Optional.empty();
                     }
                 }

@@ -21,6 +21,8 @@ public class Perception extends Formula implements BaseFormula{
     Set<Variable> variables;
     private final Set<Value> allValues;
 
+    private final int weight;
+
     public Perception(Value agent, Value time, Formula formula) {
 
 
@@ -43,6 +45,8 @@ public class Perception extends Formula implements BaseFormula{
             variables.add((Variable) time);
 
         }
+
+        this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
 
     public Value getAgent() {
@@ -86,6 +90,11 @@ public class Perception extends Formula implements BaseFormula{
     @Override
     public int getLevel() {
         return 2;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 
 

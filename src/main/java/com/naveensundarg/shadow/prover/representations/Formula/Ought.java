@@ -25,6 +25,7 @@ public class Ought extends Formula implements BaseFormula{
     Set<Variable> variables;
     private final Set<Value> allValues;
 
+    private final int weight;
 
     public Ought(Value agent, Value time, Formula formula, Formula ought) {
 
@@ -48,6 +49,8 @@ public class Ought extends Formula implements BaseFormula{
             variables.add((Variable) time);
 
         }
+
+        this.weight = 1 + agent.getWeight() + time.getWeight() + precondition.getWeight() + ought.getWeight();
     }
 
     public Formula getPrecondition(){
@@ -103,6 +106,11 @@ public class Ought extends Formula implements BaseFormula{
     @Override
     public int getLevel() {
         return 2;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 
 

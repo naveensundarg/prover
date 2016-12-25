@@ -368,3 +368,5 @@
  :description ""
  :assumptions {1 (or (or  P Q) R )}
  :goal (or P (or Q R))}
+
+

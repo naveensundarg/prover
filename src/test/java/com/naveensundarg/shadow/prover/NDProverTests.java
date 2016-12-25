@@ -79,7 +79,7 @@ public class NDProverTests {
     }
 
 
-    @Test(dataProvider = "debugTestProvider")
+   // @Test(dataProvider = "debugTestProvider")
     public void testDebug(Set<Formula> assumptions, Formula formula){
 
         synchronized (prover){

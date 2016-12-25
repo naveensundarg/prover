@@ -18,6 +18,8 @@ public class Implication extends Formula{
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
 
+    private final int weight;
+
     public Implication(Formula antecedent, Formula consequent){
 
         this.antecedent = antecedent;
@@ -26,6 +28,7 @@ public class Implication extends Formula{
         this.subFormulae = Sets.union(antecedent.subFormulae(), consequent.subFormulae());
         this.subFormulae.add(this);
         this.variables  = Sets.union(antecedent.variablesPresent(), consequent.variablesPresent());
+        this.weight = 1 + antecedent.getWeight() + consequent.getWeight();
     }
 
     public Formula getAntecedent() {
@@ -88,5 +91,10 @@ public class Implication extends Formula{
     @Override
     public int getLevel() {
         return Math.max(antecedent.getLevel(),consequent.getLevel());
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 }

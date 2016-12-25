@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Created by naveensundarg on 12/19/16.
  */
-public class Sequent {
+public final class Sequent {
 
 
     private enum Type {CONCLUSION, INTEREST, ULTIMATE_INTEREST};
@@ -37,6 +37,44 @@ public class Sequent {
     }
 
 
+    public Formula getConclusion() {
+        return conclusion;
+    }
 
+    public Set<Formula> getSupposition() {
+        return supposition;
+    }
 
+    public Type getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return "Sequent{" +
+                "conclusion=" + conclusion +
+                ", supposition=" + supposition +
+                ", type=" + type +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Sequent sequent = (Sequent) o;
+
+        if (!conclusion.equals(sequent.conclusion)) return false;
+        if (!supposition.equals(sequent.supposition)) return false;
+        return type == sequent.type;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = conclusion.hashCode();
+        result = 31 * result + supposition.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
+    }
 }

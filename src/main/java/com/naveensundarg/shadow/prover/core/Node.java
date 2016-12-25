@@ -17,7 +17,12 @@ import java.util.stream.Collectors;
 public class Node {
 
     private final Formula formula;
-    private final NDRule ndRule;
+
+    public void setNdRule(NDRule ndRule) {
+        this.ndRule = ndRule;
+    }
+
+    private  NDRule ndRule;
     private final List<Node> parents;
 
     private final Set<Formula> derivedFrom;
@@ -54,6 +59,7 @@ public class Node {
 
 
     }
+
 
     Node(Formula formula, NDRule ndRule, List<Node> parents) {
 

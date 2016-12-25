@@ -16,18 +16,18 @@ import java.util.stream.Collectors;
 /**
  * Created by naveensundarg on 12/19/16.
  */
-public class NProver implements Prover {
+public final class NProver implements Prover {
 
 
-    private final Set<Node> allNodes;
-    private final PriorityQueue<Node> inferenceQueue;
-    private final Set<Node> ultimateInterests;
+    private final Set<Sequent> allSequents;
+   // private final PriorityQueue<Sequent> inferenceQueue;
+   // private final Set<Sequent> ultimateInterests;
 
-    public NProver(){
+    private NProver(){
 
-        allNodes = Sets.newSet();
-        ultimateInterests = Sets.newSet();
-        inferenceQueue = CollectionUtils.newPriorityQueue(Comparator.comparingInt(x -> x.getFormula().subFormulae().size()));
+        this.allSequents = Sets.newSet();
+     //   this.ultimateInterests = Sets.newSet();
+       // this.inferenceQueue = CollectionUtils.newPriorityQueue(Comparator.comparingInt(x -> x.getSupposition().subFormulae().size()));
     }
 
 

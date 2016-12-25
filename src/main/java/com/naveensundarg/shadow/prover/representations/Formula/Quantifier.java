@@ -13,6 +13,7 @@ public interface Quantifier {
 
     Formula getArgument();
 
+
     default Formula renamed(Map<Variable, Variable> variableMap){
 
         Variable[] vars = vars();

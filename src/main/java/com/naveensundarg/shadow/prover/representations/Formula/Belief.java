@@ -22,6 +22,8 @@ public class Belief extends Formula implements BaseFormula{
     Set<Variable> variables;
     private final Set<Value> allValues;
 
+    private final int weight;
+
 
     public Belief(Value agent, Value time, Formula formula) {
 
@@ -43,6 +45,8 @@ public class Belief extends Formula implements BaseFormula{
             variables.add((Variable) time);
 
         }
+
+        this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
 
     public Formula getFormula(){
@@ -95,6 +99,11 @@ public class Belief extends Formula implements BaseFormula{
     @Override
     public int getLevel() {
         return 2;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 
 

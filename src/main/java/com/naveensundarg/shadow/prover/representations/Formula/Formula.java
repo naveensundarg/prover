@@ -24,4 +24,6 @@ public abstract class Formula extends Expression {
     public abstract Formula applyOperation(UnaryOperator<Formula> operator);
 
     public abstract int getLevel();
+
+    public abstract int getWeight();
 }

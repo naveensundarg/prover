@@ -16,11 +16,15 @@ public class Not extends Formula {
     private final Formula argument;
 
     private final Set<Formula> subFormulae;
+
+    private final int weight;
     public Not(Formula argument){
         this.argument = argument;
         this.subFormulae = CollectionUtils.setFrom(argument.subFormulae());
         this.subFormulae.add(this);
+        this.weight = 1 + argument.getWeight();
     }
+
 
 
     public Formula getArgument() {
@@ -77,5 +81,10 @@ public class Not extends Formula {
     @Override
     public int getLevel() {
         return argument.getLevel();
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 }

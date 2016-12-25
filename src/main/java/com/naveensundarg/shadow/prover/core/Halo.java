@@ -5,13 +5,14 @@ import com.naveensundarg.shadow.prover.core.resolutionrule.DemodulationImplement
 import com.naveensundarg.shadow.prover.core.resolutionrule.FirstOrderResolutionImplementation;
 import com.naveensundarg.shadow.prover.core.resolutionrule.ParamodulationImplementation;
 import com.naveensundarg.shadow.prover.core.resolutionrule.RuleImplementation;
-import com.naveensundarg.shadow.prover.representations.cnf.Literal;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.representations.formula.Not;
-import com.naveensundarg.shadow.prover.representations.formula.Or;
-import com.naveensundarg.shadow.prover.utils.*;
+import com.naveensundarg.shadow.prover.representations.cnf.Literal;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.utils.ImmutablePair;
+import com.naveensundarg.shadow.prover.utils.Logic;
+import com.naveensundarg.shadow.prover.utils.Pair;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 /**
  * Created by naveensundarg on 4/12/16.
  */
-public class FirstOrderResolutionProver implements Prover {
+public class Halo implements Prover {
 
     private Prover propositionalProver;
 
@@ -48,14 +49,14 @@ public class FirstOrderResolutionProver implements Prover {
     private final Map<Problem, Set<Pair<Clause, Clause>>> used;
     private final Set<Rule> rules;
 
-    public FirstOrderResolutionProver(Set<Rule> rules) {
+    public Halo(Set<Rule> rules) {
 
         used = newMap();
         this.rules = rules;
         this.propositionalProver = new PropositionalResolutionProver();
     }
 
-    public FirstOrderResolutionProver() {
+    public Halo() {
 
         used = newMap();
         this.rules = Sets.with(Rule.RESOLUTION);
@@ -76,7 +77,6 @@ public class FirstOrderResolutionProver implements Prover {
         }*/
 
         Problem problem = new Problem(assumptions, formula);
-        used.put(problem, newSet());
 
         Set<CNFFormula> formulas = assumptions.
                 stream().

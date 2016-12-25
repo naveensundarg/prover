@@ -23,6 +23,8 @@ public class Or extends Formula {
     private final Set<Variable> variables;
     private final int level;
 
+    private final int weight;
+
     public Or(Formula ... arguments){
         this.arguments = arguments;
         this.subFormulae = Arrays.stream(arguments).map(Formula::subFormulae).
@@ -30,6 +32,7 @@ public class Or extends Formula {
         this.subFormulae.add(this);
         this.variables = Arrays.stream(arguments).map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.level = CommonUtils.maxLevel(arguments);
+        this.weight = 1 +  Arrays.stream(arguments).mapToInt(Formula::getWeight).reduce(0, Integer::sum);
 
     }
 
@@ -45,6 +48,7 @@ public class Or extends Formula {
 
         this.variables = arguments.stream().map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.level = CommonUtils.maxLevel(this.arguments);
+        this.weight = 1 + arguments.stream().mapToInt(Formula::getWeight).reduce(0, Integer::sum);
 
 
 
@@ -104,5 +108,10 @@ public class Or extends Formula {
     @Override
     public int getLevel() {
         return level;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 }

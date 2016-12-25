@@ -21,6 +21,7 @@ public class And extends Formula {
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
     private final int level;
+    private final int weight;
     public And(Formula ... arguments){
         this.arguments = arguments;
         this.subFormulae = Arrays.stream(arguments).map(Formula::subFormulae).
@@ -28,6 +29,7 @@ public class And extends Formula {
 
         this.variables = Arrays.stream(arguments).map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.level = CommonUtils.maxLevel(arguments);
+        this.weight = 1 + Arrays.stream(arguments).mapToInt(Formula::getWeight).reduce(0, Integer::sum);
     }
 
     public And(List<Formula> arguments){
@@ -44,6 +46,7 @@ public class And extends Formula {
 
         this.variables = arguments.stream().map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.level = CommonUtils.maxLevel(this.arguments);
+        this.weight = 1 + arguments.stream().mapToInt(Formula::getWeight).reduce(0, Integer::sum);
 
 
     }
@@ -103,5 +106,10 @@ public class And extends Formula {
     @Override
     public int getLevel() {
         return level;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 }

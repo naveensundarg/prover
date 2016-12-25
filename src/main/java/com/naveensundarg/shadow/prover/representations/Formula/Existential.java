@@ -19,7 +19,7 @@ public class Existential extends Formula implements Quantifier {
     private Set<Formula> subFormulae;
     private final Set<Variable> variables;
 
-
+    private final int weight;
     public Existential(Variable[] vars, Formula argument){
 
         if(!(vars.length>0)){
@@ -34,6 +34,7 @@ public class Existential extends Formula implements Quantifier {
         this.variables = argument.variablesPresent();
 
         Arrays.stream(vars).forEach(this.variables::add);
+        this.weight = 1 + variables.stream().mapToInt(Value::getWeight).reduce(0, Integer::sum)  + argument.getWeight();
     }
 
     public Formula getArgument() {
@@ -78,6 +79,11 @@ public class Existential extends Formula implements Quantifier {
     @Override
     public int getLevel() {
         return argument.getLevel();
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 
     public Variable[] vars() {

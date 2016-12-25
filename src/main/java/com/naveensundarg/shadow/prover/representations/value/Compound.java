@@ -15,6 +15,7 @@ public class Compound extends Value {
     private final Value[] arguments;
     private final Set<Variable> variables;
     private final Set<Value> subValues;
+    private final int weight;
 
     public Compound(String name, List<Value> argumentsList){
         super();
@@ -27,6 +28,8 @@ public class Compound extends Value {
 
         this.subValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
     //    this.subValues().add(this);
+
+        this.weight = argumentsList.stream().mapToInt(Value::getWeight).reduce(0, (x, y)-> x + y) + 1;
     }
     public Compound(String name, Value[] arguments){
         super();
@@ -35,6 +38,7 @@ public class Compound extends Value {
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.subValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
 //        this.subValues().add(this);
+        this.weight = Arrays.stream(arguments).mapToInt(Value::getWeight).reduce(0, (x, y)-> x + y) + 1;
 
     }
 
@@ -95,6 +99,11 @@ public class Compound extends Value {
     @Override
     public Set<Value> subValues() {
         return subValues;
+    }
+
+    @Override
+    public int getWeight() {
+        return weight;
     }
 
     @Override

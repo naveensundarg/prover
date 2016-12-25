@@ -24,7 +24,7 @@ public class FirstOrderResolutionProverTests {
     Map<Problem, Pair<Clause, Clause>> used;
     FirstOrderResolutionProverTests(){
 
-        prover = new FirstOrderResolutionProver();
+        prover = new SnarkWrapper();
     }
 
     @DataProvider(name="completenessTestsProvider")
@@ -51,7 +51,7 @@ public class FirstOrderResolutionProverTests {
     @Test(dataProvider = "debugTestsProvider")
     public void debugTests(Set<Formula> assumptions, Formula formula){
 
-       // Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
+       Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
 
     }
 
