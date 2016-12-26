@@ -153,13 +153,113 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;
-;{:name        "mode1-prob1"
-; :description "dt16: fol is transparent with Knows!"
-; :assumptions {;;1 (forall (?a ?time ?P) (if (HOLDS (Knows ?a ?time  ?P)) (HOLDS ?P)))
-;               1 (forall (?a ?time) (HOLDS (if raining (Knows jack now raining))))
-;               2 (forall (?A ?C) (if (and (HOLDS (if ?A ?C)) (HOLDS ?A)) (HOLDS ?C)))
-;               3 (forall (?a1 ?a2) (iff (and (HOLDS ?a1) (HOLDS ?a2)) (HOLDS (and ?a1 ?a2))))
-;               4 (HOLDS (and cloudy wet))
-;               5 (if (and (HOLDS cloudy) (HOLDS wet)) (HOLDS raining))}
-; :goal        (HOLDS (Knows jack now raining))}
+
+
+
+{:name        "traid zoo reflexivity"
+ :description ""
+ :assumptions {AX1 (forall (?x) (or (Camel ?x) (Llama ?x) (Aard ?x)))
+               AX2 (not (exists (?x) (and (Camel ?x) (Aard ?x))))
+               AX3 (not (exists (?x) (and (Aard ?x) (Llama ?x))))
+               AX4 (not (exists (?x) (and (Llama ?x) (Camel ?x))))
+               AX5 (forall (?x ?y) (if (and (Camel ?x) (Camel ?y)) (SameSpecies ?x ?y)))
+               AX6 (forall (?x ?y) (if (and (Llama ?x) (Llama ?y)) (SameSpecies ?x ?y)))
+               AX7 (forall (?x ?y) (if (and (Aard ?x) (Aard ?y)) (SameSpecies ?x ?y)))
+               AX8 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Camel ?x)) (Camel ?y)))
+               AX9 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Llama ?x)) (Llama ?y)))
+               AX10 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Aard ?x)) (Aard ?y)))
+
+               }
+ :goal        (forall (?x)  (SameSpecies ?x ?x))}
+
+
+{:name        "traid zoo symmetry"
+ :description ""
+ :assumptions {AX1 (forall (?x) (or (Camel ?x) (Llama ?x) (Aard ?x)))
+               AX2 (not (exists (?x) (and (Camel ?x) (Aard ?x))))
+               AX3 (not (exists (?x) (and (Aard ?x) (Llama ?x))))
+               AX4 (not (exists (?x) (and (Llama ?x) (Camel ?x))))
+               AX5 (forall (?x ?y) (if (and (Camel ?x) (Camel ?y)) (SameSpecies ?x ?y)))
+               AX6 (forall (?x ?y) (if (and (Llama ?x) (Llama ?y)) (SameSpecies ?x ?y)))
+               AX7 (forall (?x ?y) (if (and (Aard ?x) (Aard ?y)) (SameSpecies ?x ?y)))
+               AX8 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Camel ?x)) (Camel ?y)))
+               AX9 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Llama ?x)) (Llama ?y)))
+               AX10 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Aard ?x)) (Aard ?y)))
+
+               }
+ :goal        (forall (?x ?y)  (if (SameSpecies ?x ?y) (SameSpecies ?y ?x)) )}
+
+
+{:name        "traid zoo transitiviy"
+ :description ""
+ :assumptions {AX1 (forall (?x) (or (Camel ?x) (Llama ?x) (Aard ?x)))
+               AX2 (not (exists (?x) (and (Camel ?x) (Aard ?x))))
+               AX3 (not (exists (?x) (and (Aard ?x) (Llama ?x))))
+               AX4 (not (exists (?x) (and (Llama ?x) (Camel ?x))))
+               AX5 (forall (?x ?y) (if (and (Camel ?x) (Camel ?y)) (SameSpecies ?x ?y)))
+               AX6 (forall (?x ?y) (if (and (Llama ?x) (Llama ?y)) (SameSpecies ?x ?y)))
+               AX7 (forall (?x ?y) (if (and (Aard ?x) (Aard ?y)) (SameSpecies ?x ?y)))
+               AX8 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Camel ?x)) (Camel ?y)))
+               AX9 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Llama ?x)) (Llama ?y)))
+               AX10 (forall (?x ?y) (if (and (SameSpecies ?x ?y) (Aard ?x)) (Aard ?y)))
+
+               }
+ :goal        (forall (?x ?y ?z) (if (and (SameSpecies ?x ?y) (SameSpecies ?y ?z)) (SameSpecies ?x ?z)))}
+
+
+
+{ :name "axiom selection 1"
+ :description ""
+ :assumptions {S1 (forall (?x ?y) (if (= (+ ?x 1) (+ ?y 1)) (= ?x ?y)))}
+ :goal (forall (?x ?y) (if (not (= ?x ?y)) (not (= (+ ?x 1) (+ ?y 1)))))
+ }
+
+
+{ :name "axiom selection 1"
+ :description ""
+ :assumptions {S9 (forall (?z)  (= (* ?z 0) 0))
+               S7 (forall (?x ?y) (= (+ ?x ?y) (+ ?y ?x)))
+               S4 (forall (?x)  (= (+ ?x 0) ?x))
+               S5 (forall (?z ?y) (= (* ?z (+ ?y 1)) (+ (* ?z ?y) ?z)))
+               }
+
+ :goal (forall (?z) (= (* ?z 1) ?z))
+ }
+
+
+{ :name "axiom selection 1"
+ :description ""
+ :assumptions {
+               S6 (forall (?x ?y) (or (>= ?x ?y) (>= ?y ?x)))
+               S4 (forall (?x ?y) (if (>= ?x ?y) (not (> ?y ?x))))
+               }
+
+ :goal (forall (?x) (not (> ?x ?x)))
+ }
+
+{ :name "axiom selection 1"
+ :description ""
+ :assumptions {
+               S6 (forall (?x ?y) (or (>= ?x ?y) (>= ?y ?x)))
+               S4 (forall (?x ?y) (if (>= ?x ?y) (not (> ?y ?x))))
+               S5 (forall (?x ?y) (if (not (> ?x ?y)) (>= ?y ?x)))
+               S7 (forall (?x ?y ?z) (if (and (>= ?x ?y) (>= ?y ?z)) (>= ?x ?z)))
+               }
+
+ :goal (forall (?x ?y ?z) (if (and (> ?x ?y) (> ?y ?z)) (> ?x ?z)))
+ }
+
+
+{ :name "FPT"
+ :description ""
+ :assumptions {
+               S6 (forall (?P)
+                          (exists (?B)
+                                  (forall (?x)
+                                          (=
+                                            (has-property (has-property ?x ?x) ?P) (has-property ?x ?B)))))
+
+               }
+
+ :goal (forall (?P) (exists (?q) (= ?q (has-property ?q ?P))))
+ }

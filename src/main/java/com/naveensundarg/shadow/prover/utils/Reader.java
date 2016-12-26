@@ -72,10 +72,7 @@ public class Reader {
     public static Value readLogicValue(Object input) throws ParsingException{
 
 
-        if(input instanceof Symbol){
-            String name =  ((Symbol) input).getName();
-            return name.startsWith("?") ? new Variable(name): new Constant(name);
-        }
+
 
         if(input instanceof List){
 
@@ -102,8 +99,11 @@ public class Reader {
             throw new ParsingException("name should be a string" + nameObject);
 
         }
+        else {
+            String name =  input.toString();
+            return name.startsWith("?") ? new Variable(name): new Constant(name);
+        }
 
-        throw new ParsingException("Cannot build logic value from this object " + input + " of class "+ input.getClass());
     }
 
 
@@ -234,7 +234,7 @@ public class Reader {
 
         }
 
-        return null;
+         throw new AssertionError("Could not understand formula: " + input);
 
     }
 

@@ -1,8 +1,11 @@
 package com.naveensundarg.shadow.prover;
 
-import com.naveensundarg.shadow.prover.core.*;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.core.Halo;
+import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.core.Prover;
+import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
@@ -17,14 +20,14 @@ import java.util.Set;
 /**
  * Created by naveensundarg on 4/9/16.
  */
-public class FirstOrderResolutionProverTests {
+public class HaloProverTests {
 
 
     Prover prover;
     Map<Problem, Pair<Clause, Clause>> used;
-    FirstOrderResolutionProverTests(){
+    HaloProverTests(){
 
-        prover = new FirstOrderResolutionProver();
+        prover = new Halo();
     }
 
     @DataProvider(name="completenessTestsProvider")

@@ -9,12 +9,10 @@ import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.utils.ImmutablePair;
-import com.naveensundarg.shadow.prover.utils.Logic;
-import com.naveensundarg.shadow.prover.utils.Pair;
-import com.naveensundarg.shadow.prover.utils.Sets;
+import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newEmptyList;
@@ -28,6 +26,7 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 public class Halo implements Prover {
 
     private Prover propositionalProver;
+
 
     private enum Rule {
 
@@ -69,12 +68,12 @@ public class Halo implements Prover {
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
+        int k = 5;
 
-        /*Optional<Justification> propJustOpt = propositionalProver.prove(assumptions.stream().map(f -> f.shadow(0)).collect(Collectors.toSet()), formula.shadow(0));
 
-        if (propJustOpt.isPresent()) {
-            return propJustOpt;
-        }*/
+        Clause.count = new AtomicInteger(0);
+        PriorityQueue<Clause> clauseStore = new PriorityQueue<>(Comparator.comparing(Clause::getWeight));
+        Queue<Clause> ageQueue = new LinkedList<>();
 
         Problem problem = new Problem(assumptions, formula);
 
@@ -97,89 +96,83 @@ public class Halo implements Prover {
 
         clauses = clauses.stream().map(Clause::refactor).collect(Collectors.toSet());
 
-        int size = 1;
-        while (size <= clauses.stream().mapToInt(x -> x.getLiterals().size()).max().getAsInt()) {
+        for (Clause clause : clauses) {
+            clauseStore.add(clause);
+            ageQueue.add(clause);
+        }
+
+        Set<Clause> usableList = CollectionUtils.newEmptySet();
+
+        usableList.add(clauseStore.remove());
+
+        int ageWeightCounter  = 0;
+
+        while (!clauseStore.isEmpty() && !ageQueue.isEmpty()) {
+
+            Clause given;
 
 
-            List<List<Clause>> matchingPairs = getUsableClauses(clauses, problem, size);
+            if(ageWeightCounter%k == 0) {
 
-            if (!matchingPairs.isEmpty()) {
-                boolean expanded = false;
+                given = ageQueue.remove();
+                clauseStore.remove(given);
 
-                for (List<Clause> pair : matchingPairs) {
+            }
+             else {
+                given = clauseStore.remove();
+                ageQueue.remove(given);
 
-                    Clause left = pair.get(0);
-                    Clause right = pair.get(1);
+            }
 
-                    boolean leftIsAllPositive = left.getLiterals().stream().noneMatch(Literal::isNegated);
-                    boolean righIsAllPositive = right.getLiterals().stream().noneMatch(Literal::isNegated);
+            ageWeightCounter = ageWeightCounter + 1;
 
-                    if(!leftIsAllPositive && ! righIsAllPositive){
-                        continue;
-                    }
-                    Set<Clause> resolvands = rules.
-                            stream().
-                            map(ruleType -> ruleType.getRuleImplementation().apply(left, right)).
-                            reduce(newSet(), Sets::union);
 
-                    if (!resolvands.isEmpty()) {
 
-                        List<Clause> resolvandsList = new ArrayList<>();
-                        resolvands.stream().forEach(resolvandsList::add);
+            for (Clause parent : usableList) {
 
-                        for (int j = 0; j < resolvandsList.size(); j++) {
-                            Clause resolvand = resolvandsList.get(j);
 
-                            if (resolvand.getLiterals().isEmpty()) {
-                                return Optional.of(Justification.trivial(formula));
-                            } else {
-                                if (!clauses.contains(resolvand)) {
-                                    clauses.add(resolvand);
-                                    used.put(problem, Sets.add(used.get(problem), ImmutablePair.from(left, right)));
-                                    expanded = true;
-                                }
-                            }
+                Set<Clause> resolvands = rules.
+                        stream().
+                        map(ruleType -> ruleType.getRuleImplementation().apply(Logic.renameVars(parent,problem), given)).
+                        reduce(newSet(), Sets::union);
+
+                Set<Clause> resolvands1 = rules.
+                        stream().
+                        map(ruleType -> ruleType.getRuleImplementation().apply(given, Logic.renameVars(parent,problem))).
+                        reduce(newSet(), Sets::union);
+
+
+                for (Clause resolvand : Sets.union(resolvands, resolvands1)) {
+
+                    if (resolvand.getLiterals().isEmpty()) {
+
+                        return Optional.of(Justification.trivial(formula));
+
+                    } else {
+
+                        if (!clauseStore.contains(resolvand) && !usableList.contains(resolvand)) {
+
+                          //  resolvand = Logic.renameVars(resolvand, problem);
+                            clauseStore.add(resolvand);
+                        }
+                        if (!ageQueue.contains(resolvand) && !usableList.contains(resolvand)) {
+
+                            //  resolvand = Logic.renameVars(resolvand, problem);
+                            ageQueue.add(resolvand);
                         }
                     }
                 }
 
-                if (!expanded) {
-                    size++;
-
-                }
-
-            } else {
-
-                size++;
 
             }
+
+           usableList  = usableList.stream().filter(x->!given.subsumes(x)).collect(Collectors.toSet());
+
+            usableList.add(given);
+
 
         }
-
         return Optional.empty();
-
-    }
-
-    public List<List<Clause>> getUsableClauses(Set<Clause> clauses, Problem problem, int size) {
-
-        List<Set<Clause>> sets = newEmptyList();
-        sets.add(clauses);
-        sets.add(clauses);
-
-        Set<List<Clause>> possiblePairs = cartesianProduct(sets);
-
-        return possiblePairs.stream().filter(possiblePair -> {
-            Clause left = possiblePair.get(0);
-            Clause right = possiblePair.get(1);
-
-            if (used.get(problem).contains(ImmutablePair.from(left, right)) || right.getLiterals().size() > size) {
-                return false;
-            } else {
-                return true;
-            }
-        }).collect(Collectors.toList());
-
-
     }
 
 

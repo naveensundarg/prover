@@ -1,9 +1,11 @@
 package com.naveensundarg.shadow.prover.representations.value;
 
+import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -73,6 +75,11 @@ public class Constant extends Value implements Comparable{
     @Override
     public int getWeight() {
         return 1;
+    }
+
+    @Override
+    public Optional<Pair<Variable, Value>> subsumes(Value other) {
+        return Optional.empty();
     }
 
     @Override

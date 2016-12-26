@@ -78,7 +78,7 @@ public class CognitiveCalculusProverTests {
     }
 
 
-    @Test(dataProvider = "debugTestsProvider")
+   // @Test(dataProvider = "debugTestsProvider")
     public void debugTests(Set<Formula> assumptions, Formula formula){
 
         prover = new CognitiveCalculusProver();

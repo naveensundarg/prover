@@ -5,10 +5,9 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -39,7 +38,22 @@ public class Predicate extends Formula implements BaseFormula {
 
         this.sorted = false;
         this.name = name;
-        this.arguments = arguments;
+        if(name.equals("=")){
+
+            List<Value> sortedArgs = Arrays.stream(arguments).sorted(Comparator.comparingInt(x->-x.getWeight())).collect(Collectors.toList());
+
+            this.arguments = new Value[sortedArgs.size()];
+
+            for(int i = 0; i<sortedArgs.size(); i++){
+
+                this.arguments[i]  = sortedArgs.get(i);
+            }
+
+
+        } else {
+            this.arguments = arguments;
+        }
+
         this.subFormulae = Sets.with(this);
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.allValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
@@ -158,6 +172,25 @@ public class Predicate extends Formula implements BaseFormula {
         return new Predicate(name, argumentTheta);
 
     }
+
+
+    public Optional<Map<Variable, Value>> subsumes(Predicate other){
+
+
+        if(!other.getName().equals(name)){
+
+            return Optional.empty();
+
+        } else {
+
+            return Value.subsumes(this.getArguments(), other.getArguments());
+
+        }
+
+
+    }
+
+
 
 
 }

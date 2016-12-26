@@ -61,6 +61,17 @@ public class CollectionUtils {
         return new HashMap<>();
     }
 
+    public static <U,V> Map<U,V> newMapFrom(Map<U,V>  existing){
+        Map<U, V> newMap = newMap();
+
+        newMap.putAll(existing);
+
+        return newMap;
+
+
+    }
+
+
     public static <T> List<T> add(List<T> list, T a){
         List<T> newList = newEmptyList();
         newList.addAll(list);

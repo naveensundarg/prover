@@ -1,11 +1,9 @@
 package com.naveensundarg.shadow.prover.representations.value;
 
+import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by naveensundarg on 4/11/16.
@@ -104,6 +102,11 @@ public class Compound extends Value {
     @Override
     public int getWeight() {
         return weight;
+    }
+
+    @Override
+    public Optional<Pair<Variable, Value>> subsumes(Value other) {
+        return Optional.empty();
     }
 
     @Override

@@ -8,10 +8,7 @@ import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 
@@ -23,11 +20,11 @@ public class Unifier {
 
     public static Map<Variable, Value> unify(BaseFormula bf1, BaseFormula bf2) {
 
-        if(!bf1.getClass().equals(bf2.getClass())) {
+        if (!bf1.getClass().equals(bf2.getClass())) {
             return null;
         }
 
-        if(bf1 instanceof Predicate){
+        if (bf1 instanceof Predicate) {
 
             Predicate p1 = (Predicate) bf1;
             Predicate p2 = (Predicate) bf2;
@@ -36,7 +33,7 @@ public class Unifier {
             return unify(p1, p2);
         }
 
-        if(bf1 instanceof Common) {
+        if (bf1 instanceof Common) {
 
             Common c1 = (Common) bf1;
             Common c2 = (Common) bf2;
@@ -52,7 +49,7 @@ public class Unifier {
 
         }
 
-        if(bf1 instanceof Knowledge) {
+        if (bf1 instanceof Knowledge) {
 
             Knowledge k1 = (Knowledge) bf1;
             Knowledge k2 = (Knowledge) bf2;
@@ -66,14 +63,14 @@ public class Unifier {
 
 
             Map<Variable, Value> m1 = unify(t1, t2);
-            Map<Variable, Value> m2  = unify(a1, a2);
+            Map<Variable, Value> m2 = unify(a1, a2);
 
             return combineVariableValueMap(m1, m2);
 
 
         }
 
-        if(bf1 instanceof Belief) {
+        if (bf1 instanceof Belief) {
 
             Belief b1 = (Belief) bf1;
             Belief b2 = (Belief) bf2;
@@ -86,19 +83,18 @@ public class Unifier {
             Value a2 = b2.getAgent();
 
 
-            if(!b1.getFormula().getClass().equals(b2.getFormula().getClass())){
+            if (!b1.getFormula().getClass().equals(b2.getFormula().getClass())) {
                 return CollectionUtils.newMap();
             }
             Map<Variable, Value> m1 = unify(t1, t2);
-            Map<Variable, Value> m2  = unify(a1, a2);
+            Map<Variable, Value> m2 = unify(a1, a2);
 
             return combineVariableValueMap(m1, m2);
 
 
-
         }
 
-        if(bf1 instanceof Perception) {
+        if (bf1 instanceof Perception) {
 
             Perception p1 = (Perception) bf1;
             Perception p2 = (Perception) bf2;
@@ -112,16 +108,15 @@ public class Unifier {
 
 
             Map<Variable, Value> m1 = unify(t1, t2);
-            Map<Variable, Value> m2  = unify(a1, a2);
+            Map<Variable, Value> m2 = unify(a1, a2);
 
 
             return combineVariableValueMap(m1, m2);
 
 
-
         }
 
-        if(bf1 instanceof Ought) {
+        if (bf1 instanceof Ought) {
 
             Ought o1 = (Ought) bf1;
             Ought o2 = (Ought) bf2;
@@ -135,15 +130,14 @@ public class Unifier {
 
 
             Map<Variable, Value> m1 = unify(t1, t2);
-            Map<Variable, Value> m2  = unify(a1, a2);
+            Map<Variable, Value> m2 = unify(a1, a2);
 
             return combineVariableValueMap(m1, m2);
 
 
-
         }
 
-        if(bf1 instanceof Says) {
+        if (bf1 instanceof Says) {
 
             Says s1 = (Says) bf1;
             Says s2 = (Says) bf2;
@@ -157,23 +151,22 @@ public class Unifier {
 
 
             Map<Variable, Value> m1 = unify(t1, t2);
-            Map<Variable, Value> m2  = unify(a1, a2);
+            Map<Variable, Value> m2 = unify(a1, a2);
 
             return combineVariableValueMap(m1, m2);
 
 
-
         }
 
-        throw new AssertionError("Unaccounted base formula encountered during unification: " + bf1 + " and " +bf2);
+        throw new AssertionError("Unaccounted base formula encountered during unification: " + bf1 + " and " + bf2);
 
     }
 
     private static Map<Variable, Value> combineVariableValueMap(Map<Variable, Value> s1, Map<Variable, Value> s2) {
-        if(s1==null) {
+        if (s1 == null) {
             s1 = CollectionUtils.newMap();
         }
-        if(s2==null) {
+        if (s2 == null) {
             s2 = CollectionUtils.newMap();
         }
 
@@ -188,11 +181,11 @@ public class Unifier {
     public static Map<Variable, Value> unify(Predicate p1, Predicate p2) {
 
 
-        if(!p1.getName().equals(p2.getName())){
+        if (!p1.getName().equals(p2.getName())) {
             return null;
         }
 
-        if(p1.getArguments().length != p2.getArguments().length){
+        if (p1.getArguments().length != p2.getArguments().length) {
             return null;
         }
 
@@ -203,7 +196,6 @@ public class Unifier {
         return unify(args1, args2, newMap(), 0);
 
     }
-
 
 
     public static Map<Variable, Value> unify(Value v1, Value v2) {
@@ -230,10 +222,9 @@ public class Unifier {
             Variable yVar = (Variable) y;
             return unifyVar(yVar, x, theta);
 
-        }
-        else if (x.isCompound() && y.isCompound()){
+        } else if (x.isCompound() && y.isCompound()) {
 
-            if(x.getName().equals(y.getName())){
+            if (x.getName().equals(y.getName())) {
 
                 return unify(x.getArguments(), y.getArguments(), theta);
 
@@ -272,18 +263,18 @@ public class Unifier {
 
     private static Map<Variable, Value> unifyVar(Variable var, Value x, Map<Variable, Value> theta) {
 
-        if(theta.containsKey(var)){
+
+        if (theta.containsKey(var)) {
             Value val = theta.get(var);
             return unify(val, x, theta);
-        }
-        else if(theta.containsKey(x)){
+        } else if (theta.containsKey(x)) {
             Value val = theta.get(x);
 
             return unify(var, val, theta);
         }
 
         Value xx = x;
-        if(theta.values().stream().anyMatch(b-> b.occurs(var))){
+        if (theta.values().stream().anyMatch(b -> b.occurs(var))) {
             xx = x.apply(theta);
         }
 
@@ -298,14 +289,76 @@ public class Unifier {
         }
     }
 
-    public static Set<Map<Variable, Value>> subUnify(Value x, Value Z){
+    public static Set<Map<Variable, Value>> subUnify(Value x, Value Z) {
 
         Map<Variable, Value> theta = unify(x, Z);
-        if(theta!=null){
+        if (theta != null) {
             return Sets.with(theta);
-        } else  {
-            return Arrays.stream(Z.getArguments()).map(zArg-> subUnify(x, zArg)).reduce(Sets.newSet(), Sets::union);
+        } else {
+            return Arrays.stream(Z.getArguments()).map(zArg -> subUnify(x, zArg)).reduce(Sets.newSet(), Sets::union);
         }
 
     }
+
+    public static Optional<Map<Variable, Value>> addTo(Map<Variable, Value> existingBindings, Variable variable, Value value) {
+
+
+        Map<Variable, Value> newBindings = CollectionUtils.newMapFrom(existingBindings);
+
+        if (!existingBindings.containsKey(variable)) {
+
+            newBindings.put(variable, value);
+
+            return Optional.of(newBindings);
+        } else {
+
+            Value existingValue = existingBindings.get(variable);
+
+            Set<Map<Variable, Value>> bindings = Unifier.subUnify(value, existingValue);
+
+            if (bindings == null || bindings.stream().anyMatch(Objects::isNull)) {
+                return Optional.empty();
+
+            } else {
+
+                for (Map<Variable, Value> binding : bindings) {
+
+                    newBindings.putAll(binding);
+                }
+            }
+
+            return Optional.of(newBindings);
+        }
+
+    }
+
+    public static Optional<Map<Variable, Value>> addTo(Map<Variable, Value> existingBindings, Map<Variable, Value> delta) {
+
+
+        Map<Variable, Value> newBindings = CollectionUtils.newMapFrom(existingBindings);
+
+
+        for (Map.Entry<Variable, Value> entry : delta.entrySet()) {
+
+            Variable variable = entry.getKey();
+            Value value = entry.getValue();
+
+            Optional<Map<Variable, Value>> thisResult = addTo(newBindings, variable, value);
+
+            if (!thisResult.isPresent()) {
+
+                return thisResult;
+
+            } else {
+
+                newBindings.putAll(thisResult.get());
+
+            }
+
+        }
+
+        return Optional.of(newBindings);
+
+    }
+
 }

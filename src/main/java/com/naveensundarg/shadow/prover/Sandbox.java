@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover;
 
+import com.naveensundarg.shadow.prover.utils.Reader;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
 import guru.nidi.graphviz.model.Node;
@@ -17,25 +18,9 @@ import static us.bpsm.edn.Keyword.newKeyword;
  */
 public class Sandbox {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
 
-        System.loadLibrary("gv");
-        Graph g = graph("example").directed();
+       System.out.println( Reader.readFormula(Reader.read("(forall (?x ?y) (if (not (= ?x ?y)) (not (= (+ ?x 1) (+ ?y 1)))))")));
 
-        Node a  = Node.named("a");
-        Node b = Node.named("b");
-        g.link(a,b);
-
-        a.link(b);
-
-        g.node(a);
-       // g.node(b);
-
-        System.out.println(g.getLinks());
-
-
-
-        Graphviz.fromGraph(g).renderToFile(new File("example.png"));    }
-
-
+    }
 }

@@ -6,6 +6,8 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by naveensundarg on 4/10/16.
@@ -14,11 +16,13 @@ public class Literal {
 
     private final boolean isNegated;
     private final Predicate predicate;
+    private final int weight;
 
     public Literal(Predicate atom, boolean isNegated){
 
         this.predicate = atom;
         this.isNegated = isNegated;
+        this.weight = atom.getWeight();
     }
 
     public Predicate getPredicate() {
@@ -76,5 +80,28 @@ public class Literal {
         return null;
 
 
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public Optional<Map<Variable, Value>> subsubmes(Literal other){
+
+
+        if(this.isNegated() != other.isNegated()){
+
+            return Optional.empty();
+        }
+        else {
+
+            return this.getPredicate().subsumes(other.getPredicate());
+        }
+
+    }
+
+
+    public Set<Variable> variables(){
+        return predicate.variablesPresent();
     }
 }

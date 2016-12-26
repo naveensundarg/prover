@@ -93,7 +93,7 @@ public class CognitiveCalculusProver implements Prover {
         if(formula.toString().equals("(< t2 t1)") || formula.toString().equals("(< t2 t2)") ){
             return Optional.empty();
         }
-        Prover folProver = new FirstOrderResolutionProver();
+        Prover folProver = new Halo();
 
         Set<Formula> base =  CollectionUtils.setFrom(assumptions);
 

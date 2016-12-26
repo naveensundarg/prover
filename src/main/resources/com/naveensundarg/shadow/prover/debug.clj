@@ -1,5 +1,4 @@
-{:name "*prop-nd-true-test-46* direction 1 of 33"
+{:name        ""
  :description ""
- :assumptions {1 (iff (iff p q) r)}
- :goal (iff p (iff q r))}
-
+ :assumptions {1 (if p q)}
+ :goal        (not (or p (not q)))}

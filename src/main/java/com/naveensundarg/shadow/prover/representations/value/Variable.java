@@ -1,8 +1,11 @@
 package com.naveensundarg.shadow.prover.representations.value;
 
+import com.naveensundarg.shadow.prover.utils.ImmutablePair;
+import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -13,11 +16,13 @@ public class Variable extends Value {
     private final Value[] arguments;
     private final Set<Variable> variables;
     private final Set<Value> subValues;
-    public Variable(String name){
+    private final int id;
+
+    public Variable(String name) {
 
         super();
-        if(!name.startsWith("?")){
-            throw new AssertionError("Variables should start with ?: "+ name);
+        if (!name.startsWith("?")) {
+            throw new AssertionError("Variables should start with ?: " + name);
         }
 
         this.arguments = new Value[0];
@@ -25,6 +30,7 @@ public class Variable extends Value {
 
         this.variables = Sets.with(this);
         this.subValues = Sets.with(this);
+        this.id = setId();
 
     }
 
@@ -65,7 +71,7 @@ public class Variable extends Value {
 
     @Override
     public Value replace(Value value1, Value value2) {
-        return value1.equals(this)? value2 : this;
+        return value1.equals(this) ? value2 : this;
     }
 
     @Override
@@ -76,6 +82,20 @@ public class Variable extends Value {
     @Override
     public int getWeight() {
         return 1;
+    }
+
+    @Override
+    public Optional<Pair<Variable, Value>> subsumes(Value other) {
+
+        if (other.subValues().contains(this)) {
+
+            return Optional.empty();
+
+        } else {
+
+            return Optional.of(ImmutablePair.from(this, other));
+
+        }
     }
 
     @Override
@@ -106,13 +126,30 @@ public class Variable extends Value {
 
     @Override
     public int compareTo(Object o) {
-        if(!(o instanceof  Variable)) {
+        if (!(o instanceof Variable)) {
             return 0;
-        }
-        else {
+        } else {
             Variable other = (Variable) o;
 
             return this.name.compareTo(((Variable) o).name);
+
+        }
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    private int setId() {
+
+        if (name.matches("\\?x[0-9]+")) {
+
+            return Integer.parseInt(name.substring(2));
+
+
+        } else {
+
+            return -1;
 
         }
     }
