@@ -126,6 +126,10 @@ public class Clause {
         return literals;
     }
 
+    public List<Literal> getSortedLiterals() {
+        return sortedLiterals;
+    }
+
 
     @Override
     public String toString() {

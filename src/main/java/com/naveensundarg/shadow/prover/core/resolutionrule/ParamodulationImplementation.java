@@ -44,6 +44,13 @@ public enum  ParamodulationImplementation implements RuleImplementation {
     @Override
     public Set<Clause> apply(Clause clause1, Clause clause2) {
 
+        return Sets.union(applyInner(clause1, clause2), applyInner(clause2, clause1));
+
+    }
+
+
+    private Set<Clause> applyInner(Clause clause1, Clause clause2) {
+
         Set<Literal> identityLiterals = getIdentityLiterals(clause1);
 
         Set<Clause> clauses = identityLiterals.stream().map(identityLiteral->{

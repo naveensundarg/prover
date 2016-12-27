@@ -18,10 +18,12 @@ public class Variable extends Value {
     private final Set<Value> subValues;
     private final int id;
 
+    private static final boolean variablesShouldStartWithQuestionMark = false;
     public Variable(String name) {
 
         super();
-        if (!name.startsWith("?")) {
+
+        if (variablesShouldStartWithQuestionMark && !name.startsWith("?")) {
             throw new AssertionError("Variables should start with ?: " + name);
         }
 

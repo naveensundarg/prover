@@ -45,6 +45,11 @@ public enum DemodulationImplementation implements RuleImplementation {
     @Override
     public Set<Clause> apply(Clause clause1, Clause clause2) {
 
+        return Sets.union(applyInner(clause1, clause2), applyInner(clause2, clause1));
+
+    }
+    public Set<Clause> applyInner(Clause clause1, Clause clause2) {
+
 
         if(isEquals(clause1)){
             Value x = getLeft(clause1);

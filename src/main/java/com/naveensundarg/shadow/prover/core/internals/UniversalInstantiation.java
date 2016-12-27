@@ -10,7 +10,6 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
-import com.sun.xml.internal.rngom.parse.host.Base;
 
 import java.util.List;
 import java.util.Map;

@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.SymbolGenerator;
+import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
@@ -9,9 +10,7 @@ import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
@@ -22,6 +21,9 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
  */
 public class Logic {
 
+    private Logic(){
+        throw new AssertionError("CANNOT INSTANTIATE: " + Logic.class);
+    }
     public static Formula negated(Formula f) {
 
         if (f instanceof Not) {
@@ -176,7 +178,117 @@ public class Logic {
                 literal.getPredicate().getArguments().length == 2  &&
                 literal.getPredicate().getArguments()[0].equals(literal.getPredicate().getArguments()[1]));
 
+
+
+
         return !canRemove;
+
+    }
+
+
+    public static Clause simplifyWithEquality(Problem problem, Clause clause1, Clause clause2){
+
+
+        if(!unitNonTrivialEquality(clause2) || unitTrivialEquality(clause1) || clause1.equals(clause2)){
+
+            return clause1;
+
+        }
+
+
+        Literal equalityLiteral = clause2.getSortedLiterals().get(0);
+
+        Value value1 = equalityLiteral.getPredicate().getArguments()[0];
+        Value value2 = equalityLiteral.getPredicate().getArguments()[1];
+
+        List<Literal> sortedLiterals = Logic.renameVars(clause1, problem).getSortedLiterals();
+
+        Value biggerValue = value1.getWeight() >= value2.getWeight()? value1: value2;
+        Value smallerValue = value1.getWeight() >= value2.getWeight()? value2: value1;
+
+        if(!smallerValue.isConstant() || biggerValue.isVariable() || biggerValue.isConstant()){
+            return clause1;
+        }
+
+        Set<Literal> newLiterals = Sets.newSet();
+        boolean changed = false;
+        for(Literal literal: sortedLiterals){
+
+            Predicate predicate = literal.getPredicate();
+
+            Value[] newValues = Arrays.copyOf(predicate.getArguments(), predicate.getArguments().length);
+            for(int i =0; i< predicate.getArguments().length; i++){
+
+                if(predicate.getArguments()[i].isVariable()){
+                    Map<Variable, Value> mapping = Unifier.unify(biggerValue, predicate.getArguments()[i]);
+
+                    if(mapping!=null){
+
+                        changed = true;
+                        newValues[i] = smallerValue.apply(mapping);
+
+                    } else {
+
+                        newValues[i] = predicate.getArguments()[i];
+                    }
+                }
+
+
+            }
+
+            Literal newLiteral = new Literal(new Predicate(predicate.getName(), newValues), literal.isNegated());
+
+            newLiterals.add(newLiteral);
+
+        }
+
+        if(!changed){
+            return clause1;
+        } else{
+
+            Clause newClause  = new Clause(newLiterals);
+
+            return newClause;
+        }
+
+
+    }
+
+    public static boolean unitTrivialEquality(Clause clause){
+
+        if(clause.getLiterals().size()!=1){
+            return false;
+        }
+
+        Literal literal = clause.getSortedLiterals().get(0);
+
+        return  (!literal.isNegated() &&
+                literal.getPredicate().getName().equals("=") &&
+                literal.getPredicate().getArguments().length == 2  &&
+                literal.getPredicate().getArguments()[0].equals(literal.getPredicate().getArguments()[1]));
+
+    }
+    public static boolean unitNonTrivialEquality(Clause clause){
+
+        if(clause.getLiterals().size()!=1){
+            return false;
+        }
+
+        Literal literal = clause.getSortedLiterals().get(0);
+
+        return  (!literal.isNegated() &&
+                literal.getPredicate().getName().equals("=") &&
+                literal.getPredicate().getArguments().length == 2  &&
+                !literal.getPredicate().getArguments()[0].equals(literal.getPredicate().getArguments()[1]));
+
+    }
+
+    public static boolean isTautology(Clause clause) {
+
+        Set<Literal> literals = clause.getLiterals();
+
+        return clause.getLiterals().stream().anyMatch(x -> literals.stream().anyMatch(y->x.getPredicate().equals(y.getPredicate()) && y.isNegated()!= x.isNegated()));
+
 
     }
 }

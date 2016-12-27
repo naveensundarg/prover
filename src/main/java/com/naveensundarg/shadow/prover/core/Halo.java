@@ -96,6 +96,7 @@ public class Halo implements Prover {
 
         clauses = clauses.stream().map(Clause::refactor).collect(Collectors.toSet());
 
+
         for (Clause clause : clauses) {
             clauseStore.add(clause);
             ageQueue.add(clause);
@@ -127,22 +128,28 @@ public class Halo implements Prover {
             ageWeightCounter = ageWeightCounter + 1;
 
 
+            if(usableList.stream().anyMatch(x->x.subsumes(given))){
+                continue;
+            }
+            Clause renamedGiven = Logic.renameVars(given,problem);
 
             for (Clause parent : usableList) {
 
 
                 Set<Clause> resolvands = rules.
                         stream().
-                        map(ruleType -> ruleType.getRuleImplementation().apply(Logic.renameVars(parent,problem), given)).
+                        map(ruleType -> ruleType.getRuleImplementation().apply(parent, renamedGiven)).
                         reduce(newSet(), Sets::union);
 
-                Set<Clause> resolvands1 = rules.
-                        stream().
-                        map(ruleType -> ruleType.getRuleImplementation().apply(given, Logic.renameVars(parent,problem))).
-                        reduce(newSet(), Sets::union);
+                for (Clause resolvand : resolvands) {
 
+                    if(usableList.stream().anyMatch(x->x.subsumes(resolvand))
+                            || clauseStore.stream().anyMatch(x->x.subsumes(resolvand))
+                            || ageQueue.stream().anyMatch(x->x.subsumes(resolvand)) ){
+                        continue;
+                    }
 
-                for (Clause resolvand : Sets.union(resolvands, resolvands1)) {
+                    
 
                     if (resolvand.getLiterals().isEmpty()) {
 
@@ -152,12 +159,10 @@ public class Halo implements Prover {
 
                         if (!clauseStore.contains(resolvand) && !usableList.contains(resolvand)) {
 
-                          //  resolvand = Logic.renameVars(resolvand, problem);
                             clauseStore.add(resolvand);
                         }
                         if (!ageQueue.contains(resolvand) && !usableList.contains(resolvand)) {
 
-                            //  resolvand = Logic.renameVars(resolvand, problem);
                             ageQueue.add(resolvand);
                         }
                     }
@@ -166,8 +171,23 @@ public class Halo implements Prover {
 
             }
 
-           usableList  = usableList.stream().filter(x->!given.subsumes(x)).collect(Collectors.toSet());
+            List<Clause> ageQueueProcessed = ageQueue.stream().filter(x->!given.subsumes(x)&& x.getWeight()<=15).collect(Collectors.toList());
+            ageQueue.clear();
+            for(Clause clause:ageQueueProcessed){
 
+                ageQueue.add(clause);
+            }
+
+            List<Clause> clauseStoreProcessed = clauseStore.stream().filter(x->!given.subsumes(x) && x.getWeight()<=15).collect(Collectors.toList());
+            clauseStore.clear();
+            for(Clause clause:clauseStoreProcessed){
+
+                clauseStore.add(clause);
+            }
+
+
+
+            usableList  = usableList.stream().filter(x->!given.subsumes(x)).collect(Collectors.toSet());
             usableList.add(given);
 
 
