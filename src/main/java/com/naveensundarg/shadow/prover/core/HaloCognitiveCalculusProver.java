@@ -1,13 +1,18 @@
 package com.naveensundarg.shadow.prover.core;
 
+import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
+import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
+import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.rules.DemodulationImplementation;
 import com.naveensundarg.shadow.prover.core.rules.FirstOrderResolutionImplementation;
-import com.naveensundarg.shadow.prover.core.rules.ParamodulationImplementation;
 import com.naveensundarg.shadow.prover.core.rules.ForwardClauseRule;
+import com.naveensundarg.shadow.prover.core.rules.ParamodulationImplementation;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
@@ -15,15 +20,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
+import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
 /**
- * Created by naveensundarg on 4/12/16.
+ * Created by naveensundarg on 4/21/16.
  */
-public class Halo implements Prover {
+public class HaloCognitiveCalculusProver implements Prover {
 
-    private Prover propositionalProver;
-
+    /*
+     *
+     */
 
     private enum Rule {
 
@@ -45,21 +52,17 @@ public class Halo implements Prover {
     private final Map<Problem, Set<Pair<Clause, Clause>>> used;
     private final Set<Rule> rules;
 
-    public Halo(Set<Rule> rules) {
+    public HaloCognitiveCalculusProver(Set<Rule> rules) {
 
         used = newMap();
         this.rules = rules;
-        this.propositionalProver = new PropositionalResolutionProver();
     }
 
-    public Halo() {
+    public HaloCognitiveCalculusProver() {
 
         used = newMap();
         this.rules = Sets.with(Rule.RESOLUTION);
         this.rules.add(Rule.PARAMODULATION);
-        this.rules.add(Rule.DEMODULATION);
-
-        this.propositionalProver = new PropositionalResolutionProver();
 
     }
 
@@ -67,7 +70,7 @@ public class Halo implements Prover {
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
-        int k = 20;
+        int k = 5;
 
 
         Clause.count = new AtomicInteger(0);
@@ -118,7 +121,7 @@ public class Halo implements Prover {
                 clauseStore.remove(given);
 
             }
-             else {
+            else {
                 given = clauseStore.remove();
                 ageQueue.remove(given);
 
@@ -170,14 +173,14 @@ public class Halo implements Prover {
 
             }
 
-            List<Clause> ageQueueProcessed = ageQueue.stream().filter(x->!given.subsumes(x)&& x.getWeight()<=10).collect(Collectors.toList());
+            List<Clause> ageQueueProcessed = ageQueue.stream().filter(x->!given.subsumes(x)&& x.getWeight()<=15).collect(Collectors.toList());
             ageQueue.clear();
             for(Clause clause:ageQueueProcessed){
 
                 ageQueue.add(clause);
             }
 
-            List<Clause> clauseStoreProcessed = clauseStore.stream().filter(x->!given.subsumes(x) && x.getWeight()<=10).collect(Collectors.toList());
+            List<Clause> clauseStoreProcessed = clauseStore.stream().filter(x->!given.subsumes(x) && x.getWeight()<=15).collect(Collectors.toList());
             clauseStore.clear();
             for(Clause clause:clauseStoreProcessed){
 
@@ -194,6 +197,4 @@ public class Halo implements Prover {
         return Optional.empty();
     }
 
-
 }
-

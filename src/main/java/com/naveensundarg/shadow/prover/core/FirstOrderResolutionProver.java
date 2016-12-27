@@ -1,16 +1,14 @@
 package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.core.resolutionrule.DemodulationImplementation;
-import com.naveensundarg.shadow.prover.core.resolutionrule.FirstOrderResolutionImplementation;
-import com.naveensundarg.shadow.prover.core.resolutionrule.ParamodulationImplementation;
-import com.naveensundarg.shadow.prover.core.resolutionrule.RuleImplementation;
+import com.naveensundarg.shadow.prover.core.rules.DemodulationImplementation;
+import com.naveensundarg.shadow.prover.core.rules.FirstOrderResolutionImplementation;
+import com.naveensundarg.shadow.prover.core.rules.ParamodulationImplementation;
+import com.naveensundarg.shadow.prover.core.rules.ForwardClauseRule;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.representations.formula.Not;
-import com.naveensundarg.shadow.prover.representations.formula.Or;
 import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
@@ -34,14 +32,14 @@ public class FirstOrderResolutionProver implements Prover {
         DEMODULATION(DemodulationImplementation.INSTANCE),
         PARAMODULATION(ParamodulationImplementation.INSTANCE);
 
-        private RuleImplementation ruleImplementation;
+        private ForwardClauseRule forwardClauseRule;
 
-        Rule(RuleImplementation ruleImplementation) {
-            this.ruleImplementation = ruleImplementation;
+        Rule(ForwardClauseRule forwardClauseRule) {
+            this.forwardClauseRule = forwardClauseRule;
         }
 
-        public RuleImplementation getRuleImplementation() {
-            return ruleImplementation;
+        public ForwardClauseRule getForwardClauseRule() {
+            return forwardClauseRule;
         }
     }
 
@@ -119,7 +117,7 @@ public class FirstOrderResolutionProver implements Prover {
                     }
                     Set<Clause> resolvands = rules.
                             stream().
-                            map(ruleType -> ruleType.getRuleImplementation().apply(left, right)).
+                            map(ruleType -> ruleType.getForwardClauseRule().apply(left, right)).
                             reduce(newSet(), Sets::union);
 
                     if (!resolvands.isEmpty()) {

@@ -1,4 +1,4 @@
-package com.naveensundarg.shadow.prover.core.resolutionrule;
+package com.naveensundarg.shadow.prover.core.rules;
 
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
@@ -18,7 +18,7 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 /**
  * Created by naveensundarg on 4/15/16.
  */
-public enum DemodulationImplementation implements RuleImplementation {
+public enum DemodulationImplementation implements ForwardClauseRule {
 
     INSTANCE;
 
