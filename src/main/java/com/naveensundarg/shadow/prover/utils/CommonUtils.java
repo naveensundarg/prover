@@ -30,7 +30,7 @@ public class CommonUtils {
             Parseable pbr = Parsers.newParseable(new StringReader(formulaStr));
             Parser p = Parsers.newParser(defaultConfiguration());
 
-            return Reader.readFormula(p.nextValue(pbr));
+            return readFormula(p.nextValue(pbr));
 
 
     }

@@ -149,7 +149,7 @@ public class Halo implements Prover {
                         continue;
                     }
 
-                    
+
 
                     if (resolvand.getLiterals().isEmpty()) {
 
