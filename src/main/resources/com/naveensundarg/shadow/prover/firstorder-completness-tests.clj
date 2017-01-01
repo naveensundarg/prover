@@ -187,7 +187,7 @@
                AX10 (forall (x y) (if (and (SameSpecies x y) (Aard x)) (Aard y)))
 
                }
- :goal        (forall (x y)  (if (SameSpecies x y) (SameSpecies y x)) )}
+ :goal        (forall (x)   (SameSpecies x x))}
 
 
 {:name        "traid zoo transitiviy"

@@ -1,6 +1,7 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
+import com.naveensundarg.shadow.prover.core.rules.ForwardClauseRule;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -27,6 +28,9 @@ public class Clause {
 
     public  static AtomicInteger count = new AtomicInteger(0);
 
+
+    private final Optional<List<Clause>> parents;
+    private final Optional<ForwardClauseRule> originRule;
     private int ID;
 
 
@@ -67,6 +71,8 @@ public class Clause {
         this.sortedLiterals = tempLiterals.stream().map(x->x.apply(mapping)).collect(Collectors.toList());
 
 
+        this.originRule = Optional.empty();
+        this.parents = Optional.empty();
     }
 
 
@@ -92,6 +98,29 @@ public class Clause {
         this.sortedLiterals = tempLiterals.stream().map(x->x.apply(mapping)).collect(Collectors.toList());
         this.literals  = Collections.unmodifiableSet(sortedLiterals.stream().collect(Collectors.toSet()));
 
+        this.parents = Optional.empty();
+        this.originRule = Optional.empty();
+
+    }
+    public Clause(Set<Literal> literals, List<Clause> parents){
+
+        literals = literals.stream().filter(Logic::canKeepEquality).collect(Collectors.toSet());;
+        this.weight = literals.stream().mapToInt(Literal::getWeight).reduce(0, Integer::sum);
+        ID = count.getAndIncrement();
+
+
+
+        List<Literal>  tempLiterals = literals.stream().sorted(literalComparator).collect(Collectors.toList());
+
+        Set<Variable> variables = tempLiterals.stream().map(x->x.getPredicate().variablesPresent()).reduce(Sets.newSet(), Sets::union);
+        Map<Variable, Value> mapping = Logic.simplify(variables);
+
+        this.sortedLiterals = tempLiterals.stream().map(x->x.apply(mapping)).collect(Collectors.toList());
+        this.literals  = Collections.unmodifiableSet(sortedLiterals.stream().collect(Collectors.toSet()));
+
+        this.parents = Optional.of(parents);
+        this.originRule = Optional.empty();
+
     }
 
     public Clause(boolean simplify, Set<Literal> literals){
@@ -115,6 +144,8 @@ public class Clause {
 
         }
         this.literals  = Collections.unmodifiableSet(sortedLiterals.stream().collect(Collectors.toSet()));
+        this.parents = Optional.empty();
+        this.originRule = Optional.empty();
 
     }
 
@@ -146,11 +177,19 @@ public class Clause {
 
     public Clause apply(Map<Variable, Value> substitution){
 
-        return new Clause(literals.stream().map(l->l.apply(substitution)).collect(Collectors.toSet()));
+        return new Clause(literals.stream().map(l->l.apply(substitution)).collect(Collectors.toSet()), CollectionUtils.listOf(this));
     }
 
     public int getWeight() {
         return weight;
+    }
+
+    public Optional<List<Clause>> getParents() {
+        return parents;
+    }
+
+    public Optional<ForwardClauseRule> getOriginRule() {
+        return originRule;
     }
 
     public Clause refactor(){

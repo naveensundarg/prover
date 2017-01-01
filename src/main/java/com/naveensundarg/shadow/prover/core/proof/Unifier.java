@@ -158,6 +158,27 @@ public class Unifier {
 
         }
 
+        if (bf1 instanceof Desire) {
+
+            Desire s1 = (Desire) bf1;
+            Desire s2 = (Desire) bf2;
+
+
+            Value t1 = s1.getTime();
+            Value t2 = s2.getTime();
+
+            Value a1 = s1.getAgent();
+            Value a2 = s2.getAgent();
+
+
+            Map<Variable, Value> m1 = unify(t1, t2);
+            Map<Variable, Value> m2 = unify(a1, a2);
+
+            return combineVariableValueMap(m1, m2);
+
+
+        }
+
         throw new AssertionError("Unaccounted base formula encountered during unification: " + bf1 + " and " + bf2);
 
     }

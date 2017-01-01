@@ -14,11 +14,15 @@ public class Problem {
 
     private final Formula goal;
 
+    private final String name;
+    private final String description;
 
-    public Problem(Set<Formula> assumptions, Formula goal) {
+    public Problem(String name, String description, Set<Formula> assumptions, Formula goal) {
 
         this.assumptions = assumptions;
         this.goal = goal;
+        this.name = name;
+        this.description = description;
     }
 
     public Set<Formula> getAssumptions() {
@@ -27,6 +31,14 @@ public class Problem {
 
     public Formula getGoal() {
         return goal;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override

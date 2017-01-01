@@ -24,11 +24,12 @@ public class Halo implements Prover {
 
     private Prover propositionalProver;
 
-
+    static double weightDelta = 0.5;
+    static double weight  = 4;
     private enum Rule {
 
         RESOLUTION(FirstOrderResolutionImplementation.INSTANCE),
-        DEMODULATION(DemodulationImplementation.INSTANCE),
+       DEMODULATION(DemodulationImplementation.INSTANCE),
         PARAMODULATION(ParamodulationImplementation.INSTANCE);
 
         private ForwardClauseRule forwardClauseRule;
@@ -67,14 +68,14 @@ public class Halo implements Prover {
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
-        int k = 20;
+        int k = 5;
 
 
         Clause.count = new AtomicInteger(0);
         PriorityQueue<Clause> clauseStore = new PriorityQueue<>(Comparator.comparing(Clause::getWeight));
         Queue<Clause> ageQueue = new LinkedList<>();
 
-        Problem problem = new Problem(assumptions, formula);
+        Problem problem = new Problem("", "", assumptions, formula);
 
         Set<CNFFormula> formulas = assumptions.
                 stream().
@@ -170,19 +171,22 @@ public class Halo implements Prover {
 
             }
 
-            List<Clause> ageQueueProcessed = ageQueue.stream().filter(x->!given.subsumes(x)&& x.getWeight()<=10).collect(Collectors.toList());
+
+            List<Clause> ageQueueProcessed = ageQueue.stream().filter(x->!given.subsumes(x)&& x.getWeight()<=weight).collect(Collectors.toList());
             ageQueue.clear();
             for(Clause clause:ageQueueProcessed){
 
                 ageQueue.add(clause);
             }
 
-            List<Clause> clauseStoreProcessed = clauseStore.stream().filter(x->!given.subsumes(x) && x.getWeight()<=10).collect(Collectors.toList());
+            List<Clause> clauseStoreProcessed = clauseStore.stream().filter(x->!given.subsumes(x) && x.getWeight()<=weight).collect(Collectors.toList());
             clauseStore.clear();
             for(Clause clause:clauseStoreProcessed){
 
                 clauseStore.add(clause);
             }
+
+            weight = weightDelta + weight;
 
 
 

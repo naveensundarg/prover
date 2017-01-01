@@ -26,15 +26,11 @@ public class Sandbox {
 
     public static void main(String[] args) throws Exception {
 
-        Parseable pbr = Parsers.newParseable("(forall (P)\n" +
-                "                          (exists (B)\n" +
-                "                                  (forall (x)\n" +
-                "                                          (=\n" +
-                "                                            (has-property (has-property x x) P) (has-property x B)))))");
+        Parseable pbr = Parsers.newParseable("(implies P Q)");
         Parser p = Parsers.newParser(defaultConfiguration());
        Formula f = ( Reader.readFormula(p.nextValue(pbr)));
 
 
-       System.out.println(f);
+       System.out.println(f.getClass());
     }
 }

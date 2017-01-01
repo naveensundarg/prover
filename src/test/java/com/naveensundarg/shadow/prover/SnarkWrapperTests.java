@@ -1,6 +1,5 @@
 package com.naveensundarg.shadow.prover;
 
-import com.naveensundarg.shadow.prover.core.FirstOrderResolutionProver;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;

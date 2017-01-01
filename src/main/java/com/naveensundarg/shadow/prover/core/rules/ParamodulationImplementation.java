@@ -6,6 +6,7 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.ImmutablePair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
@@ -68,7 +69,7 @@ public enum  ParamodulationImplementation implements ForwardClauseRule {
                             map(Z-> Unifier.subUnify(x, Z)).
                             reduce(newSet(), Sets::union);
 
-            Clause clause = new Clause(Sets.union(Sets.remove(clause1.getLiterals(),identityLiteral), clause2.getLiterals()));
+            Clause clause = new Clause(Sets.union(Sets.remove(clause1.getLiterals(),identityLiteral), clause2.getLiterals()), CollectionUtils.listOf(clause1, clause2));
 
             return subUnifications.stream().map(theta-> ImmutablePair.from(clause.apply(theta),theta)).
                     map(pair-> {

@@ -60,7 +60,7 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="debugTestsProvider")
     public Object[][] debugTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("debug.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("acu_simulation2.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -78,7 +78,7 @@ public class CognitiveCalculusProverTests {
     }
 
 
-   // @Test(dataProvider = "debugTestsProvider")
+    @Test(dataProvider = "debugTestsProvider")
     public void debugTests(Set<Formula> assumptions, Formula formula){
 
         prover = new CognitiveCalculusProver();

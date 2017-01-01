@@ -157,7 +157,7 @@ public class Converter {
             else{
                 throw new AssertionError(formula);
             }
-            return new CNFFormula(Sets.with(new Clause(Sets.with(literal))));
+            return new CNFFormula(Sets.with(new Clause(true, Sets.with(literal))));
         }
 
         if(formula instanceof Not){

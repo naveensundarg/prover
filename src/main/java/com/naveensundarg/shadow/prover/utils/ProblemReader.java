@@ -2,7 +2,6 @@ package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.Sandbox;
 import com.naveensundarg.shadow.prover.core.Problem;
-import com.naveensundarg.shadow.prover.core.sortsystem.Ontology;
 import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -28,6 +27,8 @@ public class ProblemReader {
     private static final Keyword ASSUMPTIONS_KEY = Keyword.newKeyword("assumptions");
     private static final Keyword GOAL_KEY = Keyword.newKeyword("goal");
     private static final Keyword SORTSYSTEM_KEY = Keyword.newKeyword("sortsystem");
+    private static final Keyword NAME_KEY = Keyword.newKeyword("name");
+    private static final Keyword DESCRIPTION_KEY = Keyword.newKeyword("description");
 
     public static List<Problem> readFrom(InputStream inputStream) throws Reader.ParsingException {
 
@@ -64,7 +65,8 @@ public class ProblemReader {
 
         } else {
 
-            return new Problem(assumptions, goal);
+
+            return new Problem( ((Map) map).getOrDefault(NAME_KEY, "").toString(), ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(), assumptions, goal);
         }
 
 

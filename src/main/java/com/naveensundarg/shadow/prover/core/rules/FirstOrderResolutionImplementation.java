@@ -6,6 +6,7 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.ImmutablePair;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
@@ -67,7 +68,7 @@ public enum FirstOrderResolutionImplementation implements ForwardClauseRule {
             Set<Literal> l2 = Sets.remove(literals2, match.first().get(1));
 
             Set<Literal> literals = Sets.union(l1, l2);
-            return (new Clause(literals)).apply(match.second());
+            return (new Clause(literals, CollectionUtils.listOf(clause1, clause2))).apply(match.second());
 
         }).collect(Collectors.toSet());
     }

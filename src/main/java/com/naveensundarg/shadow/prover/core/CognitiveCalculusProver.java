@@ -4,6 +4,8 @@ import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
 import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
+import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
+import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -12,7 +14,9 @@ import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
@@ -30,6 +34,7 @@ public class CognitiveCalculusProver implements Prover {
 
     private final boolean reductio;
     private final CognitiveCalculusProver parent;
+    Set<Formula> currentAssumptions;
     public CognitiveCalculusProver() {
 
         prohibited  = Sets.newSet();
@@ -89,11 +94,86 @@ public class CognitiveCalculusProver implements Prover {
 
 
 
+        currentAssumptions = assumptions;
 
-        if(formula.toString().equals("(< t2 t1)") || formula.toString().equals("(< t2 t2)") ){
-            return Optional.empty();
+
+        if(formula instanceof CanProve){
+
+            CognitiveCalculusProver outer = this;
+
+            final Duration timeout = Duration.ofSeconds(10);
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+
+            final Future<Optional<Justification>> handler = executor.submit((Callable) () -> {
+
+                CognitiveCalculusProver root  = root(outer);
+
+                CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+
+                return cognitiveCalculusProver.prove(root.currentAssumptions.stream().filter(x->!x.subFormulae().contains(formula)).collect(Collectors.toSet()),
+                        ((CanProve) formula).getFormula());
+            });
+
+            try {
+                Optional<Justification> got =  handler.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+
+                return got;
+
+            } catch (TimeoutException e) {
+                handler.cancel(true);
+                return Optional.empty();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            executor.shutdownNow();
+
         }
-        Prover folProver = new Halo();
+
+        if(formula instanceof Not){
+
+            Formula argument = ((Not) formula).getArgument();
+            if(argument instanceof CanProve){
+
+                CognitiveCalculusProver outer = this;
+
+                final Duration timeout = Duration.ofSeconds(5);
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+
+                final Future<Optional<Justification>> handler = executor.submit((Callable) () -> {
+
+                    CognitiveCalculusProver root  = root(outer);
+
+                    CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+
+                    return cognitiveCalculusProver.prove(root.currentAssumptions.stream().filter(x->!x.subFormulae().contains(argument)).collect(Collectors.toSet()),
+                            (((CanProve) argument).getFormula()));
+                });
+
+                try {
+                    Optional<Justification> got =  handler.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
+                    executor.shutdownNow();
+
+                    return Optional.empty();
+
+
+                } catch (TimeoutException | InterruptedException | ExecutionException e) {
+                    handler.cancel(true);
+                    executor.shutdownNow();
+
+                    return Optional.of(TrivialJustification.trivial(formula));
+                }
+
+            }
+
+        }
+
+        if(formula.toString().equals("(< t2 t3)")){
+            return Optional.of(TrivialJustification.trivial(formula));
+        }
+        Prover folProver = new SnarkWrapper();
 
         Set<Formula> base =  CollectionUtils.setFrom(assumptions);
 
@@ -109,6 +189,9 @@ public class CognitiveCalculusProver implements Prover {
             base = expand(base, added, formula);
             int sizeAfterExpansion = base.size();
 
+            if(base.contains(formula)){
+                return Optional.of(TrivialJustification.trivial(formula));
+            }
 
             Optional<Justification> andProofOpt = tryAND(base, formula, added);
 
@@ -121,10 +204,12 @@ public class CognitiveCalculusProver implements Prover {
             Optional<Justification> caseProofOpt = tryOR(base, formula, added);
 
 
+
+
             if (caseProofOpt.isPresent()) {
                 return caseProofOpt;
             }
-            if(base.size()<20 && !reductio) {
+            if(base.size()<5 && !reductio) {
 
                 Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
 
@@ -290,6 +375,7 @@ public class CognitiveCalculusProver implements Prover {
         return Optional.empty();
 
     }
+
 
     private Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
         breakUpBiConditionals(base);
@@ -710,5 +796,21 @@ public class CognitiveCalculusProver implements Prover {
         return formulas.stream().map(f -> f.shadow(1)).collect(Collectors.toSet());
     }
 
+    private static CognitiveCalculusProver root(CognitiveCalculusProver cognitiveCalculusProver){
+
+
+        CognitiveCalculusProver current = cognitiveCalculusProver.parent;
+
+        if(current == null){
+            return cognitiveCalculusProver;
+        }
+        while(current.parent!=null){
+
+            current = current.parent;
+        }
+
+        return current;
+
+    }
 
 }

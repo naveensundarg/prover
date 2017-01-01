@@ -29,6 +29,8 @@ public class Reader {
     private static final Symbol AND = Symbol.newSymbol("and");
     private static final Symbol OR = Symbol.newSymbol("or");
     private static final Symbol IF = Symbol.newSymbol("if");
+    private static final Symbol IMPLIES = Symbol.newSymbol("implies");
+
     private static final Symbol IFF = Symbol.newSymbol("iff");
 
     private static final Symbol EXISTS = Symbol.newSymbol("exists");
@@ -37,10 +39,16 @@ public class Reader {
     private static final Symbol BELIEVES = Symbol.newSymbol("Believes!");
     private static final Symbol KNOWS = Symbol.newSymbol("Knows!");
     private static final Symbol PERCEIVES = Symbol.newSymbol("Perceives!");
+    private static final Symbol DESIRES = Symbol.newSymbol("Desires!");
 
     private static final Symbol COMMON = Symbol.newSymbol("Common!");
     private static final Symbol SAYS = Symbol.newSymbol("Says!");
+    private static final Symbol COMMUNICATES = Symbol.newSymbol("Communicates!");
+
     private static final Symbol OUGHT = Symbol.newSymbol("Ought!");
+
+
+    private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
 
     private static final Value NOW ;
 
@@ -117,6 +125,16 @@ public class Reader {
 
     }
 
+    public static Formula readFormulaFromString(String input) throws ParsingException {
+
+        Parseable parseable = Parsers.newParseable(input);
+        Parser p = Parsers.newParser(defaultConfiguration());
+
+
+        return readFormula(p.nextValue(parseable));
+
+    }
+
 
     private static Formula readFormula(Object input, Set<String> variableNames) throws ParsingException {
 
@@ -144,7 +162,7 @@ public class Reader {
                     }
                 }
 
-                if(name.equals(IF)){
+                if(name.equals(IF) || name.equals(IMPLIES)){
                     if(list.size()==3){
                         return new Implication(readFormula(list.get(1), variableNames),readFormula(list.get(2), variableNames));
 
@@ -224,6 +242,11 @@ public class Reader {
 
                     return constructPerceives(list, variableNames);
                 }
+
+                if(name.equals(DESIRES)){
+
+                    return constructDesires(list, variableNames);
+                }
                 if(name.equals(COMMON)){
 
                     return constructCommon(list, variableNames);
@@ -232,10 +255,21 @@ public class Reader {
 
                     return constructSays(list, variableNames );
                 }
+                if(name.equals(COMMUNICATES)){
+
+                    return constructCommunicates(list, variableNames );
+                }
+
 
                 if(name.equals(OUGHT)){
 
                     return constructOught(list, variableNames);
+                }
+
+
+                if(name.equals(CAN_PROVE)){
+
+                    return constructCanProve(list, variableNames);
                 }
 
                 return constructPredicate(list, variableNames);
@@ -246,6 +280,25 @@ public class Reader {
         }
 
          throw new AssertionError("Could not understand formula: " + input);
+
+    }
+
+    private static Formula constructCanProve(List list, Set<String> variableNames) throws ParsingException {
+
+        if(list.isEmpty()){
+            throw new ParsingException("CanProve expresion cannot be empty!");
+        }  else if(list.size() != 2 ){
+            throw new ParsingException("CanProve expresion has wrong number of arguments! "+list);
+
+        } else {
+            Object formula =  list.get(1);
+
+            return new CanProve(readFormula(formula, variableNames));
+
+        }
+
+
+
 
     }
 
@@ -298,6 +351,32 @@ public class Reader {
                 Object formula =  list.get(2);
 
                 return new Perception(readLogicValue(agent), NOW, readFormula(formula, variableNames));
+
+            }
+
+        }
+    }
+    private static Formula constructDesires(List list, Set<String> variableNames) throws ParsingException{
+        if(list.isEmpty()){
+            throw new ParsingException("Desires expresion cannot be empty!");
+        }  else if(list.size() != 4 && list.size() != 3){
+            throw new ParsingException("Desires expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            if (list.size()==4){
+                Object agent =  list.get(1);
+                Object time =  list.get(2);
+                Object formula =  list.get(3);
+
+                return new Desire(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames));
+
+            } else {
+
+                Object agent =  list.get(1);
+                Object formula =  list.get(2);
+
+                return new Desire(readLogicValue(agent), NOW, readFormula(formula, variableNames));
 
             }
 
@@ -385,6 +464,37 @@ public class Reader {
                 Object formula =  list.get(2);
 
                 return new Says(readLogicValue(agent), NOW,readFormula(formula, variableNames));
+
+            }
+
+        }
+    }
+
+    private static Formula constructCommunicates(List list, Set<String> variableNames) throws ParsingException{
+        if(list.isEmpty()){
+            throw new ParsingException("Coomunicates expresion cannot be empty!");
+        }  else if(list.size() != 5 && list.size()!=4){
+            throw new ParsingException("Says expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            if(list.size()==5) {
+                Object agent1 =  list.get(1);
+                Object agent2 =  list.get(2);
+
+                Object time =  list.get(3);
+                Object formula =  list.get(4);
+
+                return new Communicates(readLogicValue(agent1), readLogicValue(agent2), readLogicValue(time),readFormula(formula, variableNames));
+
+            } else{
+
+                Object agent1 =  list.get(1);
+                Object agent2 =  list.get(2);
+
+                Object formula =  list.get(3);
+
+                return new Communicates(readLogicValue(agent1), readLogicValue(agent2), NOW,readFormula(formula, variableNames));
 
             }
 

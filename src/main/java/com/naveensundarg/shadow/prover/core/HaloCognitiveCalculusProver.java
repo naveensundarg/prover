@@ -20,7 +20,7 @@ import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 /**
  * Created by naveensundarg on 4/21/16.
  */
-public class CognitiveCalculusProver implements Prover {
+public class HaloCognitiveCalculusProver implements Prover {
 
     /*
      *
@@ -29,8 +29,8 @@ public class CognitiveCalculusProver implements Prover {
     static Set<Problem> problems = Sets.newSet();
 
     private final boolean reductio;
-    private final CognitiveCalculusProver parent;
-    public CognitiveCalculusProver() {
+    private final HaloCognitiveCalculusProver parent;
+    public HaloCognitiveCalculusProver() {
 
         prohibited  = Sets.newSet();
         parent = null;
@@ -39,14 +39,14 @@ public class CognitiveCalculusProver implements Prover {
 
     private Problem currentProblem;
 
-    private CognitiveCalculusProver(CognitiveCalculusProver parent) {
+    private HaloCognitiveCalculusProver(HaloCognitiveCalculusProver parent) {
 
         prohibited  = CollectionUtils.setFrom(parent.prohibited);
         this.parent = parent;
         reductio = false;
     }
 
-    private CognitiveCalculusProver(CognitiveCalculusProver parent, boolean reductio) {
+    private HaloCognitiveCalculusProver(HaloCognitiveCalculusProver parent, boolean reductio) {
 
         prohibited  = CollectionUtils.setFrom(parent.prohibited);
         this.parent = parent;
@@ -69,7 +69,7 @@ public class CognitiveCalculusProver implements Prover {
         }
 
 
-        CognitiveCalculusProver node = parent;
+        HaloCognitiveCalculusProver node = parent;
         while(node!=null) {
 
             if(node.currentProblem.equals(currentProblem)){
@@ -167,7 +167,7 @@ public class CognitiveCalculusProver implements Prover {
 
             List<Optional<Justification>> conjunctProofsOpt = Arrays.stream(conjuncts).map(conjunct -> {
 
-                CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+                HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
                 return cognitiveCalculusProver.prove(base, conjunct);
             }).collect(Collectors.toList());
 
@@ -197,7 +197,7 @@ public class CognitiveCalculusProver implements Prover {
             reducedBase.remove(someOr);
 
             List<Optional<Justification>> casesOpt = Arrays.stream(disjuncts).map(disjunct -> {
-                CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+                HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
 
                 Set<Formula> newBase = CollectionUtils.setFrom(reducedBase);
                 newBase.add(disjunct);
@@ -234,7 +234,7 @@ public class CognitiveCalculusProver implements Prover {
         Set<Formula> augmented = CollectionUtils.setFrom(base);
 
         augmented.add(negated);
-        CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this, true);
+        HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this, true);
 
         Optional<Justification> reductioJustOpt = cognitiveCalculusProver.prove(augmented, atom, added);
 
@@ -255,7 +255,7 @@ public class CognitiveCalculusProver implements Prover {
             Set<Formula> allBelievedTillTime = agentSnapShot.allBelievedByAgentTillTime(agent, time);
 
 
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allBelievedTillTime, goalBelief);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -278,7 +278,7 @@ public class CognitiveCalculusProver implements Prover {
             Set<Formula> allKnownByTillTime = agentSnapShot.allKnownByAgentTillTime(agent, time);
 
 
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allKnownByTillTime, goalKnowledge);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -412,7 +412,7 @@ public class CognitiveCalculusProver implements Prover {
             Value outerTime = b.getTime();
             Value agent = b.getAgent();
             Belief preConditionBelief = new Belief(agent, outerTime, precondition);
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
             Set<Formula> smaller = CollectionUtils.setFrom(base);
             smaller.remove(b);
             smaller = smaller.stream().filter(x -> !x.subFormulae().contains(ought)).collect(Collectors.toSet());
@@ -584,7 +584,7 @@ public class CognitiveCalculusProver implements Prover {
             Formula antecedent = implication.getAntecedent();
             Formula consequent = implication.getConsequent();
 
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
             cognitiveCalculusProver.prohibited.addAll(prohibited);
             cognitiveCalculusProver.prohibited.add(implication);
 
