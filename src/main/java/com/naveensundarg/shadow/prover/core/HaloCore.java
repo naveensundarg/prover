@@ -20,59 +20,24 @@ import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 /**
  * Created by naveensundarg on 4/12/16.
  */
-public class Halo implements Prover {
+public abstract class HaloCore implements Prover {
 
-    private Prover propositionalProver;
 
-    static double weightDelta = 0.5;
-    static double weight  = 4;
-    private enum Rule {
 
-        RESOLUTION(FirstOrderResolutionImplementation.INSTANCE),
-       DEMODULATION(DemodulationImplementation.INSTANCE),
-        PARAMODULATION(ParamodulationImplementation.INSTANCE);
+    public abstract Set<ForwardClauseRule> getForwardClauseRules();
 
-        private ForwardClauseRule forwardClauseRule;
+    public abstract int getAgeWeightRatio();
 
-        Rule(ForwardClauseRule forwardClauseRule) {
-            this.forwardClauseRule = forwardClauseRule;
-        }
-
-        public ForwardClauseRule getForwardClauseRule() {
-            return forwardClauseRule;
-        }
-    }
-
-    private final Map<Problem, Set<Pair<Clause, Clause>>> used;
-    private final Set<Rule> rules;
-
-    public Halo(Set<Rule> rules) {
-
-        used = newMap();
-        this.rules = rules;
-        this.propositionalProver = new PropositionalResolutionProver();
-    }
-
-    public Halo() {
-
-        used = newMap();
-        this.rules = Sets.with(Rule.RESOLUTION);
-        this.rules.add(Rule.PARAMODULATION);
-        this.rules.add(Rule.DEMODULATION);
-
-        this.propositionalProver = new PropositionalResolutionProver();
-
-    }
-
+    public abstract int getMaxWeight();
 
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
-        int k = 5;
+        int k = getAgeWeightRatio(); ;
 
 
-        Clause.count = new AtomicInteger(0);
-        PriorityQueue<Clause> clauseStore = new PriorityQueue<>(Comparator.comparing(Clause::getWeight));
+        PriorityQueue<Clause> weightQueue = new PriorityQueue<>(Comparator.comparing(Clause::getWeight));
+
         Queue<Clause> ageQueue = new LinkedList<>();
 
         Problem problem = new Problem("", "", assumptions, formula);
@@ -98,17 +63,17 @@ public class Halo implements Prover {
 
 
         for (Clause clause : clauses) {
-            clauseStore.add(clause);
+            weightQueue.add(clause);
             ageQueue.add(clause);
         }
 
         Set<Clause> usableList = CollectionUtils.newEmptySet();
 
-        usableList.add(clauseStore.remove());
+        usableList.add(weightQueue.remove());
 
         int ageWeightCounter  = 0;
 
-        while (!clauseStore.isEmpty() && !ageQueue.isEmpty()) {
+        while (!weightQueue.isEmpty() && !ageQueue.isEmpty()) {
 
             Clause given;
 
@@ -116,11 +81,11 @@ public class Halo implements Prover {
             if(ageWeightCounter%k == 0) {
 
                 given = ageQueue.remove();
-                clauseStore.remove(given);
+                weightQueue.remove(given);
 
             }
              else {
-                given = clauseStore.remove();
+                given = weightQueue.remove();
                 ageQueue.remove(given);
 
             }
@@ -136,15 +101,15 @@ public class Halo implements Prover {
             for (Clause parent : usableList) {
 
 
-                Set<Clause> resolvands = rules.
+                Set<Clause> resolvands = getForwardClauseRules().
                         stream().
-                        map(ruleType -> ruleType.getForwardClauseRule().apply(parent, renamedGiven)).
+                        map(rule -> rule.apply(parent, renamedGiven)).
                         reduce(newSet(), Sets::union);
 
                 for (Clause resolvand : resolvands) {
 
                     if(usableList.stream().anyMatch(x->x.subsumes(resolvand))
-                            || clauseStore.stream().anyMatch(x->x.subsumes(resolvand))
+                            || weightQueue.stream().anyMatch(x->x.subsumes(resolvand))
                             || ageQueue.stream().anyMatch(x->x.subsumes(resolvand)) ){
                         continue;
                     }
@@ -157,9 +122,9 @@ public class Halo implements Prover {
 
                     } else {
 
-                        if (!clauseStore.contains(resolvand) && !usableList.contains(resolvand)) {
+                        if (!weightQueue.contains(resolvand) && !usableList.contains(resolvand)) {
 
-                            clauseStore.add(resolvand);
+                            weightQueue.add(resolvand);
                         }
                         if (!ageQueue.contains(resolvand) && !usableList.contains(resolvand)) {
 
@@ -172,21 +137,20 @@ public class Halo implements Prover {
             }
 
 
-            List<Clause> ageQueueProcessed = ageQueue.stream().filter(x->!given.subsumes(x)&& x.getWeight()<=weight).collect(Collectors.toList());
+            List<Clause> ageQueueProcessed = ageQueue.stream().filter(x->!given.subsumes(x)&& x.getWeight()<= getMaxWeight()).collect(Collectors.toList());
             ageQueue.clear();
             for(Clause clause:ageQueueProcessed){
 
                 ageQueue.add(clause);
             }
 
-            List<Clause> clauseStoreProcessed = clauseStore.stream().filter(x->!given.subsumes(x) && x.getWeight()<=weight).collect(Collectors.toList());
-            clauseStore.clear();
+            List<Clause> clauseStoreProcessed = weightQueue.stream().filter(x->!given.subsumes(x) && x.getWeight()<= getMaxWeight()).collect(Collectors.toList());
+            weightQueue.clear();
             for(Clause clause:clauseStoreProcessed){
 
-                clauseStore.add(clause);
+                weightQueue.add(clause);
             }
 
-            weight = weightDelta + weight;
 
 
 

@@ -209,7 +209,7 @@ public class CognitiveCalculusProver implements Prover {
             if (caseProofOpt.isPresent()) {
                 return caseProofOpt;
             }
-            if(base.size()<5 && !reductio) {
+            if(base.size()<0 && !reductio) {
 
                 Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
 

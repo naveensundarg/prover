@@ -1,9 +1,9 @@
 package com.naveensundarg.shadow.prover;
 
-import com.naveensundarg.shadow.prover.core.Halo;
+import com.naveensundarg.shadow.prover.core.FirstOrderHalo;
+import com.naveensundarg.shadow.prover.core.HaloCore;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
-import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.Pair;
@@ -27,7 +27,7 @@ public class HaloProverTests {
     Map<Problem, Pair<Clause, Clause>> used;
     HaloProverTests(){
 
-        prover = new Halo();
+        prover = new FirstOrderHalo();
     }
 
     @DataProvider(name="completenessTestsProvider")
