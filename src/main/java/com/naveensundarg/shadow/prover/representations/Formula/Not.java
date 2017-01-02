@@ -87,4 +87,20 @@ public class Not extends Formula {
     public int getWeight() {
         return weight;
     }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new Not(argument.replaceSubFormula(oldFormula, newFormula));
+    }
 }

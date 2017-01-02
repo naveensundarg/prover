@@ -209,7 +209,7 @@ public class CognitiveCalculusProver implements Prover {
             if (caseProofOpt.isPresent()) {
                 return caseProofOpt;
             }
-            if(base.size()<0 && !reductio) {
+            if(base.size()<20 && !reductio) {
 
                 Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
 
@@ -382,9 +382,6 @@ public class CognitiveCalculusProver implements Prover {
 
         expandR4(base, added);
         expandPerceptionToKnowledge(base, added);
-        expandR11a(base, added);
-        expandDR6(base, added);
-        expandDR6a(base, added);
         expandModalConjunctions(base, added);
         expandModalImplications(base, added);
         expandDR1(base, added, goal);
@@ -595,48 +592,6 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private void expandDR6(Set<Formula> base, Set<Formula> added) {
-
-        Set<Knowledge> implicationKnowledge =
-                level2FormulaeOfTypeWithConstraint(base, Knowledge.class, b -> ((Knowledge) b).getFormula() instanceof Implication);
-
-
-        Set<Formula> validConsequentKnowledge = implicationKnowledge.stream().
-                filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getAntecedent()))).
-                map(b -> new Knowledge(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getConsequent())).
-                filter(x -> !added.contains(x)).
-                collect(Collectors.toSet());
-
-        added.addAll(validConsequentKnowledge);
-        base.addAll(validConsequentKnowledge);
-
-    }
-
-    private void expandDR6a(Set<Formula> base, Set<Formula> added) {
-
-        Set<Knowledge> biConditionalKnowledge =
-                level2FormulaeOfTypeWithConstraint(base, Knowledge.class, b -> ((Knowledge) b).getFormula() instanceof BiConditional);
-
-
-        Set<Formula> validRights = biConditionalKnowledge.stream().
-                filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getLeft()))).
-                map(b -> new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getRight())).
-                filter(x -> !added.contains(x)).
-                collect(Collectors.toSet());
-
-        added.addAll(validRights);
-        base.addAll(validRights);
-
-        Set<Formula> validLefts = biConditionalKnowledge.stream().
-                filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getRight()))).
-                map(b -> new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getLeft())).
-                filter(x -> !added.contains(x)).
-                collect(Collectors.toSet());
-
-        added.addAll(validLefts);
-        base.addAll(validLefts);
-
-    }
 
     private void expandModalConjunctions(Set<Formula> base, Set<Formula> added) {
 

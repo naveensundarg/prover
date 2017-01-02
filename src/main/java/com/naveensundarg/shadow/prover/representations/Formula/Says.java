@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Says extends Formula implements BaseFormula{
+public class Says extends  BaseFormula{
 
     Value agent;
     Value time;
@@ -144,5 +144,22 @@ public class Says extends Formula implements BaseFormula{
     @Override
     public String getName() {
         return "Says";
+    }
+
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new Says(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 }

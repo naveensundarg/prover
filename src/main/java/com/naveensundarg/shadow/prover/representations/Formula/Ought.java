@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 11/24/16.
  */
-public class Ought extends Formula implements BaseFormula{
+public class Ought extends BaseFormula{
 
 
     Value agent;
@@ -111,6 +111,22 @@ public class Ought extends Formula implements BaseFormula{
     @Override
     public int getWeight() {
         return weight;
+    }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new Ought(agent, time, precondition.replaceSubFormula(oldFormula, newFormula), ought.replaceSubFormula(oldFormula, newFormula));
     }
 
 

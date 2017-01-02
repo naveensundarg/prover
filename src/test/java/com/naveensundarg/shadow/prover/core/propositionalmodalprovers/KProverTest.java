@@ -1,7 +1,6 @@
-package com.naveensundarg.shadow.prover;
+package com.naveensundarg.shadow.prover.core.propositionalmodalprovers;
 
-import com.naveensundarg.shadow.prover.core.FirstOrderHalo;
-import com.naveensundarg.shadow.prover.core.HaloCore;
+import com.naveensundarg.shadow.prover.Sandbox;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
@@ -18,22 +17,22 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by naveensundarg on 4/9/16.
+ * Created by naveensundarg on 1/1/17.
  */
-public class HaloProverTests {
-
+public class KProverTest {
 
     Prover prover;
     Map<Problem, Pair<Clause, Clause>> used;
-    HaloProverTests(){
 
-        prover = new FirstOrderHalo();
+    KProverTest(){
+
+        prover = new KProver();
     }
 
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("firstorder-completness-tests.clj"));
+        List<Problem > tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("K-completness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -51,10 +50,10 @@ public class HaloProverTests {
     }
 
 
-  //  @Test(dataProvider = "debugTestsProvider")
+    //  @Test(dataProvider = "debugTestsProvider")
     public void debugTests(Set<Formula> assumptions, Formula formula){
 
-       Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
+        Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
 
     }
 
@@ -90,7 +89,7 @@ public class HaloProverTests {
     @DataProvider(name="soundnessTestsProvider")
     public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("firstorder-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("K-soundness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

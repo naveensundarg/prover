@@ -118,4 +118,9 @@ public class Universal extends Formula implements Quantifier{
         result = 31 * result + Arrays.hashCode(vars);
         return result;
     }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        return new Universal(vars, argument.replaceSubFormula(oldFormula, newFormula));
+    }
 }

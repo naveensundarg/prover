@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Communicates extends Formula implements BaseFormula{
+public class Communicates extends BaseFormula{
 
     Value agent1;
     Value agent2;
@@ -158,5 +158,22 @@ public class Communicates extends Formula implements BaseFormula{
     @Override
     public String getName() {
         return "Communicates";
+    }
+
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new Communicates(agent1, agent2, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 }

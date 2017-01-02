@@ -4,6 +4,8 @@ import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
 import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
+import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
+import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -12,7 +14,9 @@ import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
@@ -26,32 +30,7 @@ public class HaloCognitiveCalculusProver implements Prover {
      *
      */
 
-    static Set<Problem> problems = Sets.newSet();
 
-    private final boolean reductio;
-    private final HaloCognitiveCalculusProver parent;
-    public HaloCognitiveCalculusProver() {
-
-        prohibited  = Sets.newSet();
-        parent = null;
-        reductio = false;
-    }
-
-    private Problem currentProblem;
-
-    private HaloCognitiveCalculusProver(HaloCognitiveCalculusProver parent) {
-
-        prohibited  = CollectionUtils.setFrom(parent.prohibited);
-        this.parent = parent;
-        reductio = false;
-    }
-
-    private HaloCognitiveCalculusProver(HaloCognitiveCalculusProver parent, boolean reductio) {
-
-        prohibited  = CollectionUtils.setFrom(parent.prohibited);
-        this.parent = parent;
-        this.reductio = reductio;
-    }
 
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
@@ -59,41 +38,12 @@ public class HaloCognitiveCalculusProver implements Prover {
         return prove(assumptions, formula, CollectionUtils.newEmptySet());
     }
 
-    Set<Formula> prohibited ;
-
-    private boolean alreadySeen(Set<Formula> assumptions, Formula formula) {
-
-
-        if(parent == null) {
-            return false;
-        }
-
-
-        HaloCognitiveCalculusProver node = parent;
-        while(node!=null) {
-
-            if(node.currentProblem.equals(currentProblem)){
-
-                return true;
-            }
-
-            node = node.parent;
-
-        }
-
-        return false;
-
-    }
 
     private synchronized  Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
 
 
-
-        if(formula.toString().equals("(< t2 t1)") || formula.toString().equals("(< t2 t2)") ){
-            return Optional.empty();
-        }
-        Prover folProver = new FirstOrderHalo();
+        Prover folProver = new SnarkWrapper();
 
         Set<Formula> base =  CollectionUtils.setFrom(assumptions);
 
@@ -103,36 +53,44 @@ public class HaloCognitiveCalculusProver implements Prover {
 
         Optional<Justification> agentClosureJustificationOpt = this.proveAgentClosure(base, formula);
 
-        while (!shadowedJustificationOpt.isPresent() && !agentClosureJustificationOpt.isPresent()) {
+
+        PriorityQueue<Formula> weightQueue = new PriorityQueue<>(Comparator.comparing(Formula::getWeight));
+        Queue<Formula> ageQueue = new LinkedList<>();
+
+        for (Formula f : assumptions) {
+            weightQueue.add(f);
+            ageQueue.add(f);
+        }
+
+        Set<Formula> usableList = CollectionUtils.newEmptySet();
+
+        usableList.add(weightQueue.remove());
+
+        int ageWeightCounter  = 0;
+
+        int k = 5;
+        while (!weightQueue.isEmpty() && !ageQueue.isEmpty()) {
+
+            Formula given;
+            if(ageWeightCounter%k == 0) {
+
+                given = ageQueue.remove();
+                weightQueue.remove(given);
+
+            }
+            else {
+                given = weightQueue.remove();
+                ageQueue.remove(given);
+
+            }
+
+            ageWeightCounter = ageWeightCounter + 1;
 
             int sizeBeforeExpansion = base.size();
             base = expand(base, added, formula);
             int sizeAfterExpansion = base.size();
 
 
-            Optional<Justification> andProofOpt = tryAND(base, formula, added);
-
-
-            if (andProofOpt.isPresent()) {
-                return andProofOpt;
-            }
-
-
-            Optional<Justification> caseProofOpt = tryOR(base, formula, added);
-
-
-            if (caseProofOpt.isPresent()) {
-                return caseProofOpt;
-            }
-            if(base.size()<20 && !reductio) {
-
-                Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
-
-
-                if (reductioProofOpt.isPresent()) {
-                    return reductioProofOpt;
-                }
-            }
 
 
             if (sizeAfterExpansion <= sizeBeforeExpansion) {
@@ -141,104 +99,21 @@ public class HaloCognitiveCalculusProver implements Prover {
 
             shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
             agentClosureJustificationOpt = proveAgentClosure(base, formula);
-        }
 
-        if (shadowedJustificationOpt.isPresent()) {
+            if (shadowedJustificationOpt.isPresent()) {
 
-            return shadowedJustificationOpt;
-        }
-
-        if (agentClosureJustificationOpt.isPresent()) {
-
-            return agentClosureJustificationOpt;
-        }
-
-        return Optional.empty();
-    }
-
-
-    private Optional<Justification> tryAND(Set<Formula> base, Formula formula, Set<Formula> added) {
-
-        if (formula instanceof And) {
-
-            And and = (And) formula;
-
-            Formula conjuncts[] = and.getArguments();
-
-            List<Optional<Justification>> conjunctProofsOpt = Arrays.stream(conjuncts).map(conjunct -> {
-
-                HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
-                return cognitiveCalculusProver.prove(base, conjunct);
-            }).collect(Collectors.toList());
-
-
-            if (conjunctProofsOpt.stream().allMatch(Optional::isPresent)) {
-
-                return Optional.of(
-                        new CompoundJustification("and",
-                                conjunctProofsOpt.stream().map(Optional::get).collect(Collectors.toList())));
-            }
-        }
-        return Optional.empty();
-    }
-
-    private Optional<Justification> tryOR(Set<Formula> base, Formula formula, Set<Formula> added) {
-
-        Set<Or> level2ORs = level2FormulaeOfType(base, Or.class);
-
-        Optional<Or> someOrOpt = level2ORs.stream().findAny();
-
-        if (someOrOpt.isPresent()) {
-
-            Or someOr = someOrOpt.get();
-            Formula[] disjuncts = someOr.getArguments();
-
-            Set<Formula> reducedBase = CollectionUtils.setFrom(base);
-            reducedBase.remove(someOr);
-
-            List<Optional<Justification>> casesOpt = Arrays.stream(disjuncts).map(disjunct -> {
-                HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
-
-                Set<Formula> newBase = CollectionUtils.setFrom(reducedBase);
-                newBase.add(disjunct);
-
-                return cognitiveCalculusProver.prove(newBase, formula, CollectionUtils.setFrom(added));
-
-            }).collect(Collectors.toList());
-
-            boolean proved = casesOpt.stream().allMatch(Optional::isPresent);
-
-            if (proved) {
-                return Optional.of(new CompoundJustification("OR", casesOpt.stream().map(Optional::get).collect(Collectors.toList())));
-            } else {
-                return Optional.empty();
+                return shadowedJustificationOpt;
             }
 
-        } else {
+            if (agentClosureJustificationOpt.isPresent()) {
 
-            return Optional.empty();
+                return agentClosureJustificationOpt;
+            }
+
         }
 
-    }
 
-    private Optional<Justification> tryReductio(Set<Formula> base, Formula formula, Set<Formula> added) {
-
-        Formula negated = Logic.negated(formula);
-        if (base.contains(negated) || formula.toString().startsWith("$")) {
-            return Optional.empty();
-        }
-
-        Atom atom = Atom.generate();
-
-
-        Set<Formula> augmented = CollectionUtils.setFrom(base);
-
-        augmented.add(negated);
-        HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this, true);
-
-        Optional<Justification> reductioJustOpt = cognitiveCalculusProver.prove(augmented, atom, added);
-
-        return reductioJustOpt;
+        return Optional.empty();
     }
 
     private Optional<Justification> proveAgentClosure(Set<Formula> base, Formula goal) {
@@ -255,7 +130,7 @@ public class HaloCognitiveCalculusProver implements Prover {
             Set<Formula> allBelievedTillTime = agentSnapShot.allBelievedByAgentTillTime(agent, time);
 
 
-            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
+            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver();
             Optional<Justification> inner = cognitiveCalculusProver.prove(allBelievedTillTime, goalBelief);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -278,7 +153,7 @@ public class HaloCognitiveCalculusProver implements Prover {
             Set<Formula> allKnownByTillTime = agentSnapShot.allKnownByAgentTillTime(agent, time);
 
 
-            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
+            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver();
             Optional<Justification> inner = cognitiveCalculusProver.prove(allKnownByTillTime, goalKnowledge);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -291,41 +166,24 @@ public class HaloCognitiveCalculusProver implements Prover {
 
     }
 
+
     private Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
-        breakUpBiConditionals(base);
 
         expandR4(base, added);
         expandPerceptionToKnowledge(base, added);
-        expandR11a(base, added);
-        expandDR6(base, added);
-        expandDR6a(base, added);
-        expandModalConjunctions(base, added);
-        expandModalImplications(base, added);
+
         expandDR1(base, added, goal);
         expandDR2(base, added, goal);
         expandDR3(base, added);
         expandDR5(base, added);
+
         expandOughtRule(base, added);
         expandUniversalElim(base, added, goal);
-        if(prohibited!=null) base.removeAll(prohibited);
         return base;
     }
 
 
-    private void breakUpBiConditionals(Set<Formula> base) {
 
-
-        Set<BiConditional> biConditionals = formulaOfType(base, BiConditional.class);
-
-        biConditionals.forEach(biConditional -> {
-            base.add(new Implication(biConditional.getLeft(), biConditional.getRight()));
-            base.add(new Implication(biConditional.getRight(), biConditional.getLeft()));
-            base.add(new Implication(Logic.negated(biConditional.getLeft()), Logic.negated(biConditional.getRight())));
-            base.add(new Implication(Logic.negated(biConditional.getRight()), Logic.negated(biConditional.getLeft())));
-
-        });
-
-    }
 
     private void expandR4(Set<Formula> base, Set<Formula> added) {
 
@@ -357,22 +215,6 @@ public class HaloCognitiveCalculusProver implements Prover {
 
     }
 
-    private void expandR11a(Set<Formula> base, Set<Formula> added) {
-
-        Set<Belief> implicationBeliefs =
-                level2FormulaeOfTypeWithConstraint(base, Belief.class, b -> ((Belief) b).getFormula() instanceof Implication);
-
-
-        Set<Formula> validConsequentBeliefss = implicationBeliefs.stream().
-                filter(b -> base.contains(new Belief(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getAntecedent()))).
-                map(b -> new Belief(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getConsequent())).
-                filter(f -> !added.contains(f)).
-                collect(Collectors.toSet());
-
-        base.addAll(validConsequentBeliefss);
-        added.addAll(added);
-
-    }
 
     private void expandOughtRule(Set<Formula> base, Set<Formula> added) {
 
@@ -412,7 +254,7 @@ public class HaloCognitiveCalculusProver implements Prover {
             Value outerTime = b.getTime();
             Value agent = b.getAgent();
             Belief preConditionBelief = new Belief(agent, outerTime, precondition);
-            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
+            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver();
             Set<Formula> smaller = CollectionUtils.setFrom(base);
             smaller.remove(b);
             smaller = smaller.stream().filter(x -> !x.subFormulae().contains(ought)).collect(Collectors.toSet());
@@ -504,117 +346,6 @@ public class HaloCognitiveCalculusProver implements Prover {
                 base.add(formula);
                 added.add(formula);
             }
-        }
-
-
-    }
-
-    private void expandDR6(Set<Formula> base, Set<Formula> added) {
-
-        Set<Knowledge> implicationKnowledge =
-                level2FormulaeOfTypeWithConstraint(base, Knowledge.class, b -> ((Knowledge) b).getFormula() instanceof Implication);
-
-
-        Set<Formula> validConsequentKnowledge = implicationKnowledge.stream().
-                filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getAntecedent()))).
-                map(b -> new Knowledge(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getConsequent())).
-                filter(x -> !added.contains(x)).
-                collect(Collectors.toSet());
-
-        added.addAll(validConsequentKnowledge);
-        base.addAll(validConsequentKnowledge);
-
-    }
-
-    private void expandDR6a(Set<Formula> base, Set<Formula> added) {
-
-        Set<Knowledge> biConditionalKnowledge =
-                level2FormulaeOfTypeWithConstraint(base, Knowledge.class, b -> ((Knowledge) b).getFormula() instanceof BiConditional);
-
-
-        Set<Formula> validRights = biConditionalKnowledge.stream().
-                filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getLeft()))).
-                map(b -> new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getRight())).
-                filter(x -> !added.contains(x)).
-                collect(Collectors.toSet());
-
-        added.addAll(validRights);
-        base.addAll(validRights);
-
-        Set<Formula> validLefts = biConditionalKnowledge.stream().
-                filter(b -> base.contains(new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getRight()))).
-                map(b -> new Knowledge(b.getAgent(), b.getTime(), ((BiConditional) b.getFormula()).getLeft())).
-                filter(x -> !added.contains(x)).
-                collect(Collectors.toSet());
-
-        added.addAll(validLefts);
-        base.addAll(validLefts);
-
-    }
-
-    private void expandModalConjunctions(Set<Formula> base, Set<Formula> added) {
-
-        Set<And> level2Ands = level2FormulaeOfType(base, And.class);
-
-        for (And and : level2Ands) {
-
-            Set<Formula> level2Conjuncts = Arrays.stream(and.getArguments()).
-                    filter(conjunct -> conjunct.getLevel() == 2).
-                    filter(x -> !added.contains(x)).
-                    collect(Collectors.toSet());
-
-            added.addAll(level2Conjuncts);
-            base.addAll(level2Conjuncts);
-
-
-        }
-    }
-
-    private void expandModalImplications(Set<Formula> base, Set<Formula> added) {
-
-
-        Set<Implication> level2Ifs = level2FormulaeOfType(base, Implication.class);
-
-        for (Implication implication : level2Ifs) {
-
-            if(prohibited.contains(implication)) {
-                continue;
-            }
-
-            Formula antecedent = implication.getAntecedent();
-            Formula consequent = implication.getConsequent();
-
-            HaloCognitiveCalculusProver cognitiveCalculusProver = new HaloCognitiveCalculusProver(this);
-            cognitiveCalculusProver.prohibited.addAll(prohibited);
-            cognitiveCalculusProver.prohibited.add(implication);
-
-            Set<Formula> reducedBase = CollectionUtils.setFrom(base);
-
-            reducedBase.remove(implication);
-
-            //TODO: use actual ancestors
-
-            Optional<Justification> antecedentJustificationOpt = cognitiveCalculusProver.prove(reducedBase, antecedent, CollectionUtils.setFrom(added));
-            if (antecedentJustificationOpt.isPresent()) {
-                if (!added.contains(consequent)) {
-                    base.add(consequent);
-                    added.add(consequent);
-                }
-            }
-
-            Set<Formula> newReducedBase = CollectionUtils.setFrom(base);
-            newReducedBase.remove(implication);
-
-
-            Optional<Justification> negatedConsequentJustificationOpt = cognitiveCalculusProver.prove(newReducedBase, Logic.negated(consequent), CollectionUtils.setFrom(added));
-            if (negatedConsequentJustificationOpt.isPresent()) {
-                if (!added.contains(consequent)) {
-                    base.add(Logic.negated(antecedent));
-                    added.add(Logic.negated(antecedent));
-                }
-            }
-
-
         }
 
 

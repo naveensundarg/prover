@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Created by naveensundarg on 4/8/16.
  */
-public class Predicate extends Formula implements BaseFormula {
+public class Predicate extends  BaseFormula {
 
     private final String name;
     private final Value[] arguments;
@@ -127,6 +127,11 @@ public class Predicate extends Formula implements BaseFormula {
     @Override
     public int getWeight() {
         return weight;
+    }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        return (oldFormula.equals(this))? newFormula : this;
     }
 
     public Value[] getArguments() {

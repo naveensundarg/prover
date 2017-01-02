@@ -71,6 +71,19 @@ public class FormulaVariable extends Formula {
     }
 
     @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+        else {
+            return  this;
+        }
+
+
+    }
+
+    @Override
     public String toString() {
         return name;
     }

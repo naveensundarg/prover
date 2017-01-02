@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Desire extends Formula implements BaseFormula{
+public class Desire extends BaseFormula{
     Value agent;
     Value time;
     Formula formula;
@@ -135,5 +135,22 @@ public class Desire extends Formula implements BaseFormula{
     @Override
     public String getName() {
         return "Desires";
+    }
+
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new Desire(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 }

@@ -86,6 +86,11 @@ public class Existential extends Formula implements Quantifier {
         return weight;
     }
 
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        return new Existential(vars, argument.replaceSubFormula(oldFormula, newFormula));
+    }
+
     public Variable[] vars() {
         return vars;
     }

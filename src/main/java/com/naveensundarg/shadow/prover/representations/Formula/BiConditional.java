@@ -97,4 +97,20 @@ public class BiConditional extends Formula {
     public int getWeight() {
         return weight;
     }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new BiConditional(left.replaceSubFormula(oldFormula, newFormula), right.replaceSubFormula(oldFormula, newFormula));
+    }
 }

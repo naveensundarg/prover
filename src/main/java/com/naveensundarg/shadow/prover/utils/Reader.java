@@ -48,6 +48,9 @@ public class Reader {
     private static final Symbol OUGHT = Symbol.newSymbol("Ought!");
 
 
+    private static final Symbol NEC = Symbol.newSymbol("nec");
+    private static final Symbol POS = Symbol.newSymbol("pos");
+
     private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
 
     private static final Value NOW ;
@@ -272,6 +275,19 @@ public class Reader {
                     return constructCanProve(list, variableNames);
                 }
 
+
+                if(name.equals(NEC)){
+
+                    return constructNecessity(list, variableNames);
+
+                }
+
+                if(name.equals(POS)){
+
+                    return constructPossibility(list, variableNames);
+
+                }
+
                 return constructPredicate(list, variableNames);
 
 
@@ -283,6 +299,38 @@ public class Reader {
 
     }
 
+    private static Formula constructNecessity(List list, Set<String> variableNames) throws ParsingException {
+
+        if(list.isEmpty()){
+            throw new ParsingException("Necessity expresion cannot be empty!");
+        }  else if(list.size() != 2 ){
+            throw new ParsingException("Necessity expresion has wrong number of arguments! "+list);
+
+        } else {
+            Object formula =  list.get(1);
+
+            return new Necessity(readFormula(formula, variableNames));
+
+        }
+
+
+    }
+    private static Formula constructPossibility(List list, Set<String> variableNames) throws ParsingException {
+
+        if(list.isEmpty()){
+            throw new ParsingException("Possibility expresion cannot be empty!");
+        }  else if(list.size() != 2 ){
+            throw new ParsingException("Possibility expresion has wrong number of arguments! "+list);
+
+        } else {
+            Object formula =  list.get(1);
+
+            return new Possibility(readFormula(formula, variableNames));
+
+        }
+
+
+    }
     private static Formula constructCanProve(List list, Set<String> variableNames) throws ParsingException {
 
         if(list.isEmpty()){
@@ -296,8 +344,6 @@ public class Reader {
             return new CanProve(readFormula(formula, variableNames));
 
         }
-
-
 
 
     }

@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Perception extends Formula implements BaseFormula{
+public class Perception extends  BaseFormula{
     Value agent;
     Value time;
     Formula formula;
@@ -97,6 +97,21 @@ public class Perception extends Formula implements BaseFormula{
         return weight;
     }
 
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new Perception(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
+    }
 
     @Override
     public String toString() {

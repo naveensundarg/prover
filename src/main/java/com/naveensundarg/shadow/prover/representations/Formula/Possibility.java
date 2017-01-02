@@ -11,9 +11,9 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 /**
- * Created by naveensundarg on 5/4/16.
+ * Created by naveensundarg on 7/9/16.
  */
-public class CanProve extends  BaseFormula{
+public class Possibility extends  BaseFormula{
 
     Formula formula;
     Set<Formula> subFormulae;
@@ -22,31 +22,23 @@ public class CanProve extends  BaseFormula{
 
     private final int weight;
 
-    public CanProve(Formula formula) {
+    public Possibility(Formula formula) {
+
 
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        this.subFormulae.add(this);
-
+        subFormulae.add(this);
+        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
         this.allValues = Sets.newSet();
 
-        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+
 
         this.weight = 1 + formula.getWeight();
     }
 
+
     public Formula getFormula(){
         return formula;
-    }
-
-
-
-    public Set<Formula> getSubFormulae() {
-        return subFormulae;
-    }
-
-    public Set<Variable> getVariables() {
-        return variables;
     }
 
     @Override
@@ -61,12 +53,13 @@ public class CanProve extends  BaseFormula{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return new CanProve(formula.apply(substitution));
+        return new Possibility(formula.apply(substitution));
     }
 
     @Override
     public Formula shadow(int level) {
         return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
+
     }
 
     @Override
@@ -84,6 +77,25 @@ public class CanProve extends  BaseFormula{
         return weight;
     }
 
+
+    @Override
+    public String toString() {
+        return "(POS "
+           +
+                formula + ")";
+    }
+
+
+    @Override
+    public Set<Value> allValues() {
+        return allValues;
+    }
+
+    @Override
+    public String getName() {
+        return "POS";
+    }
+
     @Override
     public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
         if(oldFormula.equals(this)){
@@ -97,39 +109,6 @@ public class CanProve extends  BaseFormula{
         }
 
 
-        return new CanProve(formula.replaceSubFormula(oldFormula, newFormula));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CanProve canProve = (CanProve) o;
-
-        return formula.equals(canProve.formula);
-    }
-
-    @Override
-    public int hashCode() {
-        return formula.hashCode();
-    }
-
-
-    @Override
-    public String toString() {
-        return "(CanProve " +
-                  formula +
-                ')';
-    }
-
-    @Override
-    public Set<Value> allValues() {
-        return allValues;
-    }
-
-    @Override
-    public String getName() {
-        return "CanProve";
+        return new Possibility(formula.replaceSubFormula(oldFormula, newFormula));
     }
 }

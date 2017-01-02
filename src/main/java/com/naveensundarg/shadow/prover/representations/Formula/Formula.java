@@ -26,4 +26,6 @@ public abstract class Formula extends Expression {
     public abstract int getLevel();
 
     public abstract int getWeight();
+
+    public abstract Formula replaceSubFormula(Formula oldFormula, Formula newFormula);
 }

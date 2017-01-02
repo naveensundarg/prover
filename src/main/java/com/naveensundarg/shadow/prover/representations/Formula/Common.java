@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Common extends Formula implements BaseFormula{
+public class Common extends  BaseFormula{
 
     Value time;
     Formula formula;
@@ -127,5 +127,21 @@ public class Common extends Formula implements BaseFormula{
     @Override
     public String getName() {
         return "Common";
+    }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new Common(time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 }

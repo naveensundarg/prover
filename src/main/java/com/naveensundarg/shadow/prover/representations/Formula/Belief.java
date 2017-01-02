@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Belief extends Formula implements BaseFormula{
+public class Belief extends BaseFormula{
 
     Value agent;
     Value time;
@@ -104,6 +104,22 @@ public class Belief extends Formula implements BaseFormula{
     @Override
     public int getWeight() {
         return weight;
+    }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+
+        return new Belief(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 
 

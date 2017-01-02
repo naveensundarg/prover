@@ -112,4 +112,27 @@ public class And extends Formula {
     public int getWeight() {
         return weight;
     }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+
+        if(oldFormula.equals(this)){
+
+            return newFormula;
+        }
+
+        if(!subFormulae().contains(oldFormula)){
+
+            return this;
+        }
+
+        Formula[] newArgs = new Formula[arguments.length];
+
+        for(int i = 0; i < arguments.length; i++){
+
+            newArgs[i] = arguments[i].replaceSubFormula(oldFormula, newFormula);
+        }
+
+        return new And(newArgs);
+    }
 }

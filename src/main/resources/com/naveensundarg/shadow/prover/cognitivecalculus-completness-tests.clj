@@ -60,6 +60,16 @@
                    (Knows! jack t0 BirdTheorem))}
  :goal        (Knows! jack t0 BirdTheorem)}
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "*cognitive-calculus-completeness-test-3*"
+ :description "Bird Theorem and Jack"
+ :assumptions {1 (Believes! a P)
+               2 (Believes! a Q)
+               3 (if (Believes! a (and P Q)) (Knows! a R))}
+ :goal        R}
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name        "*cognitive-calculus-completeness-test-4*"
