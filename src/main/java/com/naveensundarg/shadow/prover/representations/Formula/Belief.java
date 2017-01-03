@@ -13,13 +13,14 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Belief extends BaseFormula{
+public final class Belief extends BaseFormula{
 
-    Value agent;
-    Value time;
-    Formula formula;
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
+    private final Value agent;
+    private final Value time;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
     private final Set<Value> allValues;
 
     private final int weight;
@@ -37,6 +38,8 @@ public class Belief extends BaseFormula{
         this.allValues.add(agent);
         this.allValues.add(time);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
         }
@@ -45,6 +48,7 @@ public class Belief extends BaseFormula{
             variables.add((Variable) time);
 
         }
+
 
         this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
@@ -160,5 +164,10 @@ public class Belief extends BaseFormula{
     @Override
     public String getName() {
         return "Belief of " +  ((formula instanceof Predicate)? ((Predicate) formula).getName():formula.getClass() +"");
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

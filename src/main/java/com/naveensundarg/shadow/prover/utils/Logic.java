@@ -186,6 +186,49 @@ public class Logic {
     }
 
 
+    public static boolean isInstantationOfQuantifier(Quantifier quantifier, Formula formula) {
+
+
+        Variable variable = quantifier.vars()[0];
+        Formula kernel = quantifier.getArgument();
+
+        Set<Variable> boundVarsInKernel = kernel.getBoundVariables();
+
+
+        Optional<Map<Variable, Value>> substitutionsOpt = Unifier.unifyFormula(kernel, formula);
+
+        if(!substitutionsOpt.isPresent()){
+            return false;
+        }
+
+        Map<Variable, Value> substitutions = substitutionsOpt.get();
+
+        if(substitutions.size()>1){
+            return false;
+        }
+
+        if(substitutions.isEmpty()){
+
+            return true;
+        }
+
+        if(!substitutions.containsKey(variable)){
+
+            return false;
+        }
+
+        Value value = substitutions.get(variable);
+
+        if(boundVarsInKernel.stream().anyMatch(value.subValues()::contains)){
+
+            return false;
+        }
+
+        return true;
+
+
+
+    }
     public static Clause simplifyWithEquality(Problem problem, Clause clause1, Clause clause2){
 
 

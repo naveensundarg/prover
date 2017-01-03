@@ -69,3 +69,19 @@
                    (nec (not tells_coming)))
                4 (not goes_assist_neighbors)}
  :goal (and P (not P)) }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name "hw3"
+ :description ""
+ :assumptions {}
+ :goal (if (nec phi) (pos phi))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name "hw4"
+ :description ""
+ :assumptions {}
+ :goal (if (pos phi) (pos (or phi psi)))}
+

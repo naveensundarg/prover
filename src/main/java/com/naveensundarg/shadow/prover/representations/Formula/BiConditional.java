@@ -11,11 +11,15 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 4/10/16.
  */
-public class BiConditional extends Formula {
+public final class BiConditional extends Formula {
+
     private final Formula left;
     private final Formula right;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
+
+
 
     private final int weight;
     public BiConditional(Formula left, Formula right){
@@ -26,6 +30,7 @@ public class BiConditional extends Formula {
         this.subFormulae = Sets.union(left.subFormulae(), right.subFormulae());
 
         this.variables = Sets.union(left.variablesPresent(), right.variablesPresent());
+        this.boundVariables = Sets.union(left.getBoundVariables(), right.getBoundVariables());
 
         this.weight = 1 + 2 * (1 + left.getWeight() + right.getWeight());
     }
@@ -112,5 +117,10 @@ public class BiConditional extends Formula {
 
 
         return new BiConditional(left.replaceSubFormula(oldFormula, newFormula), right.replaceSubFormula(oldFormula, newFormula));
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

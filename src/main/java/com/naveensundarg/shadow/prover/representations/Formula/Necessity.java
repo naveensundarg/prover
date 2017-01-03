@@ -17,7 +17,9 @@ public class Necessity extends  BaseFormula{
 
     Formula formula;
     Set<Formula> subFormulae;
-    Set<Variable> variables;
+    private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
+
     private final Set<Value> allValues;
 
     private final int weight;
@@ -27,8 +29,10 @@ public class Necessity extends  BaseFormula{
 
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        subFormulae.add(this);
+        this.subFormulae.add(this);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+
         this.allValues = Sets.newSet();
 
 
@@ -110,5 +114,10 @@ public class Necessity extends  BaseFormula{
 
 
         return new Necessity(formula.replaceSubFormula(oldFormula, newFormula));
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

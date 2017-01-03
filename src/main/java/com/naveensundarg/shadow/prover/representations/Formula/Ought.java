@@ -16,13 +16,15 @@ import java.util.function.UnaryOperator;
 public class Ought extends BaseFormula{
 
 
-    Value agent;
-    Value time;
-    Formula precondition;
-    Formula ought;
+    private final Value agent;
+    private final Value time;
+    private final Formula precondition;
+    private final Formula ought;
 
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
+    private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
+
     private final Set<Value> allValues;
 
     private final int weight;
@@ -40,7 +42,9 @@ public class Ought extends BaseFormula{
         this.allValues.add(agent);
         this.allValues.add(time);
 
-        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.variables = Sets.union(formula.variablesPresent(), ought.variablesPresent());
+        this.boundVariables =  Sets.union(formula.getBoundVariables(), ought.getBoundVariables());
+
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
         }
@@ -127,6 +131,11 @@ public class Ought extends BaseFormula{
 
 
         return new Ought(agent, time, precondition.replaceSubFormula(oldFormula, newFormula), ought.replaceSubFormula(oldFormula, newFormula));
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 
 

@@ -16,6 +16,7 @@ public class FormulaVariable extends Formula {
     private final String name;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
 
     public FormulaVariable(String name) {
 
@@ -28,6 +29,7 @@ public class FormulaVariable extends Formula {
         subFormulae.add(this);
 
         this.variables = Sets.newSet();
+        this.boundVariables = Sets.newSet();
     }
 
     @Override
@@ -81,6 +83,11 @@ public class FormulaVariable extends Formula {
         }
 
 
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 
     @Override

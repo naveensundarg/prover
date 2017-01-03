@@ -13,16 +13,18 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Common extends  BaseFormula{
+public final class Common extends  BaseFormula{
 
-    Value time;
-    Formula formula;
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
-
+    private final Value time;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
     private final Set<Value> allValues;
 
     private final int weight;
+
+
 
     public Common(Value time, Formula formula) {
 
@@ -30,6 +32,7 @@ public class Common extends  BaseFormula{
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
         this.allValues = Sets.newSet();
         this.allValues.add(time);
 
@@ -144,4 +147,11 @@ public class Common extends  BaseFormula{
 
         return new Common(time, formula.replaceSubFormula(oldFormula, newFormula));
     }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
+    }
+
+
 }

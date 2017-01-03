@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/11/16.
@@ -19,7 +20,7 @@ public class Universal extends Formula implements Quantifier{
     private final Variable[] vars;
     private Set<Formula> subFormulae;
     private final Set<Variable> variables;
-
+    private final Set<Variable> boundVariables;
     private final int weight;
 
     public Universal(Variable[] vars, Formula argument) {
@@ -32,6 +33,7 @@ public class Universal extends Formula implements Quantifier{
         this.argument = argument;
         this.subFormulae = Sets.copy(argument.subFormulae());
         this.variables = argument.variablesPresent();
+        this.boundVariables = Sets.union(Arrays.stream(vars).collect(Collectors.toSet()), argument.getBoundVariables());
         this.subFormulae.add(this);
         Arrays.stream(vars).forEach(this.variables::add);
 
@@ -91,6 +93,11 @@ public class Universal extends Formula implements Quantifier{
 
     public Variable[] vars() {
         return vars;
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 
     @Override

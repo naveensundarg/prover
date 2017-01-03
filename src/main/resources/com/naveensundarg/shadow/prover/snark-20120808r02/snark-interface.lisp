@@ -38,7 +38,7 @@
   (snark:assert-supported t)
   (snark:assume-supported t)
   (snark:prove-supported t)
-  (snark:use-resolution t)
+  (snark:use-hyperresolution t)
   (snark:use-paramodulation t)
   (snark:allow-skolem-symbols-in-answers nil))
 

@@ -81,6 +81,14 @@ public class Reader {
     }
 
 
+    public static Value readLogicValueFromString(String input) throws ParsingException {
+
+        Parseable parseable = Parsers.newParseable(input);
+        Parser parser = Parsers.newParser(defaultConfiguration());
+
+
+        return readLogicValue(parser.nextValue(parseable), Sets.newSet());
+    }
     public static Value readLogicValue(Object input) throws ParsingException {
 
         return readLogicValue(input, Sets.newSet());

@@ -14,11 +14,15 @@ import java.util.function.UnaryOperator;
  * Created by naveensundarg on 7/9/16.
  */
 public class Desire extends BaseFormula{
-    Value agent;
-    Value time;
-    Formula formula;
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
+
+    private final Value agent;
+    private final Value time;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
+
+    private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
+
     private final Set<Value> allValues;
 
     private final int weight;
@@ -37,6 +41,8 @@ public class Desire extends BaseFormula{
         this.allValues.add(time);
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
         }
@@ -152,5 +158,10 @@ public class Desire extends BaseFormula{
 
 
         return new Desire(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

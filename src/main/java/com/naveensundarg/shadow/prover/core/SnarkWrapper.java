@@ -22,7 +22,7 @@ import java.util.function.Function;
 public class SnarkWrapper implements Prover {
 
 
-    private final static boolean local = false;
+    private final static boolean local = true;
     private final static Interpreter interpreter;
     static {
 

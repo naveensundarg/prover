@@ -17,7 +17,7 @@ public class Implication extends Formula{
     private final Formula consequent;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
-
+    private final Set<Variable> boundVariables;
     private final int weight;
 
     public Implication(Formula antecedent, Formula consequent){
@@ -28,6 +28,7 @@ public class Implication extends Formula{
         this.subFormulae = Sets.union(antecedent.subFormulae(), consequent.subFormulae());
         this.subFormulae.add(this);
         this.variables  = Sets.union(antecedent.variablesPresent(), consequent.variablesPresent());
+        this.boundVariables = Sets.union(antecedent.getBoundVariables(), consequent.getBoundVariables());
         this.weight = 1 + antecedent.getWeight() + consequent.getWeight();
     }
 
@@ -113,5 +114,10 @@ public class Implication extends Formula{
 
 
         return new Implication(antecedent.replaceSubFormula(oldFormula, newFormula), consequent.replaceSubFormula(oldFormula, newFormula));
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

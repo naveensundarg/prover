@@ -17,6 +17,7 @@ public class Not extends Formula {
 
     private final Set<Formula> subFormulae;
 
+
     private final int weight;
     public Not(Formula argument){
         this.argument = argument;
@@ -102,5 +103,10 @@ public class Not extends Formula {
 
 
         return new Not(argument.replaceSubFormula(oldFormula, newFormula));
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return argument.getBoundVariables();
     }
 }

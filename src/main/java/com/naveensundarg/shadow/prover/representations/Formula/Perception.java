@@ -114,6 +114,11 @@ public class Perception extends  BaseFormula{
     }
 
     @Override
+    public Set<Variable> getBoundVariables() {
+        return formula.getBoundVariables();
+    }
+
+    @Override
     public String toString() {
         return "(Perception! "
                 + agent + " "

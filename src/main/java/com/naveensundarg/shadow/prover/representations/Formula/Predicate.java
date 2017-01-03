@@ -18,6 +18,7 @@ public class Predicate extends  BaseFormula {
     private final Value[] arguments;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
     private final boolean sorted;
     private final Set<Value> allValues;
 
@@ -29,6 +30,7 @@ public class Predicate extends  BaseFormula {
         this.arguments  = new Value[0];
         this.subFormulae = Sets.with(this);
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+        this.boundVariables = Sets.newSet();
         this.allValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
 
         this.weight = 1;
@@ -56,6 +58,8 @@ public class Predicate extends  BaseFormula {
 
         this.subFormulae = Sets.with(this);
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
+        this.boundVariables = Sets.newSet();
+
         this.allValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
 
         this.weight = 1 + Arrays.stream(arguments).mapToInt(Value::getWeight).reduce(0, Integer::sum);
@@ -195,7 +199,9 @@ public class Predicate extends  BaseFormula {
 
     }
 
+    @Override
+    public Set<Variable> getBoundVariables() {
 
-
-
+        return boundVariables;
+    }
 }

@@ -28,4 +28,6 @@ public abstract class Formula extends Expression {
     public abstract int getWeight();
 
     public abstract Formula replaceSubFormula(Formula oldFormula, Formula newFormula);
+
+    public abstract Set<Variable> getBoundVariables();
 }

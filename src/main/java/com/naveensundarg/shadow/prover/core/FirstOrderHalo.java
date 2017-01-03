@@ -39,7 +39,7 @@ public class FirstOrderHalo extends HaloCore {
 
         rules.add(FirstOrderResolutionImplementation.INSTANCE);
         rules.add(ParamodulationImplementation.INSTANCE);
-        rules.add(DemodulationImplementation.INSTANCE);
+        //rules.add(DemodulationImplementation.INSTANCE);
 
         this.propositionalProver = new PropositionalResolutionProver();
 
@@ -57,7 +57,7 @@ public class FirstOrderHalo extends HaloCore {
 
     @Override
     public int getMaxWeight() {
-        return 20;
+        return 15;
     }
 
 }

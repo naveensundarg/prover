@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/11/16.
@@ -18,6 +19,7 @@ public class Existential extends Formula implements Quantifier {
     private final Variable[] vars;
     private Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
 
     private final int weight;
     public Existential(Variable[] vars, Formula argument){
@@ -32,6 +34,8 @@ public class Existential extends Formula implements Quantifier {
         this.subFormulae.add(this);
 
         this.variables = argument.variablesPresent();
+        this.boundVariables = Sets.union(Arrays.stream(vars).collect(Collectors.toSet()), argument.getBoundVariables());
+
 
         Arrays.stream(vars).forEach(this.variables::add);
         this.weight = 1 + variables.stream().mapToInt(Value::getWeight).reduce(0, Integer::sum)  + argument.getWeight();
@@ -96,6 +100,11 @@ public class Existential extends Formula implements Quantifier {
     }
 
     @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
+    }
+
+    @Override
     public String toString() {
         return "(exists " + Arrays.stream(vars).map(Variable::toString).reduce("(", (x,y) -> x + " " +y) + ")" + " "
                 + argument.toString() +")";
@@ -120,4 +129,6 @@ public class Existential extends Formula implements Quantifier {
         result = 31 * result + Arrays.hashCode(vars);
         return result;
     }
+
+
 }

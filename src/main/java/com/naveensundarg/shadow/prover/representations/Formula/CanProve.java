@@ -13,13 +13,13 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class CanProve extends  BaseFormula{
+public final class CanProve extends  BaseFormula{
 
     Formula formula;
     Set<Formula> subFormulae;
     Set<Variable> variables;
     private final Set<Value> allValues;
-
+    private final Set<Variable> boundVariables;
     private final int weight;
 
     public CanProve(Formula formula) {
@@ -31,6 +31,7 @@ public class CanProve extends  BaseFormula{
         this.allValues = Sets.newSet();
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
 
         this.weight = 1 + formula.getWeight();
     }
@@ -131,5 +132,10 @@ public class CanProve extends  BaseFormula{
     @Override
     public String getName() {
         return "CanProve";
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

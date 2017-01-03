@@ -11,12 +11,12 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 4/8/16.
  */
-public class Atom extends Predicate{
+public final class Atom extends Predicate{
 
     private final String name;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
-
+    private final Set<Variable> boundVariables;
     public Atom(String name){
         super(name);
         this.name = name;
@@ -25,6 +25,7 @@ public class Atom extends Predicate{
         subFormulae.add(this);
 
         this.variables = Sets.newSet();
+        this.boundVariables = Sets.newSet();
     }
 
     public String getName() {
@@ -89,5 +90,10 @@ public class Atom extends Predicate{
         return new Atom("$Gen_"+generatedCount+"$");
 
 
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

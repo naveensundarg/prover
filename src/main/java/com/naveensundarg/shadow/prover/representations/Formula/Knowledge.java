@@ -14,11 +14,12 @@ import java.util.function.UnaryOperator;
  * Created by naveensundarg on 7/9/16.
  */
 public class Knowledge extends  BaseFormula{
-    Value agent;
-    Value time;
-    Formula formula;
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
+    private final Value agent;
+    private final Value time;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
     private final Set<Value> allValues;
 
     private final int weight;
@@ -30,8 +31,9 @@ public class Knowledge extends  BaseFormula{
         this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        subFormulae.add(this);
+        this.subFormulae.add(this);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
         this.allValues = Sets.newSet();
         this.allValues.add(agent);
         this.allValues.add(time);
@@ -150,5 +152,10 @@ public class Knowledge extends  BaseFormula{
 
 
         return new Knowledge(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

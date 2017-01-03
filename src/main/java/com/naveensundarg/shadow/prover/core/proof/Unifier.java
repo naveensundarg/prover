@@ -9,6 +9,7 @@ import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 
@@ -17,6 +18,238 @@ import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
  */
 public class Unifier {
 
+
+    public static Optional<Map<Variable, Value>> unifyFormula(Formula f1, Formula f2){
+
+        if(f1.getLevel()>=2 || f2.getLevel()>=2){
+
+            throw new UnsupportedOperationException("unify formula not supported for modals");
+        }
+
+        if(!f1.getClass().equals(f2.getClass())){
+
+            return Optional.empty();
+
+        }
+
+        if( f1 instanceof Predicate && f2 instanceof Predicate){
+
+           Map<Variable, Value> map = Unifier.unify((Predicate) f1, (Predicate) f2);
+
+           return map==null? Optional.empty() : Optional.of(map);
+        }
+
+        if( f1 instanceof Not && f2 instanceof Not){
+
+            Not n1 = (Not) f1;
+            Not n2  = (Not) f2;
+
+            return Unifier.unifyFormula(n1.getArgument(), n2.getArgument());
+        }
+
+
+        if( f1 instanceof Implication && f2 instanceof Implication){
+
+            Implication i1 = (Implication) f1;
+            Implication i2 = (Implication) f2;
+
+            Optional<Map<Variable, Value>> map1 = Unifier.unifyFormula(i1.getAntecedent(), i2.getAntecedent());
+
+            if(!map1.isPresent()){
+
+                return Optional.empty();
+
+            }
+
+            Optional<Map<Variable, Value>> map2 = Unifier.unifyFormula(i1.getConsequent(), i2.getConsequent());
+
+            return Unifier.addTo(map1.get(), map2.get());
+
+        }
+
+        if( f1 instanceof BiConditional && f2 instanceof BiConditional){
+
+            BiConditional b1 = (BiConditional) f1;
+            BiConditional b2 = (BiConditional) f2;
+
+            Optional<Map<Variable, Value>> map1 = Unifier.unifyFormula(b1.getLeft(), b2.getRight());
+
+            if(!map1.isPresent()){
+
+                return Optional.empty();
+
+            }
+
+            Optional<Map<Variable, Value>> map2 = Unifier.unifyFormula(b1.getLeft(), b2.getRight());
+
+            return Unifier.addTo(map1.get(), map2.get());
+
+        }
+
+        if( f1 instanceof And && f2 instanceof And){
+
+            And and1 = (And) f1;
+            And and2 = (And) f2;
+
+            Formula[] args1 = and1.getArguments();
+            Formula[] args2 = and2.getArguments();
+
+            if(args1.length!=args2.length){
+
+                return Optional.empty();
+
+            }
+
+            Map<Variable, Value> possibleAnswer = CollectionUtils.newMap();
+
+            for(int i = 0; i<args1.length; i++){
+
+                Optional<Map<Variable, Value>> mapOpt = unifyFormula(args1[i], args2[i]);
+
+                if(!mapOpt.isPresent()){
+
+                    return Optional.empty();
+
+                }
+
+                Optional<Map<Variable, Value>> augmentedOpt = Unifier.addTo(possibleAnswer, mapOpt.get());
+
+                if(!augmentedOpt.isPresent()){
+
+                    return Optional.empty();
+
+                } else {
+
+                    possibleAnswer  = augmentedOpt.get();
+
+                }
+
+
+            }
+
+            return Optional.of(possibleAnswer);
+
+        }
+
+        if( f1 instanceof Or && f2 instanceof Or){
+
+            Or or1 = (Or) f1;
+            Or or2 = (Or) f2;
+
+            Formula[] args1 = or1.getArguments();
+            Formula[] args2 = or2.getArguments();
+
+            if(args1.length!=args2.length){
+                return Optional.empty();
+            }
+
+            Map<Variable, Value> possibleAnswer = CollectionUtils.newMap();
+
+            for(int i = 0; i<args1.length; i++){
+
+                Optional<Map<Variable, Value>> mapOpt = unifyFormula(args1[i], args2[i]);
+
+                if(!mapOpt.isPresent()){
+
+                    return Optional.empty();
+
+                }
+
+                Optional<Map<Variable, Value>> augmentedOpt = Unifier.addTo(possibleAnswer, mapOpt.get());
+
+                if(!augmentedOpt.isPresent()){
+
+                    return Optional.empty();
+
+                } else {
+
+                    possibleAnswer  = augmentedOpt.get();
+
+                }
+
+            }
+
+
+            return Optional.of(possibleAnswer);
+
+        }
+
+        if( f1 instanceof Universal && f2 instanceof Universal){
+
+            Universal universal1 = (Universal) f1;
+            Universal universal2 = (Universal) f2;
+
+
+            if(!Arrays.equals(universal1.vars(), universal2.vars())){
+
+                return Optional.empty();
+
+            }
+
+            Formula arg1 = universal1.getArgument();
+            Formula arg2 = universal2.getArgument();
+
+            Optional<Map<Variable, Value>> mapOpt = Unifier.unifyFormula(arg1, arg2);
+
+            if(!mapOpt.isPresent()){
+
+                return  Optional.empty();
+
+            }
+            Set<Variable> boundVars = mapOpt.get().keySet();
+
+            Set<Variable> univVars = Arrays.stream(universal1.vars()).collect(Collectors.toSet());
+            if(boundVars.stream().anyMatch(univVars::contains)){
+
+                return Optional.empty();
+            } else {
+
+                return mapOpt;
+            }
+
+
+        }
+
+        if( f1 instanceof Existential && f2 instanceof Existential){
+
+            Existential existential1 = (Existential) f1;
+            Existential existential2 = (Existential) f2;
+
+
+            if(!Arrays.equals(existential1.vars(), existential2.vars())){
+
+                return Optional.empty();
+
+            }
+
+            Formula arg1 = existential1.getArgument();
+            Formula arg2 = existential2.getArgument();
+
+            Optional<Map<Variable, Value>> mapOpt = Unifier.unifyFormula(arg1, arg2);
+
+            if(!mapOpt.isPresent()){
+
+                return  Optional.empty();
+
+            }
+            Set<Variable> boundVars = mapOpt.get().keySet();
+
+            Set<Variable> existVars = Arrays.stream(existential1.vars()).collect(Collectors.toSet());
+            if(boundVars.stream().anyMatch(existVars::contains)){
+
+                return Optional.empty();
+            } else {
+
+                return mapOpt;
+            }
+
+        }
+
+
+
+        return Optional.empty();
+
+    }
 
     public static Map<Variable, Value> unify(BaseFormula bf1, BaseFormula bf2) {
 

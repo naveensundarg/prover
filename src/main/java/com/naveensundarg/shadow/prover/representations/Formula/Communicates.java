@@ -15,12 +15,15 @@ import java.util.function.UnaryOperator;
  */
 public class Communicates extends BaseFormula{
 
-    Value agent1;
-    Value agent2;
-    Value time;
-    Formula formula;
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
+    private final Value agent1;
+    private final Value agent2;
+    private final Value time;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
+
+    private Set<Variable> variables;
+    private final Set<Variable> boundVariables;
+
     private final Set<Value> allValues;
 
     private final int weight;
@@ -42,6 +45,8 @@ public class Communicates extends BaseFormula{
         this.allValues.add(time);
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+
         if (agent1 instanceof Variable) {
             variables.add((Variable) agent1);
         }
@@ -175,5 +180,10 @@ public class Communicates extends BaseFormula{
 
 
         return new Communicates(agent1, agent2, time, formula.replaceSubFormula(oldFormula, newFormula));
+    }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return boundVariables;
     }
 }

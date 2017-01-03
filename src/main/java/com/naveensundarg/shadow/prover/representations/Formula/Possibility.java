@@ -111,4 +111,9 @@ public class Possibility extends  BaseFormula{
 
         return new Possibility(formula.replaceSubFormula(oldFormula, newFormula));
     }
+
+    @Override
+    public Set<Variable> getBoundVariables() {
+        return formula.getBoundVariables();
+    }
 }
