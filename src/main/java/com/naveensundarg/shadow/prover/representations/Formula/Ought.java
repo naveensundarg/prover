@@ -23,6 +23,8 @@ public class Ought extends BaseFormula{
 
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Value> values;
+
     private final Set<Variable> boundVariables;
 
     private final Set<Value> allValues;
@@ -42,8 +44,9 @@ public class Ought extends BaseFormula{
         this.allValues.add(agent);
         this.allValues.add(time);
 
-        this.variables = Sets.union(formula.variablesPresent(), ought.variablesPresent());
-        this.boundVariables =  Sets.union(formula.getBoundVariables(), ought.getBoundVariables());
+        this.variables  = Sets.union(agent.variablesPresent(), Sets.union(time.variablesPresent(), Sets.union(formula.variablesPresent(), ought.variablesPresent())));
+        this.values  = Sets.union(agent.subValues(), Sets.union(time.subValues(), Sets.union(formula.valuesPresent(), ought.valuesPresent())));
+        this.boundVariables =  Sets.union(formula.boundVariablesPresent(), ought.boundVariablesPresent());
 
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
@@ -134,8 +137,13 @@ public class Ought extends BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
     }
 
 

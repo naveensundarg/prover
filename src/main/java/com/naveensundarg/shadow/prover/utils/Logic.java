@@ -186,45 +186,45 @@ public class Logic {
     }
 
 
-    public static boolean isInstantationOfQuantifier(Quantifier quantifier, Formula formula) {
+    public static Optional<Map<Variable, Value>> isInstantationOfQuantifier(Quantifier quantifier, Formula formula) {
 
 
         Variable variable = quantifier.vars()[0];
         Formula kernel = quantifier.getArgument();
 
-        Set<Variable> boundVarsInKernel = kernel.getBoundVariables();
+        Set<Variable> boundVarsInKernel = kernel.boundVariablesPresent();
 
 
         Optional<Map<Variable, Value>> substitutionsOpt = Unifier.unifyFormula(kernel, formula);
 
         if(!substitutionsOpt.isPresent()){
-            return false;
+            return Optional.empty();
         }
 
         Map<Variable, Value> substitutions = substitutionsOpt.get();
 
         if(substitutions.size()>1){
-            return false;
+            return Optional.empty();
         }
 
         if(substitutions.isEmpty()){
 
-            return true;
+            return substitutionsOpt;
         }
 
         if(!substitutions.containsKey(variable)){
 
-            return false;
+            return Optional.empty();
         }
 
         Value value = substitutions.get(variable);
 
         if(boundVarsInKernel.stream().anyMatch(value.subValues()::contains)){
 
-            return false;
+            return Optional.empty();
         }
 
-        return true;
+        return substitutionsOpt;
 
 
 

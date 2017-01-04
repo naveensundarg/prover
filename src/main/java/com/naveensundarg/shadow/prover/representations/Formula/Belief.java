@@ -20,6 +20,8 @@ public final class Belief extends BaseFormula{
     private final Formula formula;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Value> values;
+
     private final Set<Variable> boundVariables;
     private final Set<Value> allValues;
 
@@ -38,7 +40,8 @@ public final class Belief extends BaseFormula{
         this.allValues.add(agent);
         this.allValues.add(time);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+        this.values = Sets.union(Sets.union(agent.subValues(), time.subValues()), formula.valuesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
@@ -83,6 +86,12 @@ public final class Belief extends BaseFormula{
     public Set<Variable> variablesPresent() {
         return variables;
     }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
+    }
+
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
@@ -167,7 +176,7 @@ public final class Belief extends BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
     }
 }

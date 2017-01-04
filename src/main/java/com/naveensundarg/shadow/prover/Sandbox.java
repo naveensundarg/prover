@@ -31,6 +31,7 @@ public class Sandbox {
        Formula f = ( Reader.readFormula(p.nextValue(pbr)));
 
 
-       System.out.println(f.getClass());
+       System.out.println(Reader.readFormulaFromString("(or (or (pos (not P)) (pos (not Q)))\n" +
+               "           (pos (and P Q)))"));
     }
 }

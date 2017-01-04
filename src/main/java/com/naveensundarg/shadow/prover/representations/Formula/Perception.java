@@ -13,12 +13,13 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Perception extends  BaseFormula{
-    Value agent;
-    Value time;
-    Formula formula;
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
+public class Perception extends BaseFormula{
+    private final Value agent;
+    private final Value time;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
+    private final Set<Value> values;
     private final Set<Value> allValues;
 
     private final int weight;
@@ -36,15 +37,8 @@ public class Perception extends  BaseFormula{
         this.allValues.add(agent);
         this.allValues.add(time);
 
-        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        if (agent instanceof Variable) {
-            variables.add((Variable) agent);
-        }
-
-        if (time instanceof Variable) {
-            variables.add((Variable) time);
-
-        }
+        this.variables = Sets.union(agent.variablesPresent(), Sets.union(time.variablesPresent(), CollectionUtils.setFrom(formula.variablesPresent())));
+        this.values = Sets.union(agent.subValues(), Sets.union(time.subValues(), CollectionUtils.setFrom(formula.valuesPresent())));
 
         this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
@@ -114,8 +108,13 @@ public class Perception extends  BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
-        return formula.getBoundVariables();
+    public Set<Variable> boundVariablesPresent() {
+        return formula.boundVariablesPresent();
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
     }
 
     @Override

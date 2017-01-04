@@ -15,8 +15,8 @@ import java.util.function.UnaryOperator;
  */
 public class Necessity extends  BaseFormula{
 
-    Formula formula;
-    Set<Formula> subFormulae;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
     private final Set<Variable> boundVariables;
 
@@ -31,7 +31,7 @@ public class Necessity extends  BaseFormula{
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         this.subFormulae.add(this);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
         this.allValues = Sets.newSet();
 
@@ -117,7 +117,12 @@ public class Necessity extends  BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return formula.valuesPresent();
     }
 }

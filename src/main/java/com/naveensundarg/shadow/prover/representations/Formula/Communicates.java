@@ -22,6 +22,8 @@ public class Communicates extends BaseFormula{
     private final Set<Formula> subFormulae;
 
     private Set<Variable> variables;
+    private Set<Value> values;
+
     private final Set<Variable> boundVariables;
 
     private final Set<Value> allValues;
@@ -45,7 +47,9 @@ public class Communicates extends BaseFormula{
         this.allValues.add(time);
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+        this.values = CollectionUtils.setFrom(formula.valuesPresent());
+
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
         if (agent1 instanceof Variable) {
             variables.add((Variable) agent1);
@@ -183,7 +187,12 @@ public class Communicates extends BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
     }
 }

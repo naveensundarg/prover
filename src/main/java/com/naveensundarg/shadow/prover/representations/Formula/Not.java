@@ -106,7 +106,12 @@ public class Not extends Formula {
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
-        return argument.getBoundVariables();
+    public Set<Variable> boundVariablesPresent() {
+        return argument.boundVariablesPresent();
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return argument.valuesPresent();
     }
 }

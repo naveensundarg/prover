@@ -55,6 +55,19 @@ public class Sets {
         return newSet;
     }
 
+    public static <T> Set<T> unionOf(Set<T> ... Xs ){
+
+        Set<T> newSet = newSet();
+
+        for(Set<T> x:Xs){
+
+            newSet.addAll(x);
+
+        }
+
+        return newSet;
+    }
+
     public static <T> Set<T> difference(Set<T> X, Set<T> Y){
 
         Set<T> newSet = copy(X);

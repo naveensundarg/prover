@@ -19,6 +19,8 @@ public class Existential extends Formula implements Quantifier {
     private final Variable[] vars;
     private Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Value> values;
+
     private final Set<Variable> boundVariables;
 
     private final int weight;
@@ -34,7 +36,8 @@ public class Existential extends Formula implements Quantifier {
         this.subFormulae.add(this);
 
         this.variables = argument.variablesPresent();
-        this.boundVariables = Sets.union(Arrays.stream(vars).collect(Collectors.toSet()), argument.getBoundVariables());
+        this.values = Sets.union(Arrays.stream(vars).collect(Collectors.toSet()),  argument.valuesPresent());
+        this.boundVariables = Sets.union(Arrays.stream(vars).collect(Collectors.toSet()), argument.boundVariablesPresent());
 
 
         Arrays.stream(vars).forEach(this.variables::add);
@@ -100,8 +103,13 @@ public class Existential extends Formula implements Quantifier {
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
     }
 
     @Override

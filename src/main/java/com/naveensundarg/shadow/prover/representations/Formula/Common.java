@@ -19,6 +19,7 @@ public final class Common extends  BaseFormula{
     private final Formula formula;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Value> values;
     private final Set<Variable> boundVariables;
     private final Set<Value> allValues;
 
@@ -31,8 +32,10 @@ public final class Common extends  BaseFormula{
         this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+        this.variables = Sets.union(time.variablesPresent(), formula.variablesPresent());
+        this.values = Sets.union(time.subValues(), formula.valuesPresent());
+
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
         this.allValues = Sets.newSet();
         this.allValues.add(time);
 
@@ -68,6 +71,12 @@ public final class Common extends  BaseFormula{
     public Set<Variable> variablesPresent() {
         return variables;
     }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
+    }
+
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
@@ -149,7 +158,7 @@ public final class Common extends  BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
     }
 

@@ -21,6 +21,8 @@ public class Desire extends BaseFormula{
     private final Set<Formula> subFormulae;
 
     private final Set<Variable> variables;
+    private final Set<Value> values;
+
     private final Set<Variable> boundVariables;
 
     private final Set<Value> allValues;
@@ -41,7 +43,9 @@ public class Desire extends BaseFormula{
         this.allValues.add(time);
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+        this.values = Sets.union(Sets.union(agent.subValues(), time.subValues()), formula.valuesPresent());
+
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
@@ -161,7 +165,12 @@ public class Desire extends BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
     }
 }

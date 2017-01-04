@@ -13,12 +13,14 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Knowledge extends  BaseFormula{
+public class Knowledge extends BaseFormula{
     private final Value agent;
     private final Value time;
     private final Formula formula;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Value> values;
+
     private final Set<Variable> boundVariables;
     private final Set<Value> allValues;
 
@@ -33,7 +35,9 @@ public class Knowledge extends  BaseFormula{
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         this.subFormulae.add(this);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+        this.values = Sets.union(Sets.union(agent.subValues(), time.subValues()), formula.valuesPresent());
+
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
         this.allValues = Sets.newSet();
         this.allValues.add(agent);
         this.allValues.add(time);
@@ -155,7 +159,12 @@ public class Knowledge extends  BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
     }
 }

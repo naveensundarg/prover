@@ -113,7 +113,12 @@ public class Possibility extends  BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
-        return formula.getBoundVariables();
+    public Set<Variable> boundVariablesPresent() {
+        return formula.boundVariablesPresent();
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return formula.valuesPresent();
     }
 }

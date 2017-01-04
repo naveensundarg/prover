@@ -93,7 +93,7 @@ public final class Atom extends Predicate{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
     }
 }

@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.representations.formula;
 
+import com.kitfox.svg.A;
 import com.naveensundarg.shadow.prover.representations.Expression;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -23,11 +24,15 @@ public abstract class Formula extends Expression {
 
     public abstract Formula applyOperation(UnaryOperator<Formula> operator);
 
+
+
     public abstract int getLevel();
 
     public abstract int getWeight();
 
     public abstract Formula replaceSubFormula(Formula oldFormula, Formula newFormula);
 
-    public abstract Set<Variable> getBoundVariables();
+    public abstract Set<Variable> boundVariablesPresent();
+
+    public abstract Set<Value> valuesPresent();
 }

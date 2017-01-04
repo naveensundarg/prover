@@ -21,6 +21,7 @@ public class Or extends Formula {
     private final Formula[] arguments;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Value> values;
     private final Set<Variable> boundVariables;
 
     private final int level;
@@ -33,7 +34,9 @@ public class Or extends Formula {
                 reduce(Sets.newSet(), Sets::union);
         this.subFormulae.add(this);
         this.variables = Arrays.stream(arguments).map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
-        this.boundVariables = Arrays.stream(arguments).map(Formula::getBoundVariables).reduce(Sets.newSet(), Sets::union);
+        this.values = Arrays.stream(arguments).map(Formula::valuesPresent).reduce(Sets.newSet(), Sets::union);
+
+        this.boundVariables = Arrays.stream(arguments).map(Formula::boundVariablesPresent).reduce(Sets.newSet(), Sets::union);
 
         this.level = CommonUtils.maxLevel(arguments);
         this.weight = 1 +  Arrays.stream(arguments).mapToInt(Formula::getWeight).reduce(0, Integer::sum);
@@ -51,7 +54,9 @@ public class Or extends Formula {
                 reduce(Sets.newSet(), Sets::union);
 
         this.variables = arguments.stream().map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
-        this.boundVariables = arguments.stream().map(Formula::getBoundVariables).reduce(Sets.newSet(), Sets::union);
+        this.values = arguments.stream().map(Formula::valuesPresent).reduce(Sets.newSet(), Sets::union);
+
+        this.boundVariables = arguments.stream().map(Formula::boundVariablesPresent).reduce(Sets.newSet(), Sets::union);
         this.level = CommonUtils.maxLevel(this.arguments);
         this.weight = 1 + arguments.stream().mapToInt(Formula::getWeight).reduce(0, Integer::sum);
 
@@ -145,7 +150,12 @@ public class Or extends Formula {
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
     }
 }

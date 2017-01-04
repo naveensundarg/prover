@@ -15,9 +15,10 @@ import java.util.function.UnaryOperator;
  */
 public final class CanProve extends  BaseFormula{
 
-    Formula formula;
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
+    private final Set<Value> values;
     private final Set<Value> allValues;
     private final Set<Variable> boundVariables;
     private final int weight;
@@ -31,7 +32,8 @@ public final class CanProve extends  BaseFormula{
         this.allValues = Sets.newSet();
 
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.boundVariables = CollectionUtils.setFrom(formula.getBoundVariables());
+        this.values = CollectionUtils.setFrom(formula.valuesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
         this.weight = 1 + formula.getWeight();
     }
@@ -58,6 +60,11 @@ public final class CanProve extends  BaseFormula{
     @Override
     public Set<Variable> variablesPresent() {
         return variables;
+    }
+
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
     }
 
     @Override
@@ -135,7 +142,7 @@ public final class CanProve extends  BaseFormula{
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
     }
 }

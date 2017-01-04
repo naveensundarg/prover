@@ -17,6 +17,7 @@ public final class BiConditional extends Formula {
     private final Formula right;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Value> values;
     private final Set<Variable> boundVariables;
 
 
@@ -30,7 +31,8 @@ public final class BiConditional extends Formula {
         this.subFormulae = Sets.union(left.subFormulae(), right.subFormulae());
 
         this.variables = Sets.union(left.variablesPresent(), right.variablesPresent());
-        this.boundVariables = Sets.union(left.getBoundVariables(), right.getBoundVariables());
+        this.values = Sets.union(left.valuesPresent(), right.valuesPresent());
+        this.boundVariables = Sets.union(left.boundVariablesPresent(), right.boundVariablesPresent());
 
         this.weight = 1 + 2 * (1 + left.getWeight() + right.getWeight());
     }
@@ -79,6 +81,11 @@ public final class BiConditional extends Formula {
     }
 
     @Override
+    public Set<Value> valuesPresent() {
+        return values;
+    }
+
+    @Override
     public Formula apply(Map<Variable, Value> substitution) {
         return new BiConditional(left.apply(substitution), right.apply(substitution));
     }
@@ -120,7 +127,7 @@ public final class BiConditional extends Formula {
     }
 
     @Override
-    public Set<Variable> getBoundVariables() {
+    public Set<Variable> boundVariablesPresent() {
         return boundVariables;
     }
 }
