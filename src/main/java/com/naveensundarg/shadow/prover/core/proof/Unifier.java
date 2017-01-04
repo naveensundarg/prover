@@ -5,6 +5,7 @@ import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.ImmutablePair;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
@@ -17,6 +18,267 @@ import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
  * Created by naveensundarg on 4/11/16.
  */
 public class Unifier {
+
+
+    public static Optional<List<Pair<Value, Value>>> getVariations(Formula f1, Formula f2){
+
+        if(f1.getLevel()>=2 || f2.getLevel()>=2){
+
+            throw new UnsupportedOperationException("unify formula not supported for modals");
+        }
+
+        if(!f1.getClass().equals(f2.getClass())){
+
+            return Optional.empty();
+
+        }
+
+        if( f1 instanceof Predicate && f2 instanceof Predicate){
+
+            Predicate p1 = (Predicate) f1;
+            Predicate p2 = (Predicate) f2;
+
+            if(!p1.getName().equals(p2.getName())){
+
+                return Optional.empty();
+            }
+
+            if(p1.getArguments().length!=p2.getArguments().length){
+                return Optional.empty();
+
+            }
+
+            List<Pair<Value, Value>> variationsMap = CollectionUtils.newEmptyList();
+
+            for(int i = 0; i < p1.getArguments().length; i++){
+
+                if(!p1.getArguments()[i].equals(p2.getArguments()[i])){
+
+                    variationsMap.add(ImmutablePair.from(p1.getArguments()[i], p2.getArguments()[i]));
+
+                }
+
+            }
+
+            return Optional.of(variationsMap);
+        }
+
+        if( f1 instanceof Not && f2 instanceof Not){
+
+            Not n1 = (Not) f1;
+            Not n2  = (Not) f2;
+
+            return Unifier.getVariations(n1.getArgument(), n2.getArgument());
+        }
+
+
+        if( f1 instanceof Implication && f2 instanceof Implication){
+
+            Implication i1 = (Implication) f1;
+            Implication i2 = (Implication) f2;
+
+            Optional<List<Pair<Value, Value>>> map1 = Unifier.getVariations(i1.getAntecedent(), i2.getAntecedent());
+
+            if(!map1.isPresent()){
+
+                return Optional.empty();
+
+            }
+
+            Optional<List<Pair<Value, Value>>> map2 = Unifier.getVariations(i1.getConsequent(), i2.getConsequent());
+
+            if(!map2.isPresent()){
+
+                return Optional.empty();
+
+            }
+
+            List<Pair<Value, Value>> variationsMap = CollectionUtils.newEmptyList();
+
+            variationsMap.addAll(map1.get());
+            variationsMap.addAll(map2.get());
+
+            return Optional.of(variationsMap);
+
+        }
+
+        if( f1 instanceof BiConditional && f2 instanceof BiConditional){
+
+            BiConditional b1 = (BiConditional) f1;
+            BiConditional b2 = (BiConditional) f2;
+
+            Optional<List<Pair<Value, Value>>> map1 = Unifier.getVariations(b1.getLeft(), b2.getLeft());
+
+            if(!map1.isPresent()){
+
+                return Optional.empty();
+
+            }
+
+            Optional<List<Pair<Value, Value>>> map2 = Unifier.getVariations(b1.getRight(), b2.getRight());
+
+            if(!map2.isPresent()){
+
+                return Optional.empty();
+
+            }
+
+            List<Pair<Value, Value>> variationsMap = CollectionUtils.newEmptyList();
+
+            variationsMap.addAll(map1.get());
+            variationsMap.addAll(map2.get());
+
+            return Optional.of(variationsMap);
+
+
+        }
+
+        if( f1 instanceof And && f2 instanceof And){
+
+            And and1 = (And) f1;
+            And and2 = (And) f2;
+
+            Formula[] args1 = and1.getArguments();
+            Formula[] args2 = and2.getArguments();
+
+            if(args1.length!=args2.length){
+
+                return Optional.empty();
+
+            }
+
+            List<Pair<Value, Value>> possibleAnswer = CollectionUtils.newEmptyList();
+
+            for(int i = 0; i<args1.length; i++){
+
+                Optional<List<Pair<Value, Value>>> mapOpt = getVariations(args1[i], args2[i]);
+
+                if(!mapOpt.isPresent()){
+
+                    return Optional.empty();
+
+                }
+
+                possibleAnswer.addAll(mapOpt.get());
+
+            }
+
+            return Optional.of(possibleAnswer);
+
+        }
+
+        if( f1 instanceof Or && f2 instanceof Or){
+
+            Or or1 = (Or) f1;
+            Or or2 = (Or) f2;
+
+            Formula[] args1 = or1.getArguments();
+            Formula[] args2 = or2.getArguments();
+
+            if(args1.length!=args2.length){
+
+                return Optional.empty();
+
+            }
+
+            List<Pair<Value, Value>> possibleAnswer = CollectionUtils.newEmptyList();
+
+            for(int i = 0; i<args1.length; i++){
+
+                Optional<List<Pair<Value, Value>>> mapOpt = getVariations(args1[i], args2[i]);
+
+                if(!mapOpt.isPresent()){
+
+                    return Optional.empty();
+
+                }
+
+                possibleAnswer.addAll(mapOpt.get());
+
+            }
+
+            return Optional.of(possibleAnswer);
+
+        }
+
+        if( f1 instanceof Universal && f2 instanceof Universal){
+
+            Universal universal1 = (Universal) f1;
+            Universal universal2 = (Universal) f2;
+
+
+            if(!Arrays.equals(universal1.vars(), universal2.vars())){
+
+                return Optional.empty();
+
+            }
+
+            Formula arg1 = universal1.getArgument();
+            Formula arg2 = universal2.getArgument();
+
+            Optional<List<Pair<Value, Value>>>  mapOpt = getVariations(arg1, arg2);
+
+            if(!mapOpt.isPresent()){
+
+                return  Optional.empty();
+
+            }
+            Set<Value> replaced = mapOpt.get().stream().map(Pair::first).collect(Collectors.toSet());
+
+            Set<Variable> univVars = Arrays.stream(universal1.vars()).collect(Collectors.toSet());
+
+            if(replaced.stream().anyMatch(univVars::contains)){
+
+                return Optional.empty();
+            } else {
+
+                return mapOpt;
+            }
+
+
+        }
+
+        if( f1 instanceof Existential && f2 instanceof Existential){
+
+            Existential existential1 = (Existential) f1;
+            Existential existential2 = (Existential) f2;
+
+
+            if(!Arrays.equals(existential1.vars(), existential2.vars())){
+
+                return Optional.empty();
+
+            }
+
+            Formula arg1 = existential1.getArgument();
+            Formula arg2 = existential2.getArgument();
+
+            Optional<List<Pair<Value, Value>>>  mapOpt = getVariations(arg1, arg2);
+
+            if(!mapOpt.isPresent()){
+
+                return  Optional.empty();
+
+            }
+            Set<Value> replaced = mapOpt.get().stream().map(Pair::first).collect(Collectors.toSet());
+
+            Set<Variable> univVars = Arrays.stream(existential1.vars()).collect(Collectors.toSet());
+
+            if(replaced.stream().anyMatch(univVars::contains)){
+
+                return Optional.empty();
+            } else {
+
+                return mapOpt;
+            }
+
+        }
+
+
+
+        return Optional.empty();
+
+    }
 
 
     public static Optional<Map<Variable, Value>> unifyFormula(Formula f1, Formula f2){
