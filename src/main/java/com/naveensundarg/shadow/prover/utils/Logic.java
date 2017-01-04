@@ -332,6 +332,14 @@ public class Logic {
 
         return clause.getLiterals().stream().anyMatch(x -> literals.stream().anyMatch(y->x.getPredicate().equals(y.getPredicate()) && y.isNegated()!= x.isNegated()));
 
+    }
+
+    public static boolean isSyntacticallyCorrectEquality(Formula formula){
+
+        return (formula instanceof Predicate) &&
+                ((Predicate) formula).getName().equals("=") &&
+                ((Predicate) formula).getArguments().length >= 2;
+
 
     }
 }
