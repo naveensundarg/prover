@@ -121,4 +121,19 @@ public class Possibility extends  BaseFormula{
     public Set<Value> valuesPresent() {
         return formula.valuesPresent();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Possibility that = (Possibility) o;
+
+        return formula.equals(that.formula);
+    }
+
+    @Override
+    public int hashCode() {
+        return formula.hashCode();
+    }
 }

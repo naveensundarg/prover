@@ -125,4 +125,19 @@ public class Necessity extends  BaseFormula{
     public Set<Value> valuesPresent() {
         return formula.valuesPresent();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Necessity necessity = (Necessity) o;
+
+        return formula.equals(necessity.formula);
+    }
+
+    @Override
+    public int hashCode() {
+        return formula.hashCode();
+    }
 }

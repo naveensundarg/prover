@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 /**
@@ -22,15 +23,24 @@ import java.util.function.Function;
 public class SnarkWrapper implements Prover {
 
 
-    private final static boolean local = true;
+    private static AtomicBoolean local = new AtomicBoolean(true);
+
+    public static boolean isLocal() {
+        return local.get();
+    }
+
+    public static void setLocal(boolean local) {
+        SnarkWrapper.local.set(local);
+    }
+
     private final static Interpreter interpreter;
     static {
 
 
-        if(local) {
+        if(local.get()) {
 
             interpreter = Interpreter.createInstance();
-            LispObject result  = interpreter.eval("(load \"src/main/resources/com/naveensundarg/shadow/prover/snark-20120808r02/snark-system.lisp\")");
+            LispObject result  = interpreter.eval("(load \"snark-20120808r02/snark-system.lisp\")");
 
             System.out.println(result);
 
@@ -39,7 +49,7 @@ public class SnarkWrapper implements Prover {
 
             System.out.println(result);
 
-            result = interpreter.eval("(load \"src/main/resources/com/naveensundarg/shadow/prover/snark-20120808r02/snark-interface.lisp\")");
+            result = interpreter.eval("(load \"snark-20120808r02/snark-interface.lisp\")");
             System.out.println(result);
 
         } else {
@@ -63,7 +73,7 @@ public class SnarkWrapper implements Prover {
         goalString = goalString.replace("\n", "").replace("\r", "");
 
         String resultString = "";
-        if(local) {
+        if(local.get()) {
 
             synchronized (interpreter) {
 
