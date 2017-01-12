@@ -103,8 +103,10 @@ public class Reader {
 
             List list = (List) input;
 
-            if(list.size()< 2){
-                throw new ParsingException("Compound value should have atleast one argument");
+            if(list.size() == 1){
+                String name = list.get(0).toString();
+
+                return name.startsWith("?") || variableNames.contains(name) ? new Variable(name): new Constant(name);
 
             }
 

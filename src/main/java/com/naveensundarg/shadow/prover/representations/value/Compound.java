@@ -15,6 +15,7 @@ public class Compound extends Value {
     private final Set<Value> subValues;
     private final int weight;
 
+
     public Compound(String name, List<Value> argumentsList){
         super();
         this.arguments = new Value[argumentsList.size()];

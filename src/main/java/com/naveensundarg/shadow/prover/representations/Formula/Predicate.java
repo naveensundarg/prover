@@ -6,6 +6,7 @@ import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,12 @@ public class Predicate extends BaseFormula {
     private final boolean sorted;
     private final Set<Value> allValues;
 
+    private static final AtomicBoolean orientEqualities = new AtomicBoolean(true);
+
+    public static void setOrientEqualities(boolean val){
+
+        orientEqualities.set(val);
+    }
     private final int weight;
     public Predicate(String name){
 
@@ -43,7 +50,7 @@ public class Predicate extends BaseFormula {
 
         this.sorted = false;
         this.name = name;
-        if(name.equals("=")){
+        if(name.equals("=") && orientEqualities.get()){
 
             List<Value> sortedArgs = Arrays.stream(arguments).sorted(Comparator.comparingInt(x->-x.getWeight())).collect(Collectors.toList());
 

@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.core.proof;
 
 import com.naveensundarg.shadow.prover.representations.Expression;
 import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
@@ -20,6 +21,48 @@ import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 public class Unifier {
 
 
+    public static List<Pair<Value, Value>> getVariations(Value v1, Value v2) {
+
+        if(v1.equals(v2)){
+
+            return CollectionUtils.newEmptyList();
+        }
+
+        if(v1 instanceof Compound && v2 instanceof Compound) {
+
+
+            if(v1.getName().equals(v2.getName()) && v1.getArguments().length == v2.getArguments().length){
+
+                List<Pair<Value, Value>> answer = CollectionUtils.newEmptyList();
+
+
+                for(int i = 0; i< v1.getArguments().length; i++){
+
+                    answer.addAll(getVariations(v1.getArguments()[i], v2.getArguments()[i]));
+
+                }
+
+                answer.add(ImmutablePair.from(v1, v2));
+                return answer;
+            }
+
+            return CollectionUtils.listOf(ImmutablePair.from(v1, v2));
+
+
+        }
+
+
+
+        if(v1 instanceof Variable || v2 instanceof Variable){
+
+            return CollectionUtils.newEmptyList();
+        }
+
+        return CollectionUtils.listOf(ImmutablePair.from(v1, v2));
+
+
+
+    }
     public static Optional<List<Pair<Value, Value>>> getVariations(Formula f1, Formula f2){
 
         if(f1.getLevel()>=2 || f2.getLevel()>=2){

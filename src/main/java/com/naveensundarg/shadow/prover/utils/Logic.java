@@ -190,7 +190,25 @@ public class Logic {
 
 
         Variable variable = quantifier.vars()[0];
-        Formula kernel = quantifier.getArgument();
+        Formula kernel;
+
+        if(quantifier.vars().length>1){
+
+            if(quantifier instanceof Universal){
+
+                kernel = new Universal( Arrays.copyOfRange(quantifier.vars(), 1, quantifier.vars().length ), quantifier.getArgument());
+
+            } else{
+
+                kernel = new Existential( Arrays.copyOfRange(quantifier.vars(), 1, quantifier.vars().length ), quantifier.getArgument());
+
+            }
+        } else {
+
+            kernel = quantifier.getArgument();;
+
+        }
+
 
         Set<Variable> boundVarsInKernel = kernel.boundVariablesPresent();
 
