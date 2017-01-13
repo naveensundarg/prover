@@ -19,7 +19,7 @@ public class LispSandbox {
         Interpreter interpreter = Interpreter.createInstance();
 
 
-        LispObject result  = interpreter.eval("(load \"src/main/resources/com/naveensundarg/shadow/prover/snark-20120808r02/snark-system.lisp\")");
+        LispObject result  = interpreter.eval("(load \"./snark-20120808r02/snark-system.lisp\")");
 
         System.out.println(result);
 
@@ -28,10 +28,13 @@ public class LispSandbox {
 
         System.out.println(result);
 
-        result = interpreter.eval("(load \"src/main/resources/com/naveensundarg/shadow/prover/snark-20120808r02/snark-interface.lisp\")");
+        result = interpreter.eval("(load \"./snark-20120808r02/snark-interface.lisp\")");
         System.out.println(result);
 
-        result = interpreter.eval("(prove-from-axioms-yes-no '((implies P Q) R) 'P :verbose nil)");
+        String s = "(prove-from-axioms-and-get-answer '((man socrates) (forall ?x (implies (man ?x) (mortal ?))))" +
+                " '(mortal ?x)  '?x)";
+        System.out.println(s);
+        result = interpreter.eval(s);
 
         System.out.println(result);
 

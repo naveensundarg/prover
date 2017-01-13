@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.Sandbox;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import us.bpsm.edn.Keyword;
 import us.bpsm.edn.parser.Parseable;
@@ -29,6 +30,8 @@ public class ProblemReader {
     private static final Keyword SORTSYSTEM_KEY = Keyword.newKeyword("sortsystem");
     private static final Keyword NAME_KEY = Keyword.newKeyword("name");
     private static final Keyword DESCRIPTION_KEY = Keyword.newKeyword("description");
+    private static final Keyword ANSWER_VARIABLE = Keyword.newKeyword("answer-variable");
+    private static final Keyword ANSWER_EXPECTED = Keyword.newKeyword("answer-expected");
 
     public static List<Problem> readFrom(InputStream inputStream) throws Reader.ParsingException {
 
@@ -42,7 +45,7 @@ public class ProblemReader {
 
         while (problemDesc != Parser.END_OF_INPUT) {
 
-            problems.add(buildProblem( (Map<?,?>) problemDesc));
+            problems.add(buildProblem((Map<?, ?>) problemDesc));
             problemDesc = p.nextValue(pbr);
         }
 
@@ -56,7 +59,7 @@ public class ProblemReader {
         Set<Formula> assumptions = readAssumptions((Map<?, ?>) map.get(ASSUMPTIONS_KEY));
         Formula goal = Reader.readFormula(map.get(GOAL_KEY));
 
-        if(map.containsKey(SORTSYSTEM_KEY)){
+        if (map.containsKey(SORTSYSTEM_KEY)) {
             //TODO: Create a sorted problem
             //TODO: Define the class
 
@@ -65,15 +68,29 @@ public class ProblemReader {
 
         } else {
 
+            if (map.containsKey(ANSWER_EXPECTED) && map.containsKey(ANSWER_VARIABLE)) {
 
-            return new Problem( ((Map) map).getOrDefault(NAME_KEY, "").toString(), ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(), assumptions, goal);
+
+                return new Problem(((Map) map).getOrDefault(NAME_KEY, "").toString(),
+                        ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(),
+                        assumptions, goal,
+                        (Variable)Reader.readLogicValue( map.get(ANSWER_VARIABLE)),
+                      Reader.readLogicValue( map.get(ANSWER_EXPECTED))
+                );
+
+
+            } else {
+
+                return new Problem(((Map) map).getOrDefault(NAME_KEY, "").toString(), ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(), assumptions, goal);
+
+            }
+
         }
 
 
     }
 
     private static Set<Formula> readAssumptions(Map<?, ?> map) {
-
 
 
         return map.entrySet().stream().map(entry -> {
@@ -91,7 +108,7 @@ public class ProblemReader {
 
     }
 
-    public static void main (String[] args) throws Reader.ParsingException {
+    public static void main(String[] args) throws Reader.ParsingException {
         System.out.println(readFrom(Sandbox.class.getResourceAsStream("firstorder-completness-tests.clj")));
     }
 }

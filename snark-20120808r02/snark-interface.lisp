@@ -50,6 +50,11 @@
   (let ((*package* (find-package :snark)))
     (read-from-string (princ-to-string x))))
 
+(defun @! (x)
+  "undo the above"
+  (let ((*package* (find-package :cl-user)))
+    (read-from-string (princ-to-string x))))
+
 
 (defun prove-from-axioms (all-axioms f
                           &key
@@ -101,6 +106,34 @@
       (if (equalp :PROOF-FOUND (snark:prove (!@ f)))
           "YES"
           "NO"))))
+
+
+
+
+(defun prove-from-axioms-and-get-answer (all-axioms f var
+                          &key
+                            (time-limit 5)
+                            (verbose nil)
+                            sortal-setup-fn)
+  (let ((axioms (remove-duplicates all-axioms :test #'equalp)))
+    (setup-snark :time-limit time-limit :verbose verbose)
+    (if sortal-setup-fn (funcall sortal-setup-fn))
+    (let* ((n-a (make-hash-table :test #'equalp))
+           (a-n (make-hash-table :test #'equalp)))
+      (mapcar (lambda (axiom)
+                (let ((name (gensym)))
+                  (setf (gethash (princ-to-string axiom) a-n) name)
+                  (setf (gethash (princ-to-string name) n-a) axiom))) axioms)
+      (mapcar (lambda (axiom)
+                (snark::assert axiom :name  (gethash (princ-to-string axiom) a-n)
+                               ))
+              (mapcar #'!@ axioms))
+      
+      (let ((proof (snark:prove (!@ f) :answer (!@ (list 'ans var)) ))) 
+	(if (equalp :PROOF-FOUND proof)
+	     (@! (second (snark:answer proof) ))  
+	    "")))))
+
 
 (defun proved? (ans) (first ans))
 (defun used-premises (ans) (second ans))

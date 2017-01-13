@@ -3,6 +3,8 @@ package com.naveensundarg.shadow.prover.core;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Optional;
@@ -22,5 +24,9 @@ public interface Prover {
 
     }
 
+    default Optional<Value> prove(Set<Formula> assumptions, Formula formula, Variable variable){
+
+        return Optional.empty();
+    }
 
 }

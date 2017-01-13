@@ -3,6 +3,8 @@ package com.naveensundarg.shadow.prover.core;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import org.armedbear.lisp.Interpreter;
@@ -137,5 +139,87 @@ public class SnarkWrapper implements Prover {
     }
 
 
+    @Override
+    public Optional<Value> prove(Set<Formula> assumptions, Formula formula, Variable variable){
+
+
+
+
+        String assumptionsListString = assumptions.stream().map(x-> x.toString()).reduce("'(", (x, y) -> x+ " " +y) +") ";
+        String goalString = "'" +  formula.toString();
+
+        assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
+        goalString = goalString.replace("\n", "").replace("\r", "");
+
+        String resultString = "";
+        if(local.get()) {
+
+            synchronized (interpreter) {
+
+
+                LispObject result = interpreter.eval("(prove-from-axioms-and-get-answer " + assumptionsListString +  goalString+ " " + variable.toString()+ " :verbose nil)");
+
+               resultString = result.toString();
+            }
+        } else {
+
+            String url = null;
+            try {
+                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" +URLEncoder.encode(goalString, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            URL proverURL = null;
+            try {
+                proverURL = new URL(url);
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            BufferedReader in = null;
+            try {
+                in = new BufferedReader(
+                        new InputStreamReader(proverURL.openStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String inputLine = null;
+            try {
+                while ((inputLine = in.readLine()) != null) {
+
+                    resultString  = resultString + inputLine;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+
+        if(resultString.isEmpty()) {
+            return Optional.empty();
+        }
+        else {
+
+
+            try {
+                return Optional.of(Reader.readLogicValueFromString(resultString));
+            } catch (Reader.ParsingException e) {
+                e.printStackTrace();
+                return Optional.empty();
+            }
+        }
+
+
+
+    }
 
 }

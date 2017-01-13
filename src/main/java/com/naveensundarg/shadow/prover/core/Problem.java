@@ -1,7 +1,11 @@
 package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -17,12 +21,41 @@ public class Problem {
     private final String name;
     private final String description;
 
+
+
+    private final Optional<Variable> answerVariable;
+    private final Optional<Value> answerExpected;
     public Problem(String name, String description, Set<Formula> assumptions, Formula goal) {
 
         this.assumptions = assumptions;
         this.goal = goal;
         this.name = name;
         this.description = description;
+        answerExpected = Optional.empty();
+
+        answerVariable = Optional.empty();
+
+    }
+
+        public Problem(String name, String description, Set<Formula> assumptions, Formula goal,
+                       Variable answerVariable, Value expectedAnswer) {
+
+        this.assumptions = assumptions;
+        this.goal = goal;
+        this.name = name;
+        this.description = description;
+        this.answerExpected = Optional.of(expectedAnswer);
+
+        this.answerVariable = Optional.of(answerVariable);
+
+    }
+
+     public Optional<Variable> getAnswerVariable() {
+        return answerVariable;
+    }
+
+    public Optional<Value> getAnswerExpected() {
+        return answerExpected;
     }
 
     public Set<Formula> getAssumptions() {

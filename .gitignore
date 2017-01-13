@@ -25,3 +25,13 @@ graph.pdf
 proof_2.pdf
 3.pdf
 proof_1.pdf
+.idea/vcs.xml
+.idea/libraries/Maven__com_eclipsesource_j2v8_j2v8_linux_x86_64_3_0_2.xml
+.idea/libraries/Maven__com_eclipsesource_j2v8_j2v8_macosx_x86_64_3_0_2.xml
+.idea/libraries/Maven__com_eclipsesource_j2v8_j2v8_win32_x86_64_3_0_2.xml
+.idea/libraries/Maven__com_kitfox_svg_svg_salamander_1_0.xml
+.idea/libraries/Maven__guru_nidi_graphviz_java_0_0_2.xml
+.idea/libraries/Maven__org_apache_commons_commons_lang3_3_4.xml
+.idea/libraries/Maven__org_armedbear_lisp_abcl_1_0_1.xml
+.idea/libraries/Maven__org_clojure_clojure_1_8_0.xml
+.idea/libraries/Maven__us_bpsm_edn_java_0_4_6.xml
