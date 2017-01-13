@@ -721,6 +721,13 @@ public class Reader {
     }
 
 
+    public static Object readFromString(String s){
+
+        Parseable parseable = Parsers.newParseable(s);
+        Parser parser = Parsers.newParser(defaultConfiguration());
+
+        return parser.nextValue(parseable);
+    }
 
 
 

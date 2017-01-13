@@ -5,6 +5,7 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 
 import javax.swing.text.html.Option;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,8 +24,8 @@ public class Problem {
 
 
 
-    private final Optional<Variable> answerVariable;
-    private final Optional<Value> answerExpected;
+    private final Optional<List<Variable>> answerVariable;
+    private final Optional<List<Value>> answerExpected;
     public Problem(String name, String description, Set<Formula> assumptions, Formula goal) {
 
         this.assumptions = assumptions;
@@ -38,23 +39,23 @@ public class Problem {
     }
 
         public Problem(String name, String description, Set<Formula> assumptions, Formula goal,
-                       Variable answerVariable, Value expectedAnswer) {
+                       List<Variable> answerVariables, List<Value> expectedAnswers) {
 
         this.assumptions = assumptions;
         this.goal = goal;
         this.name = name;
         this.description = description;
-        this.answerExpected = Optional.of(expectedAnswer);
+        this.answerExpected = Optional.of(expectedAnswers);
 
-        this.answerVariable = Optional.of(answerVariable);
+        this.answerVariable = Optional.of(answerVariables);
 
     }
 
-     public Optional<Variable> getAnswerVariable() {
+    public Optional<List<Variable>> getAnswerVariables() {
         return answerVariable;
     }
 
-    public Optional<Value> getAnswerExpected() {
+    public Optional<List<Value>> getAnswersExpected() {
         return answerExpected;
     }
 

@@ -9,11 +9,14 @@ import com.naveensundarg.shadow.prover.utils.*;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import org.armedbear.lisp.Interpreter;
 import org.armedbear.lisp.LispObject;
+import us.bpsm.edn.parser.Parseable;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -221,5 +224,105 @@ public class SnarkWrapper implements Prover {
 
 
     }
+
+    @Override
+    public Optional<Map<Variable, Value>> proveAndGetBindings(Set<Formula> assumptions, Formula formula, List<Variable> variables){
+
+
+        String varListString = "(" + variables.stream().map(Variable::toString).reduce( " ", (x,y) -> x + " " + y) + ")";
+
+        String assumptionsListString = assumptions.stream().map(x-> x.toString()).reduce("'(", (x, y) -> x+ " " +y) +") ";
+        String goalString = "'" +  formula.toString();
+
+        assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
+        goalString = goalString.replace("\n", "").replace("\r", "");
+
+        String resultString = "";
+        if(local.get()) {
+
+            synchronized (interpreter) {
+
+
+                LispObject result = interpreter.eval("(prove-from-axioms-and-get-answers " + assumptionsListString +  goalString+ " '" + varListString + " :verbose nil)");
+
+               resultString = result.toString();
+            }
+        } else {
+
+            String url = null;
+            try {
+                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" +URLEncoder.encode(goalString, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            URL proverURL = null;
+            try {
+                proverURL = new URL(url);
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            BufferedReader in = null;
+            try {
+                in = new BufferedReader(
+                        new InputStreamReader(proverURL.openStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String inputLine = null;
+            try {
+                while ((inputLine = in.readLine()) != null) {
+
+                    resultString  = resultString + inputLine;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+
+        }
+
+        if(resultString.isEmpty()) {
+            return Optional.empty();
+        }
+        else {
+
+
+            try {
+
+                List<?> resultLst = (List<?>) Reader.readFromString(resultString);
+
+                if(resultLst.size()!=variables.size()){
+
+                    return Optional.empty();
+                }
+
+                Map<Variable, Value> variableValueMap = CollectionUtils.newMap();
+
+                for(int i = 0; i<variables.size(); i++){
+
+                    variableValueMap.put(variables.get(i), Reader.readLogicValue(resultLst.get(i)));
+                }
+
+                return Optional.of(variableValueMap);
+
+            } catch (Reader.ParsingException e) {
+                e.printStackTrace();
+                return Optional.empty();
+            }
+        }
+
+
+
+    }
+
 
 }

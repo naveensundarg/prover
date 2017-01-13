@@ -7,6 +7,8 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import org.apache.commons.lang3.NotImplementedException;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,6 +27,11 @@ public interface Prover {
     }
 
     default Optional<Value> proveAndGetBinding(Set<Formula> assumptions, Formula formula, Variable variable){
+
+        return Optional.empty();
+    }
+
+     default Optional<Map<Variable, Value>> proveAndGetBindings(Set<Formula> assumptions, Formula formula, List<Variable> variable){
 
         return Optional.empty();
     }

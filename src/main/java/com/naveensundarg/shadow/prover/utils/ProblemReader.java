@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.Sandbox;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import us.bpsm.edn.Keyword;
@@ -15,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,8 +32,8 @@ public class ProblemReader {
     private static final Keyword SORTSYSTEM_KEY = Keyword.newKeyword("sortsystem");
     private static final Keyword NAME_KEY = Keyword.newKeyword("name");
     private static final Keyword DESCRIPTION_KEY = Keyword.newKeyword("description");
-    private static final Keyword ANSWER_VARIABLE = Keyword.newKeyword("answer-variable");
-    private static final Keyword ANSWER_EXPECTED = Keyword.newKeyword("answer-expected");
+    private static final Keyword ANSWER_VARIABLES = Keyword.newKeyword("answer-variables");
+    private static final Keyword ANSWERS_EXPECTED = Keyword.newKeyword("answers-expected");
 
     public static List<Problem> readFrom(InputStream inputStream) throws Reader.ParsingException {
 
@@ -54,6 +56,47 @@ public class ProblemReader {
     }
 
 
+    private static List<Variable> readVariableList(List<?> lst) throws Reader.ParsingException {
+
+        List<Variable> vars = lst.stream().map(x -> {
+            try {
+                return (Variable) Reader.readLogicValue(x);
+            } catch (Reader.ParsingException e) {
+              return null;
+            }
+        }).collect(Collectors.toList());
+
+        if(vars.stream().anyMatch(Objects::isNull)){
+
+            throw new Reader.ParsingException("List has invalid variables: " + lst);
+        }
+
+
+        return vars;
+
+
+    }
+
+    private static List<Value> readValueList(List<?> lst) throws Reader.ParsingException {
+
+        List<Value> vars = lst.stream().map(x -> {
+            try {
+                return Reader.readLogicValue(x);
+            } catch (Reader.ParsingException e) {
+              return null;
+            }
+        }).collect(Collectors.toList());
+
+        if(vars.stream().anyMatch(Objects::isNull)){
+
+            throw new Reader.ParsingException("List has invalid values: " + lst);
+        }
+
+
+        return vars;
+
+
+    }
     private static Problem buildProblem(Map<?, ?> map) throws Reader.ParsingException {
 
         Set<Formula> assumptions = readAssumptions((Map<?, ?>) map.get(ASSUMPTIONS_KEY));
@@ -68,14 +111,13 @@ public class ProblemReader {
 
         } else {
 
-            if (map.containsKey(ANSWER_EXPECTED) && map.containsKey(ANSWER_VARIABLE)) {
+            if (map.containsKey(ANSWERS_EXPECTED) && map.containsKey(ANSWER_VARIABLES)) {
 
 
                 return new Problem(((Map) map).getOrDefault(NAME_KEY, "").toString(),
                         ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(),
-                        assumptions, goal,
-                        (Variable)Reader.readLogicValue( map.get(ANSWER_VARIABLE)),
-                      Reader.readLogicValue( map.get(ANSWER_EXPECTED))
+                        assumptions, goal, readVariableList((List<?>)map.get(ANSWER_VARIABLES)),
+                      readValueList((List<?>)map.get(ANSWERS_EXPECTED))
                 );
 
 

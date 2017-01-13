@@ -4,19 +4,18 @@ import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Created by naveensundarg on 4/9/16.
@@ -42,7 +41,7 @@ public class AnswerExtractionTests {
             Problem test = tests.get(i);
 
             cases[i][0] =  test;
-            cases[i][1] = test.getAnswerVariable().isPresent();
+            cases[i][1] = test.getAnswerVariables().isPresent();
 
         }
 
@@ -56,11 +55,16 @@ public class AnswerExtractionTests {
     @Test(dataProvider = "testsProvider")
     public void testCompleteness(Problem problem, boolean answerVariableGiven){
 
-        Optional<Value> valueOptional = prover.proveAndGetBinding(problem.getAssumptions(), problem.getGoal(),
-                problem.getAnswerVariable().get());
+        Map<Variable,Value> answerMap = prover.proveAndGetBindings(problem.getAssumptions(), problem.getGoal(),
+                problem.getAnswerVariables().get()).get();
 
-        Assert.assertEquals(valueOptional.get(), problem.getAnswerExpected().get());
+        List<Variable> answerVariables = problem.getAnswerVariables().get();
+        List<Value> expectedAnswers = problem.getAnswersExpected().get();
 
+        for(int i = 0; i< answerVariables.size(); i++){
+
+            Assert.assertEquals(answerMap.get(answerVariables.get(i)), expectedAnswers.get(i));
+        }
 
     }
 
