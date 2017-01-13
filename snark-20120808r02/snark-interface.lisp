@@ -131,7 +131,7 @@
       
       (let ((proof (snark:prove (!@ f) :answer (!@ (list 'ans var)) ))) 
 	(if (equalp :PROOF-FOUND proof)
-	     (@! (second (snark:answer proof) ))  
+	    (string-downcase (princ-to-string (@! (second (snark:answer proof) ))))   
 	    "")))))
 
 

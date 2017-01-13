@@ -140,7 +140,7 @@ public class SnarkWrapper implements Prover {
 
 
     @Override
-    public Optional<Value> prove(Set<Formula> assumptions, Formula formula, Variable variable){
+    public Optional<Value> proveAndGetBinding(Set<Formula> assumptions, Formula formula, Variable variable){
 
 
 
@@ -157,7 +157,7 @@ public class SnarkWrapper implements Prover {
             synchronized (interpreter) {
 
 
-                LispObject result = interpreter.eval("(prove-from-axioms-and-get-answer " + assumptionsListString +  goalString+ " " + variable.toString()+ " :verbose nil)");
+                LispObject result = interpreter.eval("(prove-from-axioms-and-get-answer " + assumptionsListString +  goalString+ " '" + variable.toString()+ " :verbose nil)");
 
                resultString = result.toString();
             }

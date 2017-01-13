@@ -14,9 +14,9 @@
                A7 (not (unsafe (did (walk self straight))))
                }
 
- :answerVariable ?x
+ :answer-variable ?x
 
- :expectedAnswer (did (walk self straight))
+ :answer-expected (did (walk self straight))
 
  :goal        (goal self ?x)
  }

@@ -24,7 +24,7 @@ public interface Prover {
 
     }
 
-    default Optional<Value> prove(Set<Formula> assumptions, Formula formula, Variable variable){
+    default Optional<Value> proveAndGetBinding(Set<Formula> assumptions, Formula formula, Variable variable){
 
         return Optional.empty();
     }
