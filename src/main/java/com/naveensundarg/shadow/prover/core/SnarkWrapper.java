@@ -39,13 +39,14 @@ public class SnarkWrapper implements Prover {
     }
 
     private final static Interpreter interpreter;
+
     static {
 
 
-        if(local.get()) {
+        if (local.get()) {
 
             interpreter = Interpreter.createInstance();
-            LispObject result  = interpreter.eval("(load \"snark-20120808r02/snark-system.lisp\")");
+            LispObject result = interpreter.eval("(load \"snark-20120808r02/snark-system.lisp\")");
 
             System.out.println(result);
 
@@ -66,32 +67,30 @@ public class SnarkWrapper implements Prover {
 
 
     @Override
-    public Optional<Justification> prove(Set<Formula> assumptions, Formula formula)  {
+    public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
 
-
-
-        String assumptionsListString = assumptions.stream().map(x-> x.toString()).reduce("'(", (x, y) -> x+ " " +y) +") ";
-        String goalString = "'" +  formula.toString();
+        String assumptionsListString = assumptions.stream().map(x -> x.toString()).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toString();
 
         assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
         goalString = goalString.replace("\n", "").replace("\r", "");
 
         String resultString = "";
-        if(local.get()) {
+        if (local.get()) {
 
             synchronized (interpreter) {
 
 
-                LispObject result = interpreter.eval("(prove-from-axioms-yes-no " + assumptionsListString +  goalString+ " :verbose nil)");
+                LispObject result = interpreter.eval("(prove-from-axioms-yes-no " + assumptionsListString + goalString + " :verbose nil)");
 
-               resultString = result.toString();
+                resultString = result.toString();
             }
         } else {
 
             String url = null;
             try {
-                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" +URLEncoder.encode(goalString, "UTF-8");
+                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" + URLEncoder.encode(goalString, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -115,7 +114,7 @@ public class SnarkWrapper implements Prover {
             try {
                 while ((inputLine = in.readLine()) != null) {
 
-                    resultString  = resultString + inputLine;
+                    resultString = resultString + inputLine;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -127,48 +126,43 @@ public class SnarkWrapper implements Prover {
             }
 
 
-
         }
 
-        if(resultString.equals("YES")) {
+        if (resultString.equals("YES")) {
             return Optional.of(new TrivialJustification(formula));
-        }
-        else {
+        } else {
             return Optional.empty();
         }
-
 
 
     }
 
 
     @Override
-    public Optional<Value> proveAndGetBinding(Set<Formula> assumptions, Formula formula, Variable variable){
+    public Optional<Value> proveAndGetBinding(Set<Formula> assumptions, Formula formula, Variable variable) {
 
 
-
-
-        String assumptionsListString = assumptions.stream().map(x-> x.toString()).reduce("'(", (x, y) -> x+ " " +y) +") ";
-        String goalString = "'" +  formula.toString();
+        String assumptionsListString = assumptions.stream().map(x -> x.toString()).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toString();
 
         assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
         goalString = goalString.replace("\n", "").replace("\r", "");
 
         String resultString = "";
-        if(local.get()) {
+        if (local.get()) {
 
             synchronized (interpreter) {
 
 
-                LispObject result = interpreter.eval("(prove-from-axioms-and-get-answer " + assumptionsListString +  goalString+ " '" + variable.toString()+ " :verbose nil)");
+                LispObject result = interpreter.eval("(prove-from-axioms-and-get-answer " + assumptionsListString + goalString + " '" + variable.toString() + " :verbose nil)");
 
-               resultString = result.toString();
+                resultString = result.toString();
             }
         } else {
 
             String url = null;
             try {
-                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" +URLEncoder.encode(goalString, "UTF-8");
+                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" + URLEncoder.encode(goalString, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -192,7 +186,7 @@ public class SnarkWrapper implements Prover {
             try {
                 while ((inputLine = in.readLine()) != null) {
 
-                    resultString  = resultString + inputLine;
+                    resultString = resultString + inputLine;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -204,13 +198,11 @@ public class SnarkWrapper implements Prover {
             }
 
 
-
         }
 
-        if(resultString.isEmpty()) {
+        if (resultString.isEmpty()) {
             return Optional.empty();
-        }
-        else {
+        } else {
 
 
             try {
@@ -222,36 +214,35 @@ public class SnarkWrapper implements Prover {
         }
 
 
-
     }
 
     @Override
-    public Optional<Map<Variable, Value>> proveAndGetBindings(Set<Formula> assumptions, Formula formula, List<Variable> variables){
+    public Optional<Map<Variable, Value>> proveAndGetBindings(Set<Formula> assumptions, Formula formula, List<Variable> variables) {
 
 
-        String varListString = "(" + variables.stream().map(Variable::toString).reduce( " ", (x,y) -> x + " " + y) + ")";
+        String varListString = "(" + variables.stream().map(Variable::toString).reduce(" ", (x, y) -> x + " " + y) + ")";
 
-        String assumptionsListString = assumptions.stream().map(x-> x.toString()).reduce("'(", (x, y) -> x+ " " +y) +") ";
-        String goalString = "'" +  formula.toString();
+        String assumptionsListString = assumptions.stream().map(x -> x.toString()).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toString();
 
         assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
         goalString = goalString.replace("\n", "").replace("\r", "");
 
         String resultString = "";
-        if(local.get()) {
+        if (local.get()) {
 
             synchronized (interpreter) {
 
 
-                LispObject result = interpreter.eval("(prove-from-axioms-and-get-answers " + assumptionsListString +  goalString+ " '" + varListString + " :verbose nil)");
+                LispObject result = interpreter.eval("(prove-from-axioms-and-get-answers " + assumptionsListString + goalString + " '" + varListString + " :verbose nil)");
 
-               resultString = result.toString();
+                resultString = result.toString();
             }
         } else {
 
             String url = null;
             try {
-                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" +URLEncoder.encode(goalString, "UTF-8");
+                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" + URLEncoder.encode(goalString, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -275,7 +266,7 @@ public class SnarkWrapper implements Prover {
             try {
                 while ((inputLine = in.readLine()) != null) {
 
-                    resultString  = resultString + inputLine;
+                    resultString = resultString + inputLine;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -287,27 +278,30 @@ public class SnarkWrapper implements Prover {
             }
 
 
-
         }
 
-        if(resultString.isEmpty()) {
+        if (resultString.isEmpty()) {
             return Optional.empty();
-        }
-        else {
+        } else {
 
+            if (resultString.toLowerCase().equals("nil")) {
+
+                return Optional.of(CollectionUtils.newMap());
+            }
 
             try {
 
                 List<?> resultLst = (List<?>) Reader.readFromString(resultString);
 
-                if(resultLst.size()!=variables.size()){
+
+                if (resultLst.size() != variables.size()) {
 
                     return Optional.empty();
                 }
 
                 Map<Variable, Value> variableValueMap = CollectionUtils.newMap();
 
-                for(int i = 0; i<variables.size(); i++){
+                for (int i = 0; i < variables.size(); i++) {
 
                     variableValueMap.put(variables.get(i), Reader.readLogicValue(resultLst.get(i)));
                 }
@@ -320,6 +314,115 @@ public class SnarkWrapper implements Prover {
             }
         }
 
+
+    }
+
+
+    @Override
+    public Optional<Set<Map<Variable, Value>>> proveAndGetMultipleBindings(Set<Formula> assumptions, Formula formula, List<Variable> variables) {
+
+
+        String varListString = "(" + variables.stream().map(Variable::toString).reduce(" ", (x, y) -> x + " " + y) + ")";
+
+        String assumptionsListString = assumptions.stream().map(x -> x.toString()).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toString();
+
+        assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
+        goalString = goalString.replace("\n", "").replace("\r", "");
+
+        String resultString = "";
+        if (local.get()) {
+
+            synchronized (interpreter) {
+
+
+                LispObject result = interpreter.eval("(prove-from-axioms-and-get-multiple-answers " + assumptionsListString + goalString + " '" + varListString + " :verbose nil)");
+
+                resultString = result.toString();
+            }
+        } else {
+
+            String url = null;
+            try {
+                url = "http://localhost:8000/prove?assumptions=" + URLEncoder.encode(assumptionsListString, "UTF-8") + "&goal=" + URLEncoder.encode(goalString, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            URL proverURL = null;
+            try {
+                proverURL = new URL(url);
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            BufferedReader in = null;
+            try {
+                in = new BufferedReader(
+                        new InputStreamReader(proverURL.openStream()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String inputLine = null;
+            try {
+                while ((inputLine = in.readLine()) != null) {
+
+                    resultString = resultString + inputLine;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        if (resultString.isEmpty()) {
+            return Optional.empty();
+        } else {
+
+            if (resultString.toLowerCase().equals("nil")) {
+
+                return Optional.of(CollectionUtils.newEmptySet());
+            }
+
+            try {
+
+                List<?> answerList = (List<?>) Reader.readFromString(resultString);
+
+                Set<Map<Variable, Value>> answers = Sets.newSet();
+
+                for (Object ans : answerList) {
+
+                    List<?> resultLst = (List<?>) ans;
+                    if (resultLst.size() != variables.size()) {
+
+                        return Optional.empty();
+                    }
+
+                    Map<Variable, Value> variableValueMap = CollectionUtils.newMap();
+
+                    for (int i = 0; i < variables.size(); i++) {
+
+                        variableValueMap.put(variables.get(i), Reader.readLogicValue(resultLst.get(i)));
+                    }
+
+                    answers.add(variableValueMap);
+                }
+
+
+                return Optional.of(answers);
+
+            } catch (Reader.ParsingException e) {
+                e.printStackTrace();
+                return Optional.empty();
+            }
+        }
 
 
     }

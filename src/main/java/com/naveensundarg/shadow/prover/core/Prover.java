@@ -31,7 +31,12 @@ public interface Prover {
         return Optional.empty();
     }
 
-     default Optional<Map<Variable, Value>> proveAndGetBindings(Set<Formula> assumptions, Formula formula, List<Variable> variable){
+    default Optional<Map<Variable, Value>> proveAndGetBindings(Set<Formula> assumptions, Formula formula, List<Variable> variable){
+
+        return Optional.empty();
+    }
+
+    default Optional<Set<Map<Variable, Value>>> proveAndGetMultipleBindings(Set<Formula> assumptions, Formula formula, List<Variable> variable){
 
         return Optional.empty();
     }

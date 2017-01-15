@@ -16,7 +16,7 @@
 
  :answer-variables [?x]
 
- :answers-expected [(did (walk self straight))]
+ :answers-expected ([(did (walk self straight))])
 
  :goal        (goal self ?x)
  }
@@ -38,7 +38,20 @@
 
  :answer-variables [?x ?y]
 
- :answers-expected [self straight]
+ :answers-expected ([self straight])
 
  :goal        (goal self (did (walk ?x ?y)))
+ }
+
+{:name        "Test 3"
+ :description "A simple test"
+ :assumptions {A1 (not (= a b))
+               }
+
+ :answer-variables [?x ?y]
+
+ :answers-expected ([a b]
+                     [b a])
+
+ :goal        (not (= ?x ?y))
  }

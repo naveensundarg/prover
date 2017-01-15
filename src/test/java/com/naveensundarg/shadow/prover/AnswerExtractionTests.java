@@ -6,9 +6,7 @@ import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.utils.Pair;
-import com.naveensundarg.shadow.prover.utils.ProblemReader;
-import com.naveensundarg.shadow.prover.utils.Reader;
+import com.naveensundarg.shadow.prover.utils.*;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -16,6 +14,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Created by naveensundarg on 4/9/16.
@@ -55,18 +54,40 @@ public class AnswerExtractionTests {
     @Test(dataProvider = "testsProvider")
     public void testCompleteness(Problem problem, boolean answerVariableGiven){
 
-        Map<Variable,Value> answerMap = prover.proveAndGetBindings(problem.getAssumptions(), problem.getGoal(),
+        Set<Map<Variable,Value>> answerMap = prover.proveAndGetMultipleBindings(problem.getAssumptions(), problem.getGoal(),
                 problem.getAnswerVariables().get()).get();
 
         List<Variable> answerVariables = problem.getAnswerVariables().get();
-        List<Value> expectedAnswers = problem.getAnswersExpected().get();
+        Set<List<Value>> expectedAnswers = problem.getAnswersExpected().get();
 
-        for(int i = 0; i< answerVariables.size(); i++){
+        Set<Map<Variable,Value>> expectedAnswersMap = Sets.newSet();
 
-            Assert.assertEquals(answerMap.get(answerVariables.get(i)), expectedAnswers.get(i));
+        for(List<Value> expectedAnswer: expectedAnswers){
+
+            expectedAnswersMap.add(makeMap(answerVariables, expectedAnswer));
+
         }
+
+        Assert.assertEquals(answerMap, expectedAnswersMap);
 
     }
 
 
+    private Map<Variable, Value> makeMap(List<Variable> variables, List<Value> values){
+
+        Map<Variable, Value> answer = CollectionUtils.newMap();
+
+
+        if(variables.size()!=values.size()){
+            throw new AssertionError("Should be the same size: " + variables + " and " + values);
+        }
+
+        for(int i = 0; i< variables.size(); i++){
+
+            answer.put(variables.get(i), values.get(i));
+
+        }
+
+        return answer;
+    }
 }

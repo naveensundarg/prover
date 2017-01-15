@@ -25,7 +25,7 @@ public class Problem {
 
 
     private final Optional<List<Variable>> answerVariable;
-    private final Optional<List<Value>> answerExpected;
+    private final Optional<Set<List<Value>>> answerExpected;
     public Problem(String name, String description, Set<Formula> assumptions, Formula goal) {
 
         this.assumptions = assumptions;
@@ -39,7 +39,7 @@ public class Problem {
     }
 
         public Problem(String name, String description, Set<Formula> assumptions, Formula goal,
-                       List<Variable> answerVariables, List<Value> expectedAnswers) {
+                       List<Variable> answerVariables, Set<List<Value>> expectedAnswers) {
 
         this.assumptions = assumptions;
         this.goal = goal;
@@ -55,7 +55,7 @@ public class Problem {
         return answerVariable;
     }
 
-    public Optional<List<Value>> getAnswersExpected() {
+    public Optional<Set<List<Value>>> getAnswersExpected() {
         return answerExpected;
     }
 

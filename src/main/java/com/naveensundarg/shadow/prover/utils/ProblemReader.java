@@ -62,11 +62,11 @@ public class ProblemReader {
             try {
                 return (Variable) Reader.readLogicValue(x);
             } catch (Reader.ParsingException e) {
-              return null;
+                return null;
             }
         }).collect(Collectors.toList());
 
-        if(vars.stream().anyMatch(Objects::isNull)){
+        if (vars.stream().anyMatch(Objects::isNull)) {
 
             throw new Reader.ParsingException("List has invalid variables: " + lst);
         }
@@ -83,11 +83,11 @@ public class ProblemReader {
             try {
                 return Reader.readLogicValue(x);
             } catch (Reader.ParsingException e) {
-              return null;
+                return null;
             }
         }).collect(Collectors.toList());
 
-        if(vars.stream().anyMatch(Objects::isNull)){
+        if (vars.stream().anyMatch(Objects::isNull)) {
 
             throw new Reader.ParsingException("List has invalid values: " + lst);
         }
@@ -97,6 +97,7 @@ public class ProblemReader {
 
 
     }
+
     private static Problem buildProblem(Map<?, ?> map) throws Reader.ParsingException {
 
         Set<Formula> assumptions = readAssumptions((Map<?, ?>) map.get(ASSUMPTIONS_KEY));
@@ -113,11 +114,21 @@ public class ProblemReader {
 
             if (map.containsKey(ANSWERS_EXPECTED) && map.containsKey(ANSWER_VARIABLES)) {
 
+                Set<List<Value>> expectedAnswers = ((List<?>)map.get(ANSWERS_EXPECTED))
+                        .stream().
+                        map(x -> {
+                            try {
+                                return readValueList((List<?>) x);
+                            } catch (Reader.ParsingException e) {
+                                return null;
+                            }
+                        }).collect(Collectors.toSet());
+
 
                 return new Problem(((Map) map).getOrDefault(NAME_KEY, "").toString(),
                         ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(),
-                        assumptions, goal, readVariableList((List<?>)map.get(ANSWER_VARIABLES)),
-                      readValueList((List<?>)map.get(ANSWERS_EXPECTED))
+                        assumptions, goal, readVariableList((List<?>) map.get(ANSWER_VARIABLES)),
+                        expectedAnswers
                 );
 
 

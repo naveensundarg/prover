@@ -135,6 +135,9 @@
 	    "")))))
 
 
+(defun get-answer-string (proof)
+  (string-downcase (princ-to-string (@! (rest (snark:answer proof))))))
+
 (defun prove-from-axioms-and-get-answers (all-axioms f vars
                           &key
                             (time-limit 5)
@@ -157,9 +160,39 @@
       (let ((proof (snark:prove (!@ f) :answer (!@ (cons 'ans vars)) ))) 
 	
 	(if (equalp :PROOF-FOUND proof)
-	    (string-downcase (princ-to-string (@! (rest (snark:answer proof) ))))   
+	    (get-answer-string proof)   
 	    "")))))
 
+(defun prove-from-axioms-and-get-multiple-answers (all-axioms f vars
+                          &key
+                            (time-limit 5)
+                            (verbose nil)
+                            sortal-setup-fn)
+  (let ((axioms (remove-duplicates all-axioms :test #'equalp)))
+    (setup-snark :time-limit time-limit :verbose verbose)
+    (if sortal-setup-fn (funcall sortal-setup-fn))
+    (let* ((n-a (make-hash-table :test #'equalp))
+           (a-n (make-hash-table :test #'equalp)))
+      (mapcar (lambda (axiom)
+                (let ((name (gensym)))
+                  (setf (gethash (princ-to-string axiom) a-n) name)
+                  (setf (gethash (princ-to-string name) n-a) axiom))) axioms)
+      (mapcar (lambda (axiom)
+                (snark::assert axiom :name  (gethash (princ-to-string axiom) a-n)
+                               ))
+              (mapcar #'!@ axioms))
+      
+      (let ((proof (snark:prove (!@ f) :answer (!@ (cons 'ans vars)) ))) 
+	
+	(if (equalp :PROOF-FOUND proof)
+	    (princ-to-string (cons (get-answer-string proof) (call)))    
+	    "")))))
+
+(defun call ()
+  (let ((proof (snark:closure)))
+    (if (equalp :PROOF-FOUND proof)
+	(cons (get-answer-string proof) (call))
+	())))
 
 (defun proved? (ans) (first ans))
 (defun used-premises (ans) (second ans))
