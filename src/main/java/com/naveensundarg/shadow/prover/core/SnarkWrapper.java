@@ -386,7 +386,7 @@ public class SnarkWrapper implements Prover {
             return Optional.empty();
         } else {
 
-            if (resultString.toLowerCase().equals("nil")) {
+            if (resultString.toLowerCase().equals("(nil)")) {
 
                 return Optional.of(CollectionUtils.newEmptySet());
             }
