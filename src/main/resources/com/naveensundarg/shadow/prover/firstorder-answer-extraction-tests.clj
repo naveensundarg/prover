@@ -55,3 +55,37 @@
 
  :goal        (not (= ?x ?y))
  }
+
+
+{:name        "Test 4"
+ :description "A bit more tougher"
+ :assumptions {A1 (forall (?x ?y ?z) (implies (and (R ?x ?y) (R ?y ?z))
+									   (R ?x ?z)))
+               A2 (forall (?x ?y) (implies (R ?x ?y) (R ?y ?x)))
+
+               A3 (and (R a b)
+                       (R b c)
+                       (R c d))}
+
+ :answer-variables [?x ?y]
+
+ :answers-expected (
+                     [c d]
+                     [d c]
+                     [b c]
+                     [c b]
+                     [a b]
+                     [b a]
+                     [c c]
+                     [d b]
+                     [b d]
+                     [d d]
+                     [b b]
+                     [c a]
+                     [a c]
+                     [a a]
+                     [d a]
+                     [a d])
+
+ :goal        (R ?x ?y)
+ }
