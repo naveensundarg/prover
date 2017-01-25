@@ -47,7 +47,7 @@ public class Not extends Formula {
 
     @Override
     public int hashCode() {
-        return argument.hashCode();
+        return safeHashCode(argument);
     }
 
     @Override

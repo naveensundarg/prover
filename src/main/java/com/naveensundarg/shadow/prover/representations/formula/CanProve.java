@@ -120,7 +120,7 @@ public final class CanProve extends  BaseFormula{
 
     @Override
     public int hashCode() {
-        return formula.hashCode();
+        return safeHashCode(formula);
     }
 
 

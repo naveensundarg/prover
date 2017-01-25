@@ -11,38 +11,55 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 /**
- * Created by naveensundarg on 7/9/16.
+ * Created by naveensundarg on 5/4/16.
  */
-public class Necessity extends  BaseFormula{
+public final class Common extends  BaseFormula{
 
+    private final Value time;
     private final Formula formula;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
+    private final Set<Value> values;
     private final Set<Variable> boundVariables;
-
     private final Set<Value> allValues;
 
     private final int weight;
 
-    public Necessity(Formula formula) {
 
 
+    public Common(Value time, Formula formula) {
+
+        this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        this.subFormulae.add(this);
-        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.variables = Sets.union(time.variablesPresent(), formula.variablesPresent());
+        this.values = Sets.union(time.subValues(), formula.valuesPresent());
+
         this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
-
         this.allValues = Sets.newSet();
+        this.allValues.add(time);
 
+        this.subFormulae.add(this);
 
+        if (time instanceof Variable) {
+            variables.add((Variable) time);
 
-        this.weight = 1 + formula.getWeight();
+        }
+
+        this.weight =  time.getWeight() + formula.getWeight();
     }
-
 
     public Formula getFormula(){
         return formula;
+    }
+
+    public Value getTime() {
+        return time;
+    }
+
+
+    public Set<Variable> getVariables() {
+        return variables;
     }
 
     @Override
@@ -56,14 +73,20 @@ public class Necessity extends  BaseFormula{
     }
 
     @Override
+    public Set<Value> valuesPresent() {
+        return values;
+    }
+
+
+    @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return new Necessity(formula.apply(substitution));
+        return   new Common(time.apply(substitution), formula.apply(substitution));
+
     }
 
     @Override
     public Formula shadow(int level) {
         return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
-
     }
 
     @Override
@@ -84,11 +107,29 @@ public class Necessity extends  BaseFormula{
 
     @Override
     public String toString() {
-        return "(NEC "
-           +
+        return "(Common! "
+                + time + " "+
                 formula + ")";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Common common = (Common) o;
+
+        if (!time.equals(common.time)) return false;
+        return formula.equals(common.formula);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = safeHashCode(time);
+        result = 31 * result + safeHashCode(formula);
+        return result;
+    }
 
     @Override
     public Set<Value> allValues() {
@@ -97,7 +138,7 @@ public class Necessity extends  BaseFormula{
 
     @Override
     public String getName() {
-        return "NEC";
+        return "Common";
     }
 
     @Override
@@ -113,7 +154,7 @@ public class Necessity extends  BaseFormula{
         }
 
 
-        return new Necessity(formula.replaceSubFormula(oldFormula, newFormula));
+        return new Common(time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 
     @Override
@@ -121,23 +162,5 @@ public class Necessity extends  BaseFormula{
         return boundVariables;
     }
 
-    @Override
-    public Set<Value> valuesPresent() {
-        return formula.valuesPresent();
-    }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Necessity necessity = (Necessity) o;
-
-        return formula.equals(necessity.formula);
-    }
-
-    @Override
-    public int hashCode() {
-        return formula.hashCode();
-    }
 }

@@ -65,8 +65,8 @@ public final class BiConditional extends Formula {
 
     @Override
     public int hashCode() {
-        int result = left.hashCode();
-        result = 31 * result + right.hashCode();
+        int result = safeHashCode(left);
+        result = 31 * result + safeHashCode(right);
         return result;
     }
 

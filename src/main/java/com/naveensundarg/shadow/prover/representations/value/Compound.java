@@ -151,7 +151,7 @@ public class Compound extends Value {
     @Override
     public int hashCode() {
         int result = Arrays.hashCode(arguments);
-        result = 31 * result + name.hashCode();
+        result = 31 * result + safeHashCode(name);
         return result;
     }
 

@@ -123,7 +123,7 @@ public class Variable extends Value {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return safeHashCode(name);
     }
 
     @Override

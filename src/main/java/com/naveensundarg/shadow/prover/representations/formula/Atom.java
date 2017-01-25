@@ -50,7 +50,7 @@ public final class Atom extends Predicate{
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return safeHashCode(name);
     }
 
     @Override

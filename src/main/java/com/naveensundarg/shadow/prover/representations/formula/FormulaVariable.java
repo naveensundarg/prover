@@ -116,6 +116,6 @@ public class FormulaVariable extends Formula {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return safeHashCode(name);
     }
 }
