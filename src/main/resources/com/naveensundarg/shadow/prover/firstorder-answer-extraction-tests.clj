@@ -89,3 +89,27 @@
 
  :goal        (R ?x ?y)
  }
+
+
+{:name        "Test 1"
+ :description "A simple test"
+ :assumptions {
+               1 (forall [x y room] (if (and (not (= x y)) (and (in x room) (in y room))) (sameroom x y)))
+               2 (in (agent 1) room1)
+               3 (in (agent 2) room1)
+               4 (in (agent 3) room1)
+               5 (forall [x y] (if (not (= x y)) (not (= (agent x) (agent y)))))
+               }
+
+ :answer-variables [?x ?y]
+
+ :answers-expected ([(agent 1) (agent 2)]
+                     [(agent 2) (agent 1)]
+                     [(agent 3) (agent 1)]
+                     [(agent 1) (agent 3)]
+                     [(agent 2) (agent 3)]
+                     [(agent 3) (agent 2)]
+                     )
+
+ :goal        (sameroom ?x ?y)
+ }
