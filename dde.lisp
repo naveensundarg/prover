@@ -128,14 +128,18 @@
 	     ,(cons 'or (loop for i from 0 to end collect 
 		       `(= ,i ?p)))))))
 
+;  (declare-function '+ 2 :rewrite-code '+-REWRITER)
+
+(defparameter *horizon* 6)
+(defparameter *arithmetic-max* 10)
 
 (defun assert-common-dde-axioms! ()
   (mapcar #'assert *EC-Axioms*)
-  (assert-add-table 10) 
   
-
-  (assert-domain 6)
-;  (declare-function '+ 2 :rewrite-code '+-REWRITER)
+  (assert-add-table *arithmetic-max*)
+  (assert-domain *horizon*)
+  
+  ;; Basic Trajectory Axiom.
   (assert '(forall ((?train Train) (?track Track) (?s Number) (?t Number))
 	    (Trajectory	     
 	     (onrails ?train ?track)
@@ -143,19 +147,28 @@
 	     (position ?train ?track ?t)
 	     ?t)))
   
+  ;; On a single track, any moveable can be in just one position.
   (assert '(forall ((?p1 Number) (?p2 Number) (?m Moveable) (?t Track))
 	    (implies (and (position ?m ?t ?p1) (position ?m ?t ?2))
 	     (= ?p1 ?p2))))
+  
+  ;; Starting the simulation places the train on track1.
   (assert '(forall ((?t Number)) (Initiates start (onrails train track1) ?t))) 
+  
+  ;; We start the simulation at time 0. 
   (assert '(Happens start 0))
   
   
+  ;; Switching from track 1 to track 2, initiates onrails for track 2.
   (assert '(forall ((?t Number) (?track1 Track) (?track2 Track))
 	    (Initiates (switch ?track1 ?track2) (onrails train ?track2) ?t)))
   
+  ;; Switching from track 1 to track 2, terminates onrails for track 1.
   (assert '(forall ((?t Number) (?track1 Track) (?track2 Track))
 	    (Terminates (switch ?track1 ?track2) (onrails train ?track1) ?t)))
   
+  ;; if for any track, train, person, time and position, the train and person are at the same position
+  ;; then the person is dead at the next time step. 
   (assert '(forall ((?track Track) (?train Train) (?person Person) (?time Number) (?pos Number))
 	    (implies (and 
 		  (HoldsAt (position ?train ?track ?pos) ?time)
@@ -163,13 +176,30 @@
 	     (HoldsAt (dead ?person) (+ 1 ?time)))))
   
   ;;initial conditions
-  
+  ;; At time 0, no trains are present on any track. 
   (assert '(forall ((?p Number) (?train Train) (?track Track)) 
 	    (not (HoldsAt (position ?train ?track ?p) 0))))
-  (assert '(implies (forall ((?t Number))
-		     (implies (Prior ?t 6) (not (HoldsAt (position train track1 4) ?t))))
+  
+  ;; Condition for P1
+  (assert `(implies 
 	    (forall ((?t Number))
-		     (implies (Prior ?t 6) (not (HoldsAt (dead P1) ?t))))))
+		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track1 4) ?t))))
+	    (forall ((?t Number))
+		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
+
+   ;; Condition for P2
+  (assert `(implies 
+	    (forall ((?t Number))
+		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track1 5) ?t))))
+	    (forall ((?t Number))
+		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
+
+  ;; Condition for P3
+  (assert `(implies 
+	    (forall ((?t Number))
+		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track2 3) ?t))))
+	    (forall ((?t Number))
+		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
 
   (assert '(forall ((?train Train) (?person Person) (?track Track) (?pos Number))
   	    (implies
@@ -198,31 +228,7 @@
 	     (implies (HoldsAt (position ?train ?track1 ?pos) ?time)
 	      (or
 	       (or (= ?pos 0) (= ?pos 2))
-	       (not (exists ((?p Number)) (HoldsAt (position ?train ?track2 ?p) ?time) )))))))
-  
-  
-  ;; (assert '(forall ((?p Number))
-  ;; 	    (implies (SwitchPoint track1 ?p)
-  ;; 	     (= ?p 2))))
-  
- 
-  ;; (assert '(forall ((?p Number))
-  ;; 	    (implies (SwitchPoint track2 ?p)
-  ;; 	     (= ?p 0))))
-  
-  
-  ;; (assert '(forall ((?track1 Track) (?track2 Track) (?t Number) (?pos1 Number) (?pos2 Number) (?moveable Moveable))
-  ;; 	    (iff (and 
-  ;; 		      (not (= ?track1 ?track2))
-  ;; 		      (HoldsAt (position ?moveable ?track1 ?pos1) ?t)
-  ;; 		      (HoldsAt (position ?moveable ?track2 ?pos2) ?t))
-  ;; 	     (and (SwitchPoint ?track1 ?pos1) (SwitchPoint ?track2 ?pos2)))))
-  ;; (assert '(forall ((?position Number) (?time Number) (?track1 Track) (?track2 Track) (?moveable Moveable)) 
-  ;; 	    (implies (and 
-  ;; 		      (not (= ?track1 ?track2))
-  ;; 		      (HoldsAt (position ?moveable ?track1 ?position) ?time))
-  ;; 	     (not (exists ((?pos Number)) (HoldsAt (position ?moveable ?track2 ?pos) ?time)) ))))
-  )
+	       (not (exists ((?p Number)) (HoldsAt (position ?train ?track2 ?p) ?time) ))))))))
 
 
 (defun setup ()
@@ -255,25 +261,26 @@
 
   (setup)
   
-  (assert '(forall ((?t1 Number) (?t2 Number))
-	    (not (Clipped ?t1 (onrails train track1) ?t2)))))
+  (assert `(forall ((?t1 Number) (?t2 Number))
+	    (implies (and (Prior ?t1 ,*horizon*) (Prior ?t2 ,*horizon*))
+	     (not (Clipped ?t1 (onrails train track1) ?t2))) )))
 
 (defun run-scenario (setup name)
   (funcall setup)
   (print name)
-  (if (equalp :PROOF-FOUND (prove '(exists ((?t Number)) (HoldsAt (dead P1) ?t))))
+  (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
       (print "P1 Dead")
       (print "P1 Alive")) 
   
   (funcall setup)
-  (if (equalp :PROOF-FOUND (prove '(exists ((?t Number)) (HoldsAt (dead P2) ?t))))
+  (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
       (print "P2 Dead")
       (print "P2 Alive"))
  
 (funcall setup)
-(if (equalp :PROOF-FOUND (prove '(exists ((?t Number)) (HoldsAt (dead P3) ?t))))
-      (print "P3 Dead")
-      (print "P3 Alive"))
+(if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P3) ?t)))))
+      (print "P3 Alive")
+      (print "P3 Dead"))
   nil)
 
 
