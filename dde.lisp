@@ -261,9 +261,14 @@
 
   (setup)
   
-  (assert `(forall ((?t1 Number) (?t2 Number))
-	    (implies (and (Prior ?t1 ,*horizon*) (Prior ?t2 ,*horizon*))
-	     (not (Clipped ?t1 (onrails train track1) ?t2))) )))
+  (assert '(not (Clipped 0 (onrails train track1) 1)))
+  (assert '(not (Clipped 0 (onrails train track1) 2)))
+  (assert '(not (Clipped 0 (onrails train track1) 3)))
+  (assert '(not (Clipped 0 (onrails train track1) 4)))
+  (assert '(not (Clipped 0 (onrails train track1) 5)))
+  (assert '(not (Clipped 0 (onrails train track1) 6)))
+
+  )
 
 (defun run-scenario (setup name)
   (funcall setup)
@@ -277,8 +282,8 @@
       (print "P2 Dead")
       (print "P2 Alive"))
  
-(funcall setup)
-(if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P3) ?t)))))
+  (funcall setup)
+  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P3) ?t)))))
       (print "P3 Alive")
       (print "P3 Dead"))
   nil)
@@ -287,5 +292,24 @@
 (defun run-scenario-1 ()
   (run-scenario #'scenario-1 "Scenario: 1"))
 
-(defun run-scenario-base ()
-  (run-scenario #'base "Scenario: Base"))
+(defun run-base ()
+
+  (print "Base")
+ 
+  ( base)
+  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P1) ?t)))))
+      (print "P1 Dead")
+      (print "P1 Alive"))
+  
+   ( base)
+   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P2) ?t)))))
+      (print "P2 Dead")
+      (print "P2 Alive"))
+   
+   
+    ( base)
+    (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
+      (print "P3 Alive")
+      (print "P3 Dead"))
+  
+  nil)
