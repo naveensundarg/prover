@@ -6,7 +6,8 @@
   (declare-sort 'Fluent)
   (declare-sort 'Event)
   (declare-subsort 'Action 'Event)
-  
+  (declare-subsort 'ActionType 'Event)
+
   (declare-relation 'Initiates 3 :sort '(Event Fluent Number))
   (declare-relation 'Terminates 3 :sort '(Event Fluent Number))
   (declare-relation 'Releases 3 :sort '(Event Fluent Number))
@@ -95,7 +96,10 @@
   (snark:declare-function 'dead 1 :sort '(Fluent Person))
   (snark:declare-function 'onrails 2 :sort '(Fluent Train Track))
   (snark:declare-constant 'start :sort 'Event)
-  (snark:declare-constant 'motion :sort 'Fluent))
+  (snark:declare-constant 'motion :sort 'Fluent)
+  
+;  (snark:declare-function 'drop 3 :sort '(Event 'Person ))
+  )
 
 
 (defun +-REWRITER (term subst)
@@ -180,27 +184,40 @@
   (assert '(forall ((?p Number) (?train Train) (?track Track)) 
 	    (not (HoldsAt (position ?train ?track ?p) 0))))
   
-  ;; Condition for P1
-  (assert `(implies 
-	    (forall ((?t Number))
-		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track1 4) ?t))))
-	    (forall ((?t Number))
-		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
 
-   ;; Condition for P2
+  ;;; Universal of the three conditions below
+  (assert `(forall ((?track Track) (?person Person))
+		  (implies 
+		   (exists ((?position Number))
+			   (and (forall ((?t Number)) (HoldsAt (position ?person ?track ?position) ?t))
+				(forall ((?t Number))
+					(implies (Prior ?t ,*horizon*) 
+						 (not (HoldsAt (position train ?track ?position) ?t)))))) 
+	       (forall ((?t Number))
+		       (implies (Prior ?t ,*horizon*) 
+				(not (HoldsAt (dead P1) ?t)))))))
+ ;; Condition for P1 TODO: Universalize
   (assert `(implies 
-	    (forall ((?t Number))
-		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track1 5) ?t))))
-	    (forall ((?t Number))
-		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
+  	    (forall ((?t Number))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track1 4) ?t))))
+  	    (forall ((?t Number))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
 
-  ;; Condition for P3
+   ;; Condition for P2 TODO: Universalize
   (assert `(implies 
-	    (forall ((?t Number))
-		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track2 3) ?t))))
-	    (forall ((?t Number))
-		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
+  	    (forall ((?t Number))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track1 5) ?t))))
+  	    (forall ((?t Number))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
 
+  ;; Condition for P3 TODO: Universalize
+  (assert `(implies 
+  	    (forall ((?t Number))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track2 3) ?t))))
+  	    (forall ((?t Number))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
+
+  ;; If nothing hits a person, they are not dead.
   (assert '(forall ((?train Train) (?person Person) (?track Track) (?pos Number))
   	    (implies
   	     (not 
@@ -213,8 +230,12 @@
   (assert '(forall ((?t Number)) (HoldsAt (position P2 track1 5) ?t)))
   (assert '(forall ((?t Number)) (HoldsAt (position P3 track2 3) ?t)))
   
+  
+  
+  ;; The tracks are different.
   (assert '(not (= track1 track2)))
   
+  ;; In a given track, the train can be at only one position.
   (assert '(forall ((?pos1 Number) (?pos2 Number) (?t Number) (?train Train) (?track Track))
 	    (implies (and 
 		      (not (= ?pos1 ?pos2))
@@ -241,7 +262,7 @@
   (setup)
   
 
-  
+  ;; thse come from perception
   (assert '(not (Clipped 0 (onrails train track1) 1)))
   (assert '(not (Clipped 0 (onrails train track1) 2)))
   (assert '(not (Clipped 1 (onrails train track1) 1)))
@@ -260,32 +281,30 @@
 (defun base ()
 
   (setup)
-  
+  ;;; These common from perception. 
   (assert '(not (Clipped 0 (onrails train track1) 1)))
   (assert '(not (Clipped 0 (onrails train track1) 2)))
   (assert '(not (Clipped 0 (onrails train track1) 3)))
   (assert '(not (Clipped 0 (onrails train track1) 4)))
   (assert '(not (Clipped 0 (onrails train track1) 5)))
-  (assert '(not (Clipped 0 (onrails train track1) 6)))
-
-  )
+  (assert '(not (Clipped 0 (onrails train track1) 6))))
 
 (defun run-scenario (setup name)
   (funcall setup)
   (print name)
   (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
-      (print "P1 Dead")
-      (print "P1 Alive")) 
+      (print "P1 Alive")
+      (print "P1 Dead")) 
   
   (funcall setup)
   (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
-      (print "P2 Dead")
-      (print "P2 Alive"))
+      (print "P2 Alive")
+      (print "P2 Dead"))
  
   (funcall setup)
   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P3) ?t)))))
-      (print "P3 Alive")
-      (print "P3 Dead"))
+      (print "P3 Dead")
+      (print "P3 Alive"))
   nil)
 
 
@@ -295,21 +314,19 @@
 (defun run-base ()
 
   (print "Base")
- 
-  ( base)
+  (base)
   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P1) ?t)))))
       (print "P1 Dead")
       (print "P1 Alive"))
   
-   ( base)
+   (base)
    (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P2) ?t)))))
       (print "P2 Dead")
       (print "P2 Alive"))
    
+   (base)
+   (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
+       (print "P3 Alive")
+       (print "P3 Dead"))
    
-    ( base)
-    (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
-      (print "P3 Alive")
-      (print "P3 Dead"))
-  
-  nil)
+   nil)
