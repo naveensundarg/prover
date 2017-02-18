@@ -6,8 +6,8 @@
   (declare-sort 'Fluent)
   (declare-sort 'Event)
   (declare-subsort 'Action 'Event)
-  (declare-subsort 'ActionType 'Event)
-
+  (declare-sort 'ActionType)
+  
   (declare-relation 'Initiates 3 :sort '(Event Fluent Number))
   (declare-relation 'Terminates 3 :sort '(Event Fluent Number))
   (declare-relation 'Releases 3 :sort '(Event Fluent Number))
@@ -26,6 +26,7 @@
   
   (declare-relation 'Prior 2 :sort '(Number Number))
   
+    
   (declare-constant 't0 :sort 'Number)
   (declare-constant 't1 :sort 'Number)
   (declare-constant 't2 :sort 'Number)
@@ -77,12 +78,15 @@
   (declare-ec-sort-system)
   (snark:declare-sort 'Track)
   (snark:declare-sort 'Moveable :subsorts-incompatible t)
-  (snark:declare-subsort 'Person 'Moveable)
+  (snark:declare-subsort 'Agent 'Moveable)
   (snark:declare-subsort 'Train  'Moveable)
 
-  (snark:declare-constant 'P1 :sort 'Person)
-  (snark:declare-constant 'P2 :sort 'Person)
-  (snark:declare-constant 'P3 :sort 'Person)
+    (declare-function 'action 2 :sort '(Action Agent ActionType))
+
+  (declare-constant 'I :sort 'Agent)
+  (snark:declare-constant 'P1 :sort 'Agent)
+  (snark:declare-constant 'P2 :sort 'Agent)
+  (snark:declare-constant 'P3 :sort 'Agent)
   
   (snark:declare-constant 'train :sort 'Train)
   (snark:declare-constant 'track1 :sort 'Track)
@@ -91,14 +95,14 @@
 
   (snark:declare-function 'position 3 :sort '(Fluent Moveable Track Number))
 
-  (snark:declare-function 'switch 2 :sort '(Event Track Track))
+  (snark:declare-function 'switch 2 :sort '(ActionType Track Track))
   (snark:declare-relation 'SwitchPoint 2 :sort '(Track Number))
-  (snark:declare-function 'dead 1 :sort '(Fluent Person))
+  (snark:declare-function 'dead 1 :sort '(Fluent Agent))
   (snark:declare-function 'onrails 2 :sort '(Fluent Train Track))
   (snark:declare-constant 'start :sort 'Event)
   (snark:declare-constant 'motion :sort 'Fluent)
   
-;  (snark:declare-function 'drop 3 :sort '(Event 'Person ))
+  (snark:declare-function 'drop 3 :sort '(Event Agent ))
   )
 
 
@@ -164,16 +168,16 @@
   
   
   ;; Switching from track 1 to track 2, initiates onrails for track 2.
-  (assert '(forall ((?t Number) (?track1 Track) (?track2 Track))
-	    (Initiates (switch ?track1 ?track2) (onrails train ?track2) ?t)))
+  (assert '(forall ((?a Agent) (?t Number) (?track1 Track) (?track2 Track))
+	    (Initiates (action ?a (switch ?track1 ?track2)) (onrails train ?track2) ?t)))
   
   ;; Switching from track 1 to track 2, terminates onrails for track 1.
-  (assert '(forall ((?t Number) (?track1 Track) (?track2 Track))
-	    (Terminates (switch ?track1 ?track2) (onrails train ?track1) ?t)))
+  (assert '(forall ((?a Agent) (?t Number) (?track1 Track) (?track2 Track))
+	    (Terminates (action ?a (switch ?track1 ?track2)) (onrails train ?track1) ?t)))
   
   ;; if for any track, train, person, time and position, the train and person are at the same position
   ;; then the person is dead at the next time step. 
-  (assert '(forall ((?track Track) (?train Train) (?person Person) (?time Number) (?pos Number))
+  (assert '(forall ((?track Track) (?train Train) (?person Agent) (?time Number) (?pos Number))
 	    (implies (and 
 		  (HoldsAt (position ?train ?track ?pos) ?time)
 		  (HoldsAt (position ?person ?track ?pos) ?time))
@@ -186,7 +190,7 @@
   
 
   ;;; Universal of the three conditions below
-  (assert `(forall ((?track Track) (?person Person))
+  (assert `(forall ((?track Track) (?person Agent))
 		  (implies 
 		   (exists ((?position Number))
 			   (and (forall ((?t Number)) (HoldsAt (position ?person ?track ?position) ?t))
@@ -218,7 +222,7 @@
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
 
   ;; If nothing hits a person, they are not dead.
-  (assert '(forall ((?train Train) (?person Person) (?track Track) (?pos Number))
+  (assert '(forall ((?train Train) (?person Agent) (?track Track) (?pos Number))
   	    (implies
   	     (not 
   	      (exists ((?t Number)) 
@@ -270,11 +274,11 @@
   (assert '(Clipped 2 (onrails train track1) 3 ))
   (assert '(Clipped 2 (onrails train track1) 4 ))
   (assert '(Clipped 2 (onrails train track1) 5 ))
-  (assert '(not (exists ((?t Number))
-		 (Happens (switch track2 track1) ?t))))
+  (assert '(not (exists ((?a Agent) (?t Number))
+		 (Happens (action ?a (switch track2 track1)) ?t))))
   (assert '(forall ((?t2 Number))
 	    (not  (Clipped 2 (onrails train track2) ?t2))))
-  (assert '(Happens (switch track1 track2) 2)))
+  (assert '(Happens (action I (switch track1 track2)) 2)))
 
 
 
