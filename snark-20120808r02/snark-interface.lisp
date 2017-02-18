@@ -29,7 +29,10 @@
   (snark:print-row-reasons nil)
   (snark:print-row-partitions nil)
   (snark:print-rows-prettily nil)
+  
   (snark:print-rows :min 0 :max 0))
+
+
 
 (defun setup-snark (&key (time-limit 5) (verbose nil))
   (snark:initialize :verbose  verbose)
@@ -40,7 +43,10 @@
   (snark:prove-supported t)
   (snark:use-hyperresolution t)
   (snark:use-paramodulation t)
+  (snark::declare-code-for-numbers)
   (snark:allow-skolem-symbols-in-answers nil))
+
+
 
 (defun row-formula (name))
 
