@@ -1,6 +1,7 @@
-(load "/Users/naveensundarg/projects/prover/snark-20120808r02/snark-interface.lisp")
 
 (in-package :snark-user)
+
+(load "/Users/naveensundarg/projects/prover/snark-20120808r02/snark-interface.lisp")
 
 (defun declare-ec-sort-system ()
   (declare-sort 'Fluent)
@@ -79,7 +80,7 @@
   (snark:declare-sort 'Track)
   (snark:declare-sort 'Moveable :subsorts-incompatible t)
   (snark:declare-subsort 'Agent 'Moveable)
-  (snark:declare-subsort 'Train  'Moveable)
+  (snark:declare-subsort 'Trolley  'Moveable)
 
   (declare-function 'action 2 :sort '(Action Agent ActionType))
 
@@ -89,7 +90,7 @@
   (snark:declare-constant 'P2 :sort 'Agent)
   (snark:declare-constant 'P3 :sort 'Agent)
   
-  (snark:declare-constant 'train :sort 'Train)
+  (snark:declare-constant 'trolley :sort 'Trolley)
   (snark:declare-constant 'track1 :sort 'Track)
   (snark:declare-constant 'track2 :sort 'Track)
   (snark:declare-function '+ 2 :sort '(Number Number Number))
@@ -100,8 +101,8 @@
   (snark:declare-relation 'SwitchPoint 2 :sort '(Track Number))
   (snark:declare-relation 'Heavy 1 :sort '(Agent))
   (snark:declare-function 'dead 1 :sort '(Fluent Agent))
-  (snark:declare-function 'onrails 2 :sort '(Fluent Train Track))
-  (snark:declare-function 'damage 1 :sort '(Event Train))
+  (snark:declare-function 'onrails 2 :sort '(Fluent Trolley Track))
+  (snark:declare-function 'damage 1 :sort '(Event Trolley))
   (snark:declare-constant 'start :sort 'Event)
   
   
@@ -154,45 +155,49 @@
 
   
   ;; Basic Trajectory Axiom.
-  (assert '(forall ((?train Train) (?track Track) (?s Number) (?t Number))
+  (assert '(forall ((?trolley Trolley) (?track Track) (?s Number) (?t Number))
 	    (Trajectory	     
-	     (onrails ?train ?track)
+	     (onrails ?trolley ?track)
 	     ?s
-	     (position ?train ?track ?t)
+	     (position ?trolley ?track ?t)
 	     ?t)))
   
   ;; On a single track, any moveable can be in just one position.
-  (assert '(forall ((?p1 Number) (?p2 Number) (?m Moveable) (?t Track))
-	    (implies (and (position ?m ?t ?p1) (position ?m ?t ?2))
-	     (= ?p1 ?p2))))
+  (assert '(forall ((?p1 Number) (?p2 Number) (?m Moveable) (?t Track) (?time Number))
+	    (implies (and (HoldsAt (position ?m ?t ?p1) ?time) (HoldsAt (position ?m ?t ?p2) ?time))
+	     (= ?p1 ?p2)))
+	   :documentation "moveable in one position only")
   
-  ;; Starting the simulation places the train on track1.
-  (assert '(forall ((?t Number)) (Initiates start (onrails train track1) ?t))) 
+  ;; Starting the simulation places the trolley on track1.
+  (assert '(forall ((?t Number)) (Initiates start (onrails trolley track1) ?t))
+	  :documentation "we start on track 1") 
   
   ;; We start the simulation at time 0. 
-  (assert '(Happens start 0))
+  (assert '(Happens start 0)
+	  
+	  )
   
   
   ;; Switching from track 1 to track 2, initiates onrails for track 2.
   (assert '(forall ((?a Agent) (?t Number) (?track1 Track) (?track2 Track))
-	    (Initiates (action ?a (switch ?track1 ?track2)) (onrails train ?track2) ?t)))
+	    (Initiates (action ?a (switch ?track1 ?track2)) (onrails trolley ?track2) ?t)))
   
   ;; Switching from track 1 to track 2, terminates onrails for track 1.
   (assert '(forall ((?a Agent) (?t Number) (?track1 Track) (?track2 Track))
-	    (Terminates (action ?a (switch ?track1 ?track2)) (onrails train ?track1) ?t)))
+	    (Terminates (action ?a (switch ?track1 ?track2)) (onrails trolley ?track1) ?t)))
   
-  ;; if for any track, train, person, time and position, the train and person are at the same position
+  ;; if for any track, trolley, person, time and position, the trolley and person are at the same position
   ;; then the person is dead at the next time step. 
-  (assert '(forall ((?track Track) (?train Train) (?person Agent) (?time Number) (?pos Number))
+  (assert '(forall ((?track Track) (?trolley Trolley) (?person Agent) (?time Number) (?pos Number))
 	    (implies (and 
-		  (HoldsAt (position ?train ?track ?pos) ?time)
+		  (HoldsAt (position ?trolley ?track ?pos) ?time)
 		  (HoldsAt (position ?person ?track ?pos) ?time))
 	     (HoldsAt (dead ?person) (+ 1 ?time)))))
   
   ;;initial conditions
-  ;; At time 0, no trains are present on any track. 
-  (assert '(forall ((?p Number) (?train Train) (?track Track)) 
-	    (not (HoldsAt (position ?train ?track ?p) 0))))
+  ;; At time 0, no trolleys are present on any track. 
+  (assert '(forall ((?p Number) (?trolley Trolley) (?track Track)) 
+	    (not (HoldsAt (position ?trolley ?track ?p) 0))))
   
 
   ;;; Universal of the three conditions below
@@ -202,37 +207,37 @@
 			   (and (forall ((?t Number)) (HoldsAt (position ?person ?track ?position) ?t))
 				(forall ((?t Number))
 					(implies (Prior ?t ,*horizon*) 
-						 (not (HoldsAt (position train ?track ?position) ?t)))))) 
+						 (not (HoldsAt (position trolley ?track ?position) ?t)))))) 
 	       (forall ((?t Number))
 		       (implies (Prior ?t ,*horizon*) 
 				(not (HoldsAt (dead P1) ?t)))))))
  ;; Condition for P1 TODO: Universalize
   (assert `(implies 
   	    (forall ((?t Number))
-  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track1 4) ?t))))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position trolley track1 4) ?t))))
   	    (forall ((?t Number))
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
 
    ;; Condition for P2 TODO: Universalize
   (assert `(implies 
   	    (forall ((?t Number))
-  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track1 5) ?t))))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position trolley track1 5) ?t))))
   	    (forall ((?t Number))
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
 
   ;; Condition for P3 TODO: Universalize
   (assert `(implies 
   	    (forall ((?t Number))
-  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position train track2 3) ?t))))
+  		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position trolley track2 3) ?t))))
   	    (forall ((?t Number))
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
 
   ;; If nothing hits a person, they are not dead.
-  (assert '(forall ((?train Train) (?person Agent) (?track Track) (?pos Number))
+  (assert '(forall ((?trolley Trolley) (?person Agent) (?track Track) (?pos Number))
   	    (implies
   	     (not 
   	      (exists ((?t Number)) 
-  		      (and (HoldsAt (position ?train ?track ?pos) ?t)
+  		      (and (HoldsAt (position ?trolley ?track ?pos) ?t)
   			   (HoldsAt (position ?person ?track ?pos) ?t))))
   	     (not (exists ((?t Number)) (Holds (dead ?person) ?t))))))
  
@@ -244,12 +249,12 @@
   ;; The tracks are different.
   (assert '(not (= track1 track2)))
   
-  ;; In a given track, the train can be at only one position.
-  (assert '(forall ((?pos1 Number) (?pos2 Number) (?t Number) (?train Train) (?track Track))
-	    (implies (and 
-		      (not (= ?pos1 ?pos2))
-		      (HoldsAt (position ?train ?track ?pos1) ?t))
-	     (not (HoldsAt (position ?train ?track ?pos2) ?t)))))
+  ;; In a given track, the trolley can be at only one position.
+  ;; (assert '(forall ((?pos1 Number) (?pos2 Number) (?t Number) (?trolley Trolley) (?track Track))
+  ;; 	    (implies (and 
+  ;; 		      (not (= ?pos1 ?pos2))
+  ;; 		      (HoldsAt (position ?trolley ?track ?pos1) ?t))
+  ;; 	     (not (HoldsAt (position ?trolley ?track ?pos2) ?t)))))
   
   ;;; Dropping a person onto a track 
   (assert '(forall ((?a1 Agent) (?a2 Agent) (?track Track) (?position Number) (?t Number))
@@ -262,18 +267,17 @@
 	     (not (Clipped ?t1 (position ?a ?track ?position) ?t2))))
   
   ;; damaged 
-  (assert '(forall ((?d Number) (?train Train) (?track Track) (?position Number))
-	    (implies (and (HoldsAt (position ?train ?track ?position) ?d) (Happens (damage ?train) ?d))
-	     (forall ((?t Number)) (implies (Prior ?d ?t) (HoldsAt (position ?train ?track ?position) ?t))))))
+  (assert '(forall ((?d Number) (?trolley Trolley) (?track Track) (?position Number))
+  	    (implies (and (HoldsAt (position ?trolley ?track ?position) ?d) (Happens (damage ?trolley) ?d))
+  	    
+	     (and (HoldsAt (position ?trolley ?track ?position) (+ 1 ?d))
+	      (forall ((?t Number)) (implies (Prior (+ 1 ?d) ?t) (HoldsAt (position ?trolley ?track ?position) ?t)))))))
   
   
-  (assert '(forall ((?train Train) (?track1 Track) (?track2 Track)
-		    (?pos Number) (?time Number))
-	    (implies (and (not (= ?track1 ?track2))  )
-	     (implies (HoldsAt (position ?train ?track1 ?pos) ?time)
-	      (or
-	       (or (= ?pos 0) (= ?pos 2))
-	       (not (exists ((?p Number)) (HoldsAt (position ?train ?track2 ?p) ?time) ))))))))
+  
+  
+  
+  )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -281,7 +285,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun setup ()
-  (setup-snark)
+  (setup-snark :verbose nil)
   (declare-dde-commons)
   (assert-common-dde-axioms!))
 
@@ -316,15 +320,23 @@
 
   (setup)
   
+  (assert '(forall ((?trolley Trolley) (?track1 Track) (?track2 Track)
+		    (?pos Number) (?time Number))
+	    (implies (and (not (= ?track1 ?track2))  )
+	     (implies (HoldsAt (position ?trolley ?track1 ?pos) ?time)
+	      (or
+	       (or (= ?pos 0) (= ?pos 2))
+	       (not (exists ((?p Number)) (HoldsAt (position ?trolley ?track2 ?p) ?time) )))))))
+  
   (assert '(forall ((?t Number)) (HoldsAt (position P3 track2 3) ?t)))
 
   ;;; These common from perception. 
-  (assert '(not (Clipped 0 (onrails train track1) 1)))
-  (assert '(not (Clipped 0 (onrails train track1) 2)))
-  (assert '(not (Clipped 0 (onrails train track1) 3)))
-  (assert '(not (Clipped 0 (onrails train track1) 4)))
-  (assert '(not (Clipped 0 (onrails train track1) 5)))
-  (assert '(not (Clipped 0 (onrails train track1) 6))))
+  (assert '(not (Clipped 0 (onrails trolley track1) 1)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 2)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 3)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 4)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 5)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 6))))
 
 (defun run-scenario-1-base ()
 
@@ -353,21 +365,28 @@
 (defun scenario-1-action ()
 
   (setup)
+  (assert '(forall ((?trolley Trolley) (?track1 Track) (?track2 Track)
+		    (?pos Number) (?time Number))
+	    (implies (and (not (= ?track1 ?track2))  )
+	     (implies (HoldsAt (position ?trolley ?track1 ?pos) ?time)
+	      (or
+	       (or (= ?pos 0) (= ?pos 2))
+	       (not (exists ((?p Number)) (HoldsAt (position ?trolley ?track2 ?p) ?time) )))))))
   (assert '(forall ((?t Number)) (HoldsAt (position P3 track2 3) ?t)))
 
 
   ;; these come from perception
-  (assert '(not (Clipped 0 (onrails train track1) 1)))
-  (assert '(not (Clipped 0 (onrails train track1) 2)))
-  (assert '(not (Clipped 1 (onrails train track1) 1)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 1)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 2)))
+  (assert '(not (Clipped 1 (onrails trolley track1) 1)))
   
-  (assert '(Clipped 2 (onrails train track1) 3 ))
-  (assert '(Clipped 2 (onrails train track1) 4 ))
-  (assert '(Clipped 2 (onrails train track1) 5 ))
+  (assert '(Clipped 2 (onrails trolley track1) 3 ))
+  (assert '(Clipped 2 (onrails trolley track1) 4 ))
+  (assert '(Clipped 2 (onrails trolley track1) 5 ))
   (assert '(not (exists ((?a Agent) (?t Number))
 		 (Happens (action ?a (switch track2 track1)) ?t))))
   (assert '(forall ((?t2 Number))
-	    (not  (Clipped 2 (onrails train track2) ?t2))))
+	    (not  (Clipped 2 (onrails trolley track2) ?t2))))
   (assert '(Happens (action I (switch track1 track2)) 2)))
 
 
@@ -387,12 +406,12 @@
 	    (not (HoldsAt (position P3 ?track ?p) ?t))))
 
   ;;; These common from perception. 
-  (assert '(not (Clipped 0 (onrails train track1) 1)))
-  (assert '(not (Clipped 0 (onrails train track1) 2)))
-  (assert '(not (Clipped 0 (onrails train track1) 3)))
-  (assert '(not (Clipped 0 (onrails train track1) 4)))
-  (assert '(not (Clipped 0 (onrails train track1) 5)))
-  (assert '(not (Clipped 0 (onrails train track1) 6))))
+  (assert '(not (Clipped 0 (onrails trolley track1) 1)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 2)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 3)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 4)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 5)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 6))))
 
 (defun run-scenario-2-base ()
 
@@ -424,19 +443,55 @@
   (assert '(Heavy P3))
   
   (assert '(Happens (action I (drop P3 track1 3)) 1 ))
-  (assert '(not (Clipped 0 (onrails train track1) 1)))
-  (assert '(not (Clipped 0 (onrails train track1) 2)))
-  (assert '(not (Clipped 0 (onrails train track1) 3)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 1)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 2)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 3)))
 
-  (assert '(forall ((?a Agent) (?train Train) (?track Track) (?position Number) (?time Number))
+  (assert '(forall ((?a Agent) (?trolley Trolley) (?track Track) (?position Number) (?time Number))
 	    (implies (and 
 		      (Heavy ?a)
 		      (HoldsAt (position ?a ?track ?position) ?time)
-		      (HoldsAt (position ?train ?track ?position) ?time))
+		      (HoldsAt (position ?trolley ?track ?position) ?time))
 	     (and
-	      (Happens (damage ?train) ?time)
-	      (Clipped 0 (onrails ?train ?track) (+ 1 ?time)))))))
+	      (Happens (damage ?trolley) ?time)
+	      (forall ((?tt Number)) (implies (Prior ?time ?tt)
+					       (Clipped 0 (onrails trolley track1) ?tt))))))))
 
 
 (defun run-scenario-2-action ()
   (run-scenario #'scenario-2-action "Scenario 2: Push P3"))
+
+
+
+
+(defun sanity-check (setup name)
+  (print (concatenate 'string "Sanity checks for " name))
+  (funcall setup)
+  (let ((ans  (prove '(and Z (not Z)))))
+    (if (equalp ans :PROOF-FOUND)
+	(print "  FAILED")
+	(print "  PASSED"))))
+
+
+(defun sanity-checks ()
+  
+  (sanity-check #'scenario-1-base "Scenario 1 Do Nothing")
+  (sanity-check #'scenario-1-action "Scenario 1 Switch the Trolley")
+  
+  (sanity-check #'scenario-2-base "Scenario 2 Do Nothing")
+  (sanity-check #'scenario-2-action "Scenario 2 Push Away")
+  (values))
+
+
+
+(defun all-simulations ()
+  
+   (time (run-scenario-1-base))
+   (force-output)
+   (time (run-scenario-1-action))
+   (force-output)
+   (time (run-scenario-2-base))
+   (force-output)
+   (time (run-scenario-2-action))
+
+   (values))
