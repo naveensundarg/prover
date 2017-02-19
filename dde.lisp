@@ -81,8 +81,9 @@
   (snark:declare-subsort 'Agent 'Moveable)
   (snark:declare-subsort 'Train  'Moveable)
 
-    (declare-function 'action 2 :sort '(Action Agent ActionType))
+  (declare-function 'action 2 :sort '(Action Agent ActionType))
 
+  
   (declare-constant 'I :sort 'Agent)
   (snark:declare-constant 'P1 :sort 'Agent)
   (snark:declare-constant 'P2 :sort 'Agent)
@@ -97,13 +98,16 @@
 
   (snark:declare-function 'switch 2 :sort '(ActionType Track Track))
   (snark:declare-relation 'SwitchPoint 2 :sort '(Track Number))
+  (snark:declare-relation 'Heavy 1 :sort '(Agent))
   (snark:declare-function 'dead 1 :sort '(Fluent Agent))
   (snark:declare-function 'onrails 2 :sort '(Fluent Train Track))
+  (snark:declare-function 'damage 1 :sort '(Event Train))
   (snark:declare-constant 'start :sort 'Event)
+  
+  
   (snark:declare-constant 'motion :sort 'Fluent)
   
-  (snark:declare-function 'drop 3 :sort '(Event Agent ))
-  )
+  (snark:declare-function 'drop 3 :sort '(ActionType Agent Track Number)))
 
 
 (defun +-REWRITER (term subst)
@@ -146,6 +150,8 @@
   
   (assert-add-table *arithmetic-max*)
   (assert-domain *horizon*)
+  
+
   
   ;; Basic Trajectory Axiom.
   (assert '(forall ((?train Train) (?track Track) (?s Number) (?t Number))
@@ -232,7 +238,6 @@
  
   (assert '(forall ((?t Number)) (HoldsAt (position P1 track1 4) ?t)))
   (assert '(forall ((?t Number)) (HoldsAt (position P2 track1 5) ?t)))
-  (assert '(forall ((?t Number)) (HoldsAt (position P3 track2 3) ?t)))
   
   
   
@@ -246,6 +251,21 @@
 		      (HoldsAt (position ?train ?track ?pos1) ?t))
 	     (not (HoldsAt (position ?train ?track ?pos2) ?t)))))
   
+  ;;; Dropping a person onto a track 
+  (assert '(forall ((?a1 Agent) (?a2 Agent) (?track Track) (?position Number) (?t Number))
+	    (Initiates (action ?a1 (drop ?a2 ?track ?position))
+	     (position ?a2 ?track ?position) ?t)))
+  
+  
+  ;;; Agents are stuck to tracks. 
+  (assert  '(forall ( (?track Track) (?position Number) (?t1 Number) (?t2 Number) (?a Agent)) 
+	     (not (Clipped ?t1 (position ?a ?track ?position) ?t2))))
+  
+  ;; damaged 
+  (assert '(forall ((?d Number) (?train Train) (?track Track) (?position Number))
+	    (implies (and (HoldsAt (position ?train ?track ?position) ?d) (Happens (damage ?train) ?d))
+	     (forall ((?t Number)) (implies (Prior ?d ?t) (HoldsAt (position ?train ?track ?position) ?t))))))
+  
   
   (assert '(forall ((?train Train) (?track1 Track) (?track2 Track)
 		    (?pos Number) (?time Number))
@@ -256,42 +276,18 @@
 	       (not (exists ((?p Number)) (HoldsAt (position ?train ?track2 ?p) ?time) ))))))))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;; Base Setup ;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun setup ()
   (setup-snark)
   (declare-dde-commons)
   (assert-common-dde-axioms!))
 
-(defun scenario-1 ()
-
-  (setup)
-  
-
-  ;; thse come from perception
-  (assert '(not (Clipped 0 (onrails train track1) 1)))
-  (assert '(not (Clipped 0 (onrails train track1) 2)))
-  (assert '(not (Clipped 1 (onrails train track1) 1)))
-  
-  (assert '(Clipped 2 (onrails train track1) 3 ))
-  (assert '(Clipped 2 (onrails train track1) 4 ))
-  (assert '(Clipped 2 (onrails train track1) 5 ))
-  (assert '(not (exists ((?a Agent) (?t Number))
-		 (Happens (action ?a (switch track2 track1)) ?t))))
-  (assert '(forall ((?t2 Number))
-	    (not  (Clipped 2 (onrails train track2) ?t2))))
-  (assert '(Happens (action I (switch track1 track2)) 2)))
-
-
-
-(defun base ()
-
-  (setup)
-  ;;; These common from perception. 
-  (assert '(not (Clipped 0 (onrails train track1) 1)))
-  (assert '(not (Clipped 0 (onrails train track1) 2)))
-  (assert '(not (Clipped 0 (onrails train track1) 3)))
-  (assert '(not (Clipped 0 (onrails train track1) 4)))
-  (assert '(not (Clipped 0 (onrails train track1) 5)))
-  (assert '(not (Clipped 0 (onrails train track1) 6))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;; Helper Run Code ;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun run-scenario (setup name)
   (funcall setup)
@@ -311,26 +307,136 @@
       (print "P3 Alive"))
   nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;; Scenario 1 Base ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun run-scenario-1 ()
-  (run-scenario #'scenario-1 "Scenario: 1"))
 
-(defun run-base ()
+(defun scenario-1-base ()
+
+  (setup)
+  
+  (assert '(forall ((?t Number)) (HoldsAt (position P3 track2 3) ?t)))
+
+  ;;; These common from perception. 
+  (assert '(not (Clipped 0 (onrails train track1) 1)))
+  (assert '(not (Clipped 0 (onrails train track1) 2)))
+  (assert '(not (Clipped 0 (onrails train track1) 3)))
+  (assert '(not (Clipped 0 (onrails train track1) 4)))
+  (assert '(not (Clipped 0 (onrails train track1) 5)))
+  (assert '(not (Clipped 0 (onrails train track1) 6))))
+
+(defun run-scenario-1-base ()
 
   (print "Base")
-  (base)
+  (scenario-1-base)
   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P1) ?t)))))
       (print "P1 Dead")
       (print "P1 Alive"))
   
-   (base)
+   (scenario-1-base)
    (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P2) ?t)))))
       (print "P2 Dead")
       (print "P2 Alive"))
    
-   (base)
+   (scenario-1-base)
    (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
        (print "P3 Alive")
        (print "P3 Dead"))
    
    nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;; Scenario 1 Action ;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun scenario-1-action ()
+
+  (setup)
+  (assert '(forall ((?t Number)) (HoldsAt (position P3 track2 3) ?t)))
+
+
+  ;; these come from perception
+  (assert '(not (Clipped 0 (onrails train track1) 1)))
+  (assert '(not (Clipped 0 (onrails train track1) 2)))
+  (assert '(not (Clipped 1 (onrails train track1) 1)))
+  
+  (assert '(Clipped 2 (onrails train track1) 3 ))
+  (assert '(Clipped 2 (onrails train track1) 4 ))
+  (assert '(Clipped 2 (onrails train track1) 5 ))
+  (assert '(not (exists ((?a Agent) (?t Number))
+		 (Happens (action ?a (switch track2 track1)) ?t))))
+  (assert '(forall ((?t2 Number))
+	    (not  (Clipped 2 (onrails train track2) ?t2))))
+  (assert '(Happens (action I (switch track1 track2)) 2)))
+
+
+(defun run-scenario-1-action ()
+  (run-scenario #'scenario-1-action "Scenario 1: Throw the Switch"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;; Scenario 2 Base ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(defun scenario-2-base ()
+
+  (setup)
+  
+  (assert '(forall ((?t Number) (?track Track) (?p Number))
+	    (not (HoldsAt (position P3 ?track ?p) ?t))))
+
+  ;;; These common from perception. 
+  (assert '(not (Clipped 0 (onrails train track1) 1)))
+  (assert '(not (Clipped 0 (onrails train track1) 2)))
+  (assert '(not (Clipped 0 (onrails train track1) 3)))
+  (assert '(not (Clipped 0 (onrails train track1) 4)))
+  (assert '(not (Clipped 0 (onrails train track1) 5)))
+  (assert '(not (Clipped 0 (onrails train track1) 6))))
+
+(defun run-scenario-2-base ()
+
+  (print "Base")
+  (scenario-1-base)
+  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P1) ?t)))))
+      (print "P1 Dead")
+      (print "P1 Alive"))
+  
+   (scenario-1-base)
+   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P2) ?t)))))
+      (print "P2 Dead")
+      (print "P2 Alive"))
+   
+   (scenario-1-base)
+   (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
+       (print "P3 Alive")
+       (print "P3 Dead"))
+   
+   nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;; Scenario 2 Action ;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun scenario-2-action ()
+
+  (setup)
+  
+  (assert '(Heavy P3))
+  
+  (assert '(Happens (action I (drop P3 track1 3)) 1 ))
+  (assert '(not (Clipped 0 (onrails train track1) 1)))
+  (assert '(not (Clipped 0 (onrails train track1) 2)))
+  (assert '(not (Clipped 0 (onrails train track1) 3)))
+
+  (assert '(forall ((?a Agent) (?train Train) (?track Track) (?position Number) (?time Number))
+	    (implies (and 
+		      (Heavy ?a)
+		      (HoldsAt (position ?a ?track ?position) ?time)
+		      (HoldsAt (position ?train ?track ?position) ?time))
+	     (and
+	      (Happens (damage ?train) ?time)
+	      (Clipped 0 (onrails ?train ?track) (+ 1 ?time)))))))
+
+
+(defun run-scenario-2-action ()
+  (run-scenario #'scenario-2-action "Scenario 2: Push P3"))
