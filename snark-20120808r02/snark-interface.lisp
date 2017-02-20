@@ -1,4 +1,5 @@
 
+(in-package :snark-user)
 
 
 (defun snark-verbose ()
@@ -33,6 +34,27 @@
   (snark:print-rows :min 0 :max 0))
 
 
+(defun assert-add-table (end)
+  (loop for i from 0 to end do
+       (loop for j from 0 to end do
+	    (if (< i j)
+		(assert `(PRIOR ,i ,j)))
+	    (if (< j i)
+		(assert `(PRIOR ,j ,i)))
+	    (assert `(= ,(+ i j) (+ ,i ,j)))
+	    (assert `(= ,(+ i j) (+ ,j ,i ))))))
+
+(defun assert-domain (end)
+  (assert `(forall ((?p Number))
+	    (implies (PRIOR ?p ,end)
+	     ,(cons 'or (loop for i from 0 to end collect 
+		       `(= ,i ?p)))))))
+
+
+(defparameter *horizon* 6)
+(defparameter *arithmetic-max* 10)
+
+
 
 (defun setup-snark (&key (time-limit 5) (verbose nil))
   (snark:initialize :verbose  verbose)
@@ -44,6 +66,7 @@
   (snark:use-hyperresolution t)
   (snark:use-paramodulation t)
   (snark::declare-code-for-numbers)
+  
   (snark:allow-skolem-symbols-in-answers nil))
 
 
@@ -96,6 +119,7 @@
                             (time-limit 5)
                             (verbose nil)
                             sortal-setup-fn)
+
   (let ((axioms (remove-duplicates all-axioms :test #'equalp)))
     (setup-snark :time-limit time-limit :verbose verbose)
     (if sortal-setup-fn (funcall sortal-setup-fn))

@@ -163,31 +163,37 @@
 	     ?t)))
   
   ;; On a single track, any moveable can be in just one position.
+  ;; D2
   (assert '(forall ((?p1 Number) (?p2 Number) (?m Moveable) (?t Track) (?time Number))
 	    (implies (and (HoldsAt (position ?m ?t ?p1) ?time) (HoldsAt (position ?m ?t ?p2) ?time))
 	     (= ?p1 ?p2)))
 	   :documentation "moveable in one position only")
   
   ;; Starting the simulation places the trolley on track1.
+  ;; D3
   (assert '(forall ((?t Number)) (Initiates start (onrails trolley track1) ?t))
 	  :documentation "we start on track 1") 
   
   ;; We start the simulation at time 0. 
+  ;; D4
   (assert '(Happens start 0)
 	  
 	  )
   
   
   ;; Switching from track 1 to track 2, initiates onrails for track 2.
+  ;; D5
   (assert '(forall ((?a Agent) (?t Number) (?track1 Track) (?track2 Track))
 	    (Initiates (action ?a (switch ?track1 ?track2)) (onrails trolley ?track2) ?t)))
   
   ;; Switching from track 1 to track 2, terminates onrails for track 1.
+  ;; D6
   (assert '(forall ((?a Agent) (?t Number) (?track1 Track) (?track2 Track))
 	    (Terminates (action ?a (switch ?track1 ?track2)) (onrails trolley ?track1) ?t)))
   
   ;; if for any track, trolley, person, time and position, the trolley and person are at the same position
   ;; then the person is dead at the next time step. 
+  ;; D7
   (assert '(forall ((?track Track) (?trolley Trolley) (?person Agent) (?time Number) (?pos Number))
 	    (implies (and 
 		  (HoldsAt (position ?trolley ?track ?pos) ?time)
@@ -196,11 +202,13 @@
   
   ;;initial conditions
   ;; At time 0, no trolleys are present on any track. 
+  ;; D8
   (assert '(forall ((?p Number) (?trolley Trolley) (?track Track)) 
 	    (not (HoldsAt (position ?trolley ?track ?p) 0))))
   
 
   ;;; Universal of the three conditions below
+  ;; D9
   (assert `(forall ((?track Track) (?person Agent))
 		  (implies 
 		   (exists ((?position Number))
@@ -212,6 +220,7 @@
 		       (implies (Prior ?t ,*horizon*) 
 				(not (HoldsAt (dead P1) ?t)))))))
  ;; Condition for P1 TODO: Universalize
+  ;; D10
   (assert `(implies 
   	    (forall ((?t Number))
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position trolley track1 4) ?t))))
@@ -219,6 +228,7 @@
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
 
    ;; Condition for P2 TODO: Universalize
+  ;; D11
   (assert `(implies 
   	    (forall ((?t Number))
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position trolley track1 5) ?t))))
@@ -226,6 +236,7 @@
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
 
   ;; Condition for P3 TODO: Universalize
+  ;; D12
   (assert `(implies 
   	    (forall ((?t Number))
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (position trolley track2 3) ?t))))
@@ -233,6 +244,7 @@
   		    (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
 
   ;; If nothing hits a person, they are not dead.
+  ;; D13
   (assert '(forall ((?trolley Trolley) (?person Agent) (?track Track) (?pos Number))
   	    (implies
   	     (not 
@@ -241,12 +253,16 @@
   			   (HoldsAt (position ?person ?track ?pos) ?t))))
   	     (not (exists ((?t Number)) (Holds (dead ?person) ?t))))))
  
+  ;;D14
   (assert '(forall ((?t Number)) (HoldsAt (position P1 track1 4) ?t)))
+  
+  ;;D15
   (assert '(forall ((?t Number)) (HoldsAt (position P2 track1 5) ?t)))
   
   
   
   ;; The tracks are different.
+  ;;D16
   (assert '(not (= track1 track2)))
   
   ;; In a given track, the trolley can be at only one position.
@@ -257,16 +273,19 @@
   ;; 	     (not (HoldsAt (position ?trolley ?track ?pos2) ?t)))))
   
   ;;; Dropping a person onto a track 
+  ;; D17
   (assert '(forall ((?a1 Agent) (?a2 Agent) (?track Track) (?position Number) (?t Number))
 	    (Initiates (action ?a1 (drop ?a2 ?track ?position))
 	     (position ?a2 ?track ?position) ?t)))
   
   
   ;;; Agents are stuck to tracks. 
+  ;; D18
   (assert  '(forall ( (?track Track) (?position Number) (?t1 Number) (?t2 Number) (?a Agent)) 
 	     (not (Clipped ?t1 (position ?a ?track ?position) ?t2))))
   
   ;; damaged 
+  ;; D19
   (assert '(forall ((?d Number) (?trolley Trolley) (?track Track) (?position Number))
   	    (implies (and (HoldsAt (position ?trolley ?track ?position) ?d) (Happens (damage ?trolley) ?d))
   	    
