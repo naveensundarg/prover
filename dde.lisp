@@ -289,6 +289,7 @@
   (declare-dde-commons)
   (assert-common-dde-axioms!))
 
+(defun cprint (x) (print x))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;; Helper Run Code ;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -297,19 +298,22 @@
   (funcall setup)
   (print name)
   (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
-      (print "P1 Alive")
-      (print "P1 Dead")) 
+      (cprint "P1 Alive")
+      (cprint "P1 Dead")) 
   
   (funcall setup)
   (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
-      (print "P2 Alive")
-      (print "P2 Dead"))
+      (cprint "P2 Alive")
+      (cprint "P2 Dead"))
  
   (funcall setup)
-  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P3) ?t)))))
-      (print "P3 Dead")
-      (print "P3 Alive"))
+  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number))  (HoldsAt (dead P3) ?t))))
+      (cprint "P3 Dead")
+      (cprint "P3 Alive"))
   nil)
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Scenario 1 Base ;;;;;;;;;;;;;;;;
@@ -342,19 +346,19 @@
 
   (print "Base")
   (scenario-1-base)
-  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P1) ?t)))))
-      (print "P1 Dead")
-      (print "P1 Alive"))
+  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (HoldsAt (dead P1) ?t))))
+      (cprint "P1 Dead")
+      (cprint "P1 Alive"))
   
    (scenario-1-base)
-   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P2) ?t)))))
-      (print "P2 Dead")
-      (print "P2 Alive"))
+   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (HoldsAt (dead P2) ?t))))
+      (cprint "P2 Dead")
+      (cprint "P2 Alive"))
    
    (scenario-1-base)
    (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
-       (print "P3 Alive")
-       (print "P3 Dead"))
+       (cprint "P3 Alive")
+       (cprint "P3 Dead"))
    
    nil)
 
@@ -393,6 +397,41 @@
 (defun run-scenario-1-action ()
   (run-scenario #'scenario-1-action "Scenario 1: Throw the Switch"))
 
+
+(defun scenario-1-means ()
+
+  (setup)
+  (assert '(forall ((?trolley Trolley) (?track1 Track) (?track2 Track)
+		    (?pos Number) (?time Number))
+	    (implies (and (not (= ?track1 ?track2))  )
+	     (implies (HoldsAt (position ?trolley ?track1 ?pos) ?time)
+	      (or
+	       (or (= ?pos 0) (= ?pos 2))
+	       (not (exists ((?p Number)) (HoldsAt (position ?trolley ?track2 ?p) ?time) )))))))
+
+  ;(assert '(forall ((?t Number)) (HoldsAt (position P3 track2 3) ?t)))
+
+
+  ;; these come from perception
+  (assert '(not (Clipped 0 (onrails trolley track1) 1)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 2)))
+  (assert '(not (Clipped 1 (onrails trolley track1) 1)))
+  
+  (assert '(Clipped 2 (onrails trolley track1) 3 ))
+  (assert '(Clipped 2 (onrails trolley track1) 4 ))
+  (assert '(Clipped 2 (onrails trolley track1) 5 ))
+  (assert '(not (exists ((?a Agent) (?t Number))
+		 (Happens (action ?a (switch track2 track1)) ?t))))
+  (assert '(forall ((?t2 Number))
+	    (not  (Clipped 2 (onrails trolley track2) ?t2))))
+  (assert '(Happens (action I (switch track1 track2)) 2)))
+
+
+(defun run-scenario-1-means ()
+  (scenario-1-means)
+  (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t)))))
+  (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t)))))
+  )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;; Scenario 2 Base ;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -417,19 +456,19 @@
 
   (print "Base")
   (scenario-1-base)
-  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P1) ?t)))))
-      (print "P1 Dead")
-      (print "P1 Alive"))
+  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number))  (HoldsAt (dead P1) ?t))))
+      (cprint "P1 Dead")
+      (cprint "P1 Alive"))
   
    (scenario-1-base)
-   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (implies (Prior ?t ,*horizon*) (HoldsAt (dead P2) ?t)))))
-      (print "P2 Dead")
-      (print "P2 Alive"))
+   (if (equalp :PROOF-FOUND (prove `(exists ((?t Number)) (HoldsAt (dead P2) ?t))))
+      (cprint "P2 Dead")
+      (cprint "P2 Alive"))
    
    (scenario-1-base)
    (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P3) ?t))))))
-       (print "P3 Alive")
-       (print "P3 Dead"))
+       (cprint "P3 Alive")
+       (cprint "P3 Dead"))
    
    nil)
 
@@ -462,7 +501,34 @@
   (run-scenario #'scenario-2-action "Scenario 2: Push P3"))
 
 
+(defun scenario-2-means ()
 
+  (setup)
+  
+  ;(assert '(Heavy P3))
+  
+ ; (assert '(Happens (action I (drop P3 track1 3)) 1 ))
+  (assert '(not (Clipped 0 (onrails trolley track1) 1)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 2)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 3)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 4)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 5)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 6)))
+
+  (assert '(forall ((?a Agent) (?trolley Trolley) (?track Track) (?position Number) (?time Number))
+	    (implies (and 
+		      (Heavy ?a)
+		      (HoldsAt (position ?a ?track ?position) ?time)
+		      (HoldsAt (position ?trolley ?track ?position) ?time))
+	     (and
+	      (Happens (damage ?trolley) ?time)
+	      (forall ((?tt Number)) (implies (Prior ?time ?tt)
+					       (Clipped 0 (onrails trolley track1) ?tt))))))))
+
+(defun run-scenario-2-means ()
+  (scenario-2-means)
+  (prove '(exists ((?t Number)) (HoldsAt (dead P1) ?t)))
+  (prove '(exists ((?t Number)) (HoldsAt (dead P2) ?t))))
 
 (defun sanity-check (setup name)
   (print (concatenate 'string "Sanity checks for " name))
