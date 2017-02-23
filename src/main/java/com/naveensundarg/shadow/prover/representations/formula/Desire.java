@@ -11,17 +11,15 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 /**
- * Created by naveensundarg on 11/24/16.
+ * Created by naveensundarg on 7/9/16.
  */
-public class Ought extends BaseFormula{
-
+public class Desire extends BaseFormula{
 
     private final Value agent;
     private final Value time;
-    private final Formula precondition;
-    private final Formula ought;
-
+    private final Formula formula;
     private final Set<Formula> subFormulae;
+
     private final Set<Variable> variables;
     private final Set<Value> values;
 
@@ -31,22 +29,23 @@ public class Ought extends BaseFormula{
 
     private final int weight;
 
-    public Ought(Value agent, Value time, Formula formula, Formula ought) {
+    public Desire(Value agent, Value time, Formula formula) {
 
 
         this.agent = agent;
         this.time = time;
-        this.precondition = formula;
+        this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        this.ought = ought;
-        this.subFormulae.add(this);
+        subFormulae.add(this);
+
         this.allValues = Sets.newSet();
         this.allValues.add(agent);
         this.allValues.add(time);
 
-        this.variables  = Sets.union(agent.variablesPresent(), Sets.union(time.variablesPresent(), Sets.union(formula.variablesPresent(), ought.variablesPresent())));
-        this.values  = Sets.union(agent.subValues(), Sets.union(time.subValues(), Sets.union(formula.valuesPresent(), ought.valuesPresent())));
-        this.boundVariables =  Sets.union(formula.boundVariablesPresent(), ought.boundVariablesPresent());
+        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.values = Sets.union(Sets.union(agent.subValues(), time.subValues()), formula.valuesPresent());
+
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
         if (agent instanceof Variable) {
             variables.add((Variable) agent);
@@ -57,16 +56,7 @@ public class Ought extends BaseFormula{
 
         }
 
-        this.weight = 1 + agent.getWeight() + time.getWeight() + precondition.getWeight() + ought.getWeight();
-    }
-
-    public Formula getPrecondition(){
-        return precondition;
-    }
-
-
-    public Formula getOught() {
-        return ought;
+        this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
 
     public Value getAgent() {
@@ -77,12 +67,8 @@ public class Ought extends BaseFormula{
         return time;
     }
 
-    public Set<Formula> getSubFormulae() {
-        return subFormulae;
-    }
-
-    public Set<Variable> getVariables() {
-        return variables;
+    public Formula getFormula(){
+        return formula;
     }
 
     @Override
@@ -97,12 +83,13 @@ public class Ought extends BaseFormula{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return null;
+        return new Desire(agent.apply(substitution), time.apply(substitution), formula.apply(substitution));
     }
 
     @Override
     public Formula shadow(int level) {
         return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
+
     }
 
     @Override
@@ -120,6 +107,47 @@ public class Ought extends BaseFormula{
         return weight;
     }
 
+
+    @Override
+    public String toString() {
+        return "(Desires! "
+                + agent + " "
+                + time + " "+
+                formula + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Desire knowledge = (Desire) o;
+
+        if (!agent.equals(knowledge.agent)) return false;
+        if (!time.equals(knowledge.time)) return false;
+        return formula.equals(knowledge.formula);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = safeHashCode(agent);
+        result = 31 * result + safeHashCode(time);
+        result = 31 * result + safeHashCode(formula);
+        return result;
+    }
+
+    @Override
+    public Set<Value> allValues() {
+        return allValues;
+    }
+
+    @Override
+    public String getName() {
+        return "Desires";
+    }
+
+
     @Override
     public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
         if(oldFormula.equals(this)){
@@ -133,7 +161,7 @@ public class Ought extends BaseFormula{
         }
 
 
-        return new Ought(agent, time, precondition.replaceSubFormula(oldFormula, newFormula), ought.replaceSubFormula(oldFormula, newFormula));
+        return new Desire(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 
     @Override
@@ -144,47 +172,5 @@ public class Ought extends BaseFormula{
     @Override
     public Set<Value> valuesPresent() {
         return values;
-    }
-
-
-    @Override
-    public String toString() {
-        return "(Ought! "
-                + agent + " "
-                + time + " "+
-                precondition + " " +
-                 ought + ")";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Ought ought1 = (Ought) o;
-
-        if (!agent.equals(ought1.agent)) return false;
-        if (!time.equals(ought1.time)) return false;
-        if (!precondition.equals(ought1.precondition)) return false;
-        return ought.equals(ought1.ought);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = agent.hashCode();
-        result = 31 * result + time.hashCode();
-        result = 31 * result + precondition.hashCode();
-        result = 31 * result + ought.hashCode();
-        return result;
-    }
-
-    @Override
-    public Set<Value> allValues() {
-        return allValues;
-    }
-
-    @Override
-    public String getName() {
-        return "Ought";
     }
 }

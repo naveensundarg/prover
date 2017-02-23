@@ -133,7 +133,7 @@ public class Existential extends Formula implements Quantifier {
 
     @Override
     public int hashCode() {
-        int result = argument.hashCode();
+        int result = safeHashCode(argument);
         result = 31 * result + Arrays.hashCode(vars);
         return result;
     }

@@ -63,8 +63,8 @@ public class Implication extends Formula{
 
     @Override
     public int hashCode() {
-        int result = antecedent.hashCode();
-        result = 31 * result + consequent.hashCode();
+        int result = safeHashCode(antecedent);
+        result = 31 * result + safeHashCode(consequent);
         return result;
     }
 

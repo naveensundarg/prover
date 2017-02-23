@@ -13,22 +13,26 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Possibility extends  BaseFormula{
+public class Necessity extends  BaseFormula{
 
-    Formula formula;
-    Set<Formula> subFormulae;
-    Set<Variable> variables;
+    private final Formula formula;
+    private final Set<Formula> subFormulae;
+    private final Set<Variable> variables;
+    private final Set<Variable> boundVariables;
+
     private final Set<Value> allValues;
 
     private final int weight;
 
-    public Possibility(Formula formula) {
+    public Necessity(Formula formula) {
 
 
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        subFormulae.add(this);
+        this.subFormulae.add(this);
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
+
         this.allValues = Sets.newSet();
 
 
@@ -53,7 +57,7 @@ public class Possibility extends  BaseFormula{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return new Possibility(formula.apply(substitution));
+        return new Necessity(formula.apply(substitution));
     }
 
     @Override
@@ -80,7 +84,7 @@ public class Possibility extends  BaseFormula{
 
     @Override
     public String toString() {
-        return "(POS "
+        return "(NEC "
            +
                 formula + ")";
     }
@@ -93,7 +97,7 @@ public class Possibility extends  BaseFormula{
 
     @Override
     public String getName() {
-        return "POS";
+        return "NEC";
     }
 
     @Override
@@ -109,12 +113,12 @@ public class Possibility extends  BaseFormula{
         }
 
 
-        return new Possibility(formula.replaceSubFormula(oldFormula, newFormula));
+        return new Necessity(formula.replaceSubFormula(oldFormula, newFormula));
     }
 
     @Override
     public Set<Variable> boundVariablesPresent() {
-        return formula.boundVariablesPresent();
+        return boundVariables;
     }
 
     @Override
@@ -127,13 +131,13 @@ public class Possibility extends  BaseFormula{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Possibility that = (Possibility) o;
+        Necessity necessity = (Necessity) o;
 
-        return formula.equals(that.formula);
+        return formula.equals(necessity.formula);
     }
 
     @Override
     public int hashCode() {
-        return formula.hashCode();
+        return safeHashCode(formula);
     }
 }

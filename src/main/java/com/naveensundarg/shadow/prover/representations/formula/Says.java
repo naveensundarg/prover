@@ -13,57 +13,37 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public class Communicates extends BaseFormula{
+public class Says extends  BaseFormula{
 
-    private final Value agent1;
-    private final Value agent2;
+    private final Value agent;
     private final Value time;
     private final Formula formula;
     private final Set<Formula> subFormulae;
-
-    private Set<Variable> variables;
-    private Set<Value> values;
-
-    private final Set<Variable> boundVariables;
+    private final Set<Variable> variables;
+    private final Set<Value> values;
 
     private final Set<Value> allValues;
 
     private final int weight;
 
-    public Communicates(Value agent1,Value agent2, Value time, Formula formula) {
+    public Says(Value agent, Value time, Formula formula) {
 
 
-        this.agent1 = agent1;
-        this.agent2 = agent2;
+        this.agent = agent;
         this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         this.subFormulae.add(this);
 
         this.allValues = Sets.newSet();
-        this.allValues.add(agent1);
-        this.allValues.add(agent2);
-
+        this.allValues.add(agent);
         this.allValues.add(time);
 
-        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.values = CollectionUtils.setFrom(formula.valuesPresent());
+        this.variables = Sets.union(agent.variablesPresent(), Sets.union(time.variablesPresent(), CollectionUtils.setFrom(formula.variablesPresent())));
+        this.values = Sets.union(agent.subValues(), Sets.union(time.subValues(), CollectionUtils.setFrom(formula.valuesPresent())));
 
-        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
-        if (agent1 instanceof Variable) {
-            variables.add((Variable) agent1);
-        }
-
-        if (agent2 instanceof Variable) {
-            variables.add((Variable) agent2);
-        }
-        if (time instanceof Variable) {
-            variables.add((Variable) time);
-
-        }
-
-        this.weight = 1 + agent1.getWeight()  + agent2.getWeight() + time.getWeight()  + formula.getWeight();
+        this.weight = 1 + agent.getWeight() + time.getWeight()  + formula.getWeight();
     }
 
     public Formula getFormula(){
@@ -71,12 +51,8 @@ public class Communicates extends BaseFormula{
     }
 
 
-    public Value getOrigin() {
-        return agent1;
-    }
-
-    public Value getDestination() {
-        return agent1;
+    public Value getAgent() {
+        return agent;
     }
 
     public Value getTime() {
@@ -129,10 +105,8 @@ public class Communicates extends BaseFormula{
 
     @Override
     public String toString() {
-        return "(Communicates! "
-                + agent1 + " "
-                + agent2 + " "
-
+        return "(Says! "
+                + agent + " "
                 + time + " "+
                 formula + ")";
     }
@@ -142,20 +116,19 @@ public class Communicates extends BaseFormula{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Communicates that = (Communicates) o;
+        Says says = (Says) o;
 
-        if (!agent1.equals(that.agent1)) return false;
-        if (!agent2.equals(that.agent2)) return false;
-        if (!time.equals(that.time)) return false;
-        return formula.equals(that.formula);
+        if (!agent.equals(says.agent)) return false;
+        if (!time.equals(says.time)) return false;
+        return formula.equals(says.formula);
+
     }
 
     @Override
     public int hashCode() {
-        int result = agent1.hashCode();
-        result = 31 * result + agent2.hashCode();
-        result = 31 * result + time.hashCode();
-        result = 31 * result + formula.hashCode();
+        int result = safeHashCode(agent);
+        result = 31 * result + safeHashCode(time);
+        result = 31 * result + safeHashCode(formula);
         return result;
     }
 
@@ -166,7 +139,7 @@ public class Communicates extends BaseFormula{
 
     @Override
     public String getName() {
-        return "Communicates";
+        return "Says";
     }
 
 
@@ -183,12 +156,12 @@ public class Communicates extends BaseFormula{
         }
 
 
-        return new Communicates(agent1, agent2, time, formula.replaceSubFormula(oldFormula, newFormula));
+        return new Says(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 
     @Override
     public Set<Variable> boundVariablesPresent() {
-        return boundVariables;
+        return formula.boundVariablesPresent();
     }
 
     @Override

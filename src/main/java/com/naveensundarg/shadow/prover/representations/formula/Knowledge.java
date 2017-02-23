@@ -11,55 +11,59 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 /**
- * Created by naveensundarg on 5/4/16.
+ * Created by naveensundarg on 7/9/16.
  */
-public final class Common extends  BaseFormula{
-
+public class Knowledge extends BaseFormula{
+    private final Value agent;
     private final Value time;
     private final Formula formula;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
     private final Set<Value> values;
+
     private final Set<Variable> boundVariables;
     private final Set<Value> allValues;
 
     private final int weight;
 
+    public Knowledge(Value agent, Value time, Formula formula) {
 
 
-    public Common(Value time, Formula formula) {
-
+        this.agent = agent;
         this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        this.variables = Sets.union(time.variablesPresent(), formula.variablesPresent());
-        this.values = Sets.union(time.subValues(), formula.valuesPresent());
+        this.subFormulae.add(this);
+        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.values = Sets.union(Sets.union(agent.subValues(), time.subValues()), formula.valuesPresent());
 
         this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
         this.allValues = Sets.newSet();
+        this.allValues.add(agent);
         this.allValues.add(time);
 
-        this.subFormulae.add(this);
+        if (agent instanceof Variable) {
+            variables.add((Variable) agent);
+        }
 
         if (time instanceof Variable) {
             variables.add((Variable) time);
 
         }
 
-        this.weight =  time.getWeight() + formula.getWeight();
+        this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
 
-    public Formula getFormula(){
-        return formula;
+    public Value getAgent() {
+        return agent;
     }
 
     public Value getTime() {
         return time;
     }
 
-
-    public Set<Variable> getVariables() {
-        return variables;
+    public Formula getFormula(){
+        return formula;
     }
 
     @Override
@@ -73,20 +77,14 @@ public final class Common extends  BaseFormula{
     }
 
     @Override
-    public Set<Value> valuesPresent() {
-        return values;
-    }
-
-
-    @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return   new Common(time.apply(substitution), formula.apply(substitution));
-
+        return new Knowledge(agent.apply(substitution), time.apply(substitution), formula.apply(substitution));
     }
 
     @Override
     public Formula shadow(int level) {
         return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
+
     }
 
     @Override
@@ -107,7 +105,8 @@ public final class Common extends  BaseFormula{
 
     @Override
     public String toString() {
-        return "(Common! "
+        return "(Knows! "
+                + agent + " "
                 + time + " "+
                 formula + ")";
     }
@@ -117,17 +116,19 @@ public final class Common extends  BaseFormula{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Common common = (Common) o;
+        Knowledge knowledge = (Knowledge) o;
 
-        if (!time.equals(common.time)) return false;
-        return formula.equals(common.formula);
+        if (!agent.equals(knowledge.agent)) return false;
+        if (!time.equals(knowledge.time)) return false;
+        return formula.equals(knowledge.formula);
 
     }
 
     @Override
     public int hashCode() {
-        int result = time.hashCode();
-        result = 31 * result + formula.hashCode();
+        int result = safeHashCode(agent);
+        result = 31 * result + safeHashCode(time);
+        result = 31 * result + safeHashCode(formula);
         return result;
     }
 
@@ -138,7 +139,7 @@ public final class Common extends  BaseFormula{
 
     @Override
     public String getName() {
-        return "Common";
+        return "Knowledge";
     }
 
     @Override
@@ -154,7 +155,7 @@ public final class Common extends  BaseFormula{
         }
 
 
-        return new Common(time, formula.replaceSubFormula(oldFormula, newFormula));
+        return new Knowledge(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 
     @Override
@@ -162,5 +163,8 @@ public final class Common extends  BaseFormula{
         return boundVariables;
     }
 
-
+    @Override
+    public Set<Value> valuesPresent() {
+        return values;
+    }
 }

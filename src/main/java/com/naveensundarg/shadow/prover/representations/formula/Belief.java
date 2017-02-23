@@ -11,37 +11,55 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 /**
- * Created by naveensundarg on 7/9/16.
+ * Created by naveensundarg on 5/4/16.
  */
-public class Perception extends BaseFormula{
+public final class Belief extends BaseFormula{
+
     private final Value agent;
     private final Value time;
     private final Formula formula;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
     private final Set<Value> values;
+
+    private final Set<Variable> boundVariables;
     private final Set<Value> allValues;
 
     private final int weight;
 
-    public Perception(Value agent, Value time, Formula formula) {
+
+    public Belief(Value agent, Value time, Formula formula) {
 
 
         this.agent = agent;
         this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        subFormulae.add(this);
-
+        this.subFormulae.add(this);
         this.allValues = Sets.newSet();
         this.allValues.add(agent);
         this.allValues.add(time);
+        this.variables = CollectionUtils.setFrom(formula.variablesPresent());
+        this.values = Sets.union(Sets.union(agent.subValues(), time.subValues()), formula.valuesPresent());
+        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
-        this.variables = Sets.union(agent.variablesPresent(), Sets.union(time.variablesPresent(), CollectionUtils.setFrom(formula.variablesPresent())));
-        this.values = Sets.union(agent.subValues(), Sets.union(time.subValues(), CollectionUtils.setFrom(formula.valuesPresent())));
+        if (agent instanceof Variable) {
+            variables.add((Variable) agent);
+        }
+
+        if (time instanceof Variable) {
+            variables.add((Variable) time);
+
+        }
+
 
         this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
+
+    public Formula getFormula(){
+        return formula;
+    }
+
 
     public Value getAgent() {
         return agent;
@@ -51,8 +69,12 @@ public class Perception extends BaseFormula{
         return time;
     }
 
-    public Formula getFormula(){
-        return formula;
+    public Set<Formula> getSubFormulae() {
+        return subFormulae;
+    }
+
+    public Set<Variable> getVariables() {
+        return variables;
     }
 
     @Override
@@ -66,14 +88,20 @@ public class Perception extends BaseFormula{
     }
 
     @Override
+    public Set<Value> valuesPresent() {
+        return values;
+    }
+
+
+    @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return new Perception(agent.apply(substitution), time.apply(substitution), formula.apply(substitution));
+        return new Belief(agent.apply(substitution), time.apply(substitution), formula.apply(substitution));
+
     }
 
     @Override
     public Formula shadow(int level) {
         return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
-
     }
 
     @Override
@@ -104,22 +132,13 @@ public class Perception extends BaseFormula{
         }
 
 
-        return new Perception(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
+        return new Belief(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 
-    @Override
-    public Set<Variable> boundVariablesPresent() {
-        return formula.boundVariablesPresent();
-    }
-
-    @Override
-    public Set<Value> valuesPresent() {
-        return values;
-    }
 
     @Override
     public String toString() {
-        return "(Perception! "
+        return "(Believes! "
                 + agent + " "
                 + time + " "+
                 formula + ")";
@@ -130,19 +149,19 @@ public class Perception extends BaseFormula{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Perception knowledge = (Perception) o;
+        Belief belief = (Belief) o;
 
-        if (!agent.equals(knowledge.agent)) return false;
-        if (!time.equals(knowledge.time)) return false;
-        return formula.equals(knowledge.formula);
+        if (!agent.equals(belief.agent)) return false;
+        if (!time.equals(belief.time)) return false;
+        return formula.equals(belief.formula);
 
     }
 
     @Override
     public int hashCode() {
-        int result = agent.hashCode();
-        result = 31 * result + time.hashCode();
-        result = 31 * result + formula.hashCode();
+        int result = safeHashCode(agent);
+        result = 31 * result + safeHashCode(time);
+        result = 31 * result + safeHashCode(formula);
         return result;
     }
 
@@ -153,6 +172,11 @@ public class Perception extends BaseFormula{
 
     @Override
     public String getName() {
-        return "Perception";
+        return "Belief of " +  ((formula instanceof Predicate)? ((Predicate) formula).getName():formula.getClass() +"");
+    }
+
+    @Override
+    public Set<Variable> boundVariablesPresent() {
+        return boundVariables;
     }
 }

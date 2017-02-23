@@ -3,10 +3,7 @@ package com.naveensundarg.shadow.prover.representations.value;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by naveensundarg on 4/11/16.
@@ -96,7 +93,7 @@ public class Constant extends Value implements Comparable{
     @Override
     public int hashCode() {
         int result = Arrays.hashCode(arguments);
-        result = 31 * result + variables.hashCode();
+        result = variables != null ? 31 * result + safeHashCode(variables) : result;
         return result;
     }
 

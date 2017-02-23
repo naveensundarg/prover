@@ -11,29 +11,27 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 
 /**
- * Created by naveensundarg on 5/4/16.
+ * Created by naveensundarg on 7/9/16.
  */
-public class Says extends  BaseFormula{
-
+public class Perception extends BaseFormula{
     private final Value agent;
     private final Value time;
     private final Formula formula;
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
     private final Set<Value> values;
-
     private final Set<Value> allValues;
 
     private final int weight;
 
-    public Says(Value agent, Value time, Formula formula) {
+    public Perception(Value agent, Value time, Formula formula) {
 
 
         this.agent = agent;
         this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
-        this.subFormulae.add(this);
+        subFormulae.add(this);
 
         this.allValues = Sets.newSet();
         this.allValues.add(agent);
@@ -42,14 +40,8 @@ public class Says extends  BaseFormula{
         this.variables = Sets.union(agent.variablesPresent(), Sets.union(time.variablesPresent(), CollectionUtils.setFrom(formula.variablesPresent())));
         this.values = Sets.union(agent.subValues(), Sets.union(time.subValues(), CollectionUtils.setFrom(formula.valuesPresent())));
 
-
-        this.weight = 1 + agent.getWeight() + time.getWeight()  + formula.getWeight();
+        this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
-
-    public Formula getFormula(){
-        return formula;
-    }
-
 
     public Value getAgent() {
         return agent;
@@ -59,12 +51,8 @@ public class Says extends  BaseFormula{
         return time;
     }
 
-    public Set<Formula> getSubFormulae() {
-        return subFormulae;
-    }
-
-    public Set<Variable> getVariables() {
-        return variables;
+    public Formula getFormula(){
+        return formula;
     }
 
     @Override
@@ -79,12 +67,13 @@ public class Says extends  BaseFormula{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return null;
+        return new Perception(agent.apply(substitution), time.apply(substitution), formula.apply(substitution));
     }
 
     @Override
     public Formula shadow(int level) {
         return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
+
     }
 
     @Override
@@ -102,47 +91,6 @@ public class Says extends  BaseFormula{
         return weight;
     }
 
-
-    @Override
-    public String toString() {
-        return "(Says! "
-                + agent + " "
-                + time + " "+
-                formula + ")";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Says says = (Says) o;
-
-        if (!agent.equals(says.agent)) return false;
-        if (!time.equals(says.time)) return false;
-        return formula.equals(says.formula);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = agent.hashCode();
-        result = 31 * result + time.hashCode();
-        result = 31 * result + formula.hashCode();
-        return result;
-    }
-
-    @Override
-    public Set<Value> allValues() {
-        return allValues;
-    }
-
-    @Override
-    public String getName() {
-        return "Says";
-    }
-
-
     @Override
     public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
         if(oldFormula.equals(this)){
@@ -156,7 +104,7 @@ public class Says extends  BaseFormula{
         }
 
 
-        return new Says(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
+        return new Perception(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 
     @Override
@@ -167,5 +115,44 @@ public class Says extends  BaseFormula{
     @Override
     public Set<Value> valuesPresent() {
         return values;
+    }
+
+    @Override
+    public String toString() {
+        return "(Perception! "
+                + agent + " "
+                + time + " "+
+                formula + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Perception knowledge = (Perception) o;
+
+        if (!agent.equals(knowledge.agent)) return false;
+        if (!time.equals(knowledge.time)) return false;
+        return formula.equals(knowledge.formula);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = safeHashCode(agent);
+        result = 31 * result + safeHashCode(time);
+        result = 31 * result + safeHashCode(formula);
+        return result;
+    }
+
+    @Override
+    public Set<Value> allValues() {
+        return allValues;
+    }
+
+    @Override
+    public String getName() {
+        return "Perception";
     }
 }

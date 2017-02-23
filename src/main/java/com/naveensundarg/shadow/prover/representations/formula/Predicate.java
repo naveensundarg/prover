@@ -176,7 +176,7 @@ public class Predicate extends BaseFormula {
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
+        int result = safeHashCode(name);
         result = 31 * result + Arrays.toString(arguments).hashCode();
         return result;
     }

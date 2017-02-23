@@ -13,59 +13,29 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Desire extends BaseFormula{
+public class Possibility extends  BaseFormula{
 
-    private final Value agent;
-    private final Value time;
-    private final Formula formula;
-    private final Set<Formula> subFormulae;
-
-    private final Set<Variable> variables;
-    private final Set<Value> values;
-
-    private final Set<Variable> boundVariables;
-
+    Formula formula;
+    Set<Formula> subFormulae;
+    Set<Variable> variables;
     private final Set<Value> allValues;
 
     private final int weight;
 
-    public Desire(Value agent, Value time, Formula formula) {
+    public Possibility(Formula formula) {
 
 
-        this.agent = agent;
-        this.time = time;
         this.formula = formula;
         this.subFormulae = CollectionUtils.setFrom(formula.subFormulae());
         subFormulae.add(this);
-
-        this.allValues = Sets.newSet();
-        this.allValues.add(agent);
-        this.allValues.add(time);
-
         this.variables = CollectionUtils.setFrom(formula.variablesPresent());
-        this.values = Sets.union(Sets.union(agent.subValues(), time.subValues()), formula.valuesPresent());
+        this.allValues = Sets.newSet();
 
-        this.boundVariables = CollectionUtils.setFrom(formula.boundVariablesPresent());
 
-        if (agent instanceof Variable) {
-            variables.add((Variable) agent);
-        }
 
-        if (time instanceof Variable) {
-            variables.add((Variable) time);
-
-        }
-
-        this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
+        this.weight = 1 + formula.getWeight();
     }
 
-    public Value getAgent() {
-        return agent;
-    }
-
-    public Value getTime() {
-        return time;
-    }
 
     public Formula getFormula(){
         return formula;
@@ -83,7 +53,7 @@ public class Desire extends BaseFormula{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return new Desire(agent.apply(substitution), time.apply(substitution), formula.apply(substitution));
+        return new Possibility(formula.apply(substitution));
     }
 
     @Override
@@ -110,32 +80,11 @@ public class Desire extends BaseFormula{
 
     @Override
     public String toString() {
-        return "(Desires! "
-                + agent + " "
-                + time + " "+
+        return "(POS "
+           +
                 formula + ")";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Desire knowledge = (Desire) o;
-
-        if (!agent.equals(knowledge.agent)) return false;
-        if (!time.equals(knowledge.time)) return false;
-        return formula.equals(knowledge.formula);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = agent.hashCode();
-        result = 31 * result + time.hashCode();
-        result = 31 * result + formula.hashCode();
-        return result;
-    }
 
     @Override
     public Set<Value> allValues() {
@@ -144,9 +93,8 @@ public class Desire extends BaseFormula{
 
     @Override
     public String getName() {
-        return "Desires";
+        return "POS";
     }
-
 
     @Override
     public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
@@ -161,16 +109,31 @@ public class Desire extends BaseFormula{
         }
 
 
-        return new Desire(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
+        return new Possibility(formula.replaceSubFormula(oldFormula, newFormula));
     }
 
     @Override
     public Set<Variable> boundVariablesPresent() {
-        return boundVariables;
+        return formula.boundVariablesPresent();
     }
 
     @Override
     public Set<Value> valuesPresent() {
-        return values;
+        return formula.valuesPresent();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Possibility that = (Possibility) o;
+
+        return formula.equals(that.formula);
+    }
+
+    @Override
+    public int hashCode() {
+        return safeHashCode(formula);
     }
 }
