@@ -80,22 +80,22 @@
                  (forall [?t]
                          (implies (Prior ?t 6) (not (HoldsAt (dead P1) ?t)))))
 
-               
+
                D11
                (implies
                  (forall [?t]
                          (implies (Prior ?t 6) (not (HoldsAt (position trolley track1 5) ?t))))
                  (forall [?t]
                          (implies (Prior ?t 6) (not (HoldsAt (dead P2) ?t)))))
-               
-               
+
+
                D12
                (implies
                  (forall [?t]
                          (implies (Prior ?t 6) (not (HoldsAt (position trolley track2 3) ?t))))
                  (forall [?t]
                          (implies (Prior ?t 6) (not (HoldsAt (dead P3) ?t)))))
-               
+
                D13
                (forall [?trolley ?person ?track ?pos]
                        (implies
@@ -107,10 +107,10 @@
 
                D14
                (forall [?t] (HoldsAt (position P1 track1 4) ?t))
-               
+
                D15
                (forall [?t] (HoldsAt (position P2 track1 5) ?t))
-               
+
                D16
                (not (= track1 track2))
 
@@ -126,7 +126,7 @@
                D19
                (forall [?d ?trolley ?track ?position]
                        (implies (and (HoldsAt (position ?trolley ?track ?position) ?d) (Happens (damage ?trolley) ?d))
-               
+
                                 (and (HoldsAt (position ?trolley ?track ?position) (+ 1 ?d))
                                      (forall [?t] (implies (Prior (+ 1 ?d) ?t) (HoldsAt (position ?trolley ?track ?position) ?t))))))
 
@@ -138,29 +138,46 @@
                                          (or
                                            (or (= ?pos 0) (= ?pos 2))
                                            (not (exists [?p] (HoldsAt (position ?trolley ?track2 ?p) ?time) ))))))
-               
+
                S2
                (forall [?t] (HoldsAt (position P3 track2 3) ?t))
 
                S3.1
                (not (Clipped 0 (onrails trolley track1) 1))
-               
+
                S3.2
                (not (Clipped 0 (onrails trolley track1) 2))
-               
+
                S3.3
                (not (Clipped 0 (onrails trolley track1) 3))
-               
+
                S3.4
                (not (Clipped 0 (onrails trolley track1) 4))
-               
+
                S3.5
                (not (Clipped 0 (onrails trolley track1) 5))
-               
+
                S3.6
                (not (Clipped 0 (onrails trolley track1) 6))
 
 
+               I1
+               (Intends! I now (and (not (exists [?t] (HoldsAt (dead P1) ?t)))
+                                    (not (exists [?t] (HoldsAt (dead P1) ?t)))) )
+
+
+
+
+               I2
+               (Ought! I now situation (and (not (exists [?t] (HoldsAt (dead P1) ?t)))
+                                            (not (exists [?t] (HoldsAt (dead P1) ?t)))) )
+
+               I3
+               (Believes! I now situation)
+
+               I4
+               (Believes! I now (Ought! I now situation (and (not (exists [?t] (HoldsAt (dead P1) ?t)))
+                                            (not (exists [?t] (HoldsAt (dead P1) ?t)))) ))
 
                }
 

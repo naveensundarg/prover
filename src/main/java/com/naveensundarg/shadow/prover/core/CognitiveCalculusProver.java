@@ -31,7 +31,7 @@ public class CognitiveCalculusProver implements Prover {
      */
 
     static Set<Problem> problems = Sets.newSet();
-
+    static boolean defeasible = false;
     private final boolean reductio;
     private final CognitiveCalculusProver parent;
     Set<Formula> currentAssumptions;
@@ -97,6 +97,83 @@ public class CognitiveCalculusProver implements Prover {
         currentAssumptions = assumptions;
 
 
+
+        if(defeasible){
+            Optional<Justification> got = defeasible(formula);
+        if (got != null) return got;
+
+        }
+
+
+        Prover folProver = new SnarkWrapper();
+
+        Set<Formula> base =  CollectionUtils.setFrom(assumptions);
+
+        Formula shadowedGoal = formula.shadow(1);
+
+        Optional<Justification> shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
+
+        Optional<Justification> agentClosureJustificationOpt = this.proveAgentClosure(base, formula);
+
+        while (!shadowedJustificationOpt.isPresent() && !agentClosureJustificationOpt.isPresent()) {
+
+            int sizeBeforeExpansion = base.size();
+            base = expand(base, added, formula);
+            int sizeAfterExpansion = base.size();
+
+            if(base.contains(formula)){
+                return Optional.of(TrivialJustification.trivial(formula));
+            }
+
+            Optional<Justification> andProofOpt = tryAND(base, formula, added);
+
+
+            if (andProofOpt.isPresent()) {
+                return andProofOpt;
+            }
+
+
+            Optional<Justification> caseProofOpt = tryOR(base, formula, added);
+
+
+
+
+            if (caseProofOpt.isPresent()) {
+                return caseProofOpt;
+            }
+            if(base.size()<20 && !reductio) {
+
+                Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
+
+
+                if (reductioProofOpt.isPresent()) {
+                    return reductioProofOpt;
+                }
+            }
+
+
+            if (sizeAfterExpansion <= sizeBeforeExpansion) {
+                return Optional.empty();
+            }
+
+            shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
+            agentClosureJustificationOpt = proveAgentClosure(base, formula);
+        }
+
+        if (shadowedJustificationOpt.isPresent()) {
+
+            return shadowedJustificationOpt;
+        }
+
+        if (agentClosureJustificationOpt.isPresent()) {
+
+            return agentClosureJustificationOpt;
+        }
+
+        return Optional.empty();
+    }
+
+    private Optional<Justification> defeasible(Formula formula) {
         if(formula instanceof CanProve){
 
             CognitiveCalculusProver outer = this;
@@ -169,76 +246,7 @@ public class CognitiveCalculusProver implements Prover {
             }
 
         }
-
-        if(formula.toString().equals("(< t2 t3)")){
-            return Optional.of(TrivialJustification.trivial(formula));
-        }
-        Prover folProver = new SnarkWrapper();
-
-        Set<Formula> base =  CollectionUtils.setFrom(assumptions);
-
-        Formula shadowedGoal = formula.shadow(1);
-
-        Optional<Justification> shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
-
-        Optional<Justification> agentClosureJustificationOpt = this.proveAgentClosure(base, formula);
-
-        while (!shadowedJustificationOpt.isPresent() && !agentClosureJustificationOpt.isPresent()) {
-
-            int sizeBeforeExpansion = base.size();
-            base = expand(base, added, formula);
-            int sizeAfterExpansion = base.size();
-
-            if(base.contains(formula)){
-                return Optional.of(TrivialJustification.trivial(formula));
-            }
-
-            Optional<Justification> andProofOpt = tryAND(base, formula, added);
-
-
-            if (andProofOpt.isPresent()) {
-                return andProofOpt;
-            }
-
-
-            Optional<Justification> caseProofOpt = tryOR(base, formula, added);
-
-
-
-
-            if (caseProofOpt.isPresent()) {
-                return caseProofOpt;
-            }
-            if(base.size()<20 && !reductio) {
-
-                Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
-
-
-                if (reductioProofOpt.isPresent()) {
-                    return reductioProofOpt;
-                }
-            }
-
-
-            if (sizeAfterExpansion <= sizeBeforeExpansion) {
-                return Optional.empty();
-            }
-
-            shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
-            agentClosureJustificationOpt = proveAgentClosure(base, formula);
-        }
-
-        if (shadowedJustificationOpt.isPresent()) {
-
-            return shadowedJustificationOpt;
-        }
-
-        if (agentClosureJustificationOpt.isPresent()) {
-
-            return agentClosureJustificationOpt;
-        }
-
-        return Optional.empty();
+        return null;
     }
 
 
@@ -348,6 +356,28 @@ public class CognitiveCalculusProver implements Prover {
                 return inner;
             }
 
+        }
+
+        if (goal instanceof Intends) {
+
+
+            Intends intends = (Intends) goal;
+            Value agent = intends.getAgent();
+            Value time = intends.getTime();
+            Formula goalKnowledge = intends.getFormula();
+
+            AgentSnapShot agentSnapShot = AgentSnapShot.from(base);
+
+            Set<Formula> allIntendedByTillTime = agentSnapShot.allIntendedByAgentTillTime(agent, time);
+
+
+            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+            Optional<Justification> inner = cognitiveCalculusProver.prove(allIntendedByTillTime, goalKnowledge);
+            if (inner.isPresent()) {
+                //TODO: Augment this
+
+                return inner;
+            }
         }
 
         if (goal instanceof Knowledge) {
@@ -507,6 +537,9 @@ public class CognitiveCalculusProver implements Prover {
                 //Formula happens = new Predicate("happens", new Value[]{action, ought.getTime()});
                 added.add(oughtAction);
                 base.add(oughtAction);
+
+                base.add(new Intends(agent, outerTime, oughtAction));
+                added.add(new Intends(agent, outerTime, oughtAction));
             }
 
 
