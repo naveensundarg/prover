@@ -37,6 +37,8 @@ public class Reader {
     private static final Symbol FORALL = Symbol.newSymbol("forall");
 
     private static final Symbol BELIEVES = Symbol.newSymbol("Believes!");
+    private static final Symbol INTENDS = Symbol.newSymbol("Intends!");
+
     private static final Symbol KNOWS = Symbol.newSymbol("Knows!");
     private static final Symbol PERCEIVES = Symbol.newSymbol("Perceives!");
     private static final Symbol DESIRES = Symbol.newSymbol("Desires!");
@@ -244,6 +246,12 @@ public class Reader {
                     return constructBelief(list, variableNames);
                 }
 
+                //Intends
+                if(name.equals(INTENDS)){
+
+                    return constructIntends(list, variableNames);
+                }
+
                 //Knows
                 if(name.equals(KNOWS)){
 
@@ -307,6 +315,32 @@ public class Reader {
 
          throw new AssertionError("Could not understand formula: " + input);
 
+    }
+
+    private static Formula constructIntends(List list, Set<String> variableNames) throws ParsingException {
+         if(list.isEmpty()){
+            throw new ParsingException("Intends expresion cannot be empty!");
+        }  else if(list.size() != 4 && list.size() != 3){
+            throw new ParsingException("Intends expresion has wrong number of arguments! "+list);
+
+        } else {
+
+            if(list.size() == 4) {
+                Object agent =  list.get(1);
+                Object time =  list.get(2);
+                Object formula =  list.get(3);
+
+                return new Intends(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames));
+
+            } else {
+
+                Object agent =  list.get(1);
+                Object formula =  list.get(2);
+
+                return new Intends(readLogicValue(agent), NOW,readFormula(formula, variableNames));
+
+            }
+        }
     }
 
     private static Formula constructNecessity(List list, Set<String> variableNames) throws ParsingException {

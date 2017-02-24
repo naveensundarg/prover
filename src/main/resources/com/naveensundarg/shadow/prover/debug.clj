@@ -1,10 +1,15 @@
-{ :name "axiom selection 1"
- :description ""
- :assumptions {S9 (forall (z)  (= (* z 0) 0))
-               S7 (forall (x y) (= (+ x y) (+ y x)))
-               S4 (forall (x)  (= (+ x 0) x))
-               S5 (forall (z y) (= (* z (+ y 1)) (+ (* z y) z)))
-               }
+{:name        "DDE 3a 1"
+ :description "DDE"
+ :assumptions {
+               I2
+               (Ought! I now situation (and (not (exists [?t] (HoldsAt (dead P1) ?t)))
+                                            (not (exists [?t] (HoldsAt (dead P1) ?t)))) )
 
- :goal (forall (z) (= (* z 1) z))
- }
+               I3
+               (Knows! I now situation)
+
+               I4
+               (Believes! I now (Ought! I now situation (and (not (exists [?t] (HoldsAt (dead P1) ?t)))
+                                            (not (exists [?t] (HoldsAt (dead P1) ?t)))) ))}
+
+ :goal        (Intends! I now (not (HoldsAt (dead P1) 5)))}

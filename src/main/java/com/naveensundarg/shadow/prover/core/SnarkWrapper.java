@@ -56,7 +56,9 @@ public class SnarkWrapper implements Prover {
             System.out.println(result);
 
             result = interpreter.eval("(load \"snark-20120808r02/snark-interface.lisp\")");
-            System.out.println(result);
+            result = interpreter.eval("(load \"snark-20120808r02/commons.lisp\")");
+
+            ;System.out.println(result);
 
         } else {
             interpreter = null;

@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.core.internals;
 
 import com.naveensundarg.shadow.prover.representations.formula.Belief;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Intends;
 import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
@@ -20,13 +21,16 @@ public final class AgentSnapShot {
     private final Map<Value, Map<Value, Set<Formula>>> knowledgeSnapshots;
     private final Map<Value, Map<Value, Set<Formula>>> beliefSnapshots;
 
+    private final Map<Value, Map<Value, Set<Formula>>> intendSnapShots;
 
     public AgentSnapShot(Map<Value, Map<Value, Set<Formula>>> knowledgeSnapshots,
-                         Map<Value, Map<Value, Set<Formula>>> beliefSnapshots) {
+                         Map<Value, Map<Value, Set<Formula>>> beliefSnapshots,
+                         Map<Value, Map<Value, Set<Formula>>> intendSnapShots) {
 
         this.knowledgeSnapshots = knowledgeSnapshots;
         this.beliefSnapshots = beliefSnapshots;
 
+        this.intendSnapShots = intendSnapShots;
     }
 
     public static AgentSnapShot from(Set<Formula> formulae) {
@@ -34,6 +38,7 @@ public final class AgentSnapShot {
         Map<Value, Map<Value, Set<Formula>>> knowledgeSnapshots = CollectionUtils.newMap();
         Map<Value, Map<Value, Set<Formula>>> beliefSnapshots = CollectionUtils.newMap();
 
+        Map<Value, Map<Value, Set<Formula>>> intendSnapShots = CollectionUtils.newMap();
 
         Set<Knowledge> knowledges = formulae.stream().
                 filter(f -> f instanceof Knowledge).map(f -> (Knowledge) f).
@@ -41,6 +46,10 @@ public final class AgentSnapShot {
 
         Set<Belief> beliefs = formulae.stream().
                 filter(f -> f instanceof Belief).map(f -> (Belief) f).
+                collect(Collectors.toSet());
+
+        Set<Intends> intends = formulae.stream().
+                filter(f -> f instanceof Intends).map(f -> (Intends) f).
                 collect(Collectors.toSet());
 
         Set<Value> agents = Logic.allAgents(formulae);
@@ -71,6 +80,18 @@ public final class AgentSnapShot {
 
         );
 
+          agents.stream().forEach(agent -> {
+
+                    Map<Value, Set<Formula>> timeMap = CollectionUtils.newMap();
+                    times.forEach(time->{
+                        timeMap.put(time, CollectionUtils.newEmptySet());
+                    });
+
+                    intendSnapShots.put(agent, timeMap);
+                }
+
+        );
+
         knowledges.stream().forEach(knowledge -> {
 
             Value agent = knowledge.getAgent();
@@ -89,8 +110,17 @@ public final class AgentSnapShot {
 
         });
 
+        intends.stream().forEach(intend -> {
 
-        return new  AgentSnapShot(knowledgeSnapshots, beliefSnapshots);
+            Value agent = intend.getAgent();
+            Value time = intend.getTime();
+
+            intendSnapShots.get(agent).get(time).add(intend.getFormula());
+
+        });
+
+
+        return new  AgentSnapShot(knowledgeSnapshots, beliefSnapshots, intendSnapShots);
     }
 
 
@@ -123,6 +153,12 @@ public final class AgentSnapShot {
     public Set<Formula> allBelievedByAgentTillTime(Value agent, Value time) {
 
         return computeSnapShot(beliefSnapshots, agent, time);
+
+    }
+
+    public Set<Formula> allIntendedByAgentTillTime(Value agent, Value time) {
+
+        return computeSnapShot(intendSnapShots, agent, time);
 
     }
 
