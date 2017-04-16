@@ -765,7 +765,7 @@ public class Reader {
     }
 
 
-    private static final String preprocess(String x){
+    public static final String preprocess(String x){
         return x.replace("'", "%!%");
     }
 
