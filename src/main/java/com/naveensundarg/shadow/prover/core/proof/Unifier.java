@@ -368,6 +368,12 @@ public class Unifier {
 
             Optional<Map<Variable, Value>> map2 = Unifier.unifyFormula(i1.getConsequent(), i2.getConsequent());
 
+            if(!map2.isPresent()){
+
+                return Optional.empty();
+
+            }
+
             return Unifier.addTo(map1.get(), map2.get());
 
         }
@@ -386,6 +392,12 @@ public class Unifier {
             }
 
             Optional<Map<Variable, Value>> map2 = Unifier.unifyFormula(b1.getRight(), b2.getRight());
+
+            if(!map2.isPresent()){
+
+                return Optional.empty();
+
+            }
 
             return Unifier.addTo(map1.get(), map2.get());
 
@@ -854,7 +866,7 @@ public class Unifier {
         if (theta != null) {
             return Sets.with(theta);
         } else {
-            return Arrays.stream(Z.getArguments()).map(zArg -> subUnify(x, zArg)).reduce(Sets.newSet(), Sets::union);
+            return  null;//Arrays.stream(Z.getArguments()).map(zArg -> subUnify(x, zArg)).reduce(Sets.newSet(), Sets::union);
         }
 
     }
