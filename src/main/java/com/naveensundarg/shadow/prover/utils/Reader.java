@@ -57,6 +57,7 @@ public class Reader {
 
     private static final Value NOW ;
 
+
     static {
         try {
 
@@ -142,7 +143,7 @@ public class Reader {
 
     public static Formula readFormulaFromString(String input) throws ParsingException {
 
-        Parseable parseable = Parsers.newParseable(input);
+        Parseable parseable = Parsers.newParseable(preprocess(input));
         Parser p = Parsers.newParser(defaultConfiguration());
 
 
@@ -757,12 +758,15 @@ public class Reader {
 
     public static Object readFromString(String s){
 
-        Parseable parseable = Parsers.newParseable(s);
+        Parseable parseable = Parsers.newParseable(preprocess(s));
         Parser parser = Parsers.newParser(defaultConfiguration());
 
         return parser.nextValue(parseable);
     }
 
 
+    private static final String preprocess(String x){
+        return x.replace("'", "%!%");
+    }
 
 }

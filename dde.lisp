@@ -1,7 +1,7 @@
 
 (in-package :snark-user)
 
-(load "/Users/naveensundarg/projects/prover/snark-20120808r02/snark-interface.lisp")
+
 
 (defun declare-ec-sort-system ()
   (declare-sort 'Fluent)
@@ -141,7 +141,6 @@
 	     ,(cons 'or (loop for i from 0 to end collect 
 		       `(= ,i ?p)))))))
 
-;  (declare-function '+ 2 :rewrite-code '+-REWRITER)
 
 (defparameter *horizon* 6)
 (defparameter *arithmetic-max* 10)

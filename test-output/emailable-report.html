@@ -1,0 +1,402 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>TestNG:  Unit Test</title>
+<style type="text/css">
+table caption,table.info_table,table.result,table.passed,table.failed {margin-bottom:10px;border:1px solid #000099;border-collapse:collapse;empty-cells:show;}
+table.info_table td,table.info_table th,table.result td,table.result th,table.passed td,table.passed th,table.failed td,table.failed th {
+border:1px solid #000099;padding:.25em .5em .25em .5em
+}
+table.result th {vertical-align:bottom}
+tr.param th {padding-left:1em;padding-right:1em}
+tr.param td {padding-left:.5em;padding-right:2em}
+td.numi,th.numi,td.numi_attn {
+text-align:right
+}
+tr.total td {font-weight:bold}
+table caption {
+text-align:center;font-weight:bold;
+}
+table.passed tr.stripe td,table tr.passedodd td {background-color: #00AA00;}
+table.passed td,table tr.passedeven td {background-color: #33FF33;}
+table.passed tr.stripe td,table tr.skippedodd td {background-color: #cccccc;}
+table.passed td,table tr.skippedodd td {background-color: #dddddd;}
+table.failed tr.stripe td,table tr.failedodd td,table.result td.numi_attn {background-color: #FF3333;}
+table.failed td,table tr.failedeven td,table.result tr.stripe td.numi_attn {background-color: #DD0000;}
+tr.stripe td,tr.stripe th {background-color: #E6EBF9;}
+p.totop {font-size:85%;text-align:center;border-bottom:2px black solid}
+div.shootout {padding:2em;border:3px #4854A8 solid}
+</style>
+</head>
+<body>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr><th>Test</th><th class="numi">Methods<br/>Passed</th><th class="numi">Scenarios<br/>Passed</th><th class="numi"># skipped</th><th class="numi"># failed</th><th class="numi">Total<br/>Time</th><th class="numi">Included<br/>Groups</th><th class="numi">Excluded<br/>Groups</th></tr>
+<tr><td style="text-align:left;padding-right:2em">Deontic Cognitive Calculus Tests Suite</td><td class="numi">45</td><td class="numi">45</td><td class="numi">0</td><td class="numi">0</td><td class="numi">16.6 seconds</td><td class="numi"></td><td class="numi"></td></tr>
+</table>
+<table cellspacing="0" cellpadding="0" class="passed" id="summary">
+<tr><th>Class</th><th>Method</th><th># of<br/>Scenarios</th><th>Start</th><th>Time<br/>(ms)</th></tr>
+<tr><th colspan="4">Deontic Cognitive Calculus Tests Suite &#8212; passed</th></tr>
+<tr class="passedodd"><td rowspan="45">com.logic.prover.CognitiveCalculusProverTests</td><td><a href="#m1"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m2"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m3"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m4"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m5"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m6"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m7"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m8"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m9"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m10"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m11"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m12"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m13"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m14"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m15"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m16"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m17"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m18"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m19"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m20"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m21"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m22"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m23"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m24"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m25"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m26"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m27"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m28"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m29"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m30"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m31"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m32"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m33"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m34"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m35"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m36"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m37"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m38"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m39"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m40"><b>testCompleteness</b>  </a></td><td class="numi">40</td><td>1490943023720</td><td class="numi">15908</td></tr><tr class="passedodd"><td><a href="#m41"><b>testSoundess</b>  </a></td><td class="numi">5</td><td>1490943039638</td><td class="numi">517</td></tr><tr class="passedodd"><td><a href="#m42"><b>testSoundess</b>  </a></td><td class="numi">5</td><td>1490943039638</td><td class="numi">517</td></tr><tr class="passedodd"><td><a href="#m43"><b>testSoundess</b>  </a></td><td class="numi">5</td><td>1490943039638</td><td class="numi">517</td></tr><tr class="passedodd"><td><a href="#m44"><b>testSoundess</b>  </a></td><td class="numi">5</td><td>1490943039638</td><td class="numi">517</td></tr><tr class="passedodd"><td><a href="#m45"><b>testSoundess</b>  </a></td><td class="numi">5</td><td>1490943039638</td><td class="numi">517</td></tr>
+</table>
+<h1>Deontic Cognitive Calculus Tests Suite</h1>
+<h2 id="m1">com.logic.prover.CognitiveCalculusProverTests:testSoundess</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]</td>
+<td>(Intends! I now (HoldsAt (dead  P3) 6))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m2">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happens (action  ?a ?alpha) ?t))))), (Perception! a1 now (happens (action  a2 alpha) t))]</td>
+<td>(Knows! a1 now (Knows! a2 now (happens (action  a2 alpha) t)))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m3">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[P, (implies P (Knows! a now Q))]</td>
+<td>Q</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m4">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(and P (Knows! a t0 Q) )]</td>
+<td>(or P Q )</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m5">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b now P) )]</td>
+<td>(and Q1 Q2 )</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m6">com.logic.prover.CognitiveCalculusProverTests:testSoundess</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]</td>
+<td>(not (Ought! I 2 situation (not (happens (action  I (switch  track1 track2)) 2))))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m7">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))]</td>
+<td>(Believes! a now (Knows! b now Q))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m8">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(and P (Knows! a t0 Q) )]</td>
+<td>Q</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m9">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))]</td>
+<td>(Knows! a t (isExit B))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m10">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))]</td>
+<td>Q</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m11">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheorem)))]</td>
+<td>(Believes! robot1 t2 (Believes! robot2 t1 BirdTtheorem))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m12">com.logic.prover.CognitiveCalculusProverTests:testSoundess</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]</td>
+<td>(not (Ought! I 2 situation (not (Happens (action  I (drop  P3 track1 3)) 1))))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m13">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now INJURED)]</td>
+<td>(happens (action  robot HELP) now)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m14">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now INJURED)]</td>
+<td>(happens (action  robot HELP) now)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m15">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))]</td>
+<td>(not P)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m16">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Knows! a1 t1 P)]</td>
+<td>P</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m17">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))]</td>
+<td>BIRDTHEOREM</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m18">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(or (Knows! a now P) (Knows! b now P) )]</td>
+<td>P</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m19">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(and (Common! t0 P) (Common! t0 Q) )]</td>
+<td>(Knows! a1 t1 (and P Q ))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m20">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )]</td>
+<td>(Knows! a1 t1 (mortal socrates))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m21">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(and P (Knows! a t0 Q) )]</td>
+<td>(and P Q )</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m22">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))]</td>
+<td>(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x))))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m23">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))]</td>
+<td>(Knows! a now U)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m24">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrates))]</td>
+<td>(Believes! robot t3 (Mortal socrates))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m25">com.logic.prover.CognitiveCalculusProverTests:testSoundess</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[A]</td>
+<td>(or P Q )</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m26">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))]</td>
+<td>(Believes! a1 t0 Q)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m27">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  robot2 (help  mary)) t2))), (Common! t0 (forall ( ?x) (implies (and (honest ?x) (criesForHelp ?x) ) (injured ?x)))), (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))]</td>
+<td>(Believes! robot1 t2 (happens (action  robot2 (help  mary)) t2))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m28">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]</td>
+<td>(Intends! I now (not (HoldsAt (dead  P1) 5)))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m29">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! now (Common! now P))]</td>
+<td>P</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m30">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) now))), (Believes! robot now (implies (cries soldier) (injured soldier))), (Believes! robot now (cries soldier))]</td>
+<td>(happens (action  robot (help  soldier)) now)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m31">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! t0 P)]</td>
+<td>(and (Knows! a1 t1 P) (Knows! a2 t1 P) )</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m32">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]</td>
+<td>(Knows! jack t0 BirdTheorem)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m33">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]</td>
+<td>(Intends! I now (not (HoldsAt (dead  P2) 6)))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m34">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))]</td>
+<td>(happens (action  jack A) t0)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m35">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) ))), (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) )), (Knows! I now situation)]</td>
+<td>(Intends! I now (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) ))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m36">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows! a1 t1 (Knows! a2 t2 (Knows! a3 t2 (implies Ma (not R)))))]</td>
+<td>(implies H (not Ma))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m37">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )) )]</td>
+<td>(and R1 R2 )</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m38">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (Common! t2 (Ought! robot t2 (injured soldier) (happens (action  robot (help  soldier)) t2)))]</td>
+<td>(happens (action  robot (help  soldier)) t2)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m39">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)]</td>
+<td>R</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m40">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Common! now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) now)))]</td>
+<td>(happens (action  robot (help  soldier)) now)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m41">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  robot2 (help  mary)) t2))), (Common! t0 (forall ( ?x) (implies (and (honest ?x) (criesForHelp ?x) ) (injured ?x)))), (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))]</td>
+<td>(Believes! robot1 t2 (happens (action  robot2 (help  mary)) t2))</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m42">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Knows! a1 now P)]</td>
+<td>(Believes! a1 now P)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m43">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheorem))]</td>
+<td>(Believes! robot t2 BirdTtheorem)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m44">com.logic.prover.CognitiveCalculusProverTests:testCompleteness</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]</td>
+<td>(Knows! jack t0 BirdTheorem)</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+<h2 id="m45">com.logic.prover.CognitiveCalculusProverTests:testSoundess</h2>
+<table cellspacing="0" cellpadding="0" class="result">
+<tr class="param"><th>Parameter #1</th><th>Parameter #2</th></tr>
+<tr class="param stripe"><td>[(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (= morning_star morning_star))]</td>
+<td>(and P (not P) )</td>
+</tr>
+</table>
+<p class="totop"><a href="#summary">back to summary</a></p>
+</body></html>

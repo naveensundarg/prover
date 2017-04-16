@@ -1,10 +1,11 @@
-package com.naveensundarg.shadow.prover;
+package com.logic.prover;
 
+import com.naveensundarg.shadow.prover.Sandbox;
 import com.naveensundarg.shadow.prover.core.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
@@ -25,6 +26,12 @@ public class CognitiveCalculusProverTests {
 
         prover = new CognitiveCalculusProver();
     }
+
+
+    public static void main (String[] args) {
+		new TestNGEntryPoint(CognitiveCalculusProverTests.class.getName(), "testCompleteness");
+	}
+
 
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {

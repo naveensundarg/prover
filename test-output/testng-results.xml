@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="45" passed="45">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Deontic Cognitive Calculus Tests Suite" duration-ms="16560" started-at="2017-03-31T06:50:23Z" finished-at="2017-03-31T06:50:40Z">
+    <groups>
+    </groups>
+    <test name="Deontic Cognitive Calculus Tests Suite" duration-ms="16560" started-at="2017-03-31T06:50:23Z" finished-at="2017-03-31T06:50:40Z">
+      <class name="com.logic.prover.CognitiveCalculusProverTests">
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="9915" started-at="2017-03-30T23:50:23Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:33Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Knows! a1 t1 P)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[P]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="163" started-at="2017-03-30T23:50:33Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:33Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Knows! a1 now P)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! a1 now P)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="42" started-at="2017-03-30T23:50:33Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:33Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! a1 t0 Q)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="159" started-at="2017-03-30T23:50:33Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:33Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! t0 P)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(and (Knows! a1 t1 P) (Knows! a2 t1 P) )]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="215" started-at="2017-03-30T23:50:33Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(and (Common! t0 P) (Common! t0 Q) )]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Knows! a1 t1 (and P Q ))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="164" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Knows! a1 t1 (mortal socrates))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="44" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Knows! jack t0 BirdTheorem)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="126" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[R]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="30" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[BIRDTHEOREM]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="118" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows! a1 t1 (Knows! a2 t2 (Knows! a3 t2 (implies Ma (not R)))))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(implies H (not Ma))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="40" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(and P (Knows! a t0 Q) )]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[Q]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="46" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(and P (Knows! a t0 Q) )]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(and P Q )]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="14" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(and P (Knows! a t0 Q) )]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(or P Q )]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="136" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:34Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )) )]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(and R1 R2 )]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="77" started-at="2017-03-30T23:50:34Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[P, (implies P (Knows! a now Q))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[Q]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="96" started-at="2017-03-30T23:50:35Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[Q]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="29" started-at="2017-03-30T23:50:35Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(or (Knows! a now P) (Knows! b now P) )]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[P]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="34" started-at="2017-03-30T23:50:35Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:35Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! a now (Knows! b now Q))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="1257" started-at="2017-03-30T23:50:35Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b now P) )]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(and Q1 Q2 )]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="52" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(not P)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="27" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! now (Common! now P))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[P]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="31" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Knows! jack t0 BirdTheorem)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="29" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(happens (action  jack A) t0)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="27" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) now))), (Believes! robot now (implies (cries soldier) (injured soldier))), (Believes! robot now (cries soldier))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(happens (action  robot (help  soldier)) now)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="34" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Common! now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) now)))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(happens (action  robot (help  soldier)) now)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="31" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (Common! t2 (Ought! robot t2 (injured soldier) (happens (action  robot (help  soldier)) t2)))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(happens (action  robot (help  soldier)) t2)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="18" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now INJURED)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(happens (action  robot HELP) now)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="21" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now INJURED)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(happens (action  robot HELP) now)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="32" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrates))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! robot t3 (Mortal socrates))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="20" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x))))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="18" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheorem))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! robot t2 BirdTtheorem)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="28" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:36Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheorem)))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! robot1 t2 (Believes! robot2 t1 BirdTtheorem))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="455" started-at="2017-03-30T23:50:36Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:37Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  robot2 (help  mary)) t2))), (Common! t0 (forall ( ?x) (implies (and (honest ?x) (criesForHelp ?x) ) (injured ?x)))), (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! robot1 t2 (happens (action  robot2 (help  mary)) t2))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="519" started-at="2017-03-30T23:50:37Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:37Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  robot2 (help  mary)) t2))), (Common! t0 (forall ( ?x) (implies (and (honest ?x) (criesForHelp ?x) ) (injured ?x)))), (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Believes! robot1 t2 (happens (action  robot2 (help  mary)) t2))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="52" started-at="2017-03-30T23:50:37Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:37Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Knows! a t (isExit B))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="26" started-at="2017-03-30T23:50:37Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:37Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Knows! a now U)]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="1547" started-at="2017-03-30T23:50:37Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happens (action  ?a ?alpha) ?t))))), (Perception! a1 now (happens (action  a2 alpha) t))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Knows! a1 now (Knows! a2 now (happens (action  a2 alpha) t)))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="59" started-at="2017-03-30T23:50:39Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) ))), (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) )), (Knows! I now situation)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Intends! I now (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) ))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="90" started-at="2017-03-30T23:50:39Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Intends! I now (not (HoldsAt (dead  P1) 5)))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testCompleteness(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testCompleteness" duration-ms="85" started-at="2017-03-30T23:50:39Z" data-provider="completenessTestsProvider" finished-at="2017-03-30T23:50:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Intends! I now (not (HoldsAt (dead  P2) 6)))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testCompleteness -->
+        <test-method status="PASS" signature="testSoundess(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testSoundess" duration-ms="18" started-at="2017-03-30T23:50:39Z" data-provider="soundnessTestsProvider" finished-at="2017-03-30T23:50:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[A]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(or P Q )]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSoundess -->
+        <test-method status="PASS" signature="testSoundess(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testSoundess" duration-ms="95" started-at="2017-03-30T23:50:39Z" data-provider="soundnessTestsProvider" finished-at="2017-03-30T23:50:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (= morning_star morning_star))]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(and P (not P) )]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSoundess -->
+        <test-method status="PASS" signature="testSoundess(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testSoundess" duration-ms="85" started-at="2017-03-30T23:50:39Z" data-provider="soundnessTestsProvider" finished-at="2017-03-30T23:50:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(not (Ought! I 2 situation (not (happens (action  I (switch  track1 track2)) 2))))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSoundess -->
+        <test-method status="PASS" signature="testSoundess(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testSoundess" duration-ms="152" started-at="2017-03-30T23:50:39Z" data-provider="soundnessTestsProvider" finished-at="2017-03-30T23:50:39Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(not (Ought! I 2 situation (not (Happens (action  I (drop  P3 track1 3)) 1))))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSoundess -->
+        <test-method status="PASS" signature="testSoundess(java.util.Set, com.naveensundarg.shadow.prover.representations.formula.Formula)[pri:0, instance:com.logic.prover.CognitiveCalculusProverTests@1a4180f7]" name="testSoundess" duration-ms="167" started-at="2017-03-30T23:50:39Z" data-provider="soundnessTestsProvider" finished-at="2017-03-30T23:50:40Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)]]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[(Intends! I now (HoldsAt (dead  P3) 6))]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSoundess -->
+      </class> <!-- com.logic.prover.CognitiveCalculusProverTests -->
+    </test> <!-- Deontic Cognitive Calculus Tests Suite -->
+  </suite> <!-- Deontic Cognitive Calculus Tests Suite -->
+</testng-results>

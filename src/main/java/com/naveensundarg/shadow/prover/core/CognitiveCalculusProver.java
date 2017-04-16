@@ -21,9 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
-/**
- * Created by naveensundarg on 4/21/16.
- */
+
 public class CognitiveCalculusProver implements Prover {
 
     /*
@@ -141,7 +139,7 @@ public class CognitiveCalculusProver implements Prover {
             if (caseProofOpt.isPresent()) {
                 return caseProofOpt;
             }
-            if(base.size()<20 && !reductio) {
+            if(base.size()<50 && !reductio) {
 
                 Optional<Justification> reductioProofOpt = tryReductio(base, formula, added);
 

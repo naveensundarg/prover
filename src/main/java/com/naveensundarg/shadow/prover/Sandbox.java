@@ -31,7 +31,6 @@ public class Sandbox {
        Formula f = ( Reader.readFormula(p.nextValue(pbr)));
 
 
-       System.out.println(Reader.readFormulaFromString("(or (or (pos (not P)) (pos (not Q)))\n" +
-               "           (pos (and P Q)))"));
+       System.out.println(Reader.readFormulaFromString("(forall (t') (P t))"));
     }
 }

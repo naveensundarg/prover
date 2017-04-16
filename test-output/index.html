@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+  <title>TestNG reports</title>
+
+    <link type="text/css" href="testng-reports.css" rel="stylesheet" />  
+    <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="testng-reports.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type='text/javascript'>
+      google.load('visualization', '1', {packages:['table']});
+      google.setOnLoadCallback(drawTable);
+      var suiteTableInitFunctions = new Array();
+      var suiteTableData = new Array();
+    </script>
+    <!--
+      <script type="text/javascript" src="jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
+     -->
+  </head>
+
+  <body>
+    <div class="top-banner-root">
+      <span class="top-banner-title-font">Test results</span>
+      <br/>
+      <span class="top-banner-font-1">1 suite</span>
+    </div> <!-- top-banner-root -->
+    <div class="navigator-root">
+      <div class="navigator-suite-header">
+        <span>All suites</span>
+        <a href="#" class="collapse-all-link" title="Collapse/expand all the suites">
+          <img class="collapse-all-icon" src="collapseall.gif">
+          </img> <!-- collapse-all-icon -->
+        </a> <!-- collapse-all-link -->
+      </div> <!-- navigator-suite-header -->
+      <div class="suite">
+        <div class="rounded-window">
+          <div class="suite-header light-rounded-window-top">
+            <a href="#" class="navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite">
+              <span class="suite-name border-passed">Deontic Cognitive Calculus Tests Suite</span>
+            </a> <!-- navigator-link -->
+          </div> <!-- suite-header light-rounded-window-top -->
+          <div class="navigator-suite-content">
+            <div class="suite-section-title">
+              <span>Info</span>
+            </div> <!-- suite-section-title -->
+            <div class="suite-section-content">
+              <ul>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="test-xml-Deontic_Cognitive_Calculus_Tests_Suite">
+                    <span>[unset file name]</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="testlist-Deontic_Cognitive_Calculus_Tests_Suite">
+                    <span class="test-stats">1 test</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="group-Deontic_Cognitive_Calculus_Tests_Suite">
+                    <span>0 groups</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="times-Deontic_Cognitive_Calculus_Tests_Suite">
+                    <span>Times</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="reporter-Deontic_Cognitive_Calculus_Tests_Suite">
+                    <span>Reporter output</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="ignored-methods-Deontic_Cognitive_Calculus_Tests_Suite">
+                    <span>Ignored methods</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+                <li>
+                  <a href="#" class="navigator-link " panel-name="chronological-Deontic_Cognitive_Calculus_Tests_Suite">
+                    <span>Chronological view</span>
+                  </a> <!-- navigator-link  -->
+                </li>
+              </ul>
+            </div> <!-- suite-section-content -->
+            <div class="result-section">
+              <div class="suite-section-title">
+                <span>Results</span>
+              </div> <!-- suite-section-title -->
+              <div class="suite-section-content">
+                <ul>
+                  <li>
+                    <span class="method-stats">45 methods,   45 passed</span>
+                  </li>
+                  <li>
+                    <span class="method-list-title passed">Passed methods</span>
+                    <span class="show-or-hide-methods passed">
+                      <a href="#" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" class="hide-methods passed suite-Deontic_Cognitive_Calculus_Tests_Suite"> (hide)</a> <!-- hide-methods passed suite-Deontic_Cognitive_Calculus_Tests_Suite -->
+                      <a href="#" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" class="show-methods passed suite-Deontic_Cognitive_Calculus_Tests_Suite"> (show)</a> <!-- show-methods passed suite-Deontic_Cognitive_Calculus_Tests_Suite -->
+                    </span>
+                    <div class="method-list-content passed suite-Deontic_Cognitive_Calculus_Tests_Suite">
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happ...)">testCompleteness([(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happ...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([P, (implies P (Knows! a now Q))], Q)">testCompleteness([P, (implies P (Knows! a now Q))], Q)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(and P (Knows! a t0 Q) )], (or P Q ))">testCompleteness([(and P (Knows! a t0 Q) )], (or P Q ))</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b...)">testCompleteness([(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))], (Believes! a now (Knows! b no...)">testCompleteness([(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))], (Believes! a now (Knows! b no...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(and P (Knows! a t0 Q) )], Q)">testCompleteness([(and P (Knows! a t0 Q) )], Q)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))], (Knows! a t (isExit ...)">testCompleteness([(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))], (Knows! a t (isExit ...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))], Q)">testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))], Q)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (...)">testCompleteness([(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...)">testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...)">testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))], (...)">testCompleteness([(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))], (...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Knows! a1 t1 P)], P)">testCompleteness([(Knows! a1 t1 P)], P)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))], ...)">testCompleteness([(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))], ...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(or (Knows! a now P) (Knows! b now P) )], P)">testCompleteness([(or (Knows! a now P) (Knows! b now P) )], P)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(and (Common! t0 P) (Common! t0 Q) )], (Knows! a1 t1 (and P Q )))">testCompleteness([(and (Common! t0 P) (Common! t0 Q) )], (Knows! a1 t1 (and P Q )))</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )],...)">testCompleteness([(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )],...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(and P (Knows! a t0 Q) )], (and P Q ))">testCompleteness([(and P (Knows! a t0 Q) )], (and P Q ))</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))], (Believes...)">testCompleteness([(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))], (Believes...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))], (Knows! a now U))">testCompleteness([(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))], (Knows! a now U))</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrat...)">testCompleteness([(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrat...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))], (Believes! a1 t0 Q))">testCompleteness([(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))], (Believes! a1 t0 Q))</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...)">testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! now (Common! now P))], P)">testCompleteness([(Common! now (Common! now P))], P)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) n...)">testCompleteness([(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) n...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! t0 P)], (and (Knows! a1 t1 P) (Knows! a2 t1 P) ))">testCompleteness([(Common! t0 P)], (and (Knows! a1 t1 P) (Knows! a2 t1 P) ))</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...)">testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))], (happ...)">testCompleteness([(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))], (happ...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (ex...)">testCompleteness([(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (ex...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows...)">testCompleteness([(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )...)">testCompleteness([(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (...)">testCompleteness([(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)],...)">testCompleteness([(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)],...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Com...)">testCompleteness([(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Com...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...)">testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Knows! a1 now P)], (Believes! a1 now P))">testCompleteness([(Knows! a1 now P)], (Believes! a1 now P))</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheor...)">testCompleteness([(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheor...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...)">testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testSoundess([A], (or P Q ))">testSoundess([A], (or P Q ))</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                      <span>
+                        <img width="3%" src="passed.png"/>
+                        <a href="#" class="method navigator-link" panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" title="com.logic.prover.CognitiveCalculusProverTests" hash-for-method="testSoundess([(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (=...)">testSoundess([(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (=...)</a> <!-- method navigator-link -->
+                      </span>
+                      <br/>
+                    </div> <!-- method-list-content passed suite-Deontic_Cognitive_Calculus_Tests_Suite -->
+                  </li>
+                </ul>
+              </div> <!-- suite-section-content -->
+            </div> <!-- result-section -->
+          </div> <!-- navigator-suite-content -->
+        </div> <!-- rounded-window -->
+      </div> <!-- suite -->
+    </div> <!-- navigator-root -->
+    <div class="wrapper">
+      <div class="main-panel-root">
+        <div panel-name="suite-Deontic_Cognitive_Calculus_Tests_Suite" class="panel Deontic_Cognitive_Calculus_Tests_Suite">
+          <div class="suite-Deontic_Cognitive_Calculus_Tests_Suite-class-passed">
+            <div class="main-panel-header rounded-window-top">
+              <img src="passed.png"/>
+              <span class="class-name">com.logic.prover.CognitiveCalculusProverTests</span>
+            </div> <!-- main-panel-header rounded-window-top -->
+            <div class="main-panel-content rounded-window-bottom">
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happ...)">
+                  </a> <!-- testCompleteness([(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happ...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happens (action  ?a ?alpha) ?t))))), (Perception! a1 now (happens (action  a2 alpha) t))], (Knows! a1 now (Knows! a2 now (happens (action  a2 alpha) t))))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([P, (implies P (Knows! a now Q))], Q)">
+                  </a> <!-- testCompleteness([P, (implies P (Knows! a now Q))], Q) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([P, (implies P (Knows! a now Q))], Q)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(and P (Knows! a t0 Q) )], (or P Q ))">
+                  </a> <!-- testCompleteness([(and P (Knows! a t0 Q) )], (or P Q )) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(and P (Knows! a t0 Q) )], (or P Q ))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b...)">
+                  </a> <!-- testCompleteness([(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b now P) )], (and Q1 Q2 ))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))], (Believes! a now (Knows! b no...)">
+                  </a> <!-- testCompleteness([(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))], (Believes! a now (Knows! b no...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))], (Believes! a now (Knows! b now Q)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(and P (Knows! a t0 Q) )], Q)">
+                  </a> <!-- testCompleteness([(and P (Knows! a t0 Q) )], Q) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(and P (Knows! a t0 Q) )], Q)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))], (Knows! a t (isExit ...)">
+                  </a> <!-- testCompleteness([(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))], (Knows! a t (isExit ...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))], (Knows! a t (isExit B)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))], Q)">
+                  </a> <!-- testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))], Q) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))], Q)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (...)">
+                  </a> <!-- testCompleteness([(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheorem)))], (Believes! robot1 t2 (Believes! robot2 t1 BirdTtheorem)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...)">
+                  </a> <!-- testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now INJURED)], (happens (action  robot HELP) now))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...)">
+                  </a> <!-- testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now INJURED)], (happens (action  robot HELP) now))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))], (...)">
+                  </a> <!-- testCompleteness([(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))], (...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))], (not P))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Knows! a1 t1 P)], P)">
+                  </a> <!-- testCompleteness([(Knows! a1 t1 P)], P) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Knows! a1 t1 P)], P)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))], ...)">
+                  </a> <!-- testCompleteness([(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))], ...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))], BIRDTHEOREM)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(or (Knows! a now P) (Knows! b now P) )], P)">
+                  </a> <!-- testCompleteness([(or (Knows! a now P) (Knows! b now P) )], P) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(or (Knows! a now P) (Knows! b now P) )], P)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(and (Common! t0 P) (Common! t0 Q) )], (Knows! a1 t1 (and P Q )))">
+                  </a> <!-- testCompleteness([(and (Common! t0 P) (Common! t0 Q) )], (Knows! a1 t1 (and P Q ))) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(and (Common! t0 P) (Common! t0 Q) )], (Knows! a1 t1 (and P Q )))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )],...)">
+                  </a> <!-- testCompleteness([(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )],...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )], (Knows! a1 t1 (mortal socrates)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(and P (Knows! a t0 Q) )], (and P Q ))">
+                  </a> <!-- testCompleteness([(and P (Knows! a t0 Q) )], (and P Q )) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(and P (Knows! a t0 Q) )], (and P Q ))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))], (Believes...)">
+                  </a> <!-- testCompleteness([(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))], (Believes...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))], (Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))], (Knows! a now U))">
+                  </a> <!-- testCompleteness([(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))], (Knows! a now U)) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))], (Knows! a now U))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrat...)">
+                  </a> <!-- testCompleteness([(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrat...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrates))], (Believes! robot t3 (Mortal socrates)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))], (Believes! a1 t0 Q))">
+                  </a> <!-- testCompleteness([(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))], (Believes! a1 t0 Q)) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))], (Believes! a1 t0 Q))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...)">
+                  </a> <!-- testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  robot2 (help  mary)) t2))), (Common! t0 (forall ( ?x) (implies (and (honest ?x) (criesForHelp ?x) ) (injured ?x)))), (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))], (Believes! robot1 t2 (happens (action  robot2 (help  mary)) t2)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">
+                  </a> <!-- testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (Intends! I now (not (HoldsAt (dead  P1) 5))))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! now (Common! now P))], P)">
+                  </a> <!-- testCompleteness([(Common! now (Common! now P))], P) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! now (Common! now P))], P)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) n...)">
+                  </a> <!-- testCompleteness([(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) n...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) now))), (Believes! robot now (implies (cries soldier) (injured soldier))), (Believes! robot now (cries soldier))], (happens (action  robot (help  soldier)) now))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! t0 P)], (and (Knows! a1 t1 P) (Knows! a2 t1 P) ))">
+                  </a> <!-- testCompleteness([(Common! t0 P)], (and (Knows! a1 t1 P) (Knows! a2 t1 P) )) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! t0 P)], (and (Knows! a1 t1 P) (Knows! a2 t1 P) ))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...)">
+                  </a> <!-- testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))], (Knows! jack t0 BirdTheorem))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">
+                  </a> <!-- testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (Intends! I now (not (HoldsAt (dead  P2) 6))))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))], (happ...)">
+                  </a> <!-- testCompleteness([(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))], (happ...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))], (happens (action  jack A) t0))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (ex...)">
+                  </a> <!-- testCompleteness([(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (ex...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) ))), (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) )), (Knows! I now situation)], (Intends! I now (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) )))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows...)">
+                  </a> <!-- testCompleteness([(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows! a1 t1 (Knows! a2 t2 (Knows! a3 t2 (implies Ma (not R)))))], (implies H (not Ma)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )...)">
+                  </a> <!-- testCompleteness([(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )) )], (and R1 R2 ))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (...)">
+                  </a> <!-- testCompleteness([(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (Common! t2 (Ought! robot t2 (injured soldier) (happens (action  robot (help  soldier)) t2)))], (happens (action  robot (help  soldier)) t2))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)],...)">
+                  </a> <!-- testCompleteness([(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)],...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)], R)</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Com...)">
+                  </a> <!-- testCompleteness([(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Com...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Common! now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) now)))], (happens (action  robot (help  soldier)) now))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...)">
+                  </a> <!-- testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  robot2 (help  mary)) t2))), (Common! t0 (forall ( ?x) (implies (and (honest ?x) (criesForHelp ?x) ) (injured ?x)))), (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))], (Believes! robot1 t2 (happens (action  robot2 (help  mary)) t2)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Knows! a1 now P)], (Believes! a1 now P))">
+                  </a> <!-- testCompleteness([(Knows! a1 now P)], (Believes! a1 now P)) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Knows! a1 now P)], (Believes! a1 now P))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheor...)">
+                  </a> <!-- testCompleteness([(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheor...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheorem))], (Believes! robot t2 BirdTtheorem))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...)">
+                  </a> <!-- testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...) -->
+                  <span class="method-name">testCompleteness</span>
+                  <span class="parameters">([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))], (Knows! jack t0 BirdTheorem))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">
+                  </a> <!-- testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...) -->
+                  <span class="method-name">testSoundess</span>
+                  <span class="parameters">([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (Intends! I now (HoldsAt (dead  P3) 6)))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">
+                  </a> <!-- testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...) -->
+                  <span class="method-name">testSoundess</span>
+                  <span class="parameters">([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (not (Ought! I 2 situation (not (happens (action  I (switch  track1 track2)) 2)))))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)">
+                  </a> <!-- testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...) -->
+                  <span class="method-name">testSoundess</span>
+                  <span class="parameters">([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (not (Ought! I 2 situation (not (Happens (action  I (drop  P3 track1 3)) 1)))))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSoundess([A], (or P Q ))">
+                  </a> <!-- testSoundess([A], (or P Q )) -->
+                  <span class="method-name">testSoundess</span>
+                  <span class="parameters">([A], (or P Q ))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+              <div class="method">
+                <div class="method-content">
+                  <a name="testSoundess([(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (=...)">
+                  </a> <!-- testSoundess([(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (=...) -->
+                  <span class="method-name">testSoundess</span>
+                  <span class="parameters">([(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (= morning_star morning_star))], (and P (not P) ))</span>
+                </div> <!-- method-content -->
+              </div> <!-- method -->
+            </div> <!-- main-panel-content rounded-window-bottom -->
+          </div> <!-- suite-Deontic_Cognitive_Calculus_Tests_Suite-class-passed -->
+        </div> <!-- panel Deontic_Cognitive_Calculus_Tests_Suite -->
+        <div panel-name="test-xml-Deontic_Cognitive_Calculus_Tests_Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <pre>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;!DOCTYPE suite SYSTEM &quot;http://testng.org/testng-1.0.dtd&quot;&gt;
+&lt;suite name=&quot;Deontic Cognitive Calculus Tests Suite&quot;&gt;
+  &lt;test name=&quot;Deontic Cognitive Calculus Tests Suite&quot;&gt;
+    &lt;classes&gt;
+      &lt;class name=&quot;com.logic.prover.CognitiveCalculusProverTests&quot;/&gt;
+    &lt;/classes&gt;
+  &lt;/test&gt; &lt;!-- Deontic Cognitive Calculus Tests Suite --&gt;
+&lt;/suite&gt; &lt;!-- Deontic Cognitive Calculus Tests Suite --&gt;
+            </pre>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="testlist-Deontic_Cognitive_Calculus_Tests_Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Tests for Deontic Cognitive Calculus Tests Suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <ul>
+              <li>
+                <span class="test-name">Deontic Cognitive Calculus Tests Suite (1 class)</span>
+              </li>
+            </ul>
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="group-Deontic_Cognitive_Calculus_Tests_Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Groups for Deontic Cognitive Calculus Tests Suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="times-Deontic_Cognitive_Calculus_Tests_Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Times for Deontic Cognitive Calculus Tests Suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="times-div">
+              <script type="text/javascript">
+suiteTableInitFunctions.push('tableData_Deontic_Cognitive_Calculus_Tests_Suite');
+function tableData_Deontic_Cognitive_Calculus_Tests_Suite() {
+var data = new google.visualization.DataTable();
+data.addColumn('number', 'Number');
+data.addColumn('string', 'Method');
+data.addColumn('string', 'Class');
+data.addColumn('number', 'Time (ms)');
+data.addRows(45);
+data.setCell(0, 0, 0)
+data.setCell(0, 1, 'testCompleteness')
+data.setCell(0, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(0, 3, 9915);
+data.setCell(1, 0, 1)
+data.setCell(1, 1, 'testCompleteness')
+data.setCell(1, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(1, 3, 1547);
+data.setCell(2, 0, 2)
+data.setCell(2, 1, 'testCompleteness')
+data.setCell(2, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(2, 3, 1257);
+data.setCell(3, 0, 3)
+data.setCell(3, 1, 'testCompleteness')
+data.setCell(3, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(3, 3, 519);
+data.setCell(4, 0, 4)
+data.setCell(4, 1, 'testCompleteness')
+data.setCell(4, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(4, 3, 455);
+data.setCell(5, 0, 5)
+data.setCell(5, 1, 'testCompleteness')
+data.setCell(5, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(5, 3, 215);
+data.setCell(6, 0, 6)
+data.setCell(6, 1, 'testSoundess')
+data.setCell(6, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(6, 3, 167);
+data.setCell(7, 0, 7)
+data.setCell(7, 1, 'testCompleteness')
+data.setCell(7, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(7, 3, 164);
+data.setCell(8, 0, 8)
+data.setCell(8, 1, 'testCompleteness')
+data.setCell(8, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(8, 3, 163);
+data.setCell(9, 0, 9)
+data.setCell(9, 1, 'testCompleteness')
+data.setCell(9, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(9, 3, 159);
+data.setCell(10, 0, 10)
+data.setCell(10, 1, 'testSoundess')
+data.setCell(10, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(10, 3, 152);
+data.setCell(11, 0, 11)
+data.setCell(11, 1, 'testCompleteness')
+data.setCell(11, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(11, 3, 136);
+data.setCell(12, 0, 12)
+data.setCell(12, 1, 'testCompleteness')
+data.setCell(12, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(12, 3, 126);
+data.setCell(13, 0, 13)
+data.setCell(13, 1, 'testCompleteness')
+data.setCell(13, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(13, 3, 118);
+data.setCell(14, 0, 14)
+data.setCell(14, 1, 'testCompleteness')
+data.setCell(14, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(14, 3, 96);
+data.setCell(15, 0, 15)
+data.setCell(15, 1, 'testSoundess')
+data.setCell(15, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(15, 3, 95);
+data.setCell(16, 0, 16)
+data.setCell(16, 1, 'testCompleteness')
+data.setCell(16, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(16, 3, 90);
+data.setCell(17, 0, 17)
+data.setCell(17, 1, 'testSoundess')
+data.setCell(17, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(17, 3, 85);
+data.setCell(18, 0, 18)
+data.setCell(18, 1, 'testCompleteness')
+data.setCell(18, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(18, 3, 85);
+data.setCell(19, 0, 19)
+data.setCell(19, 1, 'testCompleteness')
+data.setCell(19, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(19, 3, 77);
+data.setCell(20, 0, 20)
+data.setCell(20, 1, 'testCompleteness')
+data.setCell(20, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(20, 3, 59);
+data.setCell(21, 0, 21)
+data.setCell(21, 1, 'testCompleteness')
+data.setCell(21, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(21, 3, 52);
+data.setCell(22, 0, 22)
+data.setCell(22, 1, 'testCompleteness')
+data.setCell(22, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(22, 3, 52);
+data.setCell(23, 0, 23)
+data.setCell(23, 1, 'testCompleteness')
+data.setCell(23, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(23, 3, 46);
+data.setCell(24, 0, 24)
+data.setCell(24, 1, 'testCompleteness')
+data.setCell(24, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(24, 3, 44);
+data.setCell(25, 0, 25)
+data.setCell(25, 1, 'testCompleteness')
+data.setCell(25, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(25, 3, 42);
+data.setCell(26, 0, 26)
+data.setCell(26, 1, 'testCompleteness')
+data.setCell(26, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(26, 3, 40);
+data.setCell(27, 0, 27)
+data.setCell(27, 1, 'testCompleteness')
+data.setCell(27, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(27, 3, 34);
+data.setCell(28, 0, 28)
+data.setCell(28, 1, 'testCompleteness')
+data.setCell(28, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(28, 3, 34);
+data.setCell(29, 0, 29)
+data.setCell(29, 1, 'testCompleteness')
+data.setCell(29, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(29, 3, 32);
+data.setCell(30, 0, 30)
+data.setCell(30, 1, 'testCompleteness')
+data.setCell(30, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(30, 3, 31);
+data.setCell(31, 0, 31)
+data.setCell(31, 1, 'testCompleteness')
+data.setCell(31, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(31, 3, 31);
+data.setCell(32, 0, 32)
+data.setCell(32, 1, 'testCompleteness')
+data.setCell(32, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(32, 3, 30);
+data.setCell(33, 0, 33)
+data.setCell(33, 1, 'testCompleteness')
+data.setCell(33, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(33, 3, 29);
+data.setCell(34, 0, 34)
+data.setCell(34, 1, 'testCompleteness')
+data.setCell(34, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(34, 3, 29);
+data.setCell(35, 0, 35)
+data.setCell(35, 1, 'testCompleteness')
+data.setCell(35, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(35, 3, 28);
+data.setCell(36, 0, 36)
+data.setCell(36, 1, 'testCompleteness')
+data.setCell(36, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(36, 3, 27);
+data.setCell(37, 0, 37)
+data.setCell(37, 1, 'testCompleteness')
+data.setCell(37, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(37, 3, 27);
+data.setCell(38, 0, 38)
+data.setCell(38, 1, 'testCompleteness')
+data.setCell(38, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(38, 3, 26);
+data.setCell(39, 0, 39)
+data.setCell(39, 1, 'testCompleteness')
+data.setCell(39, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(39, 3, 21);
+data.setCell(40, 0, 40)
+data.setCell(40, 1, 'testCompleteness')
+data.setCell(40, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(40, 3, 20);
+data.setCell(41, 0, 41)
+data.setCell(41, 1, 'testCompleteness')
+data.setCell(41, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(41, 3, 18);
+data.setCell(42, 0, 42)
+data.setCell(42, 1, 'testSoundess')
+data.setCell(42, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(42, 3, 18);
+data.setCell(43, 0, 43)
+data.setCell(43, 1, 'testCompleteness')
+data.setCell(43, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(43, 3, 18);
+data.setCell(44, 0, 44)
+data.setCell(44, 1, 'testCompleteness')
+data.setCell(44, 2, 'com.logic.prover.CognitiveCalculusProverTests')
+data.setCell(44, 3, 14);
+window.suiteTableData['Deontic_Cognitive_Calculus_Tests_Suite']= { tableData: data, tableDiv: 'times-div-Deontic_Cognitive_Calculus_Tests_Suite'}
+return data;
+}
+              </script>
+              <span class="suite-total-time">Total running time: 16 seconds</span>
+              <div id="times-div-Deontic_Cognitive_Calculus_Tests_Suite">
+              </div> <!-- times-div-Deontic_Cognitive_Calculus_Tests_Suite -->
+            </div> <!-- times-div -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="reporter-Deontic_Cognitive_Calculus_Tests_Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Reporter output for Deontic Cognitive Calculus Tests Suite</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="ignored-methods-Deontic_Cognitive_Calculus_Tests_Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">0 ignored methods</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+        <div panel-name="chronological-Deontic_Cognitive_Calculus_Tests_Suite" class="panel">
+          <div class="main-panel-header rounded-window-top">
+            <span class="header-content">Methods in chronological order</span>
+          </div> <!-- main-panel-header rounded-window-top -->
+          <div class="main-panel-content rounded-window-bottom">
+            <div class="chronological-class">
+              <div class="chronological-class-name">com.logic.prover.CognitiveCalculusProverTests</div> <!-- chronological-class-name -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Knows! a1 t1 P)], P)</span>
+                <span class="method-start">0 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Knows! a1 now P)], (Believes! a1 now P))</span>
+                <span class="method-start">9915 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))], (Believes! a1 t0 Q))</span>
+                <span class="method-start">10078 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! t0 P)], (and (Knows! a1 t1 P) (Knows! a2 t1 P) ))</span>
+                <span class="method-start">10120 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(and (Common! t0 P) (Common! t0 Q) )], (Knows! a1 t1 (and P Q )))</span>
+                <span class="method-start">10279 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )],...)</span>
+                <span class="method-start">10494 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...)</span>
+                <span class="method-start">10658 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)],...)</span>
+                <span class="method-start">10702 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))], ...)</span>
+                <span class="method-start">10828 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows...)</span>
+                <span class="method-start">10858 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(and P (Knows! a t0 Q) )], Q)</span>
+                <span class="method-start">10976 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(and P (Knows! a t0 Q) )], (and P Q ))</span>
+                <span class="method-start">11016 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(and P (Knows! a t0 Q) )], (or P Q ))</span>
+                <span class="method-start">11062 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )...)</span>
+                <span class="method-start">11076 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([P, (implies P (Knows! a now Q))], Q)</span>
+                <span class="method-start">11212 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))], Q)</span>
+                <span class="method-start">11290 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(or (Knows! a now P) (Knows! b now P) )], P)</span>
+                <span class="method-start">11386 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))], (Believes! a now (Knows! b no...)</span>
+                <span class="method-start">11415 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b...)</span>
+                <span class="method-start">11449 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))], (...)</span>
+                <span class="method-start">12706 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! now (Common! now P))], P)</span>
+                <span class="method-start">12758 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))]...)</span>
+                <span class="method-start">12785 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))], (happ...)</span>
+                <span class="method-start">12816 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) n...)</span>
+                <span class="method-start">12845 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Com...)</span>
+                <span class="method-start">12872 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (...)</span>
+                <span class="method-start">12906 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...)</span>
+                <span class="method-start">12937 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now I...)</span>
+                <span class="method-start">12955 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrat...)</span>
+                <span class="method-start">12976 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))], (Believes...)</span>
+                <span class="method-start">13008 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheor...)</span>
+                <span class="method-start">13029 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (...)</span>
+                <span class="method-start">13047 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...)</span>
+                <span class="method-start">13075 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  ro...)</span>
+                <span class="method-start">13530 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))], (Knows! a t (isExit ...)</span>
+                <span class="method-start">14049 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))], (Knows! a now U))</span>
+                <span class="method-start">14101 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happ...)</span>
+                <span class="method-start">14127 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (ex...)</span>
+                <span class="method-start">15674 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</span>
+                <span class="method-start">15733 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testCompleteness([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</span>
+                <span class="method-start">15823 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testSoundess([A], (or P Q ))</span>
+                <span class="method-start">15918 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testSoundess([(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (=...)</span>
+                <span class="method-start">15936 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</span>
+                <span class="method-start">16031 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</span>
+                <span class="method-start">16116 ms</span>
+              </div> <!-- test-method -->
+              <div class="test-method">
+                <span class="method-name">testSoundess([(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (Holds...)</span>
+                <span class="method-start">16268 ms</span>
+              </div> <!-- test-method -->
+          </div> <!-- main-panel-content rounded-window-bottom -->
+        </div> <!-- panel -->
+      </div> <!-- main-panel-root -->
+    </div> <!-- wrapper -->
+  </body>
+</html>

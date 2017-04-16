@@ -1,0 +1,304 @@
+<html>
+<head>
+<title>TestNG:  MyTest</title>
+<link href="../testng.css" rel="stylesheet" type="text/css" />
+<link href="../my-testng.css" rel="stylesheet" type="text/css" />
+
+<style type="text/css">
+.log { display: none;} 
+.stack-trace { display: none;} 
+</style>
+<script type="text/javascript">
+<!--
+function flip(e) {
+  current = e.style.display;
+  if (current == 'block') {
+    e.style.display = 'none';
+    return 0;
+  }
+  else {
+    e.style.display = 'block';
+    return 1;
+  }
+}
+
+function toggleBox(szDivId, elem, msg1, msg2)
+{
+  var res = -1;  if (document.getElementById) {
+    res = flip(document.getElementById(szDivId));
+  }
+  else if (document.all) {
+    // this is the way old msie versions work
+    res = flip(document.all[szDivId]);
+  }
+  if(elem) {
+    if(res == 0) elem.innerHTML = msg1; else elem.innerHTML = msg2;
+  }
+
+}
+
+function toggleAllBoxes() {
+  if (document.getElementsByTagName) {
+    d = document.getElementsByTagName('div');
+    for (i = 0; i < d.length; i++) {
+      if (d[i].className == 'log') {
+        flip(d[i]);
+      }
+    }
+  }
+}
+
+// -->
+</script>
+
+</head>
+<body>
+<h2 align='center'>MyTest</h2><table border='1' align="center">
+<tr>
+<td>Tests passed/Failed/Skipped:</td><td>45/0/0</td>
+</tr><tr>
+<td>Started on:</td><td>Thu Mar 30 23:47:05 PDT 2017</td>
+</tr>
+<tr><td>Total time:</td><td>15 seconds (15572 ms)</td>
+</tr><tr>
+<td>Included groups:</td><td></td>
+</tr><tr>
+<td>Excluded groups:</td><td></td>
+</tr>
+</table><p/>
+<small><i>(Hover the method name to see the test class name)</i></small><p/>
+<table width='100%' border='1' class='invocation-passed'>
+<tr><td colspan='4' align='center'><b>PASSED TESTS</b></td></tr>
+<tr><td><b>Test method</b></td>
+<td width="30%"><b>Exception</b></td>
+<td width="10%"><b>Time (seconds)</b></td>
+<td><b>Instance</b></td>
+</tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Knows! a1 t1 P)], P</td>
+<td></td>
+<td>9</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Knows! a1 now P)], (Believes! a1 now P)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! a1 t0 P), (Believes! a1 t0 (implies P Q))], (Believes! a1 t0 Q)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! t0 P)], (and (Knows! a1 t1 P) (Knows! a2 t1 P) )</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(and (Common! t0 P) (Common! t0 Q) )], (Knows! a1 t1 (and P Q ))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(and (Common! t0 (forall ( ?x) (implies (human ?x) (mortal ?x)))) (Common! t0 (human socrates)) )], (Knows! a1 t1 (mortal socrates))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))], (Knows! jack t0 BirdTheorem)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! a now P), (implies (Believes! a now (and P Q )) (Knows! a now R)), (Believes! a now Q)], R</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Knows! a1 t0 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BIRDTHEOREM))], BIRDTHEOREM</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Knows! a1 t1 (implies H (and E D ))), (Knows! a1 t1 (Knows! a2 t2 (implies (or E My ) R))), (Knows! a1 t1 (Knows! a2 t2 (Knows! a3 t2 (implies Ma (not R)))))], (implies H (not Ma))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(and P (Knows! a t0 Q) )], Q</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(and P (Knows! a t0 Q) )], (and P Q )</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(and P (Knows! a t0 Q) )], (or P Q )</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(and P (Knows! a now (and Q (Knows! b now R2) )) ), (and P (Knows! a now (and Q (Knows! b now R1) )) )], (and R1 R2 )</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [P, (implies P (Knows! a now Q))], Q</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! a now Q))], Q</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(or (Knows! a now P) (Knows! b now P) )], P</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! a now P), (Believes! a now (implies P (Knows! b now Q)))], (Believes! a now (Knows! b now Q))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(implies P (Knows! b now (and (Knows! c t1 Q1) (Knows! c t2 Q2) ))), (or (Knows! a now P) (Knows! b now P) )], (and Q1 Q2 )</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(implies P (Knows! jack now (not (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))))))], (not P)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! now (Common! now P))], P</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) (Knows! jack t0 BirdTheorem))], (Knows! jack t0 BirdTheorem)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! jack t0 P), (Believes! jack t0 (Ought! jack t0 P (happens (action  jack A) t0)))], (happens (action  jack A) t0)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! robot now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) now))), (Believes! robot now (implies (cries soldier) (injured soldier))), (Believes! robot now (cries soldier))], (happens (action  robot (help  soldier)) now)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! now (implies (cries soldier) (injured soldier))), (Knows! robot now (cries soldier)), (Common! now (Ought! robot now (injured soldier) (happens (action  robot (help  soldier)) now)))], (happens (action  robot (help  soldier)) now)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! t0 (forall ( ?x) (implies (cries ?x) (injured ?x)))), (Knows! robot t1 (cries soldier)), (Common! t2 (Ought! robot t2 (injured soldier) (happens (action  robot (help  soldier)) t2)))], (happens (action  robot (help  soldier)) t2)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now INJURED)], (happens (action  robot HELP) now)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! now (Ought! robot now INJURED (happens (action  robot HELP) now))), (Believes! robot now INJURED)], (happens (action  robot HELP) now)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Believes! robot t2 (Man socrates))], (Believes! robot t3 (Mortal socrates))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x)))), (Common! t2 (Man socrates))], (Believes! robot t1 (forall ( ?x) (implies (Man ?x) (Mortal ?x))))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! robot t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheorem))], (Believes! robot t2 BirdTtheorem)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! robot1 t1 (Believes! robot2 t1 (implies (exists ( ?x) (implies (Bird ?x) (forall ( ?y) (Bird ?y)))) BirdTtheorem)))], (Believes! robot1 t2 (Believes! robot2 t1 BirdTtheorem))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  robot2 (help  mary)) t2))), (Common! t0 (forall ( ?x) (implies (and (honest ?x) (criesForHelp ?x) ) (injured ?x)))), (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))], (Believes! robot1 t2 (happens (action  robot2 (help  mary)) t2))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! t1 (criesForHelp mary)), (Common! t1 (Ought! robot2 t2 (injured mary) (happens (action  robot2 (help  mary)) t2))), (Common! t0 (forall ( ?x) (implies (and (honest ?x) (criesForHelp ?x) ) (injured ?x)))), (Believes! robot1 t0 (Believes! robot2 t0 (honest mary)))], (Believes! robot1 t2 (happens (action  robot2 (help  mary)) t2))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Perception! a t (not (isExit A))), (Knows! a t (or (isExit A) (isExit B) ))], (Knows! a t (isExit B))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(P a), (forall ( ?x) (implies (P ?x) (Knows! ?x now U)))], (Knows! a now U)</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Common! now (forall ( ?a ?alpha ?t) (implies (happens (action  ?a ?alpha) ?t) (Knows! ?a now (happens (action  ?a ?alpha) ?t))))), (Perception! a1 now (happens (action  a2 alpha) t))], (Knows! a1 now (Knows! a2 now (happens (action  a2 alpha) t)))</td>
+<td></td>
+<td>1</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) ))), (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) )), (Knows! I now situation)], (Intends! I now (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) ))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (Intends! I now (not (HoldsAt (dead  P1) 5)))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testCompleteness()'><b>testCompleteness</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (Intends! I now (not (HoldsAt (dead  P2) 6)))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testSoundess()'><b>testSoundess</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [A], (or P Q )</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testSoundess()'><b>testSoundess</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(not (Knows! a now (= morning_star evening_star))), (= morning_star evening_star), (Knows! a now (= morning_star morning_star))], (and P (not P) )</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testSoundess()'><b>testSoundess</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (not (Ought! I 2 situation (not (happens (action  I (switch  track1 track2)) 2))))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testSoundess()'><b>testSoundess</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (not (Ought! I 2 situation (not (Happens (action  I (drop  P3 track1 3)) 1))))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+<tr>
+<td title='com.logic.prover.CognitiveCalculusProverTests.testSoundess()'><b>testSoundess</b><br>Test class: com.logic.prover.CognitiveCalculusProverTests<br>Parameters: [(Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) )), (Believes! I now (Ought! I now situation (and (not (exists ( ?t) (HoldsAt (dead  P1) ?t))) (not (exists ( ?t) (HoldsAt (dead  P2) ?t))) ))), (Knows! I now situation)], (Intends! I now (HoldsAt (dead  P3) 6))</td>
+<td></td>
+<td>0</td>
+<td>com.logic.prover.CognitiveCalculusProverTests@4cda1d7a</td></tr>
+</table><p>
+</body>
+</html>

@@ -64,7 +64,7 @@ public class HaloCognitiveCalculusProver implements Prover {
 
         Set<Formula> usableList = CollectionUtils.newEmptySet();
 
-        usableList.add(weightQueue.remove());
+       // usableList.add(weightQueue.remove());
 
         int ageWeightCounter  = 0;
 

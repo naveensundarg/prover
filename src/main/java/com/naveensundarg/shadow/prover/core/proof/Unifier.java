@@ -377,7 +377,7 @@ public class Unifier {
             BiConditional b1 = (BiConditional) f1;
             BiConditional b2 = (BiConditional) f2;
 
-            Optional<Map<Variable, Value>> map1 = Unifier.unifyFormula(b1.getLeft(), b2.getRight());
+            Optional<Map<Variable, Value>> map1 = Unifier.unifyFormula(b1.getLeft(), b2.getLeft());
 
             if(!map1.isPresent()){
 
@@ -385,7 +385,7 @@ public class Unifier {
 
             }
 
-            Optional<Map<Variable, Value>> map2 = Unifier.unifyFormula(b1.getLeft(), b2.getRight());
+            Optional<Map<Variable, Value>> map2 = Unifier.unifyFormula(b1.getRight(), b2.getRight());
 
             return Unifier.addTo(map1.get(), map2.get());
 
