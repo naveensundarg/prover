@@ -97,7 +97,7 @@ public class Necessity extends  BaseFormula{
 
     @Override
     public String getName() {
-        return "NEC";
+        return "nec";
     }
 
     @Override

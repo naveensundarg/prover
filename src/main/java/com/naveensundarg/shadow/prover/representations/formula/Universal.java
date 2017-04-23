@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -110,7 +111,8 @@ public class Universal extends Formula implements Quantifier{
 
     @Override
     public String toString() {
-        return "(forall " + Arrays.stream(vars).map(Variable::toString).reduce("(", (x,y) -> x + " " +y) + ")" + " "
+        return "(forall " + "(" + StringUtils.trim(Arrays.stream(vars).map(Variable::toString).reduce("", (x, y) -> x  + y + " "))
+                + ")" + " "
                 + argument.toString() + ")";
     }
 

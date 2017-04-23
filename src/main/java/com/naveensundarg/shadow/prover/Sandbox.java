@@ -31,6 +31,6 @@ public class Sandbox {
        Formula f = ( Reader.readFormula(p.nextValue(pbr)));
 
 
-       System.out.println(Reader.readFormulaFromString("(forall (t') (P t))"));
+       System.out.println(Reader.readFormulaFromString("(exists (t) (P t))"));
     }
 }

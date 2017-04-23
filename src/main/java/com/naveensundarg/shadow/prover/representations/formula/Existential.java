@@ -3,6 +3,7 @@ package com.naveensundarg.shadow.prover.representations.formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Sets;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -114,9 +115,9 @@ public class Existential extends Formula implements Quantifier {
 
     @Override
     public String toString() {
-        return "(exists " + Arrays.stream(vars).map(Variable::toString).reduce("(", (x,y) -> x + " " +y) + ")" + " "
-                + argument.toString() +")";
-    }
+        return "(exists " + "(" + StringUtils.trim(Arrays.stream(vars).map(Variable::toString).reduce("", (x, y) -> x  + y + " "))
+                + ")" + " "
+                + argument.toString() + ")";    }
 
     @Override
     public boolean equals(Object o) {

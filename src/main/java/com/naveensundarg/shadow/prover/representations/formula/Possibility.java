@@ -93,7 +93,7 @@ public class Possibility extends  BaseFormula{
 
     @Override
     public String getName() {
-        return "POS";
+        return "pos";
     }
 
     @Override
