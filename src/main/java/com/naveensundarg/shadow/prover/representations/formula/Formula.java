@@ -35,4 +35,9 @@ public abstract class Formula extends Expression {
     public abstract Set<Variable> boundVariablesPresent();
 
     public abstract Set<Value> valuesPresent();
+
+    public static String _getSlateString_(Formula formula){
+
+        return formula.toString().replace("implies ", "if ");
+    }
 }

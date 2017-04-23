@@ -6,7 +6,7 @@
 
     <groupId>logic</groupId>
     <artifactId>prover</artifactId>
-    <version>0.45</version>
+    <version>0.50</version>
   <packaging>jar</packaging>
 
 

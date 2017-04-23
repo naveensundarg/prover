@@ -46,7 +46,7 @@ public class Implication extends Formula{
 
     @Override
     public String toString() {
-        return "(if " + antecedent + " " + consequent + ")";
+        return "(implies " + antecedent + " " + consequent + ")";
     }
 
     @Override
