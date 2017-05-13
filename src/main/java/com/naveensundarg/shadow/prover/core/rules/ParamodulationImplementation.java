@@ -12,6 +12,7 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -67,7 +68,8 @@ public enum  ParamodulationImplementation implements ForwardClauseRule {
                             map(Predicate::getArguments).
                             flatMap(Arrays::stream).
                             map(Z-> Unifier.subUnify(x, Z)).
-                            reduce(newSet(), Sets::union);
+                            filter(Objects::nonNull).
+                            reduce(Sets.with(CollectionUtils.newMap()), Sets::union);
 
             Clause clause = new Clause(Sets.union(Sets.remove(clause1.getLiterals(),identityLiteral), clause2.getLiterals()), CollectionUtils.listOf(clause1, clause2));
 

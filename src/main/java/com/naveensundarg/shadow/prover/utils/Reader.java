@@ -10,13 +10,11 @@ import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
 import us.bpsm.edn.parser.Parsers;
 
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
 
@@ -25,6 +23,9 @@ import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
  */
 public class Reader {
 
+    private enum QuantifierType {
+        Universal, Existential, Schema
+    }
     private static final Symbol NOT = Symbol.newSymbol("not");
     private static final Symbol AND = Symbol.newSymbol("and");
     private static final Symbol OR = Symbol.newSymbol("or");
@@ -35,6 +36,7 @@ public class Reader {
 
     private static final Symbol EXISTS = Symbol.newSymbol("exists");
     private static final Symbol FORALL = Symbol.newSymbol("forall");
+    private static final Symbol SCHEMA = Symbol.newSymbol("schema");
 
     private static final Symbol BELIEVES = Symbol.newSymbol("Believes!");
     private static final Symbol INTENDS = Symbol.newSymbol("Intends!");
@@ -230,14 +232,21 @@ public class Reader {
                 //FORALL
                 if(name.equals(FORALL)){
 
-                    return constructQuantifier(list, true, variableNames);
+                    return constructQuantifier(list, QuantifierType.Universal, variableNames);
 
                 }
 
-                //FORALL
+                //EXISTS
                 if(name.equals(EXISTS)){
 
-                    return constructQuantifier(list, false, variableNames);
+                    return constructQuantifier(list, QuantifierType.Existential, variableNames);
+
+                }
+
+                if(name.equals(SCHEMA)){
+
+                    return constructQuantifier(list, QuantifierType.Schema, variableNames);
+
 
                 }
 
@@ -317,6 +326,8 @@ public class Reader {
          throw new AssertionError("Could not understand formula: " + input);
 
     }
+
+
 
     private static Formula constructIntends(List list, Set<String> variableNames) throws ParsingException {
          if(list.isEmpty()){
@@ -649,7 +660,10 @@ public class Reader {
         }
     }
 
-    private static Formula constructQuantifier(List list, boolean universal, Set<String> outerVariableNames) throws ParsingException {
+
+
+
+    private static Formula constructQuantifier(List list, QuantifierType quantifierType, Set<String> outerVariableNames) throws ParsingException {
         if(list.size()==3){
 
             Object varListObject = list.get(1);
@@ -677,7 +691,15 @@ public class Reader {
                     throw new ParsingException("This quantifier's variables appear in the outer scope: " + list+ ". Conflicting vars: " + conflicts);
                 }
                 Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames,variableNames));
-                return universal? new Universal(variables, argument): new Existential(variables, argument) ;
+                if(quantifierType.equals(QuantifierType.Universal)){
+                   return new Universal(variables, argument);
+                }
+                if(quantifierType.equals(QuantifierType.Existential)){
+                   return  new Existential(variables, argument) ;
+                }
+                else {
+                    return new Schema(variables, argument);
+                }
 
             } else if (varListObject instanceof Symbol){
 
@@ -692,7 +714,15 @@ public class Reader {
                     throw new ParsingException("This quantifier's variables appear in the outer scope: " + list+ ". Conflicting vars: " + conflicts);
                 }
                 Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames,variableNames));
-                return universal? new Universal(variables, argument): new Existential(variables, argument) ;
+                 if(quantifierType.equals(QuantifierType.Universal)){
+                   return new Universal(variables, argument);
+                }
+                if(quantifierType.equals(QuantifierType.Existential)){
+                   return  new Existential(variables, argument) ;
+                }
+                else {
+                    return new Schema(variables, argument);
+                }
 
 
             } else {

@@ -80,7 +80,7 @@ public class Possibility extends  BaseFormula{
 
     @Override
     public String toString() {
-        return "(POS "
+        return "(pos "
            +
                 formula + ")";
     }

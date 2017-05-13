@@ -65,6 +65,9 @@ public class Logic {
         if (formula instanceof Ought) {
             agents.add(((Ought) formula).getAgent());
         }
+        if (formula instanceof Says) {
+            agents.add(((Says) formula).getAgent());
+        }
         Set<Formula> forms = formula.subFormulae().stream().filter(x -> !x.equals(formula)).collect(Collectors.toSet());
         ;
 
@@ -90,6 +93,10 @@ public class Logic {
 
         if (formula instanceof Ought) {
             times.add(((Ought) formula).getTime());
+        }
+
+        if (formula instanceof Says) {
+            times.add(((Says) formula).getTime());
         }
 
         Set<Formula> forms = formula.subFormulae().stream().filter(x -> !x.equals(formula)).collect(Collectors.toSet());
@@ -184,6 +191,7 @@ public class Logic {
         return !canRemove;
 
     }
+
 
 
     public static Optional<Map<Variable, Value>> isInstantationOfQuantifier(Quantifier quantifier, Formula formula) {

@@ -1,6 +1,11 @@
 package com.naveensundarg.shadow.prover;
 
+import com.naveensundarg.shadow.prover.core.SnarkWrapper;
+import com.naveensundarg.shadow.prover.core.special.KnightsKnavesProver;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Quantifier;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.Graph;
@@ -26,11 +31,40 @@ public class Sandbox {
 
     public static void main(String[] args) throws Exception {
 
-        Parseable pbr = Parsers.newParseable("(implies P Q)");
-        Parser p = Parsers.newParser(defaultConfiguration());
-       Formula f = ( Reader.readFormula(p.nextValue(pbr)));
+        SnarkWrapper snarkWrapper = new SnarkWrapper();
+
+        Formula b1 = Reader.readFormulaFromString("(forall [?x] (or (Knight ?x) (Knave ?x)))");
+        Formula b2 = Reader.readFormulaFromString("(forall [?x] (not (and (Knight ?x) (Knave ?x))))");
+        Formula b3 = Reader.readFormulaFromString("(forall [?x ?p] (if (and (Knight ?x) (Says ?p)) (Holds ?p)))");
 
 
-       System.out.println(Reader.readFormulaFromString("(exists (t) (P t))"));
+        Formula b4 = Reader.readFormulaFromString("");
+
+/*
+
+        KnightsKnavesProver knightsKnavesProver = new KnightsKnavesProver();
+
+        Formula b1 = Reader.readFormulaFromString("(forall [?x] (or (Knight ?x) (Knave ?x)))");
+        Formula b2 = Reader.readFormulaFromString("(forall [?x] (not (and (Knight ?x) (Knave ?x))))");
+
+        Formula f1 = Reader.readFormulaFromString("(Says! A (Knave B))");
+        Formula f2 = Reader.readFormulaFromString("(Says! A (Knave A))");
+
+        Formula h1 = Reader.readFormulaFromString("(Says! A (iff (Knave A) (Knave B)))");
+        Formula h2 = Reader.readFormulaFromString("(Says! B (iff (Knave A) (Knight B)))");
+
+        Set<Formula> base = CollectionUtils.newEmptySet();
+
+        base.add(b1);
+        base.add(b2);
+
+        base.add(h1);
+        base.add(h2);
+
+        System.out.println(knightsKnavesProver.prove(base, Reader.readFormulaFromString("(Knave A)")));
+
+*/
+
+
     }
 }

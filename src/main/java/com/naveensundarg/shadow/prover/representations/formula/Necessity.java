@@ -84,7 +84,7 @@ public class Necessity extends  BaseFormula{
 
     @Override
     public String toString() {
-        return "(NEC "
+        return "(nec "
            +
                 formula + ")";
     }

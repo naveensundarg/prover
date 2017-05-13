@@ -10,6 +10,7 @@ import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,7 @@ public enum DemodulationImplementation implements ForwardClauseRule {
                             map(Predicate::getArguments).
                             flatMap(Arrays::stream).
                             map(Z-> Unifier.subUnify(x, Z)).
+                            filter(Objects::nonNull).
                             reduce(newSet(), Sets::union);
 
 

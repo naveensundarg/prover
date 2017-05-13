@@ -2,20 +2,23 @@ package com.naveensundarg.shadow.prover.representations.formula;
 
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
- * Created by naveensundarg on 4/11/16.
+ * Created by naveensundarg on 4/29/17.
  */
-public class Universal extends Formula implements Quantifier{
+public class Schema extends Formula {
+
 
     private final Formula argument;
     private final Variable[] vars;
@@ -26,10 +29,10 @@ public class Universal extends Formula implements Quantifier{
     private final Set<Variable> boundVariables;
     private final int weight;
 
-    public Universal(Variable[] vars, Formula argument) {
+    public Schema(Variable[] vars, Formula argument) {
 
         if (!(vars.length > 0)) {
-            throw new AssertionError("Universal should have at least one variable");
+            throw new AssertionError("Schema should have at least one variable");
         }
 
         this.vars = vars;
@@ -111,7 +114,7 @@ public class Universal extends Formula implements Quantifier{
 
     @Override
     public String toString() {
-        return "(forall " + "(" + StringUtils.trim(Arrays.stream(vars).map(Variable::toString).reduce("", (x, y) -> x  + y + " "))
+        return "(schema " + "(" + StringUtils.trim(Arrays.stream(vars).map(Variable::toString).reduce("", (x, y) -> x  + y + " "))
                 + ")" + " "
                 + argument.toString() + ")";
     }
@@ -121,17 +124,16 @@ public class Universal extends Formula implements Quantifier{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Universal universal = (Universal) o;
+        Schema schema = (Schema) o;
 
-        if (!argument.equals(universal.argument)) return false;
+        if (!argument.equals(schema.argument)) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(vars, universal.vars);
-
+        return Arrays.equals(vars, schema.vars);
     }
 
     @Override
     public int hashCode() {
-        int result = safeHashCode(argument);
+        int result = argument.hashCode();
         result = 31 * result + Arrays.hashCode(vars);
         return result;
     }

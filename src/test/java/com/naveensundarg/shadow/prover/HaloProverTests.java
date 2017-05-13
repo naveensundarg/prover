@@ -51,7 +51,7 @@ public class HaloProverTests {
     }
 
 
-  //  @Test(dataProvider = "debugTestsProvider")
+   @Test(dataProvider = "debugTestsProvider")
     public void debugTests(Set<Formula> assumptions, Formula formula){
 
        Assert.assertTrue(prover.prove(assumptions, formula).isPresent());

@@ -141,9 +141,12 @@
 
 {:name        "*cognitive-calculus-completeness-test-13*"
  :description "dt11"
- :assumptions {1 (Believes! a now P)
-               2 (Believes! a now (if P (Knows! b now Q)))}
- :goal        (Believes! a now (Knows! b now Q))}
+ :assumptions {1 (Believes! a t1 (if P (Knows! b now Q)))
+               2 (Believes! a t2 P)}
+ :goal        (Believes! a t2 (Knows! b now Q))}
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

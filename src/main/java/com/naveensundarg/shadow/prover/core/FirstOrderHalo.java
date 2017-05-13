@@ -19,7 +19,6 @@ import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 public class FirstOrderHalo extends HaloCore {
 
 
-    private Prover propositionalProver;
 
     static double weightDelta = 0.5;
     static double weight  = 4;
@@ -30,7 +29,6 @@ public class FirstOrderHalo extends HaloCore {
     public FirstOrderHalo(Set<ForwardClauseRule> rules) {
 
         this.rules = rules;
-        this.propositionalProver = new PropositionalResolutionProver();
     }
 
     public FirstOrderHalo() {
@@ -39,9 +37,8 @@ public class FirstOrderHalo extends HaloCore {
 
         rules.add(FirstOrderResolutionImplementation.INSTANCE);
         rules.add(ParamodulationImplementation.INSTANCE);
-        //rules.add(DemodulationImplementation.INSTANCE);
+        rules.add(DemodulationImplementation.INSTANCE);
 
-        this.propositionalProver = new PropositionalResolutionProver();
 
     }
 
