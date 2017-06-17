@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.core;
 
+import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
@@ -127,7 +128,7 @@ public class SnarkWrapper implements Prover {
         }
 
         if (resultString.equals("YES")) {
-            return Optional.of(new TrivialJustification(assumptions, formula));
+            return Optional.of(new TrivialJustification(assumptions, formula, ":FOLFromSnark" ));
         } else {
             return Optional.empty();
         }

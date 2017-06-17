@@ -385,6 +385,9 @@
 
  :goal        (Intends! I now (not (HoldsAt (dead P1) 5)))}
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 {:name        "DDE 3a 2"
  :description "DDE"
  :assumptions {
@@ -401,5 +404,36 @@
 
  :goal        (Intends! I now (not (HoldsAt (dead P2) 6)))}
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+{:name        "Cogito Ergo Sum"
+ :description "A formaliztion of Descartes' Cogito Ergo Sum"
+ :assumptions {
 
+               S1 (Believes! I (forall [x] (or (Name x) (Thing x))))
+               S2 (Believes! I (forall (x) (iff (Name x) (not (Thing x)))) )
+               S3 (Believes! I (forall (x) (if (Thing x) (or (Real x) (Fictional x)))))
+               S4 (Believes! I (forall (x) (if (Thing x) (iff (Real x) (not (Fictional x))))))
+               ;;;
+               A1 (Believes! I (forall (x) (if (Name x) (Thing (* x)))))
+               A2 (Believes! I (forall (y) (if (Name y) (iff  (DeReExists y) (exists x (and (Real x) (= x (* y))))))))
+               ;
+               ;;;
+               ;
+               Suppose (Believes! I (not (DeReExists I)))
+               given (Believes! I (Name I))
+               ;
+               ;;;
+
+               Perceive-the-belief (Believes! I (Perceives! I (Believes! I (not (DeReExists I)))))
+               If_P_B (Believes!
+                        I
+                        (forall [?agent]
+                                (if (Perceives! I (Believes! ?agent (not (DeReExists ?agent))))
+                                  (Real (* ?agent)))))
+
+               }
+ :goal        (and (Believes! I  (not (Real (* I))))
+                   (Believes! I  (Real (* I)) ))
+
+ }

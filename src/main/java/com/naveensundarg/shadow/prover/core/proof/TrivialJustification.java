@@ -12,18 +12,28 @@ public class TrivialJustification extends Justification{
 
     private Formula formula;
     private Set<Formula> base;
-
+    private String message;
     public TrivialJustification(Set<Formula> base, Formula formula){
         this.formula = formula;
         this.base = base;
         super.name = "Trivial";
+
+        message = "AssumptionsNowContainsGoal";
+    }
+
+     public TrivialJustification(Set<Formula> base, Formula formula, String message){
+        this.formula = formula;
+        this.base = base;
+        super.name = "Trivial";
+
+        this.message = message;
     }
 
     @Override
     public String toString() {
-        return "(AssumptionsNowContainsGoal ["
-                + base.stream().map(Formula::toString).reduce("", (x,y) -> x + " "  + y)  +
-                "]"
+        return "("  + message+ " ("
+                + base.stream().map(Formula::toString).reduce("", (x,y) -> x + " "  + y).trim()  +
+                ") "
                 + formula.toString() + ")";
     }
 }
