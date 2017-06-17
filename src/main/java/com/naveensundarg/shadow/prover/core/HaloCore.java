@@ -118,7 +118,7 @@ public abstract class HaloCore implements Prover {
 
                     if (resolvand.getLiterals().isEmpty()) {
 
-                        return Optional.of(Justification.trivial(formula));
+                        return Optional.of(Justification.trivial(assumptions, formula));
 
                     } else {
 

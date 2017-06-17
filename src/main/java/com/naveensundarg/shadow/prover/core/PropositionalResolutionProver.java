@@ -64,7 +64,7 @@ public class PropositionalResolutionProver implements Prover {
 
                         for (Clause resolvand : resolvandsList) {
                             if (resolvand.getLiterals().isEmpty()) {
-                                return Optional.of(Justification.trivial(formula));
+                                return Optional.of(Justification.trivial(assumptions, formula));
                             } else {
                                 if (!clauses.contains(resolvand)) {
                                     clauses.add(resolvand);

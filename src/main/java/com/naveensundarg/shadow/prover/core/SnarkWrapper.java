@@ -127,7 +127,7 @@ public class SnarkWrapper implements Prover {
         }
 
         if (resultString.equals("YES")) {
-            return Optional.of(new TrivialJustification(formula));
+            return Optional.of(new TrivialJustification(assumptions, formula));
         } else {
             return Optional.empty();
         }

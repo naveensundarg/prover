@@ -1,16 +1,18 @@
 package com.naveensundarg.shadow.prover.core.rules;
 
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
+import com.naveensundarg.shadow.prover.representations.cnf.Clause;
+import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.representations.cnf.Literal;
-import com.naveensundarg.shadow.prover.utils.*;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.ImmutablePair;
+import com.naveensundarg.shadow.prover.utils.Pair;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -20,7 +22,7 @@ import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 /**
  * Created by naveensundarg on 4/15/16.
  */
-public enum FirstOrderResolutionImplementation implements ForwardClauseRule {
+public enum FirstOrderColorResolutionImplementation implements ForwardClauseRule {
 
     INSTANCE;
 
@@ -32,35 +34,17 @@ public enum FirstOrderResolutionImplementation implements ForwardClauseRule {
 
         if (differ) {
 
-            Optional<Pair<Literal, Literal>> opt = Color.areColorSwitchedLiterals(literal1, literal2);
-            if (opt.isPresent()) {
-
-                Predicate p1 = opt.get().first().getPredicate();
-                Predicate p2 = opt.get().first().getPredicate();
+            Predicate p1 = literal1.getPredicate();
+            Predicate p2 = literal2.getPredicate();
 
 
-                return Unifier.unify(p1, p2);
 
-            } else {
-                Predicate p1 = literal1.getPredicate();
-                Predicate p2 = literal2.getPredicate();
-
-                return Unifier.unify(p1, p2);
-            }
+            return Unifier.unify(p1, p2);
+        } else {
+            return null;
         }
-
-        else {
-
-            {
-
-                return null;
-
-            }
-        }
-
 
     }
-
 
     @Override
     public Set<Clause> apply(Clause clause1, Clause clause2) {

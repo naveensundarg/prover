@@ -2,6 +2,9 @@ package com.naveensundarg.shadow.prover.representations.cnf;
 
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.core.rules.ForwardClauseRule;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Not;
+import com.naveensundarg.shadow.prover.representations.formula.Or;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -271,6 +274,14 @@ public class Clause {
 
     }
 
+    public Formula toFormula(){
+        return new Or(
+                sortedLiterals.stream()
+                .map(x-> x.isNegated()? new Not(x.getPredicate()):
+                        x.getPredicate())
+                .collect(Collectors.toList()));
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -281,6 +292,7 @@ public class Clause {
 
         return sortedLiterals.equals(clause.sortedLiterals);
     }
+
 
     @Override
     public int hashCode() {

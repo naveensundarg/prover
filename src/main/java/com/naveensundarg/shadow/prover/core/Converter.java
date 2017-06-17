@@ -332,6 +332,13 @@ public class Converter {
             return  new Or(Arrays.stream(or.getArguments()).map(x->standardizeApart(x, problem)).collect(Collectors.toList()));
         }
 
+        if(formula instanceof Belief){
+
+            Belief belief = (Belief) formula;
+
+            return  new Belief(belief.getAgent(), belief.getTime(), standardizeApart(belief.getFormula(), problem));
+        }
+
         else {
 
             return formula;

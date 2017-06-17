@@ -1,15 +1,8 @@
-{:name        "DDE 3a 1"
- :description "DDE"
- :assumptions {
-               I2
-               (Ought! I now situation (and (not (exists [?t] (HoldsAt (dead P1) ?t)))
-                                            (not (exists [?t] (HoldsAt (dead P1) ?t)))) )
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-               I3
-               (Knows! I now situation)
+{:name        "*cognitive-calculus-completeness-test-6*"
+ :description "kicking the tires"
+ :assumptions {1 (if (not (Believes! a P)) Q)
+               2 (Believes! a (not P) )}
+ :goal        Q}
 
-               I4
-               (Believes! I now (Ought! I now situation (and (not (exists [?t] (HoldsAt (dead P1) ?t)))
-                                            (not (exists [?t] (HoldsAt (dead P1) ?t)))) ))}
-
- :goal        (Intends! I now (not (HoldsAt (dead P1) 5)))}

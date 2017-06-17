@@ -1,22 +1,14 @@
 package com.naveensundarg.shadow.prover.core;
 
-import com.naveensundarg.shadow.prover.core.rules.DemodulationImplementation;
-import com.naveensundarg.shadow.prover.core.rules.FirstOrderResolutionImplementation;
-import com.naveensundarg.shadow.prover.core.rules.ForwardClauseRule;
-import com.naveensundarg.shadow.prover.core.rules.ParamodulationImplementation;
-import com.naveensundarg.shadow.prover.representations.cnf.Clause;
-import com.naveensundarg.shadow.prover.utils.Pair;
+import com.naveensundarg.shadow.prover.core.rules.*;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.util.Map;
 import java.util.Set;
-
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 
 /**
  * Created by naveensundarg on 1/1/17.
  */
-public class FirstOrderHalo extends HaloCore {
+public class FirstOrderColorHalo extends HaloCore {
 
 
 
@@ -26,12 +18,12 @@ public class FirstOrderHalo extends HaloCore {
     private final Set<ForwardClauseRule> rules;
 
 
-    public FirstOrderHalo(Set<ForwardClauseRule> rules) {
+    public FirstOrderColorHalo(Set<ForwardClauseRule> rules) {
 
         this.rules = rules;
     }
 
-    public FirstOrderHalo() {
+    public FirstOrderColorHalo() {
 
         this.rules = Sets.newSet();
 
@@ -54,7 +46,7 @@ public class FirstOrderHalo extends HaloCore {
 
     @Override
     public int getMaxWeight() {
-        return 60;
+        return 100;
     }
 
 }

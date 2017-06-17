@@ -1,6 +1,8 @@
 package com.naveensundarg.shadow.prover.representations.cnf;
 
 import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.representations.formula.And;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
@@ -33,6 +35,12 @@ public class CNFFormula {
     public CNFFormula renameVars(Problem problem){
 
         return new CNFFormula(clauses.stream().map(x->Logic.renameVars(x, problem)).collect(Collectors.toSet()));
+    }
+
+    public Formula toFormula(){
+
+        return new And(clauses.stream().map(Clause::toFormula).collect(Collectors.toList()));
+
     }
 
     @Override

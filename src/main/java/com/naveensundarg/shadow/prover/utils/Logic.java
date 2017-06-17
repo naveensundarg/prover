@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.utils;
 
+import com.naveensundarg.shadow.prover.core.ColoredConverter;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.SymbolGenerator;
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
@@ -119,6 +120,7 @@ public class Logic {
 
         return agents;
     }
+
 
     public static Set<Value> allTimes(Set<Formula> base) {
 
@@ -368,4 +370,6 @@ public class Logic {
 
 
     }
+
+
 }

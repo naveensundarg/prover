@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.representations.formula.Formula;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -18,8 +19,8 @@ public abstract class Justification {
     }
 
 
-    public static Justification trivial(Formula formula){
-        return new TrivialJustification(formula);
+    public static Justification trivial(Set<Formula> base, Formula formula){
+        return new TrivialJustification(base, formula);
     }
 
     public static Justification compound(String name, List<Justification> subs){
