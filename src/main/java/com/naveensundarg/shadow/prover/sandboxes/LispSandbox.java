@@ -1,4 +1,4 @@
-package com.naveensundarg.shadow.prover;
+package com.naveensundarg.shadow.prover.sandboxes;
 
 import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;

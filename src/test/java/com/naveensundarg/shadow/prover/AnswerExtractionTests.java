@@ -6,6 +6,7 @@ import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
 import com.naveensundarg.shadow.prover.utils.*;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -13,7 +14,6 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**

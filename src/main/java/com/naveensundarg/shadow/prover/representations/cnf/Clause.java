@@ -275,11 +275,16 @@ public class Clause {
     }
 
     public Formula toFormula(){
-        return new Or(
-                sortedLiterals.stream()
+
+        List<Formula> disjuncts = sortedLiterals.stream()
                 .map(x-> x.isNegated()? new Not(x.getPredicate()):
                         x.getPredicate())
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+        if(disjuncts.size()==1){
+
+            return  disjuncts.get(0);
+        }
+        return new Or(disjuncts);
     }
 
 

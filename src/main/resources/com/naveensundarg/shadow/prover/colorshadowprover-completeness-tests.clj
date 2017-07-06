@@ -137,10 +137,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
-;{:name        "*cognitive-calculus-completeness-test-13*"
-; :description "Testing closure"
-; :assumptions {1 (Believes! robot t1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))) BirdTtheorem))}
-; :goal        (Believes! robot t1 BirdTtheorem)}
+{:name        "*cognitive-calculus-completeness-test-13*"
+ :description "Testing closure"
+ :assumptions {1 (Believes! robot t1 (if (exists (?x) (if (Bird ?x) (forall (?y) (Bird ?y)))) BirdTtheorem))}
+ :goal        (Believes! robot t1 BirdTtheorem)}
 ;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

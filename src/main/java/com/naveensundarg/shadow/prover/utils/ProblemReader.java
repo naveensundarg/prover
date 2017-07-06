@@ -1,6 +1,6 @@
 package com.naveensundarg.shadow.prover.utils;
 
-import com.naveensundarg.shadow.prover.Sandbox;
+import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;

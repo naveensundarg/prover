@@ -8,6 +8,7 @@ import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,13 @@ public class CNFFormula {
 
     public Formula toFormula(){
 
-        return new And(clauses.stream().map(Clause::toFormula).collect(Collectors.toList()));
+        List<Formula> conjuncts = clauses.stream().map(Clause::toFormula).collect(Collectors.toList());
+        if(conjuncts.size()==1){
+
+          return conjuncts.get(0);
+
+        }
+        return new And(conjuncts);
 
     }
 

@@ -414,26 +414,99 @@
                S2 (Believes! I (forall (x) (iff (Name x) (not (Thing x)))) )
                S3 (Believes! I (forall (x) (if (Thing x) (or (Real x) (Fictional x)))))
                S4 (Believes! I (forall (x) (if (Thing x) (iff (Real x) (not (Fictional x))))))
+
+
                ;;;
                A1 (Believes! I (forall (x) (if (Name x) (Thing (* x)))))
-               A2 (Believes! I (forall (y) (if (Name y) (iff  (DeReExists y) (exists x (and (Real x) (= x (* y))))))))
-               ;
-               ;;;
-               ;
-               Suppose (Believes! I (not (DeReExists I)))
-               given (Believes! I (Name I))
-               ;
-               ;;;
 
+
+               A2 (Believes! I (forall (y) (if (Name y)
+                                             (iff  (DeReExists y)
+                                                   (exists x (and (Real x) (= x (* y))))))))
+
+               ;;;
+               ;
+
+               Suppose (Believes! I (not (DeReExists I)))
+
+
+
+               given (Believes! I (Name I))
+
+               ;;;
                Perceive-the-belief (Believes! I (Perceives! I (Believes! I (not (DeReExists I)))))
-               If_P_B (Believes!
+               If_P_B
+
+               (Believes!
                         I
                         (forall [?agent]
                                 (if (Perceives! I (Believes! ?agent (not (DeReExists ?agent))))
                                   (Real (* ?agent)))))
+
+
 
                }
  :goal        (and (Believes! I  (not (Real (* I))))
                    (Believes! I  (Real (* I)) ))
 
  }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Deep knowledge of physics"
+ :description "Agent a knows that Atriya knows that Gergely knows Theorem NEAT"
+ :assumptions {
+               AxPh
+               (Knows! a
+                       (Knows! Atriya
+                               (Knows! Gergely
+                                      (forall [m] (forall [x y]
+                                                        (if (IOb m)
+                                                          (iff (exists p (and (Ph p) (W m p x) (W m p y)))
+                                                               (= (speed x y) cm))))))))
+               From-AxFd
+               (Knows! a
+                       (Knows! Atriya
+                               (Knows! Gergely
+                                       (forall [m] (forall [x y]
+                                                         (if (not (= x y))
+                                                           (exists z (and (= (speed x z) cm)
+                                                                          (not (= (speed z y) cm))))))))))
+               Definition-Event-P
+               (Knows! a
+                       (Knows! Atriya
+                               (Knows! Gergely
+                                        (forall [m b p]
+                                                (iff (in b (ev m p))
+                                                     (W m b p))))))
+
+               }
+
+ :goal        (Knows! a
+                       (Knows! Atriya
+                               (Knows! Gergely
+                                        (forall [m x y] (if (IOb m) (if (not (= x y))
+                                                                      (not (= (ev m x) (ev m y)))))))))
+
+ }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+{:name        "The Purloined Letter"
+ :description "Dupin's reasoning as he goes through the case"
+
+ :assumptions {1 (Believes! g (hide m elaborate))
+               2 (Believes! d (or (hide m elaborate) (hide m plain)))
+               3 (Believes! m (Believes! g (hide m elaborate)))
+               4 (if (Believes! m (Believes! g (hide m elaborate))) (hide m plain))
+               5 (if (Believes! m (Believes! g (hide m plain))) (hide m elaborate))
+               6 (Believes! m (Believes! g (hide m elaborate)))
+               7 (Believes! d (if (Believes! m (Believes! g (hide m elaborate))) (hide m plain)))
+               8 (Believes! d (if (Believes! m (Believes! g (hide m plain))) (hide m elaborate)))
+               9 (Believes! d (Believes! m (Believes! g (hide m elaborate))))}
+
+
+ :goal (Believes! d (hide m plain))}
+

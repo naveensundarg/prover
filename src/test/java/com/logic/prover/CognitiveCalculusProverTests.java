@@ -1,6 +1,6 @@
 package com.logic.prover;
 
-import com.naveensundarg.shadow.prover.Sandbox;
+import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
 import com.naveensundarg.shadow.prover.core.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
