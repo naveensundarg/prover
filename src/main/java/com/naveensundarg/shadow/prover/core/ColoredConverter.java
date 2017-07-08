@@ -284,7 +284,7 @@ public class ColoredConverter {
 
     }
 
-    private static List<Value> getValues(Value color){
+    static List<Value> getValues(Value color){
         if(color.equals(NONE)){
             return CollectionUtils.listOf(NONE);
         }
@@ -293,6 +293,18 @@ public class ColoredConverter {
             answer.add(color.getArguments()[0]);
             return answer;
         }
+    }
+
+    static Value  makeColor(List<Value> color){
+
+        if(color.isEmpty() || (color.size()==1 & color.get(0).equals(ColoredConverter.NONE))){
+            return ColoredConverter.NONE;
+        }
+        else {
+
+            return new Compound("color", new Value[]{color.get(0), makeColor(color.subList(1, color.size()))});
+        }
+
     }
     private static Value joinColor(Value color1, Value color2){
 
@@ -312,10 +324,10 @@ public class ColoredConverter {
             colors[i]  = colorValues1.get(i);
         }
 
-        for(; i<colors.length; i++){
-            colors[i]  = colorValues2.get(i);
+        for(; i<colorValues1.size(); i++){
+            colors[i]  = colorValues2.get(i-colorValues1.size());
         }
-        return Color.getBaseColorTerm((Value[])colorValues1.toArray());
+        return Color.getBaseColorTerm(Arrays.copyOf(colorValues1.toArray(), colorValues1.size(), Value[].class));
 
     }
     public static Predicate augmentWithColor(Predicate formula, Value color) {

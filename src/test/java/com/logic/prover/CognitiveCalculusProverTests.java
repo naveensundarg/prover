@@ -1,5 +1,6 @@
 package com.logic.prover;
 
+import com.naveensundarg.shadow.prover.ColorShadowProverTests;
 import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
 import com.naveensundarg.shadow.prover.core.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.Problem;
@@ -36,7 +37,7 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-       List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
+       List<Problem >tests = ProblemReader.readFrom(ColorShadowProverTests.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

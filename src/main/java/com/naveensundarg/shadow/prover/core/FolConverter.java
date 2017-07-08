@@ -3,9 +3,12 @@ package com.naveensundarg.shadow.prover.core;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Color;
 import com.naveensundarg.shadow.prover.utils.Logic;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -106,8 +109,7 @@ public class FolConverter {
             Value time = perception.getTime();
 
             return new Perception(agent, time, Step1_EliminateImplicationsInt(arg));
-        }
-        else {
+        } else {
             throw new AssertionError("Unknown formula type");
         }
 
@@ -194,10 +196,23 @@ public class FolConverter {
                 Value agent = belief.getAgent();
                 Value time = belief.getTime();
 
-                return Step2_MoveNegationsInWardInt(new Not(arg), ColoredConverter.addToColor(ColoredConverter.NOT, ColoredConverter.addToColor(new Constant("B"), ColoredConverter.addToColor(agent, ColoredConverter.addToColor(time, color)))));
+                List<Value> givenColor = ColoredConverter.getValues(color);
+                List<Value> newColor = CollectionUtils.newEmptyList();
+                newColor.add(ColoredConverter.NONE);
+
+                newColor.add(0, time);
+                newColor.add(0, agent);
+                newColor.add(0, new Constant("B"));
+                givenColor.remove(0);
+                givenColor.forEach(x -> {
+                    newColor.add(0, x);
+
+                });
+
+                return Step2_MoveNegationsInWardInt(new Not(arg), ColoredConverter.makeColor(newColor));
             }
 
-              if (notArg instanceof Knowledge) {
+            if (notArg instanceof Knowledge) {
 
                 Knowledge knowledge = (Knowledge) notArg;
 
@@ -208,7 +223,7 @@ public class FolConverter {
                 return Step2_MoveNegationsInWardInt(new Not(arg), ColoredConverter.addToColor(ColoredConverter.NOT, ColoredConverter.addToColor(new Constant("K"), ColoredConverter.addToColor(agent, ColoredConverter.addToColor(time, color)))));
             }
 
-             if (notArg instanceof Perception) {
+            if (notArg instanceof Perception) {
 
                 Perception perception = (Perception) notArg;
 
@@ -246,7 +261,7 @@ public class FolConverter {
         }
 
 
-         if (formula instanceof Common) {
+        if (formula instanceof Common) {
 
             Common common = (Common) formula;
 
@@ -263,10 +278,24 @@ public class FolConverter {
             Value agent = belief.getAgent();
             Value time = belief.getTime();
 
-            return new Belief(agent, time, Step2_MoveNegationsInWardInt(arg, color));
+            List<Value> givenColor = ColoredConverter.getValues(color);
+
+            List<Value> newColor = CollectionUtils.newEmptyList();
+            newColor.add(ColoredConverter.NONE);
+
+            newColor.add(0, time);
+            newColor.add(0, agent);
+            newColor.add(0, new Constant("B"));
+            givenColor.remove(0);
+            givenColor.forEach(x -> {
+                    newColor.add(0, x);
+
+            });
+
+            return Step2_MoveNegationsInWardInt(arg, ColoredConverter.makeColor(newColor));
         }
 
-         if (formula instanceof Knowledge) {
+        if (formula instanceof Knowledge) {
 
             Knowledge knowledge = (Knowledge) formula;
 
@@ -277,7 +306,7 @@ public class FolConverter {
             return new Knowledge(agent, time, Step2_MoveNegationsInWardInt(arg, color));
         }
 
-         if (formula instanceof Perception) {
+        if (formula instanceof Perception) {
 
             Perception perception = (Perception) formula;
 
@@ -286,8 +315,7 @@ public class FolConverter {
             Value time = perception.getTime();
 
             return new Perception(agent, time, Step2_MoveNegationsInWardInt(arg, color));
-        }
-        else {
+        } else {
             throw new AssertionError("Unknown formula type: " + formula);
         }
 

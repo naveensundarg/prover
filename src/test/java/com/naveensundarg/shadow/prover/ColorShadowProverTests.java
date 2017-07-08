@@ -30,7 +30,7 @@ public class ColorShadowProverTests {
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-       List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("colorshadowprover-completeness-tests.clj"));
+       List<Problem >tests = ProblemReader.readFrom(ColorShadowProverTests.class.getResourceAsStream("colorshadowprover-completeness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -59,7 +59,7 @@ public class ColorShadowProverTests {
     @DataProvider(name="debugTestsProvider")
     public Object[][] debugTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("debug.clj"));
+        List<Problem >tests = ProblemReader.readFrom(ColorShadowProverTests.class.getResourceAsStream("debug.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

@@ -497,7 +497,8 @@
 {:name        "The Purloined Letter"
  :description "Dupin's reasoning as he goes through the case"
 
- :assumptions {1 (Believes! g (hide m elaborate))
+ :assumptions {
+               1 (Believes! g (hide m elaborate))
                2 (Believes! d (or (hide m elaborate) (hide m plain)))
                3 (Believes! m (Believes! g (hide m elaborate)))
                4 (if (Believes! m (Believes! g (hide m elaborate))) (hide m plain))

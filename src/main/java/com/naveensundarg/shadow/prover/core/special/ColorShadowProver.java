@@ -271,7 +271,7 @@ public class ColorShadowProver implements Prover {
                 .collect(Collectors.toSet());
 
 
-        coloredAssumptions.addAll(coloredAssumptions.stream().map(knowledgeLifter::process).collect(Collectors.toSet()));
+      //  coloredAssumptions.addAll(coloredAssumptions.stream().map(knowledgeLifter::process).collect(Collectors.toSet()));
 
         coloredAssumptions.addAll(KtoBaxioms);
         coloredAssumptions.addAll(KtoPropaxioms);
