@@ -1,25 +1,33 @@
-package com.naveensundarg.shadow.prover.core;
+package com.naveensundarg.shadow.prover.core.ccprovers;
 
+import com.naveensundarg.shadow.prover.core.Logic;
+import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.core.Prover;
+import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
+import com.naveensundarg.shadow.prover.core.internals.Expander;
 import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
-import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
-import com.naveensundarg.shadow.prover.utils.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
+import javax.swing.text.html.Option;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
+import static com.naveensundarg.shadow.prover.utils.Sets.copy;
 
 
 public class CognitiveCalculusProver implements Prover {
@@ -28,25 +36,28 @@ public class CognitiveCalculusProver implements Prover {
      *
      */
     private static boolean defeasible = false;
+    private static boolean verbose = true;
     private final boolean reductio;
     private final CognitiveCalculusProver parent;
+    private final Set<Expander> expanders;
     private Set<Formula> currentAssumptions;
     private Set<Formula> prohibited;
+    private Problem currentProblem;
 
     public CognitiveCalculusProver() {
 
         prohibited = Sets.newSet();
         parent = null;
         reductio = false;
+        expanders = CollectionUtils.newEmptySet();
     }
-
-    private Problem currentProblem;
 
     private CognitiveCalculusProver(CognitiveCalculusProver parent) {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
         this.parent = parent;
         reductio = false;
+        expanders = CollectionUtils.newEmptySet();
     }
 
     private CognitiveCalculusProver(CognitiveCalculusProver parent, boolean reductio) {
@@ -54,6 +65,67 @@ public class CognitiveCalculusProver implements Prover {
         prohibited = CollectionUtils.setFrom(parent.prohibited);
         this.parent = parent;
         this.reductio = reductio;
+        expanders = CollectionUtils.newEmptySet();
+    }
+
+    private static void log(String message){
+
+        if(verbose){
+
+        } else{
+
+
+        }
+    }
+
+    private static <T> Set<T> formulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, Predicate<Formula> constraint) {
+
+        return formulas.
+                stream().
+                filter(c::isInstance).
+                filter(constraint).
+                map(f -> (T) f).
+                collect(Collectors.toSet());
+    }
+
+    private static <T> Set<T> formulaOfType(Set<Formula> formulas, Class c) {
+
+        return formulaeOfTypeWithConstraint(formulas, c, f -> true);
+
+    }
+
+    private static <T> Set<T> level2FormulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, Predicate<Formula> constraint) {
+
+        return formulas.
+                stream().
+                filter(a -> a.getLevel() == 2).
+                filter(c::isInstance).
+                filter(constraint).
+                map(f -> (T) f).
+                collect(Collectors.toSet());
+    }
+
+    private static <T> Set<T> level2FormulaeOfType(Set<Formula> formulas, Class c) {
+
+        return level2FormulaeOfTypeWithConstraint(formulas, c, f -> true);
+
+    }
+
+    private static CognitiveCalculusProver root(CognitiveCalculusProver cognitiveCalculusProver) {
+
+
+        CognitiveCalculusProver current = cognitiveCalculusProver.parent;
+
+        if (current == null) {
+            return cognitiveCalculusProver;
+        }
+        while (current.parent != null) {
+
+            current = current.parent;
+        }
+
+        return current;
+
     }
 
     @Override
@@ -61,7 +133,6 @@ public class CognitiveCalculusProver implements Prover {
 
         return prove(assumptions, formula, CollectionUtils.newEmptySet());
     }
-
 
     private boolean alreadySeen(Set<Formula> assumptions, Formula formula) {
 
@@ -100,6 +171,9 @@ public class CognitiveCalculusProver implements Prover {
 
             if (got != null) return got;
 
+        } else{
+
+
         }
 
 
@@ -120,7 +194,7 @@ public class CognitiveCalculusProver implements Prover {
             int sizeAfterExpansion = base.size();
 
             if (base.contains(formula)) {
-                return Optional.of(TrivialJustification.trivial(assumptions,formula));
+                return Optional.of(TrivialJustification.trivial(assumptions, formula));
             }
 
             Optional<Justification> andProofOpt = tryAND(base, formula, added);
@@ -128,6 +202,43 @@ public class CognitiveCalculusProver implements Prover {
 
             if (andProofOpt.isPresent()) {
                 return andProofOpt;
+            }
+
+            if (!reductio) {
+
+                Optional<Justification> necProofOpt = tryNEC(base, formula, added);
+
+                if (necProofOpt.isPresent()) {
+                    return necProofOpt;
+                }
+
+                Optional<Justification> posProofOpt = tryPOS(base, formula, added);
+
+                if (posProofOpt.isPresent()) {
+                    return posProofOpt;
+                }
+
+                Optional<Justification> forAllIntroOpt = tryForAllIntro(base, formula, added);
+
+                if (forAllIntroOpt.isPresent()) {
+                    return forAllIntroOpt;
+                }
+
+                Optional<Justification> existsIntroOpt = tryExistsIntro(base, formula, added);
+
+                if (existsIntroOpt.isPresent()) {
+                    return existsIntroOpt;
+                }
+
+
+                Optional<Justification> ifIntroOpt = tryIfIntro(base, formula, added);
+
+                if (ifIntroOpt.isPresent()) {
+                    return ifIntroOpt;
+                }
+
+
+
             }
 
 
@@ -167,6 +278,146 @@ public class CognitiveCalculusProver implements Prover {
         }
 
         return Optional.empty();
+    }
+
+    private Optional<Justification> tryIfIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
+        if(formula instanceof Implication){
+
+            Implication implication = (Implication) formula;
+
+            Formula antecedent = implication.getAntecedent();
+            Formula consequent = implication.getConsequent();
+
+                Optional<Justification> consOpt = this.prove(Sets.add(base, antecedent), consequent);
+
+                if(consOpt.isPresent()){
+
+                    return Optional.of(new CompoundJustification("If Intro", CollectionUtils.listOf(consOpt.get())));
+
+                }
+
+            else {
+
+            return Optional.empty();
+        }
+            //TODO: the reverse
+
+        }
+        else {
+
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Justification> tryExistsIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
+         if(formula instanceof Existential){
+
+            Existential existential = (Existential) formula;
+            Variable[] vars  = existential.vars();
+
+            if(vars.length == 1){
+
+                Map<Variable, Value> subs = CollectionUtils.newMap();
+                subs.put(vars[0], Constant.newConstant());
+                return this.prove(base, ((Existential) formula).getArgument().apply(subs));
+
+            } else {
+
+                return Optional.empty();
+                //TODO: Handle more than one variable
+            }
+
+
+        } else {
+
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Justification> tryForAllIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
+        if(formula instanceof Universal){
+
+            Universal universal = (Universal) formula;
+            Variable[] vars  = universal.vars();
+
+            if(vars.length == 1){
+
+                Map<Variable, Value> subs = CollectionUtils.newMap();
+                subs.put(vars[0], Constant.newConstant());
+                //TODO: Verify this.
+                return this.prove(base, ((Universal) formula).getArgument().apply(subs));
+
+            } else {
+
+                return Optional.empty();
+                //TODO: Handle more than one variable
+            }
+
+
+        } else if(formula instanceof Not && ((Not) formula).getArgument() instanceof Existential){
+
+            //formula = (not (exists [vars] kernel)) == (forall [vars] (not kernel))
+            Formula kernel = ((Existential) ((Not) formula).getArgument()).getArgument();
+            Variable[] vars = ((Existential) ((Not) formula).getArgument()).vars();
+
+
+            if(vars.length == 1){
+
+                Map<Variable, Value> subs = CollectionUtils.newMap();
+                subs.put(vars[0], Constant.newConstant());
+                return this.prove(base, (new Not(kernel)).apply(subs));
+
+            } else {
+
+                return Optional.empty();
+                //TODO: Handle more than one variable
+            }
+        }
+        else {
+
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Justification> tryNEC(Set<Formula> base, Formula formula, Set<Formula> added) {
+        if (formula instanceof Necessity) {
+
+            Optional<Justification> innerProof = this.prove(Sets.newSet(), ((Necessity) formula).getFormula());
+            System.out.println("Hi");
+
+            if (innerProof.isPresent()) {
+
+                return Optional.of(new CompoundJustification("Nec Intro", CollectionUtils.listOf(innerProof.get())));
+            } else {
+
+                return Optional.empty();
+            }
+
+        } else {
+
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Justification> tryPOS(Set<Formula> base, Formula formula, Set<Formula> added) {
+        if (formula instanceof Not && ((Not) formula).getArgument() instanceof Possibility) {
+
+            Formula core = ((Possibility)((Not) formula).getArgument()).getFormula();
+
+            Optional<Justification> innerProof = this.prove(Sets.newSet(), new Necessity(new Not(core)) );
+
+            if (innerProof.isPresent()) {
+
+                return Optional.of(new CompoundJustification("Pos Intro", CollectionUtils.listOf(innerProof.get())));
+            } else {
+
+                return Optional.empty();
+            }
+
+        } else {
+
+            return Optional.empty();
+        }
     }
 
     private Optional<Justification> defeasible(Formula formula) {
@@ -244,7 +495,6 @@ public class CognitiveCalculusProver implements Prover {
         }
         return null;
     }
-
 
     private Optional<Justification> tryAND(Set<Formula> base, Formula formula, Set<Formula> added) {
 
@@ -327,7 +577,7 @@ public class CognitiveCalculusProver implements Prover {
 
         Optional<Justification> reductioJustOpt = cognitiveCalculusProver.prove(augmented, atom, added);
 
-        return reductioJustOpt.isPresent()?  Optional.of(new CompoundJustification("Reductio", CollectionUtils.listOf(reductioJustOpt.get()))):
+        return reductioJustOpt.isPresent() ? Optional.of(new CompoundJustification("Reductio", CollectionUtils.listOf(reductioJustOpt.get()))) :
                 Optional.empty();
     }
 
@@ -403,10 +653,11 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-
     private Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
-        breakUpBiConditionals(base);
 
+
+
+        breakUpBiConditionals(base);
         expandR4(base, added);
         expandPerceptionToKnowledge(base, added);
         expandModalConjunctions(base, added);
@@ -417,10 +668,81 @@ public class CognitiveCalculusProver implements Prover {
         expandDR5(base, added);
         expandOughtRule(base, added);
         expandUniversalElim(base, added, goal);
+        expandKnowledgeConjunctions(base,added);
+        expandNotExistsToForallNot(base,added);
+        expandTheoremsToNecessity(base, added, goal);
+        expandNecToPos(base, added, goal);
+
+
+
         if (prohibited != null) base.removeAll(prohibited);
         return base;
     }
 
+    private void expandNecToPos(Set<Formula> base, Set<Formula> added, Formula goal) {
+
+        Set<Formula> derived = base.
+                stream().
+                filter(f -> f instanceof Necessity).
+                map(f -> (Necessity) f).
+                filter(necessity -> necessity.getFormula() instanceof Not).
+                map(necessity -> new Not(new Possibility(((Not)necessity.getFormula()).getArgument()))).collect(Collectors.toSet());
+
+        base.addAll(derived);
+        added.addAll(derived);
+    }
+
+    private void expandNotExistsToForallNot(Set<Formula> base, Set<Formula> added) {
+
+        Set<Formula> derived = base.
+                stream().
+                filter(f -> f instanceof Not).
+                map(f -> (Not) f).
+                filter(not -> not.getArgument() instanceof Existential).
+                map(notExists -> {
+                    Existential existential = (Existential) notExists.getArgument();
+                    Variable[] variables = existential.vars();
+                    Formula kernel = existential.getArgument();
+                    return new Universal(variables, new Not(kernel));
+                }).collect(Collectors.toSet());
+
+        base.addAll(derived);
+        added.addAll(derived);
+    }
+
+    private void expandKnowledgeConjunctions(Set<Formula> base, Set<Formula> added) {
+
+        Set<Formula> derived = base.
+                stream().
+                filter(f -> f instanceof Knowledge).
+                map(f -> (Knowledge) f).
+                filter(k -> k.getFormula() instanceof And).
+                flatMap(k -> {
+
+                    Value agent = k.getAgent();
+                    Value time = k.getTime();
+                    And and = (And) k.getFormula();
+
+                    return Arrays.stream(and.getArguments()).map(conjunct -> new Knowledge(agent, time, conjunct));
+
+                }).collect(Collectors.toSet());
+
+        base.addAll(derived);
+        added.addAll(derived);
+    }
+
+    private void expandTheoremsToNecessity(Set<Formula> base, Set<Formula> added, Formula goal) {
+
+
+        Set<Formula> theorems = base.stream().map(Formula::subFormulae).reduce(Sets.newSet(), Sets::union).
+                stream().filter(x -> !x.equals(goal) && this.prove(Sets.newSet(), x).isPresent()).collect(Collectors.toSet());
+
+        Set<Formula> necs = theorems.stream().map(Necessity::new).collect(Collectors.toSet());
+
+        base.addAll(necs);
+        added.addAll(necs);
+
+    }
 
     private void breakUpBiConditionals(Set<Formula> base) {
 
@@ -428,12 +750,15 @@ public class CognitiveCalculusProver implements Prover {
         Set<BiConditional> biConditionals = formulaOfType(base, BiConditional.class);
 
         biConditionals.forEach(biConditional -> {
+
             base.add(new Implication(biConditional.getLeft(), biConditional.getRight()));
             base.add(new Implication(biConditional.getRight(), biConditional.getLeft()));
             base.add(new Implication(Logic.negated(biConditional.getLeft()), Logic.negated(biConditional.getRight())));
             base.add(new Implication(Logic.negated(biConditional.getRight()), Logic.negated(biConditional.getLeft())));
 
         });
+
+
 
     }
 
@@ -486,7 +811,7 @@ public class CognitiveCalculusProver implements Prover {
 
     private void expandOughtRule(Set<Formula> base, Set<Formula> added) {
 
-        java.util.function.Predicate<Formula> filterSelfOughts = f -> {
+        Predicate<Formula> filterSelfOughts = f -> {
 
             if (!(f instanceof Belief)) {
 
@@ -587,7 +912,6 @@ public class CognitiveCalculusProver implements Prover {
         }
     }
 
-
     private void expandDR2(Set<Formula> base, Set<Formula> added, Formula goal) {
         Set<Common> commons = level2FormulaeOfType(base, Common.class);
         Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
@@ -621,7 +945,6 @@ public class CognitiveCalculusProver implements Prover {
 
 
     }
-
 
     private void expandModalConjunctions(Set<Formula> base, Set<Formula> added) {
 
@@ -744,58 +1067,8 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private static <T> Set<T> formulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, java.util.function.Predicate<Formula> constraint) {
-
-        return formulas.
-                stream().
-                filter(c::isInstance).
-                filter(constraint).
-                map(f -> (T) f).
-                collect(Collectors.toSet());
-    }
-
-    private static <T> Set<T> formulaOfType(Set<Formula> formulas, Class c) {
-
-        return formulaeOfTypeWithConstraint(formulas, c, f -> true);
-
-    }
-
-    private static <T> Set<T> level2FormulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, java.util.function.Predicate<Formula> constraint) {
-
-        return formulas.
-                stream().
-                filter(a -> a.getLevel() == 2).
-                filter(c::isInstance).
-                filter(constraint).
-                map(f -> (T) f).
-                collect(Collectors.toSet());
-    }
-
-    private static <T> Set<T> level2FormulaeOfType(Set<Formula> formulas, Class c) {
-
-        return level2FormulaeOfTypeWithConstraint(formulas, c, f -> true);
-
-    }
-
     private Set<Formula> shadow(Set<Formula> formulas) {
         return formulas.stream().map(f -> f.shadow(1)).collect(Collectors.toSet());
-    }
-
-    private static CognitiveCalculusProver root(CognitiveCalculusProver cognitiveCalculusProver) {
-
-
-        CognitiveCalculusProver current = cognitiveCalculusProver.parent;
-
-        if (current == null) {
-            return cognitiveCalculusProver;
-        }
-        while (current.parent != null) {
-
-            current = current.parent;
-        }
-
-        return current;
-
     }
 
 }

@@ -1,8 +1,5 @@
-package com.naveensundarg.shadow.prover.utils;
+package com.naveensundarg.shadow.prover.core;
 
-import com.naveensundarg.shadow.prover.core.ColoredConverter;
-import com.naveensundarg.shadow.prover.core.Problem;
-import com.naveensundarg.shadow.prover.core.SymbolGenerator;
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
@@ -10,8 +7,11 @@ import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
@@ -371,5 +371,111 @@ public class Logic {
 
     }
 
+
+
+
+   private static final AtomicInteger logicLevel = new AtomicInteger(1);
+
+    public static final void setLevel(int level){
+
+        logicLevel.set(level);
+    }
+
+    public static final int getLogicLevel(){
+
+        return logicLevel.get();
+    }
+
+    private static final String holdsFOL = "@";
+    public static Formula transformSecondOrderToFirstOrder(Formula formula){
+
+        if(formula instanceof  Atom){
+            Atom atom = (Atom) formula;
+            return new Predicate(holdsFOL, new Value[]{new Constant(atom.getName())});
+        }
+
+        if(formula instanceof  Predicate){
+            Predicate predicate = (Predicate) formula;
+            Value[] args = new Value[predicate.getArguments().length + 1];
+            args[0] = new Constant(predicate.getName());
+
+            for(int i = 0; i< predicate.getArguments().length; i++){
+
+                args[i+1] = predicate.getArguments()[i];
+            }
+            return new Predicate(holdsFOL, args);
+        }
+
+        if(formula instanceof Not){
+
+            return new Not(transformSecondOrderToFirstOrder(((Not) formula).getArgument()));
+        }
+
+        if(formula instanceof Implication){
+
+            return new Implication(
+                    transformSecondOrderToFirstOrder(((Implication) formula).getAntecedent()),
+                    transformSecondOrderToFirstOrder(((Implication) formula).getConsequent()));
+        }
+        if(formula instanceof And){
+
+            And and = (And) formula;
+
+            return new And(Arrays.stream(and.getArguments()).map(Logic::transformSecondOrderToFirstOrder).collect(Collectors.toList()));
+        }
+
+         if(formula instanceof Or){
+
+            Or or = (Or) formula;
+
+            return new Or(Arrays.stream(or.getArguments()).map(Logic::transformSecondOrderToFirstOrder).collect(Collectors.toList()));
+        }
+
+         if(formula instanceof Universal){
+
+            Universal universal = (Universal) formula;
+
+            return new Universal(universal.vars(), transformSecondOrderToFirstOrder(universal.getArgument()));
+        }
+
+        if(formula instanceof Existential){
+
+            Existential existential = (Existential) formula;
+
+            return new Existential(existential.vars(), transformSecondOrderToFirstOrder(existential.getArgument()));
+        }
+
+         if(formula instanceof Knowledge){
+
+            Knowledge knowledge = (Knowledge) formula;
+
+            return new Knowledge(knowledge.getAgent(), knowledge.getTime(), transformSecondOrderToFirstOrder(knowledge.getFormula()));
+        }
+
+        if(formula instanceof Belief){
+
+            Belief belief = (Belief) formula;
+
+            return new Belief(belief.getAgent(), belief.getTime(), transformSecondOrderToFirstOrder(belief.getFormula()));
+        }
+
+        if(formula instanceof Necessity){
+
+            Necessity necessity = (Necessity) formula;
+
+            return new Necessity(transformSecondOrderToFirstOrder(necessity.getFormula()));
+        }
+
+        if(formula instanceof Possibility){
+
+            Possibility possibility = (Possibility) formula;
+
+            return new Possibility(transformSecondOrderToFirstOrder(possibility.getFormula()));
+        }
+
+
+        throw new AssertionError("Cannot transform into FOL: " + formula);
+
+    }
 
 }

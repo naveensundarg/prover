@@ -3,12 +3,11 @@ package com.naveensundarg.shadow.prover.core.internals;
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.formula.BaseFormula;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.formula.Universal;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.Logic;
+import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.List;

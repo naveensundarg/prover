@@ -1,5 +1,8 @@
-package com.naveensundarg.shadow.prover.core;
+package com.naveensundarg.shadow.prover.core.ccprovers;
 
+import com.naveensundarg.shadow.prover.core.Logic;
+import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.core.SymbolGenerator;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;

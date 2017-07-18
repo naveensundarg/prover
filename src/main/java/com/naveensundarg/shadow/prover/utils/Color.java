@@ -1,6 +1,6 @@
 package com.naveensundarg.shadow.prover.utils;
 
-import com.naveensundarg.shadow.prover.core.ColoredConverter;
+import com.naveensundarg.shadow.prover.core.ccprovers.ColoredConverter;
 import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.value.Compound;

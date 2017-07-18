@@ -8,13 +8,11 @@ import com.naveensundarg.shadow.prover.representations.formula.Not;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.formula.Says;
 import com.naveensundarg.shadow.prover.representations.value.Value;
-import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.Logic;
+import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;

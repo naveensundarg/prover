@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.utils;
 
+import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.representations.formula.Quantifier;
 import com.naveensundarg.shadow.prover.representations.formula.Universal;
 import org.testng.Assert;

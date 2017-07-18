@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by naveensundarg on 4/11/16.
@@ -113,5 +114,14 @@ public class Constant extends Value implements Comparable{
             return this.name.compareTo(((Constant) o).name);
 
         }
+    }
+
+    private static AtomicInteger counter = new AtomicInteger(0);
+    public synchronized static Constant newConstant(){
+
+        return new Constant("_newC" + counter.incrementAndGet());
+
+
+
     }
 }

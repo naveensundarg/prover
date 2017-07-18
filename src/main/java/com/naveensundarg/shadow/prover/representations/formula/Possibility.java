@@ -64,7 +64,7 @@ public class Possibility extends  BaseFormula{
 
     @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
-        return null;
+        return new Possibility(formula.applyOperation(operator));
     }
 
     @Override

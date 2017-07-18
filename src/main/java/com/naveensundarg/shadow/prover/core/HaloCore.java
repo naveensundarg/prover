@@ -1,9 +1,7 @@
 package com.naveensundarg.shadow.prover.core;
 
+import com.naveensundarg.shadow.prover.core.ccprovers.Converter;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.core.rules.DemodulationImplementation;
-import com.naveensundarg.shadow.prover.core.rules.FirstOrderResolutionImplementation;
-import com.naveensundarg.shadow.prover.core.rules.ParamodulationImplementation;
 import com.naveensundarg.shadow.prover.core.rules.ForwardClauseRule;
 import com.naveensundarg.shadow.prover.representations.cnf.CNFFormula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
@@ -11,10 +9,8 @@ import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
 /**

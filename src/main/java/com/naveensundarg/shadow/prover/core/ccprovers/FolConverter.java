@@ -1,11 +1,11 @@
-package com.naveensundarg.shadow.prover.core;
+package com.naveensundarg.shadow.prover.core.ccprovers;
 
+import com.naveensundarg.shadow.prover.core.Logic;
+import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.Color;
-import com.naveensundarg.shadow.prover.utils.Logic;
 
 import java.util.Arrays;
 import java.util.List;
@@ -220,7 +220,20 @@ public class FolConverter {
                 Value agent = knowledge.getAgent();
                 Value time = knowledge.getTime();
 
-                return Step2_MoveNegationsInWardInt(new Not(arg), ColoredConverter.addToColor(ColoredConverter.NOT, ColoredConverter.addToColor(new Constant("K"), ColoredConverter.addToColor(agent, ColoredConverter.addToColor(time, color)))));
+                List<Value> givenColor = ColoredConverter.getValues(color);
+                List<Value> newColor = CollectionUtils.newEmptyList();
+                newColor.add(ColoredConverter.NONE);
+
+                newColor.add(0, time);
+                newColor.add(0, agent);
+                newColor.add(0, new Constant("K"));
+                givenColor.remove(0);
+                givenColor.forEach(x -> {
+                    newColor.add(0, x);
+
+                });
+
+                return Step2_MoveNegationsInWardInt(new Not(arg), ColoredConverter.makeColor(newColor));
             }
 
             if (notArg instanceof Perception) {
@@ -303,7 +316,21 @@ public class FolConverter {
             Value agent = knowledge.getAgent();
             Value time = knowledge.getTime();
 
-            return new Knowledge(agent, time, Step2_MoveNegationsInWardInt(arg, color));
+            List<Value> givenColor = ColoredConverter.getValues(color);
+
+            List<Value> newColor = CollectionUtils.newEmptyList();
+            newColor.add(ColoredConverter.NONE);
+
+            newColor.add(0, time);
+            newColor.add(0, agent);
+            newColor.add(0, new Constant("K"));
+            givenColor.remove(0);
+            givenColor.forEach(x -> {
+                    newColor.add(0, x);
+
+            });
+
+            return Step2_MoveNegationsInWardInt(arg, ColoredConverter.makeColor(newColor));
         }
 
         if (formula instanceof Perception) {

@@ -1,6 +1,6 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
-import com.naveensundarg.shadow.prover.core.CognitiveCalculusProver;
+import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;

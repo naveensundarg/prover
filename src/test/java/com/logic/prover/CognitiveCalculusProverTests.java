@@ -1,8 +1,8 @@
 package com.logic.prover;
 
-import com.naveensundarg.shadow.prover.ColorShadowProverTests;
+import com.naveensundarg.shadow.prover.core.ccprovers.ColorShadowProverTests;
 import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
-import com.naveensundarg.shadow.prover.core.CognitiveCalculusProver;
+import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
@@ -65,7 +65,7 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="debugTestsProvider")
     public Object[][] debugTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("debug.clj"));
+        List<Problem >tests = ProblemReader.readFrom(ColorShadowProverTests.class.getResourceAsStream("debug.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

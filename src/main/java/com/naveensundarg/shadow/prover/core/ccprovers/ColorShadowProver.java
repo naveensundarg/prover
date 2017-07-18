@@ -1,4 +1,4 @@
-package com.naveensundarg.shadow.prover.core.special;
+package com.naveensundarg.shadow.prover.core.ccprovers;
 
 import com.naveensundarg.shadow.prover.core.*;
 import com.naveensundarg.shadow.prover.core.proof.Justification;

@@ -2,21 +2,14 @@ package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
 import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
-import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
-import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
-import com.naveensundarg.shadow.prover.utils.Logic;
-import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;

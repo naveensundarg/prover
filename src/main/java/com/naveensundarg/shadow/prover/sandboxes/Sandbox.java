@@ -1,12 +1,11 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
 import com.naveensundarg.shadow.prover.core.*;
-import com.naveensundarg.shadow.prover.core.special.ColorShadowProver;
+import com.naveensundarg.shadow.prover.core.ccprovers.ColorShadowProver;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Reader;
-import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Set;
 
@@ -22,7 +21,7 @@ public class Sandbox {
         Prover colorShadowProver = new ColorShadowProver();
 
 
-        Formula f1 = Reader.readFormulaFromString("(Believes! a (forall [?x] (if (Man ?x) (Mortal ?x))))");
+        Formula f1 = Reader.readFormulaFromString("(forall [P] (and P P))");
         Formula f2 = Reader.readFormulaFromString("(Believes! a (Man socrates))");
         Formula f3 = Reader.readFormulaFromString("(Believes! a (Man plato))");
 

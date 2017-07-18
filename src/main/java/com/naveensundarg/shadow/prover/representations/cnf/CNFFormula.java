@@ -4,7 +4,7 @@ import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.representations.formula.And;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
-import com.naveensundarg.shadow.prover.utils.Logic;
+import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Collections;

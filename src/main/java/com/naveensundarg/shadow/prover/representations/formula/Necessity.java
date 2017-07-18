@@ -68,7 +68,8 @@ public class Necessity extends  BaseFormula{
 
     @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
-        return null;
+        return new Necessity(formula.applyOperation(operator));
+
     }
 
     @Override
