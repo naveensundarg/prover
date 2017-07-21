@@ -20,7 +20,7 @@ public class CompoundJustification extends Justification {
 
     @Override
     public String toString() {
-        return "[" + name +"\n"+
-                "    "+ subs +"]";
+        return "(" + name +"\n"+
+                "    "+ subs +")";
     }
 }

@@ -2,10 +2,13 @@ package com.naveensundarg.shadow.prover.sandboxes;
 
 import com.naveensundarg.shadow.prover.core.*;
 import com.naveensundarg.shadow.prover.core.ccprovers.ColorShadowProver;
+import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderCognitiveCalculusProver;
+import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Reader;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Set;
 
@@ -18,29 +21,19 @@ public class Sandbox {
 
     public static void main(String[] args) throws Exception {
 
-        Prover colorShadowProver = new ColorShadowProver();
+        Prover prover = new SecondOrderCognitiveCalculusProver();
 
 
-        Formula f1 = Reader.readFormulaFromString("(forall [P] (and P P))");
-        Formula f2 = Reader.readFormulaFromString("(Believes! a (Man socrates))");
-        Formula f3 = Reader.readFormulaFromString("(Believes! a (Man plato))");
+        Formula kp1  = Reader.readFormulaFromString("(exists [?P] (not (pos (exists [?x] (Knows! ?x (and ?P (not (exists [?y] (Knows! ?y ?P)))))))))");
 
-        Formula f4 = Reader.readFormulaFromString("(Believes! a (Mortal ?y))");
+        Formula inf_assumption= Reader.readFormulaFromString("(Knows! I (if PA (= 0 (multiply 27 0))))");
 
-        Variable y = (Variable) Reader.readLogicValueFromString("?y");
+        Formula inf_goal = Reader.readFormulaFromString("(forall [?Q] (Knows! I (or (if PA (= 0 (multiply 27 0))) ?Q)) )");
+        Justification justification = prover.prove(Sets.with(inf_assumption), inf_goal).get();
 
-        Set<Formula> assumptions = CollectionUtils.newEmptySet();
+        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+        System.out.println(justification);
 
-        assumptions.add(f1);
-        assumptions.add(f2);
-        assumptions.add(f3);
-
-
-        // Gets only one value for ?y
-        System.out.println(colorShadowProver.proveAndGetBinding(assumptions,f4, y));
-
-        // Gets multiple values for ?y
-        System.out.println(colorShadowProver.proveAndGetMultipleBindings(assumptions,f4, CollectionUtils.listOf(y)));
 
     }
 }

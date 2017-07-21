@@ -100,7 +100,7 @@
                   (setf (gethash (princ-to-string axiom) a-n) name)
                   (setf (gethash (princ-to-string name) n-a) axiom))) axioms)
       (mapcar (lambda (axiom)
-                (snark::assert axiom :name  (gethash (princ-to-string axiom) a-n)
+                (snark::assert axiom
                                ))
               (mapcar #'!@ axioms))
       (if (equalp :PROOF-FOUND (snark:prove (!@ f)))
@@ -130,7 +130,7 @@
                   (setf (gethash (princ-to-string axiom) a-n) name)
                   (setf (gethash (princ-to-string name) n-a) axiom))) axioms)
       (mapcar (lambda (axiom)
-                (snark::assert axiom :name  (gethash (princ-to-string axiom) a-n)
+                (snark::assert axiom
                                ))
               (mapcar #'!@ axioms))
       (if (equalp :PROOF-FOUND (snark:prove (!@ f)))
@@ -155,7 +155,8 @@
                   (setf (gethash (princ-to-string axiom) a-n) name)
                   (setf (gethash (princ-to-string name) n-a) axiom))) axioms)
       (mapcar (lambda (axiom)
-                (snark::assert axiom :name  (gethash (princ-to-string axiom) a-n)
+                (snark::assert axiom
+
                                ))
               (mapcar #'!@ axioms))
       
@@ -183,7 +184,7 @@
                   (setf (gethash (princ-to-string axiom) a-n) name)
                   (setf (gethash (princ-to-string name) n-a) axiom))) axioms)
       (mapcar (lambda (axiom)
-                (snark::assert axiom :name  (gethash (princ-to-string axiom) a-n)
+                (snark::assert axiom
                                ))
               (mapcar #'!@ axioms))
       
@@ -208,7 +209,7 @@
                   (setf (gethash (princ-to-string axiom) a-n) name)
                   (setf (gethash (princ-to-string name) n-a) axiom))) axioms)
       (mapcar (lambda (axiom)
-                (snark::assert axiom :name  (gethash (princ-to-string axiom) a-n)
+                (snark::assert axiom
                                ))
               (mapcar #'!@ axioms))
       

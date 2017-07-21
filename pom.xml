@@ -7,8 +7,7 @@
     <groupId>logic</groupId>
     <artifactId>prover</artifactId>
     <version>0.70</version>
-  <packaging>jar</packaging>
-
+    <packaging>jar</packaging>
 
 
     <dependencies>
@@ -25,7 +24,6 @@
             <artifactId>graphviz-java</artifactId>
             <version>0.0.2</version>
         </dependency>
-
 
 
         <dependency>
@@ -60,6 +58,12 @@
             <version>1.8.0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.diogonunes/JCDP -->
+        <dependency>
+            <groupId>com.diogonunes</groupId>
+            <artifactId>JCDP</artifactId>
+            <version>2.0.3.1</version>
+        </dependency>
 
 
     </dependencies>

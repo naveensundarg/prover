@@ -1,30 +1,15 @@
-
-{:name        "I know an infinite number of things"
- :description "I know for example from PA that 27 times zero is zero,
-               and therefore I know this disjoined with any declarative proposition P;
-               and therefore I know that disjunction disjoined with any proposition P; ad infinitum."
-
- :assumptions {1 (Knows! I (if PA (= 0 (multiply 27 0))))}
-
- :goal  (forall [?Q] (Knows! I (or (if PA (= 0 (multiply 27 0))) ?Q)) )     }
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-{:name        "Knowability paradox"
- :description " "
-
- :assumptions {}
- :goal (forall [?P] (forall [?agent] (not (pos (Knows! ?agent (and ?P (not (Knows! ?agent ?P))))))))}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-{:name        "Knowability paradox"
- :description " \exists p  ~\Diamond \exists x Kx (Tp & ~ \exist y Ky Tp)"
-
- :assumptions {}
- :goal (exists [?P] (not (pos (exists [?x] (Knows! ?x (and ?P (not (exists [?y] (Knows! ?y ?P)))))))))}
-
-
-
-
-
+{:name ""
+ :description ""
+ :assumptions {1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))
+               2 (Knows! I now (= 1 (nu alpha I P1 now)))
+               3 (Knows! I now (= 1 (nu alpha I P2 now)))
+               4 (Knows! I now (= 1 (nu alpha I P3 now)))
+               5 (Knows! I now (= (- 1) (nu alpha I I now)))
+               6 (Knows! I now (= alpha (Drop (self I) track1 3)))
+               7 (Knows! I now (forall [a b] (if (= (self a) (self b)) (= a b))))
+               8 (Knows! I now (forall [a] (= a (self a))))
+               9 (Knows! I now (and (not (= P1 P2)) (not (= P1 P3)) (not (= P1 I)) (not (= P2 P3)) (not (= P2 I)) (not (= P3 I))))
+               10 (Knows! I now (and (>> 1 0) (<< (- 1)  0)))
+               }
+ :goal (Knows! I now (and (<< (nu (Drop (self I) track1 3) I I now) 0)
+                          (forall [?agent] (if (Agent ?agent) (if (not (= ?agent (self I))) (>> (nu (Drop (self I) track1 3) I ?agent now) 0)))))  )}

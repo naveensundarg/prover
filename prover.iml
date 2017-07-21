@@ -27,5 +27,7 @@
     <orderEntry type="library" name="Maven: us.bpsm:edn-java:0.4.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
     <orderEntry type="library" name="Maven: org.clojure:clojure:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.diogonunes:JCDP:2.0.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.fusesource.jansi:jansi:1.15" level="project" />
   </component>
 </module>

@@ -1,13 +1,25 @@
 
 (in-package :snark-user)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;; A self-contained file for event calculus  ;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;; level simulations in the trolley problem  ;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  Event calculus type declarations ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun declare-ec-sort-system ()
+  
+  
+  
   (declare-sort 'Fluent)
   (declare-sort 'Event)
   (declare-subsort 'Action 'Event)
   (declare-sort 'ActionType)
+  
+  
   
   (declare-relation 'Initiates 3 :sort '(Event Fluent Number))
   (declare-relation 'Terminates 3 :sort '(Event Fluent Number))
@@ -26,16 +38,23 @@
   (declare-relation 'Trajectory 4 :sort '(Fluent Number Fluent Number))
   
   (declare-relation 'Prior 2 :sort '(Number Number))
-  
+
     
   (declare-constant 't0 :sort 'Number)
   (declare-constant 't1 :sort 'Number)
   (declare-constant 't2 :sort 'Number)
   (declare-constant 't3 :sort 'Number)
   (declare-constant 't4 :sort 'Number)
-  (declare-constant 'unit :sort 'Number))
+  (declare-constant 'unit :sort 'Number)
+  
+
+  )
 
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  Simple Event Calculus Axioms      ;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (defparameter *SC1* '(forall ((?f Fluent) (?t Number))
@@ -74,6 +93,11 @@
 (defparameter *EC-Axioms* (list *SC1* *SC2* *SC3* *XC9*))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;  Sort declarations for the trolley scenarios ;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
 
 (defun declare-dde-commons ()
   (declare-ec-sort-system)
@@ -82,10 +106,14 @@
   (snark:declare-subsort 'Agent 'Moveable)
   (snark:declare-subsort 'Trolley  'Moveable)
 
+  
   (declare-function 'action 2 :sort '(Action Agent ActionType))
 
   
   (declare-constant 'I :sort 'Agent)
+  
+  (declare-function 'self 1 :sort '(Agent Agent))
+
   (snark:declare-constant 'P1 :sort 'Agent)
   (snark:declare-constant 'P2 :sort 'Agent)
   (snark:declare-constant 'P3 :sort 'Agent)
@@ -515,9 +543,35 @@
 					       (Clipped 0 (onrails trolley track1) ?tt))))))))
 
 
+(defun scenario-2-self-action ()
+
+  (setup)
+  
+  (assert '(Heavy (self I)))
+  
+  (assert '(Happens (action I (drop (self I) track1 3)) 1 ))
+  (assert '(not (Clipped 0 (onrails trolley track1) 1)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 2)))
+  (assert '(not (Clipped 0 (onrails trolley track1) 3)))
+
+  (assert '(forall ((?a Agent) (?trolley Trolley) (?track Track) (?position Number) (?time Number))
+	    (implies (and 
+		      (Heavy ?a)
+		      (HoldsAt (position ?a ?track ?position) ?time)
+		      (HoldsAt (position ?trolley ?track ?position) ?time))
+	     (and
+	      (Happens (damage ?trolley) ?time)
+	      (forall ((?tt Number)) (implies (Prior ?time ?tt)
+					       (Clipped 0 (onrails trolley track1) ?tt))))))))
+
+
+
 (defun run-scenario-2-action ()
   (run-scenario #'scenario-2-action "Scenario 2: Push P3"))
 
+
+(defun run-scenario-2-self-action ()
+  (run-scenario #'scenario-2-self-action "Scenario 2: Push myself"))
 
 (defun scenario-2-means ()
 
@@ -577,5 +631,7 @@
    (time (run-scenario-2-base))
    (force-output)
    (time (run-scenario-2-action))
+   (force-output)
+   (time (run-scenario-2-self-action))
 
    (values))

@@ -119,7 +119,7 @@ public class Constant extends Value implements Comparable{
     private static AtomicInteger counter = new AtomicInteger(0);
     public synchronized static Constant newConstant(){
 
-        return new Constant("_newC" + counter.incrementAndGet());
+        return new Constant("newC_" + counter.incrementAndGet());
 
 
 

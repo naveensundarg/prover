@@ -37,7 +37,7 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-       List<Problem >tests = ProblemReader.readFrom(ColorShadowProverTests.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
+       List<Problem >tests = ProblemReader.readFrom(CognitiveCalculusProver.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -65,7 +65,7 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="debugTestsProvider")
     public Object[][] debugTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(ColorShadowProverTests.class.getResourceAsStream("debug.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
