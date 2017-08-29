@@ -2,18 +2,18 @@ package com.naveensundarg.shadow.prover.representations.value;
 
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.Expression;
+import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Pair;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 /**
  * Created by naveensundarg on 4/11/16.
  */
-public abstract class Value extends Expression  implements  Comparable{
+public abstract class Value extends Expression implements  Comparable{
 
     protected String name;
 

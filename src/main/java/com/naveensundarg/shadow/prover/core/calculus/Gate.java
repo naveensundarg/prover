@@ -1,16 +1,16 @@
 package com.naveensundarg.shadow.prover.core.calculus;
 
-import com.naveensundarg.shadow.prover.representations.Expression;
+import com.naveensundarg.shadow.prover.representations.Phrase;
 
 /**
  * Created by naveensundarg on 8/26/16.
  */
 public class Gate {
 
-    private  Expression[] inputs;
-    private  Expression output;
+    private  Phrase[] inputs;
+    private Phrase output;
 
-    public Gate(Expression[] inputs, Expression output) {
+    public Gate(Phrase[] inputs, Phrase output) {
 
         
     }

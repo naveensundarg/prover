@@ -1,13 +1,12 @@
 package com.naveensundarg.shadow.prover.representations.formula;
 
-import com.kitfox.svg.A;
 import com.naveensundarg.shadow.prover.representations.Expression;
+import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.UnaryOperator;
 
 /**

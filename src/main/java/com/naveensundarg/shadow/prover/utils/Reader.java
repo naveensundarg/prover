@@ -1,20 +1,27 @@
 package com.naveensundarg.shadow.prover.utils;
 
+import clojure.lang.IFn;
+import com.naveensundarg.shadow.prover.representations.ErrorPhrase;
+import com.naveensundarg.shadow.prover.representations.Phrase;
+import com.naveensundarg.shadow.prover.representations.deduction.Assume;
+import com.naveensundarg.shadow.prover.representations.deduction.Deduction;
+import com.naveensundarg.shadow.prover.representations.deduction.MethodApplication;
 import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.method.*;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import us.bpsm.edn.Symbol;
 import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
 import us.bpsm.edn.parser.Parsers;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.text.ParseException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static us.bpsm.edn.parser.Parsers.defaultConfiguration;
 
@@ -26,6 +33,7 @@ public class Reader {
     private enum QuantifierType {
         Universal, Existential, Schema
     }
+
     private static final Symbol NOT = Symbol.newSymbol("not");
     private static final Symbol AND = Symbol.newSymbol("and");
     private static final Symbol OR = Symbol.newSymbol("or");
@@ -57,7 +65,7 @@ public class Reader {
 
     private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
 
-    private static final Value NOW ;
+    private static final Value NOW;
 
 
     static {
@@ -71,16 +79,17 @@ public class Reader {
             throw new AssertionError("Could not instantiate basic constant: now");
         }
     }
-    public static class ParsingException extends Exception{
+
+    public static class ParsingException extends Exception {
 
         private String message;
 
-        public ParsingException(String message){
+        public ParsingException(String message) {
             this.message = message;
         }
 
         @Override
-        public String getMessage(){
+        public String getMessage() {
             return message;
         }
     }
@@ -94,45 +103,44 @@ public class Reader {
 
         return readLogicValue(parser.nextValue(parseable), Sets.newSet());
     }
+
     public static Value readLogicValue(Object input) throws ParsingException {
 
         return readLogicValue(input, Sets.newSet());
     }
-    public static Value readLogicValue(Object input, Set<String> variableNames) throws ParsingException{
+
+    public static Value readLogicValue(Object input, Set<String> variableNames) throws ParsingException {
 
 
-
-
-        if(input instanceof List){
+        if (input instanceof List) {
 
 
             List list = (List) input;
 
-            if(list.size() == 1){
+            if (list.size() == 1) {
                 String name = list.get(0).toString();
 
-                return name.startsWith("?") || variableNames.contains(name) ? new Variable(name): new Constant(name);
+                return name.startsWith("?") || variableNames.contains(name) ? new Variable(name) : new Constant(name);
 
             }
 
             Object nameObject = list.get(0);
 
-            if(nameObject instanceof Symbol){
-                String name =  ((Symbol) nameObject).getName();
-                Value[] arguments = new Value[list.size()-1];
+            if (nameObject instanceof Symbol) {
+                String name = ((Symbol) nameObject).getName();
+                Value[] arguments = new Value[list.size() - 1];
 
-                for(int i = 1; i< list.size(); i++){
+                for (int i = 1; i < list.size(); i++) {
 
-                    arguments[i-1] = readLogicValue(list.get(i), variableNames);
+                    arguments[i - 1] = readLogicValue(list.get(i), variableNames);
                 }
                 return new Compound(name, arguments);
             }
             throw new ParsingException("name should be a string" + nameObject);
 
-        }
-        else {
-            String name =  input.toString();
-            return name.startsWith("?") || variableNames.contains(name) ? new Variable(name): new Constant(name);
+        } else {
+            String name = input.toString();
+            return name.startsWith("?") || variableNames.contains(name) ? new Variable(name) : new Constant(name);
         }
 
     }
@@ -153,26 +161,157 @@ public class Reader {
 
     }
 
+    public static Phrase readPhraseFromString(String input) throws ParsingException {
 
-    private static Formula readFormula(Object input, Set<String> variableNames) throws ParsingException {
+        Parseable parseable = Parsers.newParseable(preprocess(input));
+        Parser p = Parsers.newParser(defaultConfiguration());
 
-        if(input instanceof Symbol){
-            return new Atom(((Symbol) input).getName());
+        return readPhrase(p.nextValue(parseable));
+
+    }
+
+    public static Phrase readPhrase(Object input) throws ParsingException {
+
+        return readPhrase(input, Sets.newSet());
+
+    }
+
+    private static Phrase readPhrase(Object input, Set<String> variableNames) throws ParsingException {
+
+        if (input instanceof Symbol) {
+
+            Symbol symbol = (Symbol) input;
+            String name = symbol.getName();
+            if (name.startsWith("!")) {
+
+                name = name.substring(1);
+
+                if (name.equals("claim")) {
+
+                    return Claim.getInstance();
+
+                } else if (name.equals("modus-ponens")) {
+
+                    return ModusPonens.getInstance();
+
+                } else if (name.equals("double-negation")) {
+
+                    return DoubleNegation.getInstance();
+
+                } else if (name.equals("modus-tollens")) {
+
+                    return ModusTollens.getInstance();
+
+                } else if (name.equals("both")) {
+
+                    return Both.getInstance();
+
+                } else if (name.equals("left-and")) {
+
+                    return LeftAnd.getInstance();
+
+                } else if (name.equals("right-and")) {
+
+                    return RightAnd.getInstance();
+
+                } else if (name.equals("left-either")) {
+
+                    return LeftEither.getInstance();
+
+                } else if (name.equals("right-either")) {
+
+                    return RightEither.getInstance();
+
+                } else if (name.equals("left-iff")) {
+
+                    return LeftIff.getInstance();
+
+                } else if (name.equals("right-iff")) {
+
+                    return RightIff.getInstance();
+
+                } else if (name.equals("true-intro")) {
+
+                    return TrueIntro.getInstance();
+
+                } else if (name.equals("false-elim")) {
+
+                    return FalseElim.getInstance();
+
+                }
+                throw new ParsingException("Could not resolve the method " + name);
+            } else {
+
+                return new Atom(((Symbol) input).getName());
+            }
+
         }
-
-        if(input instanceof List){
+        if (input instanceof List) {
             List list = (List) input;
 
-            if(list.isEmpty()){
+            if (list.isEmpty()) {
                 throw new ParsingException("Can't build a formula");
             }
             Object first = list.get(0);
 
-            if(first instanceof Symbol){
+            if (isMethod(first)) {
+
+                List<Phrase> args = CollectionUtils.newEmptyList();
+
+                for (int i = 1; i < list.size(); i++) {
+
+                    args.add(readPhrase(list.get(i), variableNames));
+                }
+                return new MethodApplication(readPhrase(first, variableNames), args);
+            } else if (first.toString().equals("assume")) {
+                if (list.size() == 3) {
+
+                    Phrase E = readPhrase(list.get(1), variableNames);
+                    Phrase D = readPhrase(list.get(2), variableNames);
+
+                    if (D instanceof Deduction) {
+                        return new Assume(E, (Deduction) D);
+                    } else {
+
+                        throw new ParsingException("The second argument of an assumption should be a deduction");
+                    }
+
+
+                } else {
+
+                    throw new ParsingException("Assume needs exactly two arguments but got " + (list.size() - 1));
+                }
+
+            } else {
+
+                return readFormula(input, variableNames);
+            }
+        }
+
+        throw new ParsingException("Could not read: " + input);
+
+
+    }
+
+    private static Formula readFormula(Object input, Set<String> variableNames) throws ParsingException {
+
+        if (input instanceof Symbol) {
+            return new Atom(((Symbol) input).getName());
+        }
+
+        if (input instanceof List) {
+            List list = (List) input;
+
+            if (list.isEmpty()) {
+                throw new ParsingException("Can't build a formula");
+            }
+            Object first = list.get(0);
+
+            if (first instanceof Symbol) {
                 Symbol name = (Symbol) first;
 
-                if(name.equals(NOT) ){
-                    if(list.size()==2){
+                if (name.equals(NOT)) {
+                    if (list.size() == 2) {
                         return new Not(readFormula(list.get(1), variableNames));
 
                     } else {
@@ -180,31 +319,31 @@ public class Reader {
                     }
                 }
 
-                if(name.equals(IF) || name.equals(IMPLIES)){
-                    if(list.size()==3){
-                        return new Implication(readFormula(list.get(1), variableNames),readFormula(list.get(2), variableNames));
+                if (name.equals(IF) || name.equals(IMPLIES)) {
+                    if (list.size() == 3) {
+                        return new Implication(readFormula(list.get(1), variableNames), readFormula(list.get(2), variableNames));
 
                     } else {
                         throw new ParsingException("If should have two arguments");
                     }
                 }
 
-                if(name.equals(IFF)){
-                    if(list.size()==3){
-                        return new BiConditional(readFormula(list.get(1), variableNames),readFormula(list.get(2), variableNames));
+                if (name.equals(IFF)) {
+                    if (list.size() == 3) {
+                        return new BiConditional(readFormula(list.get(1), variableNames), readFormula(list.get(2), variableNames));
 
                     } else {
                         throw new ParsingException("Iff should have two arguments");
                     }
                 }
 
-                if(name.equals(OR)){
-                    if(list.size()>=3){
+                if (name.equals(OR)) {
+                    if (list.size() >= 3) {
 
-                        Formula[] subs = new Formula[list.size()-1];
+                        Formula[] subs = new Formula[list.size() - 1];
 
-                        for(int i = 1 ; i < list.size(); i++){
-                            subs[i-1] = readFormula(list.get(i), variableNames);
+                        for (int i = 1; i < list.size(); i++) {
+                            subs[i - 1] = readFormula(list.get(i), variableNames);
                         }
 
                         return new Or(subs);
@@ -213,13 +352,13 @@ public class Reader {
                     }
                 }
 
-                if(name.equals(AND)){
-                    if(list.size()>=3){
+                if (name.equals(AND)) {
+                    if (list.size() >= 3) {
 
-                        Formula[] subs = new Formula[list.size()-1];
+                        Formula[] subs = new Formula[list.size() - 1];
 
-                        for(int i = 1 ; i < list.size(); i++){
-                            subs[i-1] = readFormula(list.get(i), variableNames);
+                        for (int i = 1; i < list.size(); i++) {
+                            subs[i - 1] = readFormula(list.get(i), variableNames);
                         }
 
                         return new And(subs);
@@ -230,20 +369,20 @@ public class Reader {
                     }
                 }
                 //FORALL
-                if(name.equals(FORALL)){
+                if (name.equals(FORALL)) {
 
                     return constructQuantifier(list, QuantifierType.Universal, variableNames);
 
                 }
 
                 //EXISTS
-                if(name.equals(EXISTS)){
+                if (name.equals(EXISTS)) {
 
                     return constructQuantifier(list, QuantifierType.Existential, variableNames);
 
                 }
 
-                if(name.equals(SCHEMA)){
+                if (name.equals(SCHEMA)) {
 
                     return constructQuantifier(list, QuantifierType.Schema, variableNames);
 
@@ -251,66 +390,66 @@ public class Reader {
                 }
 
                 //Believes
-                if(name.equals(BELIEVES)){
+                if (name.equals(BELIEVES)) {
 
                     return constructBelief(list, variableNames);
                 }
 
                 //Intends
-                if(name.equals(INTENDS)){
+                if (name.equals(INTENDS)) {
 
                     return constructIntends(list, variableNames);
                 }
 
                 //Knows
-                if(name.equals(KNOWS)){
+                if (name.equals(KNOWS)) {
 
                     return constructKnowledge(list, variableNames);
                 }
 
                 //Perceives
-                if(name.equals(PERCEIVES)){
+                if (name.equals(PERCEIVES)) {
 
                     return constructPerceives(list, variableNames);
                 }
 
-                if(name.equals(DESIRES)){
+                if (name.equals(DESIRES)) {
 
                     return constructDesires(list, variableNames);
                 }
-                if(name.equals(COMMON)){
+                if (name.equals(COMMON)) {
 
                     return constructCommon(list, variableNames);
                 }
-                if(name.equals(SAYS)){
+                if (name.equals(SAYS)) {
 
-                    return constructSays(list, variableNames );
+                    return constructSays(list, variableNames);
                 }
-                if(name.equals(COMMUNICATES)){
+                if (name.equals(COMMUNICATES)) {
 
-                    return constructCommunicates(list, variableNames );
+                    return constructCommunicates(list, variableNames);
                 }
 
 
-                if(name.equals(OUGHT)){
+                if (name.equals(OUGHT)) {
 
                     return constructOught(list, variableNames);
                 }
 
 
-                if(name.equals(CAN_PROVE)){
+                if (name.equals(CAN_PROVE)) {
 
                     return constructCanProve(list, variableNames);
                 }
 
 
-                if(name.equals(NEC)){
+                if (name.equals(NEC)) {
 
                     return constructNecessity(list, variableNames);
 
                 }
 
-                if(name.equals(POS)){
+                if (name.equals(POS)) {
 
                     return constructPossibility(list, variableNames);
 
@@ -323,33 +462,32 @@ public class Reader {
 
         }
 
-         throw new AssertionError("Could not understand formula: " + input);
+        throw new AssertionError("Could not understand formula: " + input);
 
     }
 
 
-
     private static Formula constructIntends(List list, Set<String> variableNames) throws ParsingException {
-         if(list.isEmpty()){
+        if (list.isEmpty()) {
             throw new ParsingException("Intends expresion cannot be empty!");
-        }  else if(list.size() != 4 && list.size() != 3){
-            throw new ParsingException("Intends expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 4 && list.size() != 3) {
+            throw new ParsingException("Intends expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if(list.size() == 4) {
-                Object agent =  list.get(1);
-                Object time =  list.get(2);
-                Object formula =  list.get(3);
+            if (list.size() == 4) {
+                Object agent = list.get(1);
+                Object time = list.get(2);
+                Object formula = list.get(3);
 
-                return new Intends(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames));
+                return new Intends(readLogicValue(agent), readLogicValue(time), readFormula(formula, variableNames));
 
             } else {
 
-                Object agent =  list.get(1);
-                Object formula =  list.get(2);
+                Object agent = list.get(1);
+                Object formula = list.get(2);
 
-                return new Intends(readLogicValue(agent), NOW,readFormula(formula, variableNames));
+                return new Intends(readLogicValue(agent), NOW, readFormula(formula, variableNames));
 
             }
         }
@@ -357,13 +495,13 @@ public class Reader {
 
     private static Formula constructNecessity(List list, Set<String> variableNames) throws ParsingException {
 
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             throw new ParsingException("Necessity expresion cannot be empty!");
-        }  else if(list.size() != 2 ){
-            throw new ParsingException("Necessity expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 2) {
+            throw new ParsingException("Necessity expresion has wrong number of arguments! " + list);
 
         } else {
-            Object formula =  list.get(1);
+            Object formula = list.get(1);
 
             return new Necessity(readFormula(formula, variableNames));
 
@@ -371,15 +509,16 @@ public class Reader {
 
 
     }
+
     private static Formula constructPossibility(List list, Set<String> variableNames) throws ParsingException {
 
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             throw new ParsingException("Possibility expresion cannot be empty!");
-        }  else if(list.size() != 2 ){
-            throw new ParsingException("Possibility expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 2) {
+            throw new ParsingException("Possibility expresion has wrong number of arguments! " + list);
 
         } else {
-            Object formula =  list.get(1);
+            Object formula = list.get(1);
 
             return new Possibility(readFormula(formula, variableNames));
 
@@ -387,15 +526,16 @@ public class Reader {
 
 
     }
+
     private static Formula constructCanProve(List list, Set<String> variableNames) throws ParsingException {
 
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             throw new ParsingException("CanProve expresion cannot be empty!");
-        }  else if(list.size() != 2 ){
-            throw new ParsingException("CanProve expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 2) {
+            throw new ParsingException("CanProve expresion has wrong number of arguments! " + list);
 
         } else {
-            Object formula =  list.get(1);
+            Object formula = list.get(1);
 
             return new CanProve(readFormula(formula, variableNames));
 
@@ -405,52 +545,52 @@ public class Reader {
     }
 
     // (K! agent time P)
-    private static Formula constructKnowledge(List list, Set<String> variableNames) throws ParsingException{
-        if(list.isEmpty()){
+    private static Formula constructKnowledge(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
             throw new ParsingException("Knowledge expresion cannot be empty!");
-        }  else if(list.size() != 4 && list.size() != 3){
-            throw new ParsingException("Knowledge expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 4 && list.size() != 3) {
+            throw new ParsingException("Knowledge expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if(list.size() == 4) {
-                Object agent =  list.get(1);
-                Object time =  list.get(2);
-                Object formula =  list.get(3);
+            if (list.size() == 4) {
+                Object agent = list.get(1);
+                Object time = list.get(2);
+                Object formula = list.get(3);
 
-                return new Knowledge(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames));
+                return new Knowledge(readLogicValue(agent), readLogicValue(time), readFormula(formula, variableNames));
 
             } else {
 
-                Object agent =  list.get(1);
-                Object formula =  list.get(2);
+                Object agent = list.get(1);
+                Object formula = list.get(2);
 
-                return new Knowledge(readLogicValue(agent), NOW,readFormula(formula, variableNames));
+                return new Knowledge(readLogicValue(agent), NOW, readFormula(formula, variableNames));
 
             }
         }
     }
 
     // (K! agent time P)
-    private static Formula constructPerceives(List list, Set<String> variableNames) throws ParsingException{
-        if(list.isEmpty()){
+    private static Formula constructPerceives(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
             throw new ParsingException("Perceieves expresion cannot be empty!");
-        }  else if(list.size() != 4 && list.size() != 3){
-            throw new ParsingException("Perceieves expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 4 && list.size() != 3) {
+            throw new ParsingException("Perceieves expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if (list.size()==4){
-                Object agent =  list.get(1);
-                Object time =  list.get(2);
-                Object formula =  list.get(3);
+            if (list.size() == 4) {
+                Object agent = list.get(1);
+                Object time = list.get(2);
+                Object formula = list.get(3);
 
-                return new Perception(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames));
+                return new Perception(readLogicValue(agent), readLogicValue(time), readFormula(formula, variableNames));
 
             } else {
 
-                Object agent =  list.get(1);
-                Object formula =  list.get(2);
+                Object agent = list.get(1);
+                Object formula = list.get(2);
 
                 return new Perception(readLogicValue(agent), NOW, readFormula(formula, variableNames));
 
@@ -458,25 +598,26 @@ public class Reader {
 
         }
     }
-    private static Formula constructDesires(List list, Set<String> variableNames) throws ParsingException{
-        if(list.isEmpty()){
+
+    private static Formula constructDesires(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
             throw new ParsingException("Desires expresion cannot be empty!");
-        }  else if(list.size() != 4 && list.size() != 3){
-            throw new ParsingException("Desires expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 4 && list.size() != 3) {
+            throw new ParsingException("Desires expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if (list.size()==4){
-                Object agent =  list.get(1);
-                Object time =  list.get(2);
-                Object formula =  list.get(3);
+            if (list.size() == 4) {
+                Object agent = list.get(1);
+                Object time = list.get(2);
+                Object formula = list.get(3);
 
-                return new Desire(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames));
+                return new Desire(readLogicValue(agent), readLogicValue(time), readFormula(formula, variableNames));
 
             } else {
 
-                Object agent =  list.get(1);
-                Object formula =  list.get(2);
+                Object agent = list.get(1);
+                Object formula = list.get(2);
 
                 return new Desire(readLogicValue(agent), NOW, readFormula(formula, variableNames));
 
@@ -486,117 +627,117 @@ public class Reader {
     }
 
     // (B! agent time strength P)
-    private static Formula constructBelief(List list, Set<String> variableNames) throws ParsingException{
-        if(list.isEmpty()){
+    private static Formula constructBelief(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
             throw new ParsingException("Belief expresion cannot be empty!");
-        }  else if(list.size() != 4 && list.size() != 3){
-            throw new ParsingException("Belief expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 4 && list.size() != 3) {
+            throw new ParsingException("Belief expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if(list.size()==4) {
+            if (list.size() == 4) {
 
-                Object agent =  list.get(1);
-                Object time =  list.get(2);
-                Object formula =  list.get(3);
+                Object agent = list.get(1);
+                Object time = list.get(2);
+                Object formula = list.get(3);
 
-                return new Belief(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames));
+                return new Belief(readLogicValue(agent), readLogicValue(time), readFormula(formula, variableNames));
 
-            }
-            else {
+            } else {
 
-                Object agent =  list.get(1);
-                Object formula =  list.get(2);
+                Object agent = list.get(1);
+                Object formula = list.get(2);
 
-                return new Belief(readLogicValue(agent), NOW,readFormula(formula, variableNames));
+                return new Belief(readLogicValue(agent), NOW, readFormula(formula, variableNames));
 
             }
         }
     }
 
     // (Ought! agent time strength P)
-    private static Formula constructOught(List list, Set<String> variableNames) throws ParsingException{
-        if(list.isEmpty()){
+    private static Formula constructOught(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
             throw new ParsingException("Ought expresion cannot be empty!");
-        }  else if(list.size() != 5 && list.size()!=4){
-            throw new ParsingException("Ought expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 5 && list.size() != 4) {
+            throw new ParsingException("Ought expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if(list.size()==5) {
-                Object agent =  list.get(1);
-                Object time =  list.get(2);
-                Object formula =  list.get(3);
+            if (list.size() == 5) {
+                Object agent = list.get(1);
+                Object time = list.get(2);
+                Object formula = list.get(3);
 
-                Object ought =  list.get(4);
+                Object ought = list.get(4);
 
-                return new Ought(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames), readFormula(ought, variableNames));
+                return new Ought(readLogicValue(agent), readLogicValue(time), readFormula(formula, variableNames), readFormula(ought, variableNames));
 
             } else {
 
-                Object agent =  list.get(1);
-                Object formula =  list.get(2);
+                Object agent = list.get(1);
+                Object formula = list.get(2);
 
-                Object ought =  list.get(3);
+                Object ought = list.get(3);
 
-                return new Ought(readLogicValue(agent), NOW,readFormula(formula, variableNames), readFormula(ought, variableNames));
+                return new Ought(readLogicValue(agent), NOW, readFormula(formula, variableNames), readFormula(ought, variableNames));
 
             }
         }
     }
+
     // (Says! agent time strength P)
-    private static Formula constructSays(List list, Set<String> variableNames) throws ParsingException{
-        if(list.isEmpty()){
+    private static Formula constructSays(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
             throw new ParsingException("Says expresion cannot be empty!");
-        }  else if(list.size() != 4 && list.size()!=3){
-            throw new ParsingException("Says expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 4 && list.size() != 3) {
+            throw new ParsingException("Says expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if(list.size()==4) {
-                Object agent =  list.get(1);
-                Object time =  list.get(2);
-                Object formula =  list.get(3);
+            if (list.size() == 4) {
+                Object agent = list.get(1);
+                Object time = list.get(2);
+                Object formula = list.get(3);
 
-                return new Says(readLogicValue(agent), readLogicValue(time),readFormula(formula, variableNames));
+                return new Says(readLogicValue(agent), readLogicValue(time), readFormula(formula, variableNames));
 
-            } else{
+            } else {
 
-                Object agent =  list.get(1);
-                Object formula =  list.get(2);
+                Object agent = list.get(1);
+                Object formula = list.get(2);
 
-                return new Says(readLogicValue(agent), NOW,readFormula(formula, variableNames));
+                return new Says(readLogicValue(agent), NOW, readFormula(formula, variableNames));
 
             }
 
         }
     }
 
-    private static Formula constructCommunicates(List list, Set<String> variableNames) throws ParsingException{
-        if(list.isEmpty()){
+    private static Formula constructCommunicates(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
             throw new ParsingException("Coomunicates expresion cannot be empty!");
-        }  else if(list.size() != 5 && list.size()!=4){
-            throw new ParsingException("Says expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 5 && list.size() != 4) {
+            throw new ParsingException("Says expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if(list.size()==5) {
-                Object agent1 =  list.get(1);
-                Object agent2 =  list.get(2);
+            if (list.size() == 5) {
+                Object agent1 = list.get(1);
+                Object agent2 = list.get(2);
 
-                Object time =  list.get(3);
-                Object formula =  list.get(4);
+                Object time = list.get(3);
+                Object formula = list.get(4);
 
-                return new Communicates(readLogicValue(agent1), readLogicValue(agent2), readLogicValue(time),readFormula(formula, variableNames));
+                return new Communicates(readLogicValue(agent1), readLogicValue(agent2), readLogicValue(time), readFormula(formula, variableNames));
 
-            } else{
+            } else {
 
-                Object agent1 =  list.get(1);
-                Object agent2 =  list.get(2);
+                Object agent1 = list.get(1);
+                Object agent2 = list.get(2);
 
-                Object formula =  list.get(3);
+                Object formula = list.get(3);
 
-                return new Communicates(readLogicValue(agent1), readLogicValue(agent2), NOW,readFormula(formula, variableNames));
+                return new Communicates(readLogicValue(agent1), readLogicValue(agent2), NOW, readFormula(formula, variableNames));
 
             }
 
@@ -604,22 +745,22 @@ public class Reader {
     }
 
     // (CommonUtils!  time  P)
-    private static Formula constructCommon(List list, Set<String> variableNames) throws ParsingException{
-        if(list.isEmpty()){
+    private static Formula constructCommon(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
             throw new ParsingException("CommonUtils expresion cannot be empty!");
-        }  else if(list.size() != 3 && list.size()!=2){
-            throw new ParsingException("CommonUtils expresion has wrong number of arguments! "+list);
+        } else if (list.size() != 3 && list.size() != 2) {
+            throw new ParsingException("CommonUtils expresion has wrong number of arguments! " + list);
 
         } else {
 
-            if(list.size() == 3) {
-                Object time =  list.get(1);
-                Object formula =  list.get(2);
-                return new Common(readLogicValue(time),readFormula(formula, variableNames));
+            if (list.size() == 3) {
+                Object time = list.get(1);
+                Object formula = list.get(2);
+                return new Common(readLogicValue(time), readFormula(formula, variableNames));
             } else {
 
-                Object formula =  list.get(1);
-                return new Common(NOW,readFormula(formula, variableNames));
+                Object formula = list.get(1);
+                return new Common(NOW, readFormula(formula, variableNames));
 
             }
         }
@@ -628,26 +769,25 @@ public class Reader {
 
     private static Formula constructPredicate(List list, Set<String> variableNames) throws ParsingException {
 
-        if(list.isEmpty()){
+        if (list.isEmpty()) {
             throw new ParsingException("Predicate expresion cannot be empty!");
-        }
-        else{
+        } else {
 
             Object nameObject = list.get(0);
 
-            if(nameObject instanceof Symbol){
+            if (nameObject instanceof Symbol) {
 
-                String name =  ((Symbol) nameObject).getName();
+                String name = ((Symbol) nameObject).getName();
 
-                if(name.startsWith("$")){
-                    throw new AssertionError("Atom and predicate names cannot start with a $: "+ name);
+                if (name.startsWith("$")) {
+                    throw new AssertionError("Atom and predicate names cannot start with a $: " + name);
                 }
 
-                Value[] values = new Value[list.size()-1];
+                Value[] values = new Value[list.size() - 1];
 
-                for(int i = 1; i< list.size() ; i++){
+                for (int i = 1; i < list.size(); i++) {
 
-                    values[i-1] =  readLogicValue(list.get(i), variableNames);
+                    values[i - 1] = readLogicValue(list.get(i), variableNames);
                 }
 
                 return new Predicate(name, values);
@@ -661,47 +801,44 @@ public class Reader {
     }
 
 
-
-
     private static Formula constructQuantifier(List list, QuantifierType quantifierType, Set<String> outerVariableNames) throws ParsingException {
-        if(list.size()==3){
+        if (list.size() == 3) {
 
             Object varListObject = list.get(1);
-            if(varListObject instanceof List){
+            if (varListObject instanceof List) {
                 List listOfVars = (List) varListObject;
                 Variable[] variables = new Variable[((List) varListObject).size()];
 
                 Set<String> variableNames = Sets.newSet();
-                for(int i = 0; i<variables.length; i++){
+                for (int i = 0; i < variables.length; i++) {
                     Object varObject = listOfVars.get(i);
-                    if(varObject instanceof Symbol){
+                    if (varObject instanceof Symbol) {
 
                         variables[i] = new Variable(((Symbol) varObject).getName());
 
                         variableNames.add(((Symbol) varObject).getName());
-                    } else{
+                    } else {
 
                         throw new ParsingException("Variable should be a string: " + varObject);
 
                     }
 
                 }
-                Set<String> conflicts = Sets.intersection(outerVariableNames,variableNames);
-                if(!conflicts.isEmpty()){
-                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list+ ". Conflicting vars: " + conflicts);
+                Set<String> conflicts = Sets.intersection(outerVariableNames, variableNames);
+                if (!conflicts.isEmpty()) {
+                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
                 }
-                Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames,variableNames));
-                if(quantifierType.equals(QuantifierType.Universal)){
-                   return new Universal(variables, argument);
+                Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames, variableNames));
+                if (quantifierType.equals(QuantifierType.Universal)) {
+                    return new Universal(variables, argument);
                 }
-                if(quantifierType.equals(QuantifierType.Existential)){
-                   return  new Existential(variables, argument) ;
-                }
-                else {
+                if (quantifierType.equals(QuantifierType.Existential)) {
+                    return new Existential(variables, argument);
+                } else {
                     return new Schema(variables, argument);
                 }
 
-            } else if (varListObject instanceof Symbol){
+            } else if (varListObject instanceof Symbol) {
 
                 Variable[] variables = new Variable[1];
 
@@ -709,36 +846,34 @@ public class Reader {
 
                 Set<String> variableNames = Sets.with(((Symbol) varListObject).getName());
 
-                Set<String> conflicts = Sets.intersection(outerVariableNames,variableNames);
-                if(!conflicts.isEmpty()){
-                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list+ ". Conflicting vars: " + conflicts);
+                Set<String> conflicts = Sets.intersection(outerVariableNames, variableNames);
+                if (!conflicts.isEmpty()) {
+                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
                 }
-                Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames,variableNames));
-                 if(quantifierType.equals(QuantifierType.Universal)){
-                   return new Universal(variables, argument);
+                Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames, variableNames));
+                if (quantifierType.equals(QuantifierType.Universal)) {
+                    return new Universal(variables, argument);
                 }
-                if(quantifierType.equals(QuantifierType.Existential)){
-                   return  new Existential(variables, argument) ;
-                }
-                else {
+                if (quantifierType.equals(QuantifierType.Existential)) {
+                    return new Existential(variables, argument);
+                } else {
                     return new Schema(variables, argument);
                 }
 
 
             } else {
 
-                throw new ParsingException("The variable list for this quantifier formula is not valid: "+ list );
+                throw new ParsingException("The variable list for this quantifier formula is not valid: " + list);
 
             }
 
 
-        } else{
+        } else {
 
             throw new ParsingException("quantifiers should have exactly 3 arguments: " + list);
 
         }
     }
-
 
 
     public static List<String> extractForms(String input) throws ParsingException {
@@ -751,29 +886,28 @@ public class Reader {
                 split(" ");
 
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < tokens.length; i++){
+        for (int i = 0; i < tokens.length; i++) {
 
-            if(tokens[i].isEmpty()){
+            if (tokens[i].isEmpty()) {
                 continue;
             }
-            stringBuilder.append(" " + tokens[i].replace(" ", "") +" ");
+            stringBuilder.append(" " + tokens[i].replace(" ", "") + " ");
 
 
-            if(tokens[i].equals("(")){
+            if (tokens[i].equals("(")) {
                 parens.push("");
             }
-            if(tokens[i].equals(")") && parens.empty()){
+            if (tokens[i].equals(")") && parens.empty()) {
                 throw new ParsingException("Extra )");
             }
 
 
-            if(tokens[i].equals(")") && !parens.empty()){
+            if (tokens[i].equals(")") && !parens.empty()) {
                 parens.pop();
             }
 
 
-
-            if(parens.isEmpty()){
+            if (parens.isEmpty()) {
                 forms.add(stringBuilder.toString());
                 stringBuilder = new StringBuilder();
 
@@ -786,7 +920,7 @@ public class Reader {
     }
 
 
-    public static Object readFromString(String s){
+    public static Object readFromString(String s) {
 
         Parseable parseable = Parsers.newParseable(preprocess(s));
         Parser parser = Parsers.newParser(defaultConfiguration());
@@ -795,7 +929,43 @@ public class Reader {
     }
 
 
-    public static final String preprocess(String x){
+    private static final Set<String> PRIMITIVE_METHOD_NAMES = Arrays.stream(new String[]{
+            "claim",
+            "modus-ponens",
+            "modus-tollens",
+            "double-negation",
+            "both",
+            "left-and",
+            "right-and",
+            "true-intro",
+            "false-elim",
+            "left-either",
+            "right-either",
+            "left-iff",
+            "right-iff"
+
+
+    }).
+            collect(Collectors.toSet());
+
+    private static boolean isMethod(Object input) {
+
+        if (input instanceof Symbol) {
+
+            String name = ((Symbol) input).getName();
+
+
+            return PRIMITIVE_METHOD_NAMES.contains(name.substring(1));
+
+        } else {
+
+            return false;
+        }
+
+    }
+
+
+    public static final String preprocess(String x) {
         return x.replace("'", "%!%");
     }
 

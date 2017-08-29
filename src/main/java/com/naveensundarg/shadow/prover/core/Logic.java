@@ -8,6 +8,7 @@ import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;
@@ -15,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
+import static com.naveensundarg.shadow.prover.utils.Reader.readFormulaFromString;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
 /**
@@ -37,6 +39,32 @@ public class Logic {
 
     private static final Value I = new Constant("I");
     private static final Value now = new Constant("now");
+
+    private static Formula TRUE;
+    private static Formula FALSE;
+
+    public static Formula getTrueFormula() {
+        return TRUE;
+    }
+
+    public static Formula getFalseFormula() {
+        return FALSE;
+    }
+
+
+    static {
+
+        try {
+            TRUE =  readFormulaFromString("True");
+            FALSE =  readFormulaFromString("False");
+
+        } catch (Reader.ParsingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 
     public static Clause renameVars(Clause clause, Problem problem) {
 
