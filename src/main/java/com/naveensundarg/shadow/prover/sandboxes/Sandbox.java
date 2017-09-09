@@ -1,6 +1,9 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
+import com.naveensundarg.shadow.prover.axiomsets.SimpleEventCalculus;
+import com.naveensundarg.shadow.prover.axiomsets.Telephone;
 import com.naveensundarg.shadow.prover.core.*;
+import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.ccprovers.ColorShadowProver;
 import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderCognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
@@ -19,7 +22,7 @@ import static us.bpsm.edn.Keyword.newKeyword;
  */
 public class Sandbox {
 
-    public static void main(String[] args) throws Exception {
+    public static void main1(String[] args) throws Exception {
 
         Prover prover = new SecondOrderCognitiveCalculusProver();
 
@@ -33,6 +36,41 @@ public class Sandbox {
 
         System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
         System.out.println(justification);
+
+
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        Prover prover = new CognitiveCalculusProver();
+
+
+        Formula P1  = Reader.readFormulaFromString("(not P)");
+
+        Formula P2  = Reader.readFormulaFromString("(if P Q)");
+
+        Formula G1  = Reader.readFormulaFromString("(=> P Q)");
+        Formula G2  = Reader.readFormulaFromString("(=> P R)");
+
+        Formula I1  = Reader.readFormulaFromString("(if P Q)");
+        Formula I2  = Reader.readFormulaFromString("(if P R)");
+
+        Set<Formula> formulas = CollectionUtils.newEmptySet();
+        formulas.add(P1);
+        formulas.add(P2);
+
+        Set<Formula> SCAxioms = SimpleEventCalculus.INSTANCE.get();
+
+        Set<Formula> TelephoneAxioms = Telephone.INSTANCE.get();
+
+        System.out.println(SCAxioms);
+
+        System.out.println(prover.prove(formulas, G1));
+        System.out.println(prover.prove(formulas, G2));
+
+        System.out.println(prover.prove(formulas, I1));
+        System.out.println(prover.prove(formulas, I2));
+
 
 
     }

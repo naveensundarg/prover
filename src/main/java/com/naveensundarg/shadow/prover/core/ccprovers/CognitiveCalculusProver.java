@@ -7,6 +7,7 @@ import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
+import com.naveensundarg.shadow.prover.core.internals.ConsistentSubsetFinder;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
 import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
@@ -252,6 +253,13 @@ public class CognitiveCalculusProver implements Prover {
                 }
 
 
+                Optional<Justification> counterFacIntroOpt = tryCounterFactIntro(base, formula, added);
+
+                if (counterFacIntroOpt.isPresent()) {
+                    return counterFacIntroOpt;
+                }
+
+
             }
 
 
@@ -326,7 +334,34 @@ public class CognitiveCalculusProver implements Prover {
             return Optional.empty();
         }
     }
+    private Optional<Justification> tryCounterFactIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
+        if (formula instanceof CounterFactual) {
 
+            CounterFactual counterFactual = (CounterFactual) formula;
+
+            Formula antecedent = counterFactual.getAntecedent();
+            Formula consequent = counterFactual.getConsequent();
+
+            indent = indent + "\t";
+            tryLog("Tying counterfactual intro", formula);
+            Optional<Justification> counterfactualIntroOpt = (new ConsistentSubsetFinder()).find((new SnarkWrapper()), base, antecedent, consequent);
+            indent = indent.substring(0, indent.length()-1);
+
+            if (counterfactualIntroOpt.isPresent()) {
+
+                return Optional.of(new CompoundJustification("Counterfactual Intro", CollectionUtils.listOf(counterfactualIntroOpt.get())));
+
+            } else {
+
+                return Optional.empty();
+            }
+            //TODO: the reverse
+
+        } else {
+
+            return Optional.empty();
+        }
+    }
     private Optional<Justification> tryExistsIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
         if (formula instanceof Existential) {
 

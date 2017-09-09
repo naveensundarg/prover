@@ -6,6 +6,7 @@ import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.representations.deduction.Assume;
 import com.naveensundarg.shadow.prover.representations.deduction.Deduction;
 import com.naveensundarg.shadow.prover.representations.deduction.MethodApplication;
+import com.naveensundarg.shadow.prover.representations.deduction.SupposeAbsurd;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.method.*;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
@@ -39,6 +40,7 @@ public class Reader {
     private static final Symbol OR = Symbol.newSymbol("or");
     private static final Symbol IF = Symbol.newSymbol("if");
     private static final Symbol IMPLIES = Symbol.newSymbol("implies");
+    private static final Symbol COUNTERFACTUAL = Symbol.newSymbol("=>");
 
     private static final Symbol IFF = Symbol.newSymbol("iff");
 
@@ -230,7 +232,17 @@ public class Reader {
 
                     return RightIff.getInstance();
 
-                } else if (name.equals("true-intro")) {
+                }
+                else if (name.equals("constructive-dilemma")) {
+
+                    return ConstructiveDilemma.getInstance();
+
+                }
+                else if (name.equals("equivalence")) {
+
+                    return Equivalence.getInstance();
+
+                }else if (name.equals("true-intro")) {
 
                     return TrueIntro.getInstance();
 
@@ -239,6 +251,12 @@ public class Reader {
                     return FalseElim.getInstance();
 
                 }
+                else if (name.equals("absurd")) {
+
+                    return Absurd.getInstance();
+
+                }
+
                 throw new ParsingException("Could not resolve the method " + name);
             } else {
 
@@ -264,10 +282,10 @@ public class Reader {
                 }
                 return new MethodApplication(readPhrase(first, variableNames), args);
             } else if (first.toString().equals("assume")) {
-                if (list.size() == 3) {
+                if (list.size() == 4) {
 
                     Phrase E = readPhrase(list.get(1), variableNames);
-                    Phrase D = readPhrase(list.get(2), variableNames);
+                    Phrase D = readPhrase(list.get(3), variableNames);
 
                     if (D instanceof Deduction) {
                         return new Assume(E, (Deduction) D);
@@ -280,6 +298,26 @@ public class Reader {
                 } else {
 
                     throw new ParsingException("Assume needs exactly two arguments but got " + (list.size() - 1));
+                }
+
+            }
+            else if (first.toString().equals("suppose-absurd")) {
+                if (list.size() == 4) {
+
+                    Phrase E = readPhrase(list.get(1), variableNames);
+                    Phrase D = readPhrase(list.get(3), variableNames);
+
+                    if (D instanceof Deduction) {
+                        return new SupposeAbsurd(E, (Deduction) D);
+                    } else {
+
+                        throw new ParsingException("The second argument of an suppose-absurd should be a deduction");
+                    }
+
+
+                } else {
+
+                    throw new ParsingException("Suppose-absurd needs exactly two arguments but got " + (list.size() - 1));
                 }
 
             } else {
@@ -325,6 +363,15 @@ public class Reader {
 
                     } else {
                         throw new ParsingException("If should have two arguments");
+                    }
+                }
+
+                 if (name.equals(COUNTERFACTUAL)) {
+                    if (list.size() == 3) {
+                        return new CounterFactual(readFormula(list.get(1), variableNames), readFormula(list.get(2), variableNames));
+
+                    } else {
+                        throw new ParsingException("Counterfactual should have two arguments");
                     }
                 }
 
@@ -942,7 +989,10 @@ public class Reader {
             "left-either",
             "right-either",
             "left-iff",
-            "right-iff"
+            "right-iff",
+            "constructive-dilemma",
+            "equivalence",
+            "absurd"
 
 
     }).

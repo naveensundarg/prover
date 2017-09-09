@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
+import static com.naveensundarg.shadow.prover.utils.Reader.readFormula;
 import static com.naveensundarg.shadow.prover.utils.Reader.readFormulaFromString;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
@@ -42,6 +43,7 @@ public class Logic {
 
     private static Formula TRUE;
     private static Formula FALSE;
+    private static Formula INCONSISTENT_FORMULA;
 
     public static Formula getTrueFormula() {
         return TRUE;
@@ -51,12 +53,16 @@ public class Logic {
         return FALSE;
     }
 
+    public static Formula getInconsistentFormula() {
+        return INCONSISTENT_FORMULA;
+    }
 
     static {
 
         try {
             TRUE =  readFormulaFromString("True");
             FALSE =  readFormulaFromString("False");
+            INCONSISTENT_FORMULA = readFormulaFromString("(and P (not P))");
 
         } catch (Reader.ParsingException e) {
             e.printStackTrace();
@@ -183,6 +189,18 @@ public class Logic {
                 map(Logic::baseFormulae).
                 reduce(Sets.newSet(), Sets::union);
 
+    }
+
+    public static boolean isConsistent(Set<Formula> formulae){
+
+
+        return !(new SnarkWrapper()).prove(formulae, Logic.getInconsistentFormula()).isPresent();
+    }
+
+     public static boolean isConsistent(Prover prover, Set<Formula> formulae){
+
+
+        return prover.prove(formulae, Logic.getInconsistentFormula()).isPresent();
     }
 
     public static Map<Variable, Value> simplify(Set<Variable> variables) {

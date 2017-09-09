@@ -1,12 +1,15 @@
 package com.naveensundarg.shadow.prover.dpl;
 
+import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.representations.ErrorPhrase;
 import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.representations.deduction.Assume;
 import com.naveensundarg.shadow.prover.representations.deduction.Deduction;
 import com.naveensundarg.shadow.prover.representations.deduction.MethodApplication;
+import com.naveensundarg.shadow.prover.representations.deduction.SupposeAbsurd;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Implication;
+import com.naveensundarg.shadow.prover.representations.formula.Not;
 import com.naveensundarg.shadow.prover.representations.method.DerivedMethod;
 import com.naveensundarg.shadow.prover.representations.method.PrimitiveMethod;
 
@@ -98,7 +101,36 @@ public final class Interpreter {
                    if(Din instanceof ErrorPhrase){
                        return Din;
                    }
-                   return new ErrorPhrase("Evaluation assumption " + assume + " did not result in a formula: "+ Din);
+                   return new ErrorPhrase("Evaluation of assumption " + assume + " did not result in a formula: "+ Din);
+
+               }
+           }
+
+       }
+        if (input instanceof SupposeAbsurd){
+
+           SupposeAbsurd supposeAbsurd = (SupposeAbsurd) input;
+           Phrase E = supposeAbsurd.getAssumption();
+           Deduction deduction = supposeAbsurd.getDeduction();
+
+           Phrase Ein = interpret(assumptionBase, E);
+
+           if(Ein instanceof Formula){
+
+               Formula assumption = (Formula) Ein;
+
+               Phrase Din = interpret(Sets.add(assumptionBase, assumption ), deduction);
+
+               if(Din.equals(Logic.getFalseFormula())){
+
+                   return  new Not(assumption);
+
+               } else {
+
+                   if(Din instanceof ErrorPhrase){
+                       return Din;
+                   }
+                   return new ErrorPhrase("Evaluation of suppose-absurd " + supposeAbsurd + " did not result in false: "+ Din);
 
                }
            }

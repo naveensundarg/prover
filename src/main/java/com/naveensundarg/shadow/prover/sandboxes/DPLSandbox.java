@@ -26,7 +26,7 @@ public class DPLSandbox {
 
 
 
-        Phrase p =   Reader.readPhraseFromString("(!both P Q)");
+        Phrase p =   Reader.readPhraseFromString("(assume P :in (suppose-absurd (not P) :in (!absurd P (not P))))");
 
         Set<Formula> assumptionBase = Sets.newSet();
 
