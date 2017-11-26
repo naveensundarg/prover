@@ -5,8 +5,8 @@ package com.naveensundarg.shadow.prover.utils;
  */
 public interface Pair<U,V> {
 
-    public U first();
-    public V second();
+    U first();
+    V second();
 
 
 }

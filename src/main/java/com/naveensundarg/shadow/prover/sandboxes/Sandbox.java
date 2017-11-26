@@ -1,22 +1,12 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
-import com.naveensundarg.shadow.prover.axiomsets.DiscreteEventCalculus;
-import com.naveensundarg.shadow.prover.axiomsets.SimpleEventCalculus;
-import com.naveensundarg.shadow.prover.axiomsets.Telephone;
 import com.naveensundarg.shadow.prover.core.*;
-import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
-import com.naveensundarg.shadow.prover.core.ccprovers.ColorShadowProver;
 import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderCognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.ProblemReader;
-import com.naveensundarg.shadow.prover.utils.Reader;
-import com.naveensundarg.shadow.prover.utils.Sets;
+import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.List;
-import java.util.Set;
 
 import static us.bpsm.edn.Keyword.newKeyword;
 
@@ -46,7 +36,7 @@ public class Sandbox {
     public static void main(String[] args) throws Exception {
 
 
-        List<Problem > tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
+        List<Problem> tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
 
         //System.out.println(prover.prove(assumptions, Logic.getInconsistentFormula()));
 

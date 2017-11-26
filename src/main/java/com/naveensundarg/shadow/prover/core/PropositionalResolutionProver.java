@@ -259,11 +259,7 @@ public class PropositionalResolutionProver implements Prover {
             Clause left = possiblePair.get(0);
             Clause right = possiblePair.get(1);
             Set<Clause> resolvends = resolve(left, right);
-            if(!resolvends.isEmpty()) {
-                return true;
-            } else{
-                return false;
-            }
+           return !resolvends.isEmpty();
         }).collect(Collectors.toList());
 
 

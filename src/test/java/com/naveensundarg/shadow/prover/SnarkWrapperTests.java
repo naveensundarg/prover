@@ -1,6 +1,6 @@
 package com.naveensundarg.shadow.prover;
 
-import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;

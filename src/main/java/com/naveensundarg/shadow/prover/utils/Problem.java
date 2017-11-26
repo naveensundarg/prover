@@ -1,10 +1,9 @@
-package com.naveensundarg.shadow.prover.core;
+package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

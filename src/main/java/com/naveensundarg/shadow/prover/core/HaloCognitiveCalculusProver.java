@@ -227,12 +227,7 @@ public class HaloCognitiveCalculusProver implements Prover {
             Formula precondition = ought.getPrecondition();
             Value outerAgent = b.getAgent();
             Value innerAgent = ought.getAgent();
-            if (!innerAgent.equals(outerAgent)) {
-                return false;
-            }
-
-
-            return true;
+            return innerAgent.equals(outerAgent);
         };
 
         Set<Belief> obligationBeliefs =
@@ -270,7 +265,6 @@ public class HaloCognitiveCalculusProver implements Prover {
     private void expandDR1(Set<Formula> base, Set<Formula> added, Formula goal) {
         Set<Common> commons = level2FormulaeOfType(base, Common.class);
         Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
-        ;
         List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, 2);
 
         for (Common c : commons) {

@@ -1,8 +1,8 @@
 package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.axiomsets.AxiomSet;
+import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
-import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
@@ -35,6 +35,8 @@ public class ProblemReader {
     private static final Keyword DESCRIPTION_KEY = Keyword.newKeyword("description");
     private static final Keyword ANSWER_VARIABLES = Keyword.newKeyword("answer-variables");
     private static final Keyword ANSWERS_EXPECTED = Keyword.newKeyword("answers-expected");
+    private static final Keyword INPUT = Keyword.newKeyword("input");
+    private static final Keyword OUTPUT = Keyword.newKeyword("output");
 
     public static List<Problem> readFrom(InputStream inputStream) throws Reader.ParsingException {
 
@@ -49,6 +51,26 @@ public class ProblemReader {
         while (problemDesc != Parser.END_OF_INPUT) {
 
             problems.add(buildProblem((Map<?, ?>) problemDesc));
+            problemDesc = p.nextValue(pbr);
+        }
+
+        return problems;
+
+    }
+
+    public static List<DPLChunk> readDPLChunkFrom(InputStream inputStream) throws Reader.ParsingException {
+
+        Parseable pbr = Parsers.newParseable(new InputStreamReader(inputStream));
+        Parser p = Parsers.newParser(defaultConfiguration());
+
+
+        List<DPLChunk> problems = CollectionUtils.newEmptyList();
+
+        Object problemDesc = p.nextValue(pbr);
+
+        while (problemDesc != Parser.END_OF_INPUT) {
+
+            problems.add(buildChunk((Map<?, ?>) problemDesc));
             problemDesc = p.nextValue(pbr);
         }
 
@@ -99,6 +121,48 @@ public class ProblemReader {
 
     }
 
+     private static DPLChunk buildChunk(Map<?, ?> map) throws Reader.ParsingException {
+
+        Set<Formula> assumptions = readAssumptions(map.get(ASSUMPTIONS_KEY));
+        Formula goal = Reader.readFormula(map.get(OUTPUT));
+        Phrase phrase = Reader.readPhrase(map.get(INPUT));
+        if (map.containsKey(SORTSYSTEM_KEY)) {
+            //TODO: Create a sorted problem
+            //TODO: Define the class
+
+            SortSystem sortSystem = SortSystem.buildFrom((Map<?, ?>) map.get(SORTSYSTEM_KEY));
+            throw new NotImplementedException();
+
+        } else {
+
+            if (map.containsKey(ANSWERS_EXPECTED) && map.containsKey(ANSWER_VARIABLES)) {
+
+                Set<List<Value>> expectedAnswers = ((List<?>)map.get(ANSWERS_EXPECTED))
+                        .stream().
+                        map(x -> {
+                            try {
+                                return readValueList((List<?>) x);
+                            } catch (Reader.ParsingException e) {
+                                return null;
+                            }
+                        }).collect(Collectors.toSet());
+
+
+                return new DPLChunk(((Map) map).getOrDefault(NAME_KEY, "").toString(),
+                        ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(),
+                        assumptions, phrase, goal);
+
+
+            } else {
+
+                return new DPLChunk(((Map) map).getOrDefault(NAME_KEY, "").toString(), ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(), assumptions, phrase, goal);
+
+            }
+
+        }
+
+
+    }
     private static Problem buildProblem(Map<?, ?> map) throws Reader.ParsingException {
 
         Set<Formula> assumptions = readAssumptions(map.get(ASSUMPTIONS_KEY));

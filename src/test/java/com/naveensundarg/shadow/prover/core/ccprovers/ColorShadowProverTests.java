@@ -1,6 +1,6 @@
 package com.naveensundarg.shadow.prover.core.ccprovers;
 
-import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;

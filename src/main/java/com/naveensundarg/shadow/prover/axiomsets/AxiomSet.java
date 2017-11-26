@@ -26,7 +26,7 @@ public interface AxiomSet {
     Set<Formula> get();
 
 
-    public static Set<Formula> getAxiomSetNamed(String name){
+    static Set<Formula> getAxiomSetNamed(String name){
 
         if(name.equals("discrete-event-calculus")){
 

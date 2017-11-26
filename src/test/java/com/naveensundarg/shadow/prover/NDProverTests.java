@@ -1,7 +1,7 @@
 package com.naveensundarg.shadow.prover;
 
 import com.naveensundarg.shadow.prover.core.NDProver;
-import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;

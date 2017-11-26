@@ -21,7 +21,6 @@ public enum CognitiveTelephone implements AxiomSet {
     CognitiveTelephone(){
 
         axioms = AxiomSet.readFromFile(CognitiveTelephone.class.getResourceAsStream("telephone.clj")).stream().map(f->new Common(Reader.NOW, f)).collect(Collectors.toSet());
-;
 
         NoFreeVariablesConstraint.INSTANCE.satisfies(axioms);
         Signature signature = new Signature(Signature.class.getResourceAsStream("telephone.clj"));

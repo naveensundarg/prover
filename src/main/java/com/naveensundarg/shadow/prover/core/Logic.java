@@ -7,10 +7,7 @@ import com.naveensundarg.shadow.prover.representations.cnf.Literal;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.Reader;
-import com.naveensundarg.shadow.prover.utils.Sets;
-import com.naveensundarg.shadow.prover.utils.SymbolGenerator;
+import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -104,7 +101,6 @@ public class Logic {
             agents.add(((Says) formula).getAgent());
         }
         Set<Formula> forms = formula.subFormulae().stream().filter(x -> !x.equals(formula)).collect(Collectors.toSet());
-        ;
 
         forms.forEach(x -> agents.addAll(agentsInFormula(x)));
 
@@ -135,7 +131,6 @@ public class Logic {
         }
 
         Set<Formula> forms = formula.subFormulae().stream().filter(x -> !x.equals(formula)).collect(Collectors.toSet());
-        ;
 
         forms.forEach(x -> times.addAll(timesInFormula(x)));
 
@@ -281,7 +276,7 @@ public class Logic {
             }
         } else {
 
-            kernel = quantifier.getArgument();;
+            kernel = quantifier.getArgument();
 
         }
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.armedbear.lisp:abcl:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: guru.nidi:graphviz-java:0.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.kitfox.svg:svg-salamander:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.eclipsesource.j2v8:j2v8_macosx_x86_64:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.eclipsesource.j2v8:j2v8_linux_x86_64:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.eclipsesource.j2v8:j2v8_win32_x86_64:3.0.2" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20160212" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.testng:testng:6.8" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.beanshell:bsh:2.0b4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.beust:jcommander:1.27" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.yaml:snakeyaml:1.6" level="project" />
+    <orderEntry type="library" name="Maven: us.bpsm:edn-java:0.4.6" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.clojure:clojure:1.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.diogonunes:JCDP:2.0.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.fusesource.jansi:jansi:1.15" level="project" />
+  </component>
+</module>

@@ -8,6 +8,7 @@ import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.utils.Sets;
 import org.apache.commons.lang3.tuple.Pair;
 

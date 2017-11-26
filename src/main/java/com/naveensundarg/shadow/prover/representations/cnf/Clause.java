@@ -87,7 +87,7 @@ public class Clause {
 
     public Clause(Set<Literal> literals){
 
-        literals = literals.stream().filter(Logic::canKeepEquality).collect(Collectors.toSet());;
+        literals = literals.stream().filter(Logic::canKeepEquality).collect(Collectors.toSet());
         this.weight = literals.stream().mapToInt(Literal::getWeight).reduce(0, Integer::sum);
         ID = count.getAndIncrement();
 
@@ -107,7 +107,7 @@ public class Clause {
     }
     public Clause(Set<Literal> literals, List<Clause> parents){
 
-        literals = literals.stream().filter(Logic::canKeepEquality).collect(Collectors.toSet());;
+        literals = literals.stream().filter(Logic::canKeepEquality).collect(Collectors.toSet());
         this.weight = literals.stream().mapToInt(Literal::getWeight).reduce(0, Integer::sum);
         ID = count.getAndIncrement();
 

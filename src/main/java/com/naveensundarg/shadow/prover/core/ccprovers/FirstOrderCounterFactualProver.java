@@ -3,7 +3,7 @@ package com.naveensundarg.shadow.prover.core.ccprovers;
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.Logic;
-import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
@@ -18,8 +18,6 @@ import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.CommonUtils;
-import com.naveensundarg.shadow.prover.utils.Constants;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.time.Duration;

@@ -3,7 +3,7 @@ package com.naveensundarg.shadow.prover.core.ccprovers;
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.Logic;
-import com.naveensundarg.shadow.prover.core.Problem;
+import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
@@ -22,9 +22,7 @@ import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Constants;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -743,12 +741,7 @@ public class CCProver implements Prover {
             Formula precondition = ought.getPrecondition();
             Value outerAgent = b.getAgent();
             Value innerAgent = ought.getAgent();
-            if (!innerAgent.equals(outerAgent)) {
-                return false;
-            }
-
-
-            return true;
+            return innerAgent.equals(outerAgent);
         };
 
         Set<Belief> obligationBeliefs =
@@ -789,7 +782,6 @@ public class CCProver implements Prover {
     private void expandDR1(Set<Formula> base, Set<Formula> added, Formula goal) {
         Set<Common> commons = CommonUtils.level2FormulaeOfType(base, Common.class);
         Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
-        ;
         List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, 2);
 
         for (Common c : commons) {

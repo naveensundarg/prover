@@ -99,7 +99,6 @@ public class CommonUtils {
                     line = scanner.nextLine();
                 else
                     break;
-                ;
             }
 
 

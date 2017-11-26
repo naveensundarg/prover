@@ -29,7 +29,7 @@ public abstract class HaloCore implements Prover {
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
-        int k = getAgeWeightRatio(); ;
+        int k = getAgeWeightRatio();
 
 
         PriorityQueue<Clause> weightQueue = new PriorityQueue<>(Comparator.comparing(Clause::getWeight));
