@@ -7,4 +7,16 @@
  Terminates [3]
  Prior [2]
  t0 [0]
+ StartedIn [3]
+ StoppedIn [3]
+ Trajectory [4]
+ AntiTrajectory [4]
+ ReleasedAt [2]
+ Releases [3]
+
+ 0 [0]
+ 1 [0]
+ 2 [0]
+ = [2]
+ + [2]
  }

@@ -3,6 +3,7 @@ package com.naveensundarg.shadow.prover;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
+import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -26,13 +27,13 @@ public class AnswerExtractionTests {
     Map<Problem, Pair<Clause, Clause>> used;
     AnswerExtractionTests(){
 
-        prover = new SnarkWrapper();
+        prover = new CognitiveCalculusProver();
     }
 
     @DataProvider(name="testsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem>tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("firstorder-answer-extraction-tests.clj"));
+        List<Problem>tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -55,7 +56,7 @@ public class AnswerExtractionTests {
     public void testCompleteness(Problem problem, boolean answerVariableGiven){
 
         Set<Map<Variable,Value>> answerMap = prover.proveAndGetMultipleBindings(problem.getAssumptions(), problem.getGoal(),
-                problem.getAnswerVariables().get()).get();
+                problem.getAnswerVariables().get()).get().getRight();
 
         List<Variable> answerVariables = problem.getAnswerVariables().get();
         Set<List<Value>> expectedAnswers = problem.getAnswersExpected().get();

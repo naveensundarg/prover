@@ -36,7 +36,7 @@ public class HaloCognitiveCalculusProver implements Prover {
 
 
 
-        Prover folProver = new SnarkWrapper();
+        Prover folProver = SnarkWrapper.getInstance();
 
         Set<Formula> base =  CollectionUtils.setFrom(assumptions);
 

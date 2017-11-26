@@ -43,7 +43,7 @@ public class S5Prover implements Prover {
         convertedAssumptions.add(reflexivity);
         convertedAssumptions.add(euclidean);
 
-        Prover firstOrderHalo = new SnarkWrapper();
+        Prover firstOrderHalo = SnarkWrapper.getInstance();
 
         return firstOrderHalo.prove(convertedAssumptions, convertedGoal);
 

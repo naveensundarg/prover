@@ -343,19 +343,26 @@
 (defun run-scenario (setup name)
   (funcall setup)
   (print name)
-  (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
-      (cprint "P1 Alive")
-      (cprint "P1 Dead")) 
-  
-  (funcall setup)
-  (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
-      (cprint "P2 Alive")
-      (cprint "P2 Dead"))
- 
-  (funcall setup)
-  (if (equalp :PROOF-FOUND (prove `(exists ((?t Number))  (HoldsAt (dead P3) ?t))))
-      (cprint "P3 Dead")
-      (cprint "P3 Alive"))
+  (let ((prints ()))
+      (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P1) ?t))))))
+	  (push "     P1 Alive" prints)
+	  (push "     P1 Dead" prints)) 
+    
+    (funcall setup)
+    (if (equalp :PROOF-FOUND (prove `(forall ((?t Number)) (implies (Prior ?t ,*horizon*) (not (HoldsAt (dead P2) ?t))))))
+	(push "     P2 Alive" prints)
+	(push "     P2 Dead" prints))
+    
+    (funcall setup)
+    (if (equalp :PROOF-FOUND (prove `(exists ((?t Number))  (HoldsAt (dead P3) ?t))))
+	(push  "     P3 Dead" prints)
+	(push  "     P3 Alive" prints))
+    (cprint "########################################################")
+    (cprint (concatenate 'string "    " name))
+    (cprint "########################################################")
+    (mapcar #'cprint prints))
+    (cprint "########################################################")
+
   nil)
 
 
@@ -626,7 +633,7 @@
   
    (time (run-scenario-1-base))
    (force-output)
-   (time (run-scenario-1-action))
+   (time ())
    (force-output)
    (time (run-scenario-2-base))
    (force-output)

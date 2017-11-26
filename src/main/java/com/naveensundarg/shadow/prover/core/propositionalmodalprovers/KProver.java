@@ -51,7 +51,7 @@ public class KProver implements Prover {
                 collect(Collectors.toSet());
         Formula convertedGoal = PropositionalModalConverter.convert(formula, problem).apply(map);
 
-        Prover firstOrderHalo = new SnarkWrapper();
+        Prover firstOrderHalo = SnarkWrapper.getInstance();
 
         return firstOrderHalo.prove(convertedAssumptions, convertedGoal);
 

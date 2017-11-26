@@ -52,7 +52,7 @@ public class TProver implements Prover {
         Formula convertedGoal = PropositionalModalConverter.convert(formula, problem).apply(map);
 
         convertedAssumptions.add(reflexivity);
-        Prover firstOrderHalo = new SnarkWrapper();
+        Prover firstOrderHalo = SnarkWrapper.getInstance();
 
         return firstOrderHalo.prove(convertedAssumptions, convertedGoal);
 

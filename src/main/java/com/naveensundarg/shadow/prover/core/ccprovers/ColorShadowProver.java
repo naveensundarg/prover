@@ -9,6 +9,7 @@ import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Sets;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class ColorShadowProver implements Prover {
         Formula process(Formula f);
     }
 
-    private static Prover folProver = new SnarkWrapper();
+    private static Prover folProver = SnarkWrapper.getInstance();
 
 
     PreProcessor knowledgeLifter = f -> {
@@ -214,7 +215,7 @@ public class ColorShadowProver implements Prover {
     }
 
 
-    public Optional<Set<Map<Variable, Value>>> proveAndGetMultipleBindings(Set<Formula> assumptions, Formula formula, List<Variable> variables){
+    public Optional<Pair<Justification, Set<Map<Variable, Value>>>> proveAndGetMultipleBindings(Set<Formula> assumptions, Formula formula, List<Variable> variables){
 
                 Problem problem = new Problem("", "", assumptions, formula);
 

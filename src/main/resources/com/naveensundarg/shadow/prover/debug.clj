@@ -1,15 +1,18 @@
-{:name ""
+
+{:name        "Self Sacrifice"
  :description ""
- :assumptions {1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))
-               2 (Knows! I now (= 1 (nu alpha I P1 now)))
-               3 (Knows! I now (= 1 (nu alpha I P2 now)))
-               4 (Knows! I now (= 1 (nu alpha I P3 now)))
-               5 (Knows! I now (= (- 1) (nu alpha I I now)))
-               6 (Knows! I now (= alpha (Drop (self I) track1 3)))
-               7 (Knows! I now (forall [a b] (if (= (self a) (self b)) (= a b))))
-               8 (Knows! I now (forall [a] (= a (self a))))
-               9 (Knows! I now (and (not (= P1 P2)) (not (= P1 P3)) (not (= P1 I)) (not (= P2 P3)) (not (= P2 I)) (not (= P3 I))))
-               10 (Knows! I now (and (>> 1 0) (<< (- 1)  0)))
-               }
- :goal (Knows! I now (and (<< (nu (Drop (self I) track1 3) I I now) 0)
-                          (forall [?agent] (if (Agent ?agent) (if (not (= ?agent (self I))) (>> (nu (Drop (self I) track1 3) I ?agent now) 0)))))  )}
+ :assumptions {A1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))
+               A2 (Knows! I now (= 1 (nu alpha I P1 now)))
+               A3 (Knows! I now (= 1 (nu alpha I P2 now)))
+               A4 (Knows! I now (= 1 (nu alpha I P3 now)))
+               A5 (Knows! I now (= (- 1) (nu alpha I I now)))
+               A6 (Knows! I now (= alpha (Drop (self I) track1 3)))
+               A7 (Common! (forall [a b] (if (= (self a) (self b)) (= a b))))
+               A8 (Knows! I now (forall [a] (= a (self a))))
+               A9 (Knows! I now (and (not (= P1 P2)) (not (= P1 P3)) (not (= P1 I)) (not (= P2 P3)) (not (= P2 I)) (not (= P3 I))))
+               A10 (Knows! I now (and (>> 1 0) (<< -1 0)))}
+
+ :goal       (Knows! I now (forall [?agent] (if (Agent ?agent) (if (not (= ?agent (self I))) (>> (nu alpha I ?agent now) 0))))) }
+
+
+

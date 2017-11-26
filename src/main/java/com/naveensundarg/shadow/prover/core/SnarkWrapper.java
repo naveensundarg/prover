@@ -1,6 +1,5 @@
 package com.naveensundarg.shadow.prover.core;
 
-import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
@@ -8,9 +7,9 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 import com.naveensundarg.shadow.prover.utils.Reader;
+import org.apache.commons.lang3.tuple.Pair;
 import org.armedbear.lisp.Interpreter;
 import org.armedbear.lisp.LispObject;
-import us.bpsm.edn.parser.Parseable;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -21,7 +20,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 
 /**
  * Created by naveensundarg on 12/4/16.
@@ -40,6 +38,20 @@ public class SnarkWrapper implements Prover {
     }
 
     private final static Interpreter interpreter;
+
+    private SnarkWrapper(){
+
+    }
+
+    private static final SnarkWrapper INSTANCE;
+
+    static {
+        INSTANCE = new SnarkWrapper();
+    }
+    public static SnarkWrapper getInstance(){
+
+        return INSTANCE;
+    }
 
     static {
 
@@ -318,7 +330,7 @@ public class SnarkWrapper implements Prover {
 
 
     @Override
-    public Optional<Set<Map<Variable, Value>>> proveAndGetMultipleBindings(Set<Formula> assumptions, Formula formula, List<Variable> variables) {
+    public Optional<Pair<Justification, Set<Map<Variable, Value>>>> proveAndGetMultipleBindings(Set<Formula> assumptions, Formula formula, List<Variable> variables) {
 
 
         String varListString = "(" + variables.stream().map(Variable::toString).reduce(" ", (x, y) -> x + " " + y) + ")";
@@ -387,7 +399,7 @@ public class SnarkWrapper implements Prover {
 
             if (resultString.toLowerCase().equals("(nil)")) {
 
-                return Optional.of(CollectionUtils.newEmptySet());
+                 return Optional.of(Pair.of(null, CollectionUtils.newEmptySet()));
             }
 
             try {
@@ -415,7 +427,9 @@ public class SnarkWrapper implements Prover {
                 }
 
 
-                return Optional.of(answers);
+                Justification trivialJustification = TrivialJustification.trivial(assumptions, formula);
+
+                return Optional.of(Pair.of(trivialJustification, answers));
 
             } catch (Reader.ParsingException e) {
                 e.printStackTrace();

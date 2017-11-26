@@ -55,7 +55,7 @@ public class DProver implements Prover {
         Formula convertedGoal = PropositionalModalConverter.convert(formula, problem).apply(map);
 
 
-        Prover firstOrderHalo = new SnarkWrapper();
+        Prover firstOrderHalo = SnarkWrapper.getInstance();
 
         return firstOrderHalo.prove(convertedAssumptions, convertedGoal);
 

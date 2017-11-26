@@ -97,7 +97,7 @@ public class Ought extends BaseFormula{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return null;
+        return new Ought(agent, time, precondition.apply(substitution), ought.apply(substitution));
     }
 
     @Override

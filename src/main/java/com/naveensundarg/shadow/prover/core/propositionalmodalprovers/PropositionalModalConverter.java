@@ -1,7 +1,7 @@
 package com.naveensundarg.shadow.prover.core.propositionalmodalprovers;
 
 import com.naveensundarg.shadow.prover.core.Problem;
-import com.naveensundarg.shadow.prover.core.SymbolGenerator;
+import com.naveensundarg.shadow.prover.utils.SymbolGenerator;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;

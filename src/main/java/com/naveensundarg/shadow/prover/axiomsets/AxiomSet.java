@@ -26,6 +26,34 @@ public interface AxiomSet {
     Set<Formula> get();
 
 
+    public static Set<Formula> getAxiomSetNamed(String name){
+
+        if(name.equals("discrete-event-calculus")){
+
+            return DiscreteEventCalculus.INSTANCE.get();
+        }
+
+        if(name.equals("simple-event-calculus")){
+
+            return SimpleEventCalculus.INSTANCE.get();
+        }
+        if(name.equals("telephone")){
+
+            return Telephone.INSTANCE.get();
+        }
+
+        if(name.equals("cognitive-telephone")){
+
+            return CognitiveTelephone.INSTANCE.get();
+        }
+
+        else {
+
+            throw new AssertionError("Unknown axiom set: "+ name);
+        }
+
+    }
+
      static Set<Formula> readFromFile(InputStream is){
 
         try {

@@ -27,7 +27,7 @@ public class SnarkWrapperTests {
     Map<Problem, Pair<Clause, Clause>> used;
     SnarkWrapperTests(){
 
-        prover = new SnarkWrapper();
+        prover = SnarkWrapper.getInstance();
     }
 
     @DataProvider(name="completenessTestsProvider")

@@ -77,15 +77,15 @@
  :description "Bird Theorem"
  :assumptions {}
  :goal        (exists (x) (if
-                             (Bird x)
-                             (forall (y) (Bird y))))}
+                            (Bird x)
+                            (forall (y) (Bird y))))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name        "fol true test 7"
  :description "Everyone likes anyone who likes someone."
  :assumptions {:a1 (forall (x) (if (exists (z) (likes x z))
-                                  (forall (y) (likes y x))))
+                                 (forall (y) (likes y x))))
                :a2 (likes a b)}
  :goal        (forall (x y) (likes x y))}
 
@@ -158,19 +158,19 @@
 
 {:name        "traid zoo reflexivity"
  :description ""
- :assumptions {AX1 (forall (x) (or (Camel x) (Llama x) (Aard x)))
-               AX2 (not (exists (x) (and (Camel x) (Aard x))))
-               AX3 (not (exists (x) (and (Aard x) (Llama x))))
-               AX4 (not (exists (x) (and (Llama x) (Camel x))))
-               AX5 (forall (x y) (if (and (Camel x) (Camel y)) (SameSpecies x y)))
-               AX6 (forall (x y) (if (and (Llama x) (Llama y)) (SameSpecies x y)))
-               AX7 (forall (x y) (if (and (Aard x) (Aard y)) (SameSpecies x y)))
-               AX8 (forall (x y) (if (and (SameSpecies x y) (Camel x)) (Camel y)))
-               AX9 (forall (x y) (if (and (SameSpecies x y) (Llama x)) (Llama y)))
+ :assumptions {AX1  (forall (x) (or (Camel x) (Llama x) (Aard x)))
+               AX2  (not (exists (x) (and (Camel x) (Aard x))))
+               AX3  (not (exists (x) (and (Aard x) (Llama x))))
+               AX4  (not (exists (x) (and (Llama x) (Camel x))))
+               AX5  (forall (x y) (if (and (Camel x) (Camel y)) (SameSpecies x y)))
+               AX6  (forall (x y) (if (and (Llama x) (Llama y)) (SameSpecies x y)))
+               AX7  (forall (x y) (if (and (Aard x) (Aard y)) (SameSpecies x y)))
+               AX8  (forall (x y) (if (and (SameSpecies x y) (Camel x)) (Camel y)))
+               AX9  (forall (x y) (if (and (SameSpecies x y) (Llama x)) (Llama y)))
                AX10 (forall (x y) (if (and (SameSpecies x y) (Aard x)) (Aard y)))
 
                }
- :goal        (forall (x)  (SameSpecies x x))}
+ :goal        (forall (x) (SameSpecies x x))}
 ;
 ;
 ;{:name        "traid zoo symmetry"
@@ -192,15 +192,15 @@
 
 {:name        "traid zoo transitiviy"
  :description ""
- :assumptions {AX1 (forall (x) (or (Camel x) (Llama x) (Aard x)))
-               AX2 (not (exists (x) (and (Camel x) (Aard x))))
-               AX3 (not (exists (x) (and (Aard x) (Llama x))))
-               AX4 (not (exists (x) (and (Llama x) (Camel x))))
-               AX5 (forall (x y) (if (and (Camel x) (Camel y)) (SameSpecies x y)))
-               AX6 (forall (x y) (if (and (Llama x) (Llama y)) (SameSpecies x y)))
-               AX7 (forall (x y) (if (and (Aard x) (Aard y)) (SameSpecies x y)))
-               AX8 (forall (x y) (if (and (SameSpecies x y) (Camel x)) (Camel y)))
-               AX9 (forall (x y) (if (and (SameSpecies x y) (Llama x)) (Llama y)))
+ :assumptions {AX1  (forall (x) (or (Camel x) (Llama x) (Aard x)))
+               AX2  (not (exists (x) (and (Camel x) (Aard x))))
+               AX3  (not (exists (x) (and (Aard x) (Llama x))))
+               AX4  (not (exists (x) (and (Llama x) (Camel x))))
+               AX5  (forall (x y) (if (and (Camel x) (Camel y)) (SameSpecies x y)))
+               AX6  (forall (x y) (if (and (Llama x) (Llama y)) (SameSpecies x y)))
+               AX7  (forall (x y) (if (and (Aard x) (Aard y)) (SameSpecies x y)))
+               AX8  (forall (x y) (if (and (SameSpecies x y) (Camel x)) (Camel y)))
+               AX9  (forall (x y) (if (and (SameSpecies x y) (Llama x)) (Llama y)))
                AX10 (forall (x y) (if (and (SameSpecies x y) (Aard x)) (Aard y)))
 
                }
@@ -208,36 +208,36 @@
 
 
 
-{ :name "axiom selection 1"
+{:name        "axiom selection 1"
  :description ""
  :assumptions {S1 (forall (x y) (if (= (+ x 1) (+ y 1)) (= x y)))}
- :goal (forall (x y) (if (not (= x y)) (not (= (+ x 1) (+ y 1)))))
+ :goal        (forall (x y) (if (not (= x y)) (not (= (+ x 1) (+ y 1)))))
  }
 
 
-{ :name "axiom selection 1"
+{:name        "axiom selection 1"
  :description ""
- :assumptions {S9 (forall (z)  (= (* z 0) 0))
+ :assumptions {S9 (forall (z) (= (* z 0) 0))
                S7 (forall (x y) (= (+ x y) (+ y x)))
-               S4 (forall (x)  (= (+ x 0) x))
+               S4 (forall (x) (= (+ x 0) x))
                S5 (forall (z y) (= (* z (+ y 1)) (+ (* z y) z)))
                }
 
- :goal (forall (z) (= (* z 1) z))
+ :goal        (forall (z) (= (* z 1) z))
  }
 
 
-{ :name "axiom selection 1"
+{:name        "axiom selection 1"
  :description ""
  :assumptions {
                S6 (forall (x y) (or (>= x y) (>= y x)))
                S4 (forall (x y) (if (>= x y) (not (> y x))))
                }
 
- :goal (forall (x) (not (> x x)))
+ :goal        (forall (x) (not (> x x)))
  }
 
-{ :name "axiom selection 1"
+{:name        "axiom selection 1"
  :description ""
  :assumptions {
                S6 (forall (x y) (or (>= x y) (>= y x)))
@@ -246,11 +246,11 @@
                S7 (forall (x y z) (if (and (>= x y) (>= y z)) (>= x z)))
                }
 
- :goal (forall (x y z) (if (and (> x y) (> y z)) (> x z)))
+ :goal        (forall (x y z) (if (and (> x y) (> y z)) (> x z)))
  }
 
 
-{ :name "FPT"
+{:name        "FPT"
  :description ""
  :assumptions {
                S6 (forall (P)
@@ -261,5 +261,563 @@
 
                }
 
- :goal (forall (?P) (exists (?q) (= ?q (has-property ?q ?P))))
+ :goal        (forall (?P) (exists (?q) (= ?q (has-property ?q ?P))))}
+
+
+
+
+
+
+{
+ :name        "CounterFactual Telephone Problem 1"
+ :description ""
+ :assumptions telephone
+ :goal        (HoldsAt (Connected phone1 phone2) 3)
  }
+
+
+
+{
+ :name        "CounterFactual Telephone Problem 3"
+ :description ""
+ :assumptions telephone
+ :goal        (if (and (not (forall [?e ?t]
+                                    (iff (Happens ?e ?t)
+                                         (or (and (= ?e (PickUp agent1 phone1)) (= ?t 0))
+                                             (and (= ?e (Dial agent1 phone1 phone2)) (= ?t 1))
+                                             (and (= ?e (PickUp agent2 phone2)) (= ?t 2))))))
+                       (forall [?e ?t]
+                               (iff (Happens ?e ?t)
+                                    (or (and (= ?e (PickUp agent2 phone2)) (= ?t 0))
+                                        (and (= ?e (Dial agent2 phone2 phone1)) (= ?t 1))
+                                        (and (= ?e (PickUp agent1 phone1)) (= ?t 2))))))
+
+                (and P (not P)))
+ }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{
+ :name        "Counterfactual 1"
+ :description ""
+ :assumptions {
+               A1 (forall [?x]
+                          (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal        (=> (GoToDoctor john) (not (Sick john)))
+ }
+
+{
+ :name        "Counterfactual 2"
+ :description ""
+ :assumptions {A1 (forall [?x]
+                          (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal        (if (GoToDoctor john) (and P (not P)))
+ }
+
+
+{:name        "Counterfactual 3"
+ :description ""
+ :assumptions {A1 (forall [?x]
+                          (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal        (=> (GoToDoctor john) (and P (not P)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "Counterfactual Mortality 1"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Human ?x) (Mortal ?x)))
+               A2 (Human socrates)}
+
+ :goal        (=> (not (Mortal socrates)) (not (Human socrates)))}
+
+
+{:name        "Counterfactual Mortality 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Human ?x) (Mortal ?x)))
+               A2 (Human socrates)}
+
+ :goal        (if (not (Mortal socrates)) (and P (not P)))}
+
+
+
+
+{:name        "Counterfactual Mortality 3"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Human ?x) (Mortal ?x)))
+               A2 (Human socrates)}
+
+ :goal        (=> (not (Mortal socrates)) (and P (not P)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Identity A  1"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))}
+
+ :goal        (=> (= jack jim) (CanAffordLuxury jim))}
+
+
+
+{:name        "Counterfactual Identity A 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))}
+
+ :goal        (if (= jack jim) (and P (not P)))}
+
+
+
+{:name        "Counterfactual Identity A 3"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))}
+
+ :goal        (=> (= jack jim) (and P (not P)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Identity B  1"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))
+               A4 (not (= jim jack))}
+
+ :goal        (=> (= jack jim) (CanAffordLuxury jim))}
+
+
+
+{:name        "Counterfactual Identity B 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))
+               A4 (not (= jim jack))}
+
+ :goal        (if (= jack jim) (and P (not P)))}
+
+
+
+{:name        "Counterfactual Identity B 3"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))
+               A4 (not (= jim jack))}
+
+ :goal        (=> (= jack jim) (and P (not P)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Disjunction 1"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Big ?x) (Small ?x)))
+               A2 (Big tree)}
+
+ :goal        (=> (not (Big tree)) (Small tree))}
+
+
+{:name        "Counterfactual Disjunction 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Big ?x) (Small ?x)))
+               A2 (Big tree)}
+
+ :goal        (if (not (Big tree)) (and P (not P)))}
+
+{:name        "Counterfactual Disjunction 3"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Big ?x) (Small ?x)))
+               A2 (Big tree)}
+
+ :goal        (=> (not (Big tree)) (and P (not P)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Disjunction A 1"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Human ?x) (Animal ?x)))
+               A2 (Human j)
+               A3 (forall [?x] (if (Human ?x) (Thinks ?x)))}
+
+ :goal        (=> (not (Thinks j)) (or (Animal j)
+                                       (exists [?x] (and (Human ?x) (not (Thinks ?x))))))}
+
+
+{:name        "Counterfactual Disjunction A 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Human ?x) (Animal ?x)))
+               A2 (Human j)
+               A3 (forall [?x] (if (Human ?x) (Thinks ?x)))}
+
+ :goal        (if (not (Thinks j)) (and P (not P)))}
+
+
+{:name        "Counterfactual Disjunction A 3"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Human ?x) (Animal ?x)))
+               A2 (Human j)
+               A3 (forall [?x] (if (Human ?x) (Thinks ?x)))}
+
+ :goal        (=> (not (Thinks j)) (and P (not P)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Linking A 1"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 (not P)
+               }
+
+ :goal        (=> P R)}
+
+
+{:name        "Counterfactual Linking A 2"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 (not P)
+               }
+
+ :goal        (if P (and P (not P)))}
+
+{:name        "Counterfactual Linking A 2"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 (not P)
+               }
+
+ :goal        (=> P (and P (not P)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Reverse Linking A 1"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S
+               }
+
+ :goal        (=> (not S) (not P))}
+
+
+{:name        "Counterfactual Reverse Linking A 2"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S
+               }
+
+ :goal        (if (not S) (and P (not P)))}
+
+{:name        "Counterfactual Reverse Linking A 2"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S
+               }
+
+ :goal        (=> (not S) (and P (not P)))}
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Reverse Linking B 1"
+ :description ""
+ :assumptions {A1 (if (forall [?x] (P ?x)) Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S}
+
+ :goal        (=> (not S) (exists [?x] (not (P ?x))))}
+
+
+{:name        "Counterfactual Reverse Linking B 2"
+ :description ""
+ :assumptions {A1 (if (forall [?x] (P ?x)) Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S
+               }
+
+ :goal        (if (not S) (and P (not P)))}
+
+{:name        "Counterfactual Reverse Linking B 2"
+ :description ""
+ :assumptions {A1 (if (forall [?x] (P ?x)) Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S}
+
+ :goal        (=> (not S) (and P (not P)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:name        "Counterfactual EC 1"
+ :description ""
+ :assumptions {DEC1  (forall [?t1 ?f ?t2]
+                             (iff (StoppedIn ?t1 ?f ?t2)
+                                  (exists [?e ?t] (and (Happens ?e ?t) (Prior ?t1 ?t) (Prior ?t ?t2) (Terminates ?e ?f ?t)))))
+
+               DEC2  (forall [?t1 ?f ?t2]
+                             (iff (StartedIn ?t1 ?f ?t2)
+                                  (exists [?e ?t] (and (Happens ?e ?t) (Prior ?t1 ?t) (Prior ?t ?t2) (Initiates ?e ?f ?t)))))
+
+               ;;; chunk ;;;
+
+               DEC3  (forall [?e ?f1 ?t1 ?f2 ?t2]
+                             (if (and (Happens ?e ?t1)
+                                      (Initiates ?e ?f1 ?t1)
+                                      (Prior 0 ?t2)
+                                      (Trajectory ?f1 ?t1 ?f2 ?t2)
+                                      (not (StoppedIn ?t1 ?f1 (+ ?t1 ?t2))))
+                               (HoldsAt ?f2 (+ ?t1 ?t2))))
+
+               DEC4  (forall [?e ?f1 ?t1 ?f2 ?t2]
+                             (if (and (Happens ?e ?t1)
+                                      (Terminates ?e ?f1 ?t1)
+                                      (Prior 0 ?t2)
+                                      (AntiTrajectory ?f1 ?t1 ?f2 ?t2)
+                                      (not (StartedIn ?t1 ?f1 (+ ?t1 ?t2))))
+                               (HoldsAt ?f2 (+ ?t1 ?t2))))
+
+               ;;;; chunk ;;;
+               DEC5  (forall [?f ?t]
+                             (if (and (HoldsAt ?f ?t) (not (ReleasedAt ?f (+ ?t 1)))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Terminates ?e ?f ?t)))))
+                               (HoldsAt ?f (+ ?t 1))))
+
+               DEC6  (forall [?f ?t]
+                             (if (and (not (HoldsAt ?f ?t)) (not (ReleasedAt ?f (+ ?t 1)))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Initiates ?e ?f ?t)))))
+                               (not (HoldsAt ?f (+ ?t 1)))))
+
+               DEC7  (forall [?f ?t]
+                             (if (and (ReleasedAt ?f ?t)
+                                      (not (exists [?e] (and (Happens ?e ?t) (or (Initiates ?e ?f ?t) (Terminates ?e ?f ?t))))))
+                               (ReleasedAt ?f (+ ?t 1))))
+
+               DEC8  (forall [?f ?t]
+                             (if (and (not (ReleasedAt ?f ?t))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Releases ?e ?f ?t)))))
+                               (not (ReleasedAt ?f (+ ?t 1)))))
+
+               ;;;; chunk ;;;
+
+               DEC9  (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Initiates ?e ?f ?t))
+                               (HoldsAt ?f (+ ?t 1))))
+
+               DEC10 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Terminates ?e ?f ?t))
+                               (not (HoldsAt ?f (+ ?t 1)))))
+
+               DEC11 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Releases ?e ?f ?t))
+                               (ReleasedAt ?f (+ ?t 1))))
+
+               DEC12 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (or (Initiates ?e ?f ?t) (Terminates ?e ?f ?t)))
+                               (not (ReleasedAt ?f (+ ?t 1)))))
+
+               A1    (HoldsAt (Sick john) 0)
+               A2    (forall [?a ?t] (Terminates (GoToDoctor ?a) (Sick ?a) ?t))
+               A3    (forall [?t] (not (Happens (GoToDoctor john) ?t)))
+               }
+
+ :goal        (=> (Happens (GoToDoctor john) 1) (not (HoldsAt (Sick john) 2)))}
+
+
+{:name        "Counterfactual EC 2"
+ :description ""
+ :assumptions {DEC1  (forall [?t1 ?f ?t2]
+                             (iff (StoppedIn ?t1 ?f ?t2)
+                                  (exists [?e ?t] (and (Happens ?e ?t) (Prior ?t1 ?t) (Prior ?t ?t2) (Terminates ?e ?f ?t)))))
+
+               DEC2  (forall [?t1 ?f ?t2]
+                             (iff (StartedIn ?t1 ?f ?t2)
+                                  (exists [?e ?t] (and (Happens ?e ?t) (Prior ?t1 ?t) (Prior ?t ?t2) (Initiates ?e ?f ?t)))))
+
+               ;;; chunk ;;;
+
+               DEC3  (forall [?e ?f1 ?t1 ?f2 ?t2]
+                             (if (and (Happens ?e ?t1)
+                                      (Initiates ?e ?f1 ?t1)
+                                      (Prior 0 ?t2)
+                                      (Trajectory ?f1 ?t1 ?f2 ?t2)
+                                      (not (StoppedIn ?t1 ?f1 (+ ?t1 ?t2))))
+                               (HoldsAt ?f2 (+ ?t1 ?t2))))
+
+               DEC4  (forall [?e ?f1 ?t1 ?f2 ?t2]
+                             (if (and (Happens ?e ?t1)
+                                      (Terminates ?e ?f1 ?t1)
+                                      (Prior 0 ?t2)
+                                      (AntiTrajectory ?f1 ?t1 ?f2 ?t2)
+                                      (not (StartedIn ?t1 ?f1 (+ ?t1 ?t2))))
+                               (HoldsAt ?f2 (+ ?t1 ?t2))))
+
+               ;;;; chunk ;;;
+               DEC5  (forall [?f ?t]
+                             (if (and (HoldsAt ?f ?t) (not (ReleasedAt ?f (+ ?t 1)))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Terminates ?e ?f ?t)))))
+                               (HoldsAt ?f (+ ?t 1))))
+
+               DEC6  (forall [?f ?t]
+                             (if (and (not (HoldsAt ?f ?t)) (not (ReleasedAt ?f (+ ?t 1)))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Initiates ?e ?f ?t)))))
+                               (not (HoldsAt ?f (+ ?t 1)))))
+
+               DEC7  (forall [?f ?t]
+                             (if (and (ReleasedAt ?f ?t)
+                                      (not (exists [?e] (and (Happens ?e ?t) (or (Initiates ?e ?f ?t) (Terminates ?e ?f ?t))))))
+                               (ReleasedAt ?f (+ ?t 1))))
+
+               DEC8  (forall [?f ?t]
+                             (if (and (not (ReleasedAt ?f ?t))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Releases ?e ?f ?t)))))
+                               (not (ReleasedAt ?f (+ ?t 1)))))
+
+               ;;;; chunk ;;;
+
+               DEC9  (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Initiates ?e ?f ?t))
+                               (HoldsAt ?f (+ ?t 1))))
+
+               DEC10 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Terminates ?e ?f ?t))
+                               (not (HoldsAt ?f (+ ?t 1)))))
+
+               DEC11 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Releases ?e ?f ?t))
+                               (ReleasedAt ?f (+ ?t 1))))
+
+               DEC12 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (or (Initiates ?e ?f ?t) (Terminates ?e ?f ?t)))
+                               (not (ReleasedAt ?f (+ ?t 1)))))
+
+               A1    (HoldsAt (Sick john) 0)
+               A2    (forall [?a ?t] (Terminates (GoToDoctor ?a) (Sick ?a) ?t))
+               A3    (forall [?t] (not (Happens (GoToDoctor john) ?t)))
+               }
+
+ :goal        (if (Happens (GoToDoctor john) 1) (and P (not P)))}
+
+
+{:name        "Counterfactual EC 3"
+ :description ""
+ :assumptions {DEC1  (forall [?t1 ?f ?t2]
+                             (iff (StoppedIn ?t1 ?f ?t2)
+                                  (exists [?e ?t] (and (Happens ?e ?t) (Prior ?t1 ?t) (Prior ?t ?t2) (Terminates ?e ?f ?t)))))
+
+               DEC2  (forall [?t1 ?f ?t2]
+                             (iff (StartedIn ?t1 ?f ?t2)
+                                  (exists [?e ?t] (and (Happens ?e ?t) (Prior ?t1 ?t) (Prior ?t ?t2) (Initiates ?e ?f ?t)))))
+
+               ;;; chunk ;;;
+
+               DEC3  (forall [?e ?f1 ?t1 ?f2 ?t2]
+                             (if (and (Happens ?e ?t1)
+                                      (Initiates ?e ?f1 ?t1)
+                                      (Prior 0 ?t2)
+                                      (Trajectory ?f1 ?t1 ?f2 ?t2)
+                                      (not (StoppedIn ?t1 ?f1 (+ ?t1 ?t2))))
+                               (HoldsAt ?f2 (+ ?t1 ?t2))))
+
+               DEC4  (forall [?e ?f1 ?t1 ?f2 ?t2]
+                             (if (and (Happens ?e ?t1)
+                                      (Terminates ?e ?f1 ?t1)
+                                      (Prior 0 ?t2)
+                                      (AntiTrajectory ?f1 ?t1 ?f2 ?t2)
+                                      (not (StartedIn ?t1 ?f1 (+ ?t1 ?t2))))
+                               (HoldsAt ?f2 (+ ?t1 ?t2))))
+
+               ;;;; chunk ;;;
+               DEC5  (forall [?f ?t]
+                             (if (and (HoldsAt ?f ?t) (not (ReleasedAt ?f (+ ?t 1)))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Terminates ?e ?f ?t)))))
+                               (HoldsAt ?f (+ ?t 1))))
+
+               DEC6  (forall [?f ?t]
+                             (if (and (not (HoldsAt ?f ?t)) (not (ReleasedAt ?f (+ ?t 1)))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Initiates ?e ?f ?t)))))
+                               (not (HoldsAt ?f (+ ?t 1)))))
+
+               DEC7  (forall [?f ?t]
+                             (if (and (ReleasedAt ?f ?t)
+                                      (not (exists [?e] (and (Happens ?e ?t) (or (Initiates ?e ?f ?t) (Terminates ?e ?f ?t))))))
+                               (ReleasedAt ?f (+ ?t 1))))
+
+               DEC8  (forall [?f ?t]
+                             (if (and (not (ReleasedAt ?f ?t))
+                                      (not (exists [?e] (and (Happens ?e ?t) (Releases ?e ?f ?t)))))
+                               (not (ReleasedAt ?f (+ ?t 1)))))
+
+               ;;;; chunk ;;;
+
+               DEC9  (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Initiates ?e ?f ?t))
+                               (HoldsAt ?f (+ ?t 1))))
+
+               DEC10 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Terminates ?e ?f ?t))
+                               (not (HoldsAt ?f (+ ?t 1)))))
+
+               DEC11 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (Releases ?e ?f ?t))
+                               (ReleasedAt ?f (+ ?t 1))))
+
+               DEC12 (forall [?e ?f ?t]
+                             (if (and (Happens ?e ?t) (or (Initiates ?e ?f ?t) (Terminates ?e ?f ?t)))
+                               (not (ReleasedAt ?f (+ ?t 1)))))
+
+               A1    (HoldsAt (Sick john) 0)
+               A2    (forall [?a ?t] (Terminates (GoToDoctor ?a) (Sick ?a) ?t))
+               A3    (forall [?t] (not (Happens (GoToDoctor john) ?t)))
+               }
+
+ :goal        (=> (Happens (GoToDoctor john) 1) (and P (not P)))}
+
+

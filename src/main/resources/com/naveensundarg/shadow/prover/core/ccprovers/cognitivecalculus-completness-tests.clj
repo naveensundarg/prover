@@ -490,6 +490,74 @@
 
  }
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:name ""
+ :description ""
+ :assumptions {1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))
+               2 (Knows! I now (= 1 (nu alpha I P1 now)))
+               3 (Knows! I now (= 1 (nu alpha I P2 now)))
+               4 (Knows! I now (= 1 (nu alpha I P3 now)))
+               5 (Knows! I now (= (- 1) (nu alpha I I now)))
+               6 (Knows! I now (= alpha (Drop (self I) track1 3)))
+               7 (Knows! I now (forall [a b] (if (= (self a) (self b)) (= a b))))
+               8 (Knows! I now (forall [a] (= a (self a))))
+               9 (Knows! I now (and (not (= P1 P2)) (not (= P1 P3)) (not (= P1 I)) (not (= P2 P3)) (not (= P2 I)) (not (= P3 I))))
+               10 (Knows! I now (and (>> 1 0) (<< (- 1)  0)))
+               }
+ :goal (Knows! I now (and (<< (nu (Drop (self I) track1 3) I I now) 0)
+                          (forall [?agent] (if (Agent ?agent) (if (not (= ?agent (self I))) (>> (nu (Drop (self I) track1 3) I ?agent now) 0)))))  )}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{
+ :name "Telephone Problem"
+ :description ""
+ :assumptions telephone
+ :goal (HoldsAt (Connected phone1 phone2) 3)
+ }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+{
+ :name "Counterfactual 1"
+ :description ""
+ :assumptions {
+               A1 (forall [?x]
+                     (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal (=> (GoToDoctor john) (not (Sick john)))
+ }
+
+{
+ :name "Counterfactual 2"
+ :description ""
+ :assumptions {
+               A1 (forall [?x]
+                     (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal (if (GoToDoctor john) Z)
+ }
+
+
+{
+ :name "Counterfactual modal 2"
+ :description ""
+ :assumptions {
+               A1 (Believes! a  (forall [?x]
+                                        (if (GoToDoctor ?x) (not (Sick ?x)))))
+               A2 (Believes! a (not (GoToDoctor john))) }
+
+ :goal (Believes! a (=> (GoToDoctor john) (not (Sick john))))
+ }
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -511,18 +579,345 @@
 
  :goal (Believes! d (hide m plain))}
 
-{:name ""
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "*cognitive-calculus-completeness-test-5*"
+ :description "dt5"
+ :assumptions {1 (Knows! a1 t1 (if H (and E D)))
+               2 (Knows! a1 t1 (Knows! a2 t2 (if (or E My) R)))
+               3 (Knows! a1 t1 (Knows! a2 t2 (Knows! a3 t2 (if Ma (not R)))))}
+ :goal        (if H (not Ma))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "CIR-EXAMPLE-1"
+ :description "Moe knows that engineer 1 knows that if a customer
+               has complained about a thing, then that thing is not read"
+ :assumptions {1 (Knows! Moe t1 (Knows! engineer1 t1
+                                        (forall [?thing]
+                                                (if (CustomerComplained ?thing)
+                                                  (and (needs ?thing tested) (needs ?thing certified))))) )
+               2 (Knows! Moe t1 (Knows! engineer1 t2
+                                        (forall [?thing]
+                                                (if (or (needs ?thing tested)
+                                                        (needs ?thing cleaned)) (request-more-time ?thing)))))
+
+               3 (Knows! Moe t1 (Knows! engineer1 t2
+                                        (Knows! engineer2 t2
+                                                (forall [?thing]
+                                                        (if (complete ?thing) (not (request-more-time ?thing)))) )))}
+ :goal        (Knows! Moe t2 (Knows! engineer1 t2
+                                     (if (CustomerComplained thing) (not (complete thing))) ) ) }
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "DDE Base Counterfactual C5a"
+ :description "Deriving C5a from a more general desire axiom that is common knowledge.
+               The main goal here is to show that a reasonable representation of C5a is possible. "
+ :assumptions {;; It is common knowledge that if if one knows that one is in a dilemma, then one desires to be in a
+               ;; non-dilemma situation
+               Common-Knowledge-General-Desire-Axiom
+               (Common! now
+                        (Knows! I now
+                                (if
+                                  (exists [?dilemma-situation]
+                                          (and (HoldsAt (in I ?dilemma-situation) now)
+                                               (forall [?alpha]
+                                                       (if (Action I ?alpha ?dilemma-situation now)
+                                                         (exists [?fluent]
+                                                                 (or (and (negative ?fluent) (Initiates (action I ?alpha) ?fluent now))
+                                                                     (and (positive ?fluent) (Terminates (action I ?alpha) ?fluent now))))))))
+                                  (Desires! I now
+                                            (exists [?situation]
+                                                    (and
+                                                      (HoldsAt (in I ?situation) now)
+                                                      (exists [?alpha]
+                                                              (and (Action I ?alpha ?situation now)
+                                                                   (not (Ought! I now ?situation (not (Happens (action I ?alpha) now))))
+                                                                   (not (exists [?fluent]
+                                                                                (or (and (negative ?fluent) (Initiates (action I ?alpha) ?fluent now))
+                                                                                    (and (positive ?fluent) (Terminates (action I ?alpha) ?fluent now)))))))))))))
+
+               ;;; I know I am in the trolley situation
+               Current-situation
+               (Knows! I now (HoldsAt (in I trolley-situation) now))
+
+               ;;; All sanctioned actions in the trolley situation are bad.
+               Knowledge-about-the-trolly-situation
+               (Knows! I now (forall [?alpha]
+                                     (if (Action I ?alpha trolley-situation now)
+                                       (exists [?fluent] (or (and (negative ?fluent) (Initiates (action I ?alpha) ?fluent now))
+                                                             (and (positive ?fluent) (Terminates (action I ?alpha) ?fluent now)))))))}
+
+ :goal        (and
+                (Believes! I now (HoldsAt (in I trolley-situation) now))
+                (Desires! I now
+                          (exists [?situation]
+                                  (and
+                                    (HoldsAt (in I ?situation) now)
+                                    (exists [?alpha]
+                                            (and (Action I ?alpha ?situation now)
+                                                 (not (Ought! I now ?situation (not (Happens (action I ?alpha) now))))
+                                                 (not (exists [?fluent]
+                                                              (or (and (negative ?fluent) (Initiates (action I ?alpha) ?fluent now))
+                                                                  (and (positive ?fluent) (Terminates (action I ?alpha) ?fluent now)))))))))))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:name        "DDE Base Counterfactual C5b"
+ :description "Deriving C5b from more general axioms.
+               The main goal here is to show that a reasonable representation of C5b is possible. "
+
+ :assumptions {
+
+               ;; It is common knowledge that in a non-dilemma, one will not perform a bad action.
+               Common-Knowledge-Non-Dilemma
+               (Common! now
+                        (if
+                          (exists [?situation]
+                                  (and
+                                    (HoldsAt (in I ?situation) now)
+                                    (exists [?alpha]
+                                            (and (Action I ?alpha ?situation now)
+                                                 (not (Ought! I now ?situation (not (Happens (action I ?alpha) now))))
+                                                 (not (exists [?fluent]
+                                                              (or (and (negative ?fluent) (Initiates (action I ?alpha) ?fluent now))
+                                                                  (and (positive ?fluent) (Terminates (action I ?alpha) ?fluent now)))))))))
+                          (forall [?aT]
+                                  (if (happens (action I ?aT) now)
+                                    (not (exists [?fluent]
+                                                 (or (and (negative ?fluent) (Initiates (action I ?aT) ?fluent) now)
+                                                     (and (positive ?fluent) (Terminates (action I ?aT) ?fluent) now))))))))
+
+               DDEAction
+               (Knows! I now (exists [?fluent]
+                                     (or (and (negative ?fluent) (Initiates (action I aD) ?fluent) now)
+                                         (and (positive ?fluent) (Terminates (action I aD) ?fluent) now))))}
+
+ :goal        (Believes! I now
+                         (=> (exists [?situation]
+                                     (and
+                                       (HoldsAt (in I ?situation) now)
+                                       (exists [?alpha]
+                                               (and (Action I ?alpha ?situation now)
+                                                    (not (Ought! I now ?situation (not (Happens (action I ?alpha) now))))
+                                                    (not (exists [?fluent]
+                                                                 (or (and (negative ?fluent) (Initiates (action I ?alpha) ?fluent now))
+                                                                     (and (positive ?fluent) (Terminates (action I ?alpha) ?fluent now)))))))))
+                             (not (happens (action I aD) now))))}
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{
+ :name "Counterfactual modal 1"
  :description ""
- :assumptions {1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))
-               2 (Knows! I now (= 1 (nu alpha I P1 now)))
-               3 (Knows! I now (= 1 (nu alpha I P2 now)))
-               4 (Knows! I now (= 1 (nu alpha I P3 now)))
-               5 (Knows! I now (= (- 1) (nu alpha I I now)))
-               6 (Knows! I now (= alpha (Drop (self I) track1 3)))
-               7 (Knows! I now (forall [a b] (if (= (self a) (self b)) (= a b))))
-               8 (Knows! I now (forall [a] (= a (self a))))
-               9 (Knows! I now (and (not (= P1 P2)) (not (= P1 P3)) (not (= P1 I)) (not (= P2 P3)) (not (= P2 I)) (not (= P3 I))))
-               10 (Knows! I now (and (>> 1 0) (<< (- 1)  0)))
-               }
- :goal (Knows! I now (and (<< (nu (Drop (self I) track1 3) I I now) 0)
-                          (forall [?agent] (if (Agent ?agent) (if (not (= ?agent (self I))) (>> (nu (Drop (self I) track1 3) I ?agent now) 0)))))  )}
+ :assumptions {
+               A1 (Believes! a  (forall [?x]
+                                        (if (GoToDoctor ?x) (not (Sick ?x)))))
+               A2 (Believes! a (not (GoToDoctor john))) }
+
+ :goal (Believes! a (=> (GoToDoctor john) (not (Sick john))))
+ }
+
+
+{
+ :name "Counterfactual modal 2"
+ :description ""
+ :assumptions {
+               A1 (Believes! a  (forall [?x]
+                                        (if (GoToDoctor ?x) (not (Sick ?x)))))
+               A2 (Believes! a (not (GoToDoctor john))) }
+
+ :goal (Believes! a (if (GoToDoctor john) (and P (not P))))
+ }
+
+
+{
+ :name "Counterfactual modal 3"
+ :description ""
+ :assumptions {
+               A1 (Believes! a  (forall [?x]
+                                        (if (GoToDoctor ?x) (not (Sick ?x)))))
+               A2 (Believes! a (not (GoToDoctor john))) }
+
+ :goal (Believes! a (=> (GoToDoctor john) (and P (not P))))
+ }
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Mortality 1"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (if (Human ?x) (Mortal ?x))))
+               A2 (Believes! a now (Human socrates)) }
+
+ :goal        (Believes! a now (=> (not (Mortal socrates)) (not (Human socrates)))) }
+
+
+{:name        "Counterfactual Mortality 2"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (if (Human ?x) (Mortal ?x))))
+               A2 (Believes! a now (Human socrates)) }
+
+ :goal        (Believes! a now (if (not (Mortal socrates)) (and P (not P)))) }
+
+
+
+
+{:name        "Counterfactual Mortality 3"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (if (Human ?x) (Mortal ?x))))
+               A2 (Believes! a now (Human socrates)) }
+
+ :goal        (Believes! a now (=> (not (Mortal socrates)) (and P (not P)))) }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Identity A  1"
+ :description ""
+ :assumptions {A1  (Believes! a now (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x))))
+               A2  (Believes! a now (Rich jack))
+               A3  (Believes! a now (not (Rich jim)))}
+
+ :goal        (Believes! a now (=> (= jack jim) (CanAffordLuxury jim)))}
+
+
+
+{:name        "Counterfactual Identity A 2"
+ :description ""
+ :assumptions {A1 (Believes! a now  (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x))))
+               A2 (Believes! a now (Rich jack))
+               A3 (Believes! a now  (not (Rich jim)))}
+
+ :goal        (Believes! a now  (if (= jack jim) (and P (not P))))}
+
+
+
+
+
+{:name        "Counterfactual Identity A 3"
+ :description ""
+ :assumptions {A1 (Believes! a now  (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x))))
+               A2 (Believes! a now (Rich jack))
+               A3 (Believes! a now  (not (Rich jim)))}
+
+ :goal        (Believes! a now  (=> (= jack jim) (and P (not P))))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "Counterfactual Disjunction 1"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (or (Big ?x) (Small ?x))))
+               A2 (Believes! a now (Big tree)) }
+
+ :goal        (Believes! a now (=> (not (Big tree)) (Small tree))) }
+
+
+{:name        "Counterfactual Disjunction 2"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (or (Big ?x) (Small ?x))))
+               A2 (Believes! a now (Big tree) ) }
+
+ :goal        (Believes! a now (if (not (Big tree)) (and P (not P)))) }
+
+{:name        "Counterfactual Disjunction 3"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (or (Big ?x) (Small ?x))))
+               A2 (Believes! a now (Big tree)) }
+
+ :goal       (Believes! a now (=> (not (Big tree)) (and P (not P)))) }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "Counterfactual Disjunction A 1"
+ :description ""
+ :assumptions {A1 (Believes! a now (Believes! b now (forall [?x] (or (Big ?x) (Small ?x)))) )
+               A2 (Believes! a now (Believes! b now  (Big tree)) ) }
+
+ :goal        (Believes! a now (Believes! b now (=> (not (Big tree)) (Small tree))) ) }
+
+
+{:name        "Counterfactual Disjunction A 2"
+ :description ""
+ :assumptions {A1 (Believes! a now (Believes! b now  (forall [?x] (or (Big ?x) (Small ?x)))) )
+               A2 (Believes! a now (Believes! b now  (Big tree))  ) }
+
+ :goal        (Believes! a now (Believes! b now (if (not (Big tree)) (and P (not P)))) ) }
+
+{:name        "Counterfactual Disjunction A 3"
+ :description ""
+ :assumptions {A1 (Believes! a now (Believes! b now (forall [?x] (or (Big ?x) (Small ?x)))) )
+               A2 (Believes! a now (Believes! b now (Big tree)) ) }
+
+ :goal       (Believes! a now (Believes! b now (=> (not (Big tree)) (and P (not P)))))  }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Disjunction Ab 1"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (or (Human ?x) (Animal ?x))))
+               A2 (Believes! a now (Human j))
+               A3 (Believes! a now (forall [?x] (if (Human ?x) (Thinks ?x)))) }
+
+ :goal       (Believes! a now (=> (not (Thinks j)) (or (Animal j)
+                                       (exists [?x] (and (Human ?x) (not (Thinks ?x))))))) }
+
+
+{:name        "Counterfactual Disjunction Ab 2"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (or (Human ?x) (Animal ?x))))
+               A2 (Believes! a now (Human j))
+               A3 (Believes! a now (forall [?x] (if (Human ?x) (Thinks ?x)))) }
+
+ :goal       (Believes! a now (if (not (Thinks j)) (and P (not P)))) }
+
+
+{:name        "Counterfactual Disjunction Ab 3"
+ :description ""
+ :assumptions {A1 (Believes! a now (forall [?x] (or (Human ?x) (Animal ?x))))
+               A2 (Believes! a now (Human j))
+               A3 (Believes! a now (forall [?x] (if (Human ?x) (Thinks ?x)))) }
+
+ :goal       (Believes! a now (=> (not (Thinks j)) (and P (not P)))) }
+
+
+{:name        "Self Sacrifice"
+ :description ""
+ :assumptions {A1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))
+               A2 (Knows! I now (= 1 (nu alpha I P1 now)))
+               A3 (Knows! I now (= 1 (nu alpha I P2 now)))
+               A4 (Knows! I now (= 1 (nu alpha I P3 now)))
+               A5 (Knows! I now (= (- 1) (nu alpha I I now)))
+               A6 (Knows! I now (= alpha (Drop (self I) track1 3)))
+               A7 (Common! (forall [a b] (if (= (self a) (self b)) (= a b))))
+               A8 (Knows! I now (forall [a] (= a (self a))))
+               A9 (Knows! I now (and (not (= P1 P2)) (not (= P1 P3)) (not (= P1 I)) (not (= P2 P3)) (not (= P2 I)) (not (= P3 I))))
+               A10 (Knows! I now (and (>> 1 0) (<< -1 0)))}
+
+ :goal       (Knows! I now (forall [?agent] (if (Agent ?agent) (if (not (= ?agent (self I))) (>> (nu alpha I ?agent now) 0))))) }

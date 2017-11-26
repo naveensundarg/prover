@@ -10,13 +10,13 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
+import com.naveensundarg.shadow.prover.utils.SymbolGenerator;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
-import static com.naveensundarg.shadow.prover.utils.Reader.readFormula;
 import static com.naveensundarg.shadow.prover.utils.Reader.readFormulaFromString;
 import static com.naveensundarg.shadow.prover.utils.Sets.newSet;
 
@@ -194,8 +194,28 @@ public class Logic {
     public static boolean isConsistent(Set<Formula> formulae){
 
 
-        return !(new SnarkWrapper()).prove(formulae, Logic.getInconsistentFormula()).isPresent();
+        return !(SnarkWrapper.getInstance()).prove(formulae, Logic.getInconsistentFormula()).isPresent();
     }
+
+    public static boolean isConsistent(Set<Formula> formulae, Formula formula){
+
+
+        boolean directContradiction = formulae.contains(Logic.negated(formula)) || formulae.contains(new Not(formula));
+
+        if(directContradiction){
+            return false;
+        }
+
+        if(formula instanceof And){
+
+            if(Arrays.stream(((And) formula).getArguments()).anyMatch(f-> formulae.contains(Logic.negated(f)) || formulae.contains(new Not(f)))){
+                return false;
+            }
+        }
+
+        return !(SnarkWrapper.getInstance()).prove(Sets.add(formulae.stream().map(x->x.shadow(1)).collect(Collectors.toSet()), formula), Logic.getInconsistentFormula()).isPresent();
+   }
+
 
      public static boolean isConsistent(Prover prover, Set<Formula> formulae){
 

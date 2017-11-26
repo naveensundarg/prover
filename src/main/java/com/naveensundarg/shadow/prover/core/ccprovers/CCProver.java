@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
 
-public class CognitiveCalculusProverNew implements Prover {
+public class CCProver implements Prover {
 
     /*
      *
@@ -39,38 +39,35 @@ public class CognitiveCalculusProverNew implements Prover {
     private static boolean verbose = true;
     private final boolean reductio;
     private final boolean theoremsToNec = false;
-    private final CognitiveCalculusProverNew parent;
     private final Set<Expander> expanders;
-    private Set<Formula> currentAssumptions;
     private Set<Formula> prohibited;
     private Problem currentProblem;
 
-    static  String indent = "";
 
-    static ColoredPrinter coloredPrinter = new ColoredPrinter.Builder(1, false)
+
+    private static  String indent = "";
+
+    private static ColoredPrinter coloredPrinter = new ColoredPrinter.Builder(1, false)
             .foreground(Ansi.FColor.WHITE).background(Ansi.BColor.BLACK)   //setting format
             .build();
 
-    public CognitiveCalculusProverNew() {
+    public CCProver() {
 
         prohibited = Sets.newSet();
-        parent = null;
         reductio = false;
         expanders = CollectionUtils.newEmptySet();
     }
 
-    private CognitiveCalculusProverNew(CognitiveCalculusProverNew parent) {
+    private CCProver(CCProver parent) {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
-        this.parent = parent;
         reductio = false;
         expanders = CollectionUtils.newEmptySet();
     }
 
-    private CognitiveCalculusProverNew(CognitiveCalculusProverNew parent, boolean reductio) {
+    private CCProver(CCProver parent, boolean reductio) {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
-        this.parent = parent;
         this.reductio = reductio;
         expanders = CollectionUtils.newEmptySet();
     }
@@ -78,63 +75,12 @@ public class CognitiveCalculusProverNew implements Prover {
     private static void log(String message) {
 
         if (verbose) {
-
             System.out.println(message);
-        } else {
-
 
         }
     }
 
-    private static <T> Set<T> formulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, Predicate<Formula> constraint) {
 
-        return formulas.
-                stream().
-                filter(c::isInstance).
-                filter(constraint).
-                map(f -> (T) f).
-                collect(Collectors.toSet());
-    }
-
-    private static <T> Set<T> formulaOfType(Set<Formula> formulas, Class c) {
-
-        return formulaeOfTypeWithConstraint(formulas, c, f -> true);
-
-    }
-
-    private static <T> Set<T> level2FormulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, Predicate<Formula> constraint) {
-
-        return formulas.
-                stream().
-                filter(a -> a.getLevel() == 2).
-                filter(c::isInstance).
-                filter(constraint).
-                map(f -> (T) f).
-                collect(Collectors.toSet());
-    }
-
-    private static <T> Set<T> level2FormulaeOfType(Set<Formula> formulas, Class c) {
-
-        return level2FormulaeOfTypeWithConstraint(formulas, c, f -> true);
-
-    }
-
-    private static CognitiveCalculusProverNew root(CognitiveCalculusProverNew cognitiveCalculusProver) {
-
-
-        CognitiveCalculusProverNew current = cognitiveCalculusProver.parent;
-
-        if (current == null) {
-            return cognitiveCalculusProver;
-        }
-        while (current.parent != null) {
-
-            current = current.parent;
-        }
-
-        return current;
-
-    }
 
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
@@ -142,41 +88,11 @@ public class CognitiveCalculusProverNew implements Prover {
         return prove(assumptions, formula, CollectionUtils.newEmptySet());
     }
 
-    private boolean alreadySeen(Set<Formula> assumptions, Formula formula) {
-
-
-        if (parent == null) {
-            return false;
-        }
-
-
-        CognitiveCalculusProverNew node = parent;
-
-        while (node != null) {
-
-            if (node.currentProblem.equals(currentProblem)) {
-
-                return true;
-            }
-
-            node = node.parent;
-
-        }
-
-        return false;
-
-    }
 
     private synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
 
-        currentAssumptions = assumptions;
-
-
-
-
-
-        Prover folProver = new SnarkWrapper();
+        Prover folProver = SnarkWrapper.getInstance();
 
         Set<Formula> base = CollectionUtils.setFrom(assumptions);
 
@@ -476,81 +392,6 @@ public class CognitiveCalculusProverNew implements Prover {
         }
     }
 
-    private Optional<Justification> defeasible(Formula formula) {
-        if (formula instanceof CanProve) {
-
-            CognitiveCalculusProverNew outer = this;
-
-            final Duration timeout = Duration.ofSeconds(10);
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-
-            final Future<Optional<Justification>> handler = executor.submit((Callable) () -> {
-
-                CognitiveCalculusProverNew root = root(outer);
-
-                CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew();
-
-                return cognitiveCalculusProver.prove(root.currentAssumptions.stream().filter(x -> !x.subFormulae().contains(formula)).collect(Collectors.toSet()),
-                        ((CanProve) formula).getFormula());
-            });
-
-            try {
-                Optional<Justification> got = handler.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
-
-                return got;
-
-            } catch (TimeoutException e) {
-                handler.cancel(true);
-                return Optional.empty();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-
-            executor.shutdownNow();
-
-        }
-
-        if (formula instanceof Not) {
-
-            Formula argument = ((Not) formula).getArgument();
-            if (argument instanceof CanProve) {
-
-                CognitiveCalculusProverNew outer = this;
-
-                final Duration timeout = Duration.ofSeconds(5);
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-
-                final Future<Optional<Justification>> handler = executor.submit((Callable) () -> {
-
-                    CognitiveCalculusProverNew root = root(outer);
-
-                    CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew();
-
-                    return cognitiveCalculusProver.prove(root.currentAssumptions.stream().filter(x -> !x.subFormulae().contains(argument)).collect(Collectors.toSet()),
-                            (((CanProve) argument).getFormula()));
-                });
-
-                try {
-                    Optional<Justification> got = handler.get(timeout.toMillis(), TimeUnit.MILLISECONDS);
-                    executor.shutdownNow();
-
-                    return Optional.empty();
-
-
-                } catch (TimeoutException | InterruptedException | ExecutionException e) {
-                    handler.cancel(true);
-                    executor.shutdownNow();
-
-                    return Optional.of(TrivialJustification.trivial(currentAssumptions, formula));
-                }
-
-            }
-
-        }
-        return null;
-    }
 
     private Optional<Justification> tryAND(Set<Formula> base, Formula formula, Set<Formula> added) {
 
@@ -564,7 +405,7 @@ public class CognitiveCalculusProverNew implements Prover {
 
             List<Optional<Justification>> conjunctProofsOpt = Arrays.stream(conjuncts).map(conjunct -> {
 
-                CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew(this);
+                CCProver cognitiveCalculusProver = new CCProver(this);
                 return cognitiveCalculusProver.prove(base, conjunct);
             }).collect(Collectors.toList());
 
@@ -581,7 +422,7 @@ public class CognitiveCalculusProverNew implements Prover {
 
     private Optional<Justification> tryOR(Set<Formula> base, Formula formula, Set<Formula> added) {
 
-        Set<Or> level2ORs = level2FormulaeOfType(base, Or.class);
+        Set<Or> level2ORs = CommonUtils.level2FormulaeOfType(base, Or.class);
 
         Optional<Or> someOrOpt = level2ORs.stream().findAny();
 
@@ -594,7 +435,7 @@ public class CognitiveCalculusProverNew implements Prover {
             reducedBase.remove(someOr);
 
             List<Optional<Justification>> casesOpt = Arrays.stream(disjuncts).map(disjunct -> {
-                CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew(this);
+                CCProver cognitiveCalculusProver = new CCProver(this);
 
                 Set<Formula> newBase = CollectionUtils.setFrom(reducedBase);
                 newBase.add(disjunct);
@@ -634,7 +475,7 @@ public class CognitiveCalculusProverNew implements Prover {
 
         augmented.add(negated);
         indent = indent + "\t";
-        CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew(this, true);
+        CCProver cognitiveCalculusProver = new CCProver(this, true);
         Optional<Justification> reductioJustOpt = cognitiveCalculusProver.prove(augmented, atom, added);
         indent = indent.substring(0,indent.length()-1);
 
@@ -656,7 +497,7 @@ public class CognitiveCalculusProverNew implements Prover {
             Set<Formula> allBelievedTillTime = agentSnapShot.allBelievedByAgentTillTime(agent, time);
 
 
-            CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew(this);
+            CCProver cognitiveCalculusProver = new CCProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allBelievedTillTime, goalBelief);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -679,7 +520,7 @@ public class CognitiveCalculusProverNew implements Prover {
             Set<Formula> allIntendedByTillTime = agentSnapShot.allIntendedByAgentTillTime(agent, time);
 
 
-            CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew(this);
+            CCProver cognitiveCalculusProver = new CCProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allIntendedByTillTime, goalKnowledge);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -701,7 +542,7 @@ public class CognitiveCalculusProverNew implements Prover {
             Set<Formula> allKnownByTillTime = agentSnapShot.allKnownByAgentTillTime(agent, time);
 
 
-            CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew(this);
+            CCProver cognitiveCalculusProver = new CCProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allKnownByTillTime, goalKnowledge);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -816,7 +657,7 @@ public class CognitiveCalculusProverNew implements Prover {
     private void breakUpBiConditionals(Set<Formula> base) {
 
 
-        Set<BiConditional> biConditionals = formulaOfType(base, BiConditional.class);
+        Set<BiConditional> biConditionals = CommonUtils.formulaOfType(base, BiConditional.class);
 
         biConditionals.forEach(biConditional -> {
 
@@ -870,7 +711,7 @@ public class CognitiveCalculusProverNew implements Prover {
     private void expandR11a(Set<Formula> base, Set<Formula> added) {
 
         Set<Belief> implicationBeliefs =
-                level2FormulaeOfTypeWithConstraint(base, Belief.class, b -> ((Belief) b).getFormula() instanceof Implication);
+                CommonUtils.level2FormulaeOfTypeWithConstraint(base, Belief.class, b -> ((Belief) b).getFormula() instanceof Implication);
 
 
         Set<Formula> validConsequentBeliefss = implicationBeliefs.stream().
@@ -911,7 +752,7 @@ public class CognitiveCalculusProverNew implements Prover {
         };
 
         Set<Belief> obligationBeliefs =
-                level2FormulaeOfTypeWithConstraint(base,
+                CommonUtils.level2FormulaeOfTypeWithConstraint(base,
                         Belief.class,
                         filterSelfOughts);
 
@@ -922,7 +763,7 @@ public class CognitiveCalculusProverNew implements Prover {
             Value outerTime = b.getTime();
             Value agent = b.getAgent();
             Belief preConditionBelief = new Belief(agent, outerTime, precondition);
-            CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew(this);
+            CCProver cognitiveCalculusProver = new CCProver(this);
             Set<Formula> smaller = CollectionUtils.setFrom(base);
             smaller.remove(b);
             smaller = smaller.stream().filter(x -> !x.subFormulae().contains(ought)).collect(Collectors.toSet());
@@ -946,7 +787,7 @@ public class CognitiveCalculusProverNew implements Prover {
     }
 
     private void expandDR1(Set<Formula> base, Set<Formula> added, Formula goal) {
-        Set<Common> commons = level2FormulaeOfType(base, Common.class);
+        Set<Common> commons = CommonUtils.level2FormulaeOfType(base, Common.class);
         Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
         ;
         List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, 2);
@@ -970,7 +811,7 @@ public class CognitiveCalculusProverNew implements Prover {
     }
 
     private void expandDR5(Set<Formula> base, Set<Formula> added) {
-        Set<Knowledge> knows = level2FormulaeOfType(base, Knowledge.class);
+        Set<Knowledge> knows = CommonUtils.level2FormulaeOfType(base, Knowledge.class);
 
         for (Knowledge k : knows) {
 
@@ -988,7 +829,7 @@ public class CognitiveCalculusProverNew implements Prover {
     }
 
     private void expandDR2(Set<Formula> base, Set<Formula> added, Formula goal) {
-        Set<Common> commons = level2FormulaeOfType(base, Common.class);
+        Set<Common> commons = CommonUtils.level2FormulaeOfType(base, Common.class);
         Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
 
         for (Common c : commons) {
@@ -1008,7 +849,7 @@ public class CognitiveCalculusProverNew implements Prover {
     }
 
     private void expandDR3(Set<Formula> base, Set<Formula> added) {
-        Set<Common> commons = level2FormulaeOfType(base, Common.class);
+        Set<Common> commons = CommonUtils.level2FormulaeOfType(base, Common.class);
 
         for (Common c : commons) {
             Formula formula = c.getFormula();
@@ -1023,7 +864,7 @@ public class CognitiveCalculusProverNew implements Prover {
 
     private void expandModalConjunctions(Set<Formula> base, Set<Formula> added) {
 
-        Set<And> level2Ands = level2FormulaeOfType(base, And.class);
+        Set<And> level2Ands = CommonUtils.level2FormulaeOfType(base, And.class);
 
         for (And and : level2Ands) {
 
@@ -1042,7 +883,7 @@ public class CognitiveCalculusProverNew implements Prover {
     private void expandModalImplications(Set<Formula> base, Set<Formula> added) {
 
 
-        Set<Implication> level2Ifs = level2FormulaeOfType(base, Implication.class);
+        Set<Implication> level2Ifs = CommonUtils.level2FormulaeOfType(base, Implication.class);
 
         for (Implication implication : level2Ifs) {
 
@@ -1053,7 +894,7 @@ public class CognitiveCalculusProverNew implements Prover {
             Formula antecedent = implication.getAntecedent();
             Formula consequent = implication.getConsequent();
 
-            CognitiveCalculusProverNew cognitiveCalculusProver = new CognitiveCalculusProverNew(this);
+            CCProver cognitiveCalculusProver = new CCProver(this);
             cognitiveCalculusProver.prohibited.addAll(prohibited);
             cognitiveCalculusProver.prohibited.add(implication);
 

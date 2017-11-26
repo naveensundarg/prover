@@ -1,5 +1,6 @@
-package com.naveensundarg.shadow.prover.core;
+package com.naveensundarg.shadow.prover.utils;
 
+import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;

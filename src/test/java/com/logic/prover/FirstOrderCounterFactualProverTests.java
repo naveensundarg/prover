@@ -1,12 +1,13 @@
 package com.logic.prover;
 
-import com.naveensundarg.shadow.prover.core.ccprovers.ColorShadowProverTests;
-import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
-import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
+import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
+import com.naveensundarg.shadow.prover.core.ccprovers.FirstOrderCounterFactualProver;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
+import com.naveensundarg.shadow.prover.representations.formula.CounterFactual;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
@@ -18,34 +19,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CognitiveCalculusProverTests {
+public class FirstOrderCounterFactualProverTests {
 
 
     Prover prover;
     Map<Problem, Pair<Clause, Clause>> used;
-    CognitiveCalculusProverTests(){
+    FirstOrderCounterFactualProverTests(){
 
-        prover = new CognitiveCalculusProver();
+        prover = new FirstOrderCounterFactualProver();
     }
 
 
     public static void main (String[] args) {
-		new TestNGEntryPoint(CognitiveCalculusProverTests.class.getName(), "testCompleteness");
+		new TestNGEntryPoint(FirstOrderCounterFactualProverTests.class.getName(), "testCompleteness");
 	}
 
 
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-       List<Problem >tests = ProblemReader.readFrom(CognitiveCalculusProver.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
-        Object[][] cases =  new Object[tests.size()][2];
+       List<Problem >tests = ProblemReader.readFrom(CognitiveCalculusProver.class.getResourceAsStream("first-order-counterfactual-completness-tests.clj"));
+        Object[][] cases =  new Object[tests.size()][3];
 
         for(int  i = 0; i < tests.size(); i++){
 
             Problem test = tests.get(i);
 
-            cases[i][0] =  test.getAssumptions();
-            cases[i][1] = test.getGoal();
+            cases[i][0] = test.getName();
+            cases[i][1] =  test.getAssumptions();
+            cases[i][2] = test.getGoal();
 
         }
 
@@ -55,9 +57,12 @@ public class CognitiveCalculusProverTests {
     }
 
 
-    @Test(dataProvider = "completenessTestsProvider")
-    public void testCompleteness(Set<Formula> assumptions, Formula formula){
+    @Test(dataProvider = "completenessTestsProvider", timeOut = 30000)
+    public void testCompleteness(String name, Set<Formula> assumptions, Formula formula){
 
+        if(formula instanceof CounterFactual){
+            int x = 1;
+        }
         Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
 
     }
@@ -83,10 +88,10 @@ public class CognitiveCalculusProverTests {
     }
 
 
-   @Test(dataProvider = "debugTestsProvider")
+   //@Test(dataProvider = "debugTestsProvider")
     public void debugTests(Set<Formula> assumptions, Formula formula){
 
-        prover = new CognitiveCalculusProver();
+        prover = new FirstOrderCounterFactualProver();
 
         Assert.assertTrue(prover.prove(assumptions, formula).isPresent());
 
@@ -95,7 +100,7 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="soundnessTestsProvider")
     public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("cognitivecalculus-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom(FirstOrderCounterFactualProver.class.getResourceAsStream("first-order-counterfactual-soundness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

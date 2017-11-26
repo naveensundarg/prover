@@ -22,6 +22,5 @@
                               (Believes! a1 (happens (action a2 ?alpha) t2)))
                             (not (trust a2 ?action ?goal))))
 
-
                }
- :goal    (not (trust a2 alpha goal))}
+ :goal        (not (trust a2 alpha goal))}

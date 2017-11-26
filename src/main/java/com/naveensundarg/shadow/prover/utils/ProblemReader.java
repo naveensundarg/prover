@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.utils;
 
+import com.naveensundarg.shadow.prover.axiomsets.AxiomSet;
 import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
 import com.naveensundarg.shadow.prover.core.Problem;
 import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
@@ -100,7 +101,7 @@ public class ProblemReader {
 
     private static Problem buildProblem(Map<?, ?> map) throws Reader.ParsingException {
 
-        Set<Formula> assumptions = readAssumptions((Map<?, ?>) map.get(ASSUMPTIONS_KEY));
+        Set<Formula> assumptions = readAssumptions(map.get(ASSUMPTIONS_KEY));
         Formula goal = Reader.readFormula(map.get(GOAL_KEY));
 
         if (map.containsKey(SORTSYSTEM_KEY)) {
@@ -143,10 +144,11 @@ public class ProblemReader {
 
     }
 
-    private static Set<Formula> readAssumptions(Map<?, ?> map) {
+    private static Set<Formula> readAssumptions(Object thing) {
 
-
-        return map.entrySet().stream().map(entry -> {
+        if(thing instanceof Map<?, ?>){
+            Map<?, ?> map = (Map<?, ?>) thing;
+            return map.entrySet().stream().map(entry -> {
             try {
 
                 return Reader.readFormula(entry.getValue());
@@ -158,6 +160,14 @@ public class ProblemReader {
             }
 
         }).collect(Collectors.toSet());
+        }
+
+        else {
+
+            return (AxiomSet.getAxiomSetNamed(thing.toString()));
+
+        }
+
 
     }
 

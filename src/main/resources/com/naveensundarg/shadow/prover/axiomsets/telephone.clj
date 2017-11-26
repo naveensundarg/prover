@@ -82,9 +82,130 @@
  ;;;;;;;;;; Chunk 5 ;;;;;;;;;;;;
  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
- ;; If p1 is ringing p2 and p1 is set down, then p1 will be idle
+ ;;; A call may go unanswered ;;
+
+ ;; If p1 is ringing p2 and an agent sets down p1, p1 will be idle
  A3.12 (forall [?a ?p1 ?p2 ?t]
                (if (HoldsAt (Ringing ?p1 ?p2) ?t)
-                 ))
+                 (Initiates (SetDown ?a ?p1) (Idle ?p1) ?t)))
+
+  ;; If p1 is ringing p2 and an agent sets down p1, p2 will be idle
+ A3.13 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Ringing ?p1 ?p2) ?t)
+                 (Initiates (SetDown ?a ?p1) (Idle ?p2) ?t)))
+
+ A3.14 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Ringing ?p1 ?p2) ?t)
+                 (Terminates (SetDown ?a ?p1) (Ringing ?p1 ?p2) ?t)))
+
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;;;; Chunk 6 ;;;;;;;;;;;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;;; A call may go unanswered ;;
+
+ ;; If p1 is ringing p2 and an agent picks up p2, both the phones will be connected.
+ A3.15 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Ringing ?p1 ?p2) ?t)
+                 (Initiates (PickUp ?a ?p2) (Connected ?p1 ?p2) ?t)))
+
+ ;; If p1 is ringing p2 and an agent picks up p2, p1 will no longer be ringing p2.
+ A3.16 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Ringing ?p1 ?p2) ?t)
+                 (Terminates (PickUp ?a ?p2) (Ringing ?p1 ?p2) ?t)))
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;;;; Chunk 7 ;;;;;;;;;;;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ ;; A call may be completed
+
+ ;; If p1 is connected to p2 and an agent sets down p1; then p1 will be idle.
+ A3.17 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Connected ?p1 ?p2) ?t)
+                 (Initiates (SetDown ?a ?p1) (Idle ?p1) ?t)))
+
+ ;; If p1 is connected to p2 and an agent sets down p1; then p2 will be disconnected.
+ A3.18 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Connected ?p1 ?p2) ?t)
+                 (Initiates (SetDown ?a ?p1) (Disconnected ?p2) ?t)))
+
+ ;; If p1 is connected to p2 and an agent sets down p1; then p1 will no longer be connected to p2.
+ A3.19 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Connected ?p1 ?p2) ?t)
+                 (Terminates (SetDown ?a ?p1) (Connected ?p1 ?p2) ?t)))
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;;;; Chunk 8 ;;;;;;;;;;;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+  ;; If p1 is connected to p2 and an agent sets down p2; then p2 will be idle.
+
+  A3.20 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Connected ?p1 ?p2) ?t)
+                 (Initiates (SetDown ?a ?p2) (Idle ?p2) ?t)))
+
+ ;; If p1 is connected to p2 and an agent sets down p1; then p1 will be disconnected.
+ A3.21 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Connected ?p1 ?p2) ?t)
+                 (Initiates (SetDown ?a ?p2) (Disconnected ?p1) ?t)))
+
+ ;; If p1 is connected to p2 and an agent sets down p1; then p1 will no longer be connected to p2.
+ A3.22 (forall [?a ?p1 ?p2 ?t]
+               (if (HoldsAt (Connected ?p1 ?p2) ?t)
+                 (Terminates (SetDown ?a ?p2) (Connected ?p1 ?p2) ?t)))
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;;;; Chunk 9 ;;;;;;;;;;;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ ;; If an agent sets down a phone that is disconnected, the phone will be idle
+ A3.23 (forall [?a ?p ?t]
+               (if (HoldsAt (Disconnected ?p) ?t)
+                 (Initiates (SetDown ?a ?p) (Idle ?p) ?t)))
+
+ A3.24 (forall [?a ?p ?t]
+               (if (HoldsAt (Disconnected ?p) ?t)
+                 (Terminates (SetDown ?a ?p) (Disconnected ?p) ?t)))
+
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;;;; Chunk 10 ;;;;;;;;;;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ ;; Specifics
+
+ A3.25 (forall [?p] (HoldsAt (Idle ?p) 0))
+
+ A3.26 (forall [?p] (not (HoldsAt (DialTone ?p) 0)) )
+
+ A3.27 (forall [?p] (not (HoldsAt (BusySignal ?p) 0)) )
+
+ A3.28 (forall [?p1 ?p2] (not (HoldsAt (Ringing ?p1 ?p2) 0)) )
+
+ A3.29 (forall [?p1 ?p2] (not (HoldsAt (Connected ?p1 ?p2) 0)) )
+
+ A3.30 (forall [?p] (not (HoldsAt (Disconnected ?p) 0)) )
+
+ A3.31 (forall [?f ?t] (not (ReleasedAt ?f ?t)))
+
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;;;; Chunk 11 ;;;;;;;;;;;
+ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ ;; Delta
+
+ ADelta (forall [?e ?t]
+                (iff (Happens ?e  ?t)
+                     (or (and (= ?e (PickUp agent1 phone1)) (= ?t 0))
+                         (and (= ?e (Dial agent1 phone1 phone2)) (= ?t 1))
+                         (and (= ?e (PickUp agent2 phone2)) (= ?t 2)))))
+
+
+;; Lemma1 (not (exists [?e] (and (Happens ?e 0) (Terminates ?e (Idle phone1) 0)) ))
+
+ Lemma (not (exists [?e] (and (Happens ?e 0) (Terminates ?e (Idle phone2) 0)) ))
+
 
  }

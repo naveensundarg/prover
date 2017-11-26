@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
+import com.naveensundarg.shadow.prover.axiomsets.DiscreteEventCalculus;
 import com.naveensundarg.shadow.prover.axiomsets.SimpleEventCalculus;
 import com.naveensundarg.shadow.prover.axiomsets.Telephone;
 import com.naveensundarg.shadow.prover.core.*;
@@ -10,9 +11,11 @@ import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
+import java.util.List;
 import java.util.Set;
 
 import static us.bpsm.edn.Keyword.newKeyword;
@@ -27,7 +30,7 @@ public class Sandbox {
         Prover prover = new SecondOrderCognitiveCalculusProver();
 
 
-        Formula kp1  = Reader.readFormulaFromString("(exists [?P] (not (pos (exists [?x] (Knows! ?x (and ?P (not (exists [?y] (Knows! ?y ?P)))))))))");
+        Formula kp1  = Reader.readFormulaFromString("(Knows! I now (forall [?x] (if (Agent ?x)   (or (= ?x I)   (= ?x P1)   (= ?x P2)   (= ?x P3)))))");
 
         Formula inf_assumption= Reader.readFormulaFromString("(Knows! I (if PA (= 0 (multiply 27 0))))");
 
@@ -42,34 +45,11 @@ public class Sandbox {
 
     public static void main(String[] args) throws Exception {
 
-        Prover prover = new CognitiveCalculusProver();
 
+        List<Problem > tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
 
-        Formula P1  = Reader.readFormulaFromString("(not P)");
+        //System.out.println(prover.prove(assumptions, Logic.getInconsistentFormula()));
 
-        Formula P2  = Reader.readFormulaFromString("(if P Q)");
-
-        Formula G1  = Reader.readFormulaFromString("(=> P Q)");
-        Formula G2  = Reader.readFormulaFromString("(=> P R)");
-
-        Formula I1  = Reader.readFormulaFromString("(if P Q)");
-        Formula I2  = Reader.readFormulaFromString("(if P R)");
-
-        Set<Formula> formulas = CollectionUtils.newEmptySet();
-        formulas.add(P1);
-        formulas.add(P2);
-
-        Set<Formula> SCAxioms = SimpleEventCalculus.INSTANCE.get();
-
-        Set<Formula> TelephoneAxioms = Telephone.INSTANCE.get();
-
-        System.out.println(SCAxioms);
-
-        System.out.println(prover.prove(formulas, G1));
-        System.out.println(prover.prove(formulas, G2));
-
-        System.out.println(prover.prove(formulas, I1));
-        System.out.println(prover.prove(formulas, I2));
 
 
 

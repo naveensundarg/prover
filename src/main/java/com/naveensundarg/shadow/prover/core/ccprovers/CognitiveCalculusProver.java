@@ -40,7 +40,7 @@ public class CognitiveCalculusProver implements Prover {
      *
      */
     private static boolean defeasible = false;
-    private static boolean verbose = false;
+    private static boolean verbose = true;
     private final boolean reductio;
     private final boolean theoremsToNec = false;
     private final CognitiveCalculusProver parent;
@@ -189,7 +189,7 @@ public class CognitiveCalculusProver implements Prover {
         }
 
 
-        Prover folProver = new SnarkWrapper();
+        Prover folProver = SnarkWrapper.getInstance();
 
         Set<Formula> base = CollectionUtils.setFrom(assumptions);
 
@@ -344,7 +344,7 @@ public class CognitiveCalculusProver implements Prover {
 
             indent = indent + "\t";
             tryLog("Tying counterfactual intro", formula);
-            Optional<Justification> counterfactualIntroOpt = (new ConsistentSubsetFinder()).find((new SnarkWrapper()), base, antecedent, consequent);
+            Optional<Justification> counterfactualIntroOpt = (new ConsistentSubsetFinder()).find(this, base, antecedent, consequent);
             indent = indent.substring(0, indent.length()-1);
 
             if (counterfactualIntroOpt.isPresent()) {

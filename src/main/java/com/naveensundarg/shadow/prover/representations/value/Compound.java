@@ -26,7 +26,7 @@ public class Compound extends Value {
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
 
         this.subValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
-    //    this.subValues().add(this);
+      this.subValues().add(this);
 
         this.weight = argumentsList.stream().mapToInt(Value::getWeight).reduce(0, (x, y)-> x + y) + 1;
     }
@@ -36,7 +36,7 @@ public class Compound extends Value {
         super.name = name;
         this.variables = Arrays.stream(arguments).map(Value::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.subValues = Arrays.stream(arguments).map(Value::subValues).reduce(Sets.newSet(), Sets::union);
-//        this.subValues().add(this);
+       this.subValues().add(this);
         this.weight = Arrays.stream(arguments).mapToInt(Value::getWeight).reduce(0, (x, y)-> x + y) + 1;
 
     }

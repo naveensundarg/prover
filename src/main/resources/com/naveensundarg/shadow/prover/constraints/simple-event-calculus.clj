@@ -6,4 +6,5 @@
  Initiates [3]
  Terminates [3]
  Prior [2]
+ t0 [0]
  }

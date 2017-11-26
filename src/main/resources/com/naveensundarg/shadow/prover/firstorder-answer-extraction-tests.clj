@@ -69,8 +69,7 @@
 
  :answer-variables [?x ?y]
 
- :answers-expected (
-                     [c d]
+ :answers-expected ([c d]
                      [d c]
                      [b c]
                      [c b]
@@ -87,8 +86,7 @@
                      [d a]
                      [a d])
 
- :goal        (R ?x ?y)
- }
+ :goal        (R ?x ?y)}
 
 
 {:name        "Test 1"
@@ -112,4 +110,17 @@
                      )
 
  :goal        (sameroom ?x ?y)
+ }
+
+
+
+{:name        "Test Belief answer"
+ :description "A simple test"
+ :assumptions {1 (Believes!  a P)}
+
+ :answer-variables [?a]
+
+ :answers-expected ([a])
+
+ :goal        (Believes! ?a P)
  }

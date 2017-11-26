@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.core.internals;
 
 import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.Prover;
+import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
@@ -31,16 +32,19 @@ public class ConsistentSubsetFinder {
     public  Optional<Justification> find(Prover prover, Set<Formula> formulas, Formula antecedent, Formula consequent){
 
         Set<Formula> augmented = Sets.add(formulas, antecedent);
-        boolean isConsistent = Logic.isConsistent(augmented);
-        Optional<Justification> proofOpt = prover.prove(augmented, consequent);
+        boolean isConsistent = Logic.isConsistent(formulas, antecedent);
+        Optional<Justification> proofOpt = Optional.empty();
 
-        if(isConsistent && proofOpt.isPresent()){
+        if(isConsistent){
 
-            return proofOpt;
+            proofOpt = prover.prove(augmented, consequent);
+            if(proofOpt.isPresent()){
+               return proofOpt;
+            }
+            else{
+                return Optional.empty();
+            }
 
-        }
-        if(!proofOpt.isPresent()){
-            return Optional.empty();
         }
 
         Optional<Optional<Justification>> resultOpt =  formulas.

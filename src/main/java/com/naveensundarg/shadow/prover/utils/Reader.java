@@ -67,7 +67,7 @@ public class Reader {
 
     private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
 
-    private static final Value NOW;
+    public static final Value NOW;
 
 
     static {

@@ -8,6 +8,7 @@ import us.bpsm.edn.parser.Parsers;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.Reader.extractForms;
@@ -147,4 +148,36 @@ public class CommonUtils {
         setPower(strings,3).stream().forEach(System.out::println);
     }
 
+    public static <T> Set<T> level2FormulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, Predicate<Formula> constraint) {
+
+        return formulas.
+                stream().
+                filter(a -> a.getLevel() == 2).
+                filter(c::isInstance).
+                filter(constraint).
+                map(f -> (T) f).
+                collect(Collectors.toSet());
+    }
+
+    public static <T> Set<T> formulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, Predicate<Formula> constraint) {
+
+        return formulas.
+                stream().
+                filter(c::isInstance).
+                filter(constraint).
+                 map(f -> (T) f).
+                collect(Collectors.toSet());
+    }
+
+    public static <T> Set<T> formulaOfType(Set<Formula> formulas, Class c) {
+
+        return formulaeOfTypeWithConstraint(formulas, c, f -> true);
+
+    }
+
+    public static <T> Set<T> level2FormulaeOfType(Set<Formula> formulas, Class c) {
+
+        return level2FormulaeOfTypeWithConstraint(formulas, c, f -> true);
+
+    }
 }

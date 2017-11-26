@@ -44,7 +44,7 @@ public class S4Prover implements Prover {
         convertedAssumptions.add(reflexivity);
         convertedAssumptions.add(transitivity);
 
-        Prover firstOrderHalo = new SnarkWrapper();
+        Prover firstOrderHalo = SnarkWrapper.getInstance();
 
         return firstOrderHalo.prove(convertedAssumptions, convertedGoal);
 
