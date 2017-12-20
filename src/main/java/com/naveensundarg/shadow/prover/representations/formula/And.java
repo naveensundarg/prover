@@ -112,6 +112,12 @@ public final class And extends Formula {
     }
 
     @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+        return new And(Arrays.stream(arguments).map(x->x.generalize(substitution)).collect(Collectors.toList()));
+
+    }
+
+    @Override
     public Formula shadow(int level) {
         return new And(Arrays.stream(arguments).map(f->f.shadow(level)).collect(Collectors.toList()));
     }

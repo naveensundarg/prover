@@ -112,6 +112,27 @@ public class Predicate extends BaseFormula {
         return new Predicate(name, argumentTheta);
     }
 
+    @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+
+
+        Value[] newArguments = new Value[arguments.length];
+
+        for(int i = 0; i<arguments.length; i++){
+
+            if(substitution.containsKey(arguments[i])){
+
+                newArguments[i] = substitution.get(arguments[i]);
+
+            } else {
+
+                newArguments[i] = arguments[i];
+            }
+
+        }
+        return new Predicate(name, newArguments);
+    }
+
     public Set<Value> allValues() {
 
         return allValues;

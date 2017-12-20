@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.representations.Expression;
 import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +22,12 @@ public abstract class Formula extends Expression {
     public abstract Set<Variable> variablesPresent();
 
     public abstract Formula apply(Map<Variable, Value> substitution);
+
+    public  Formula generalize(Map<Value, Variable> substitution){
+
+        throw new NotImplementedException();
+    }
+
 
     public abstract Formula shadow(int level);
 
