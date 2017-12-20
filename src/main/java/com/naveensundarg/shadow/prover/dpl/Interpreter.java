@@ -3,10 +3,8 @@ package com.naveensundarg.shadow.prover.dpl;
 import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.representations.ErrorPhrase;
 import com.naveensundarg.shadow.prover.representations.Phrase;
-import com.naveensundarg.shadow.prover.representations.deduction.Assume;
-import com.naveensundarg.shadow.prover.representations.deduction.Deduction;
-import com.naveensundarg.shadow.prover.representations.deduction.MethodApplication;
-import com.naveensundarg.shadow.prover.representations.deduction.SupposeAbsurd;
+import com.naveensundarg.shadow.prover.representations.deduction.*;
+import com.naveensundarg.shadow.prover.representations.formula.And;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Implication;
 import com.naveensundarg.shadow.prover.representations.formula.Not;
@@ -105,6 +103,40 @@ public final class Interpreter {
 
                }
            }
+
+       }
+        if (input instanceof AssumeStar){
+           AssumeStar assumeStar = (AssumeStar) input;
+           List<Phrase> Es = assumeStar.getAssumption();
+           Deduction deduction = assumeStar.getDeduction();
+
+           List<Phrase> Eins = Es.stream().map(E->interpret(assumptionBase, E)).collect(Collectors.toList());
+           Set<Formula> augmentedAssumptionBase = CollectionUtils.setFrom(assumptionBase);
+            for (Phrase Ein : Eins) {
+                if (Ein instanceof Formula) {
+                    Formula assumption = (Formula) Ein;
+                    augmentedAssumptionBase.add(assumption);
+                }
+                else{
+
+                    return new ErrorPhrase("Evaluation of assume* assumption " + Ein + " did not result in a formula: ");
+                }
+            }
+               Phrase Din = interpret(augmentedAssumptionBase, deduction);
+
+               if(Din instanceof Formula){
+
+                   return new Implication(new And(Eins.stream().map(x->(Formula) x).collect(Collectors.toList())), (Formula) Din);
+
+               } else {
+
+                   if(Din instanceof ErrorPhrase){
+                       return Din;
+                   }
+                   return new ErrorPhrase("Evaluation of assumption " + assumeStar + " did not result in a formula: "+ Din);
+
+               }
+
 
        }
         if (input instanceof SupposeAbsurd){

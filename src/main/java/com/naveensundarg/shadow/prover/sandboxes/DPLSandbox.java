@@ -26,7 +26,7 @@ public class DPLSandbox {
 
 
 
-        Phrase p =   Reader.readPhraseFromString("(assume (and P Q) :in  (!both (!right-and (and P Q)) (!left-and (and P Q))))");
+        Phrase p =   Reader.readPhraseFromString("(assume* P Q :in (!both P Q))");
 
         Set<Formula> assumptionBase = Sets.newSet();
 

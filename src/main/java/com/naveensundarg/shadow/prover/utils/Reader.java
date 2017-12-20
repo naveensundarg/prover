@@ -3,10 +3,7 @@ package com.naveensundarg.shadow.prover.utils;
 import clojure.lang.IFn;
 import com.naveensundarg.shadow.prover.representations.ErrorPhrase;
 import com.naveensundarg.shadow.prover.representations.Phrase;
-import com.naveensundarg.shadow.prover.representations.deduction.Assume;
-import com.naveensundarg.shadow.prover.representations.deduction.Deduction;
-import com.naveensundarg.shadow.prover.representations.deduction.MethodApplication;
-import com.naveensundarg.shadow.prover.representations.deduction.SupposeAbsurd;
+import com.naveensundarg.shadow.prover.representations.deduction.*;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.method.*;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
@@ -34,6 +31,9 @@ public class Reader {
     private enum QuantifierType {
         Universal, Existential, Schema
     }
+
+    private static final String ASSUME = "assume";
+    private static final String ASSUME_STAR = "assume*";
 
     private static final Symbol NOT = Symbol.newSymbol("not");
     private static final Symbol AND = Symbol.newSymbol("and");
@@ -232,17 +232,15 @@ public class Reader {
 
                     return RightIff.getInstance();
 
-                }
-                else if (name.equals("constructive-dilemma")) {
+                } else if (name.equals("constructive-dilemma")) {
 
                     return ConstructiveDilemma.getInstance();
 
-                }
-                else if (name.equals("equivalence")) {
+                } else if (name.equals("equivalence")) {
 
                     return Equivalence.getInstance();
 
-                }else if (name.equals("true-intro")) {
+                } else if (name.equals("true-intro")) {
 
                     return TrueIntro.getInstance();
 
@@ -250,8 +248,7 @@ public class Reader {
 
                     return FalseElim.getInstance();
 
-                }
-                else if (name.equals("absurd")) {
+                } else if (name.equals("absurd")) {
 
                     return Absurd.getInstance();
 
@@ -281,7 +278,7 @@ public class Reader {
                     args.add(readPhrase(list.get(i), variableNames));
                 }
                 return new MethodApplication(readPhrase(first, variableNames), args);
-            } else if (first.toString().equals("assume")) {
+            } else if (first.toString().equals(ASSUME)) {
                 if (list.size() == 4) {
 
                     Phrase E = readPhrase(list.get(1), variableNames);
@@ -300,8 +297,30 @@ public class Reader {
                     throw new ParsingException("Assume needs exactly two arguments but got " + (list.size() - 1));
                 }
 
-            }
-            else if (first.toString().equals("suppose-absurd")) {
+            } else if (first.toString().equals(ASSUME_STAR)) {
+                if (list.size() >= 4) {
+
+
+                    List<Phrase> assumptions = CollectionUtils.newEmptyList();
+                    for(int i = 1; i< list.size() - 2 ;i++){
+                        assumptions.add(readPhrase(list.get(i), variableNames));
+                    }
+                    Phrase D = readPhrase(list.get(list.size()-1), variableNames);
+
+                    if (D instanceof Deduction) {
+                        return new AssumeStar(assumptions, (Deduction) D);
+                    } else {
+
+                        throw new ParsingException("The second argument of an assumption should be a deduction");
+                    }
+
+
+                } else {
+
+                    throw new ParsingException("Assume needs exactly two arguments but got " + (list.size() - 1));
+                }
+
+            } else if (first.toString().equals("suppose-absurd")) {
                 if (list.size() == 4) {
 
                     Phrase E = readPhrase(list.get(1), variableNames);
@@ -366,7 +385,7 @@ public class Reader {
                     }
                 }
 
-                 if (name.equals(COUNTERFACTUAL)) {
+                if (name.equals(COUNTERFACTUAL)) {
                     if (list.size() == 3) {
                         return new CounterFactual(readFormula(list.get(1), variableNames), readFormula(list.get(2), variableNames));
 
