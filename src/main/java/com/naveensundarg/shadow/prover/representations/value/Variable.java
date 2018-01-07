@@ -77,6 +77,18 @@ public class Variable extends Value {
     }
 
     @Override
+    public  Value generalize(Map<Value, Variable> substitution) {
+         if(substitution.containsKey(this)){
+
+            return substitution.get(this);
+        }
+        else {
+
+             return this;
+         }
+
+    }
+    @Override
     public Set<Value> subValues() {
         return subValues;
     }

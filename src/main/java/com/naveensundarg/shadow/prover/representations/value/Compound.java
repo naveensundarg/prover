@@ -95,6 +95,29 @@ public class Compound extends Value {
 
     }
 
+    public  Value generalize(Map<Value, Variable> substitution){
+
+
+        if(substitution.containsKey(this)){
+
+            return substitution.get(this);
+        }
+
+        Value[] argumentTheta = new Value[arguments.length];
+
+        for(int i = 0; i< argumentTheta.length; i++){
+
+
+                argumentTheta[i] = arguments[i].generalize(substitution);
+
+
+        }
+
+        return new Compound(name, argumentTheta);
+
+    }
+
+
     @Override
     public Set<Value> subValues() {
         return subValues;

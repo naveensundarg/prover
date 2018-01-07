@@ -120,14 +120,8 @@ public class Predicate extends BaseFormula {
 
         for(int i = 0; i<arguments.length; i++){
 
-            if(substitution.containsKey(arguments[i])){
+            newArguments[i] = (arguments[i].generalize(substitution));
 
-                newArguments[i] = substitution.get(arguments[i]);
-
-            } else {
-
-                newArguments[i] = arguments[i];
-            }
 
         }
         return new Predicate(name, newArguments);

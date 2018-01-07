@@ -36,6 +36,7 @@ public abstract class Value extends Expression implements  Comparable{
 
     public abstract Value apply(Map<Variable, Value> substitution);
     public abstract Value replace(Value value1, Value value2);
+    public abstract Value generalize(Map<Value, Variable> substitution);
 
     public abstract Set<Value> subValues();
 
