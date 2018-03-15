@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
 
-public class FirstOrderCounterFactualProver implements Prover {
+public class mCCounterFactualProver implements Prover {
 
     /*
      *
@@ -37,8 +37,7 @@ public class FirstOrderCounterFactualProver implements Prover {
     private static boolean defeasible = false;
     private static boolean verbose = false;
     private final boolean reductio;
-    private final boolean theoremsToNec = false;
-    private final FirstOrderCounterFactualProver parent;
+     private final mCCounterFactualProver parent;
     private final Set<Expander> expanders;
     private Set<Formula> currentAssumptions;
     private Set<Formula> prohibited;
@@ -50,7 +49,7 @@ public class FirstOrderCounterFactualProver implements Prover {
             .foreground(Ansi.FColor.WHITE).background(Ansi.BColor.BLACK)   //setting format
             .build();
 
-    public FirstOrderCounterFactualProver() {
+    public mCCounterFactualProver() {
 
         prohibited = Sets.newSet();
         parent = null;
@@ -58,7 +57,7 @@ public class FirstOrderCounterFactualProver implements Prover {
         expanders = CollectionUtils.newEmptySet();
     }
 
-    private FirstOrderCounterFactualProver(FirstOrderCounterFactualProver parent) {
+    private mCCounterFactualProver(mCCounterFactualProver parent) {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
         this.parent = parent;
@@ -66,7 +65,7 @@ public class FirstOrderCounterFactualProver implements Prover {
         expanders = CollectionUtils.newEmptySet();
     }
 
-    private FirstOrderCounterFactualProver(FirstOrderCounterFactualProver parent, boolean reductio) {
+    private mCCounterFactualProver(mCCounterFactualProver parent, boolean reductio) {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
         this.parent = parent;
@@ -118,10 +117,10 @@ public class FirstOrderCounterFactualProver implements Prover {
 
     }
 
-    private static FirstOrderCounterFactualProver root(FirstOrderCounterFactualProver cognitiveCalculusProver) {
+    private static mCCounterFactualProver root(mCCounterFactualProver cognitiveCalculusProver) {
 
 
-        FirstOrderCounterFactualProver current = cognitiveCalculusProver.parent;
+        mCCounterFactualProver current = cognitiveCalculusProver.parent;
 
         if (current == null) {
             return cognitiveCalculusProver;
@@ -149,7 +148,7 @@ public class FirstOrderCounterFactualProver implements Prover {
         }
 
 
-        FirstOrderCounterFactualProver node = parent;
+        mCCounterFactualProver node = parent;
 
         while (node != null) {
 
@@ -463,16 +462,16 @@ public class FirstOrderCounterFactualProver implements Prover {
     private Optional<Justification> defeasible(Formula formula) {
         if (formula instanceof CanProve) {
 
-            FirstOrderCounterFactualProver outer = this;
+            mCCounterFactualProver outer = this;
 
             final Duration timeout = Duration.ofSeconds(10);
             ExecutorService executor = Executors.newSingleThreadExecutor();
 
             final Future<Optional<Justification>> handler = executor.submit((Callable) () -> {
 
-                FirstOrderCounterFactualProver root = root(outer);
+                mCCounterFactualProver root = root(outer);
 
-                FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver();
+                mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver();
 
                 return cognitiveCalculusProver.prove(root.currentAssumptions.stream().filter(x -> !x.subFormulae().contains(formula)).collect(Collectors.toSet()),
                         ((CanProve) formula).getFormula());
@@ -501,16 +500,16 @@ public class FirstOrderCounterFactualProver implements Prover {
             Formula argument = ((Not) formula).getArgument();
             if (argument instanceof CanProve) {
 
-                FirstOrderCounterFactualProver outer = this;
+                mCCounterFactualProver outer = this;
 
                 final Duration timeout = Duration.ofSeconds(5);
                 ExecutorService executor = Executors.newSingleThreadExecutor();
 
                 final Future<Optional<Justification>> handler = executor.submit((Callable) () -> {
 
-                    FirstOrderCounterFactualProver root = root(outer);
+                    mCCounterFactualProver root = root(outer);
 
-                    FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver();
+                    mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver();
 
                     return cognitiveCalculusProver.prove(root.currentAssumptions.stream().filter(x -> !x.subFormulae().contains(argument)).collect(Collectors.toSet()),
                             (((CanProve) argument).getFormula()));
@@ -548,7 +547,7 @@ public class FirstOrderCounterFactualProver implements Prover {
 
             List<Optional<Justification>> conjunctProofsOpt = Arrays.stream(conjuncts).map(conjunct -> {
 
-                FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver(this);
+                mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver(this);
                 return cognitiveCalculusProver.prove(base, conjunct);
             }).collect(Collectors.toList());
 
@@ -578,7 +577,7 @@ public class FirstOrderCounterFactualProver implements Prover {
             reducedBase.remove(someOr);
 
             List<Optional<Justification>> casesOpt = Arrays.stream(disjuncts).map(disjunct -> {
-                FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver(this);
+                mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver(this);
 
                 Set<Formula> newBase = CollectionUtils.setFrom(reducedBase);
                 newBase.add(disjunct);
@@ -618,7 +617,7 @@ public class FirstOrderCounterFactualProver implements Prover {
 
         augmented.add(negated);
         indent = indent + "\t";
-        FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver(this, true);
+        mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver(this, true);
         Optional<Justification> reductioJustOpt = cognitiveCalculusProver.prove(augmented, atom, added);
         indent = indent.substring(0,indent.length()-1);
 
@@ -640,7 +639,7 @@ public class FirstOrderCounterFactualProver implements Prover {
             Set<Formula> allBelievedTillTime = agentSnapShot.allBelievedByAgentTillTime(agent, time);
 
 
-            FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver(this);
+            mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allBelievedTillTime, goalBelief);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -663,7 +662,7 @@ public class FirstOrderCounterFactualProver implements Prover {
             Set<Formula> allIntendedByTillTime = agentSnapShot.allIntendedByAgentTillTime(agent, time);
 
 
-            FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver(this);
+            mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allIntendedByTillTime, goalKnowledge);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -685,7 +684,7 @@ public class FirstOrderCounterFactualProver implements Prover {
             Set<Formula> allKnownByTillTime = agentSnapShot.allKnownByAgentTillTime(agent, time);
 
 
-            FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver(this);
+            mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver(this);
             Optional<Justification> inner = cognitiveCalculusProver.prove(allKnownByTillTime, goalKnowledge);
             if (inner.isPresent()) {
                 //TODO: Augment this
@@ -798,7 +797,7 @@ public class FirstOrderCounterFactualProver implements Prover {
             Formula antecedent = implication.getAntecedent();
             Formula consequent = implication.getConsequent();
 
-            FirstOrderCounterFactualProver cognitiveCalculusProver = new FirstOrderCounterFactualProver(this);
+            mCCounterFactualProver cognitiveCalculusProver = new mCCounterFactualProver(this);
             cognitiveCalculusProver.prohibited.addAll(prohibited);
             cognitiveCalculusProver.prohibited.add(implication);
 

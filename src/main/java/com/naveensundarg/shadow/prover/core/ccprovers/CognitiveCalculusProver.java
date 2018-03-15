@@ -37,7 +37,7 @@ public class CognitiveCalculusProver implements Prover {
      *
      */
     private static boolean defeasible = false;
-    private static boolean verbose = true;
+    private static boolean verbose = false;
     private final boolean reductio;
     private final boolean theoremsToNec = false;
     private final CognitiveCalculusProver parent;

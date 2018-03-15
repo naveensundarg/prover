@@ -24,7 +24,7 @@ public class Predicate extends BaseFormula {
     private final boolean sorted;
     private final Set<Value> allValues;
 
-    private static final AtomicBoolean orientEqualities = new AtomicBoolean(true);
+    private static final AtomicBoolean orientEqualities = new AtomicBoolean(false);
 
     public static void setOrientEqualities(boolean val){
 

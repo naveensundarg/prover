@@ -1,12 +1,15 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
 import com.naveensundarg.shadow.prover.core.*;
+import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderCognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.*;
 
+import java.io.FileInputStream;
 import java.util.List;
+import java.util.Optional;
 
 import static us.bpsm.edn.Keyword.newKeyword;
 
@@ -15,33 +18,31 @@ import static us.bpsm.edn.Keyword.newKeyword;
  */
 public class Sandbox {
 
-    public static void main1(String[] args) throws Exception {
 
-        Prover prover = new SecondOrderCognitiveCalculusProver();
-
-
-        Formula kp1  = Reader.readFormulaFromString("(Knows! I now (forall [?x] (if (Agent ?x)   (or (= ?x I)   (= ?x P1)   (= ?x P2)   (= ?x P3)))))");
-
-        Formula inf_assumption= Reader.readFormulaFromString("(Knows! I (if PA (= 0 (multiply 27 0))))");
-
-        Formula inf_goal = Reader.readFormulaFromString("(forall [?Q] (Knows! I (or (if PA (= 0 (multiply 27 0))) ?Q)) )");
-        Justification justification = prover.prove(Sets.with(inf_assumption), inf_goal).get();
-
-        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-        System.out.println(justification);
-
-
-    }
 
     public static void main(String[] args) throws Exception {
 
 
-        List<Problem> tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
-
-        //System.out.println(prover.prove(assumptions, Logic.getInconsistentFormula()));
+        List<Problem> tests = ProblemReader.readFrom(new FileInputStream("./src/main/resources/com/naveensundarg/shadow/prover/core/ccprovers/sandbox.clj"));
 
 
+        Problem p = (tests.get(0));
 
 
+        CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
+
+
+        Optional<Justification> justificationOptional = (cognitiveCalculusProver.prove(p.getAssumptions(), p.getGoal()));
+
+
+
+        if(justificationOptional.isPresent()){
+
+            System.out.println("Proved!");
+        } else {
+
+            System.out.println("No!");
+
+        }
     }
 }

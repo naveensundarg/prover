@@ -6,7 +6,7 @@
 
     <groupId>com.naveensundarg</groupId>
     <artifactId>prover</artifactId>
-    <version>0.842-SNAPSHOT</version>
+    <version>0.841</version>
     <packaging>jar</packaging>
 
 
@@ -32,10 +32,13 @@
   </scm>
 
     <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
         <repository>
-            <id>bintray-naveensundarg-main</id>
-            <name>naveensundarg-main</name>
-            <url>https://api.bintray.com/maven/naveensundarg/main/prover/;publish=1</url>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
     <build>
