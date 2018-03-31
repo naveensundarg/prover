@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.representations.formula;
 
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 import org.apache.commons.lang3.StringUtils;
 
@@ -69,7 +70,7 @@ public class Existential extends Formula implements Quantifier {
     public Formula shadow(int level) {
         if (level == 0) {
 
-          return new Atom("|"+this.toString()+"|");
+            return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
 
         } else if (level == 1) {
 
