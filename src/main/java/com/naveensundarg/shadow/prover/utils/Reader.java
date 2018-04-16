@@ -528,6 +528,14 @@ public class Reader {
 
         }
 
+        if(input.toString().equals("true")){
+            return new Atom("true");
+        }
+
+        if(input.toString().equals("false")){
+            return new Atom("false");
+        }
+
         throw new AssertionError("Could not understand formula: " + input);
 
     }
