@@ -11,6 +11,8 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 
 import java.io.FileInputStream;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,8 +85,8 @@ public class Sandbox {
     public static void main(String[] args) throws Exception {
 
 
-        Formula formula1 = Reader.readFormulaFromString("true");
 
+         SnarkWrapper.getInstance();
     }
 
 }
