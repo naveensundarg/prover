@@ -3,10 +3,14 @@ package com.naveensundarg.shadow.prover.sandboxes;
 import com.naveensundarg.shadow.prover.core.*;
 import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderCognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
+import com.naveensundarg.shadow.prover.generators.GeneratorParams;
+import com.naveensundarg.shadow.prover.generators.PropositionalProblemGenerator;
+import com.naveensundarg.shadow.prover.generators.Vectorizer;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.List;
+import java.util.Set;
 
 import static us.bpsm.edn.Keyword.newKeyword;
 
@@ -35,13 +39,38 @@ public class Sandbox {
 
     public static void main(String[] args) throws Exception {
 
-
-        List<Problem> tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
-
-        //System.out.println(prover.prove(assumptions, Logic.getInconsistentFormula()));
-
-
+        generate("./train");
+        generate("./test");
 
 
     }
+
+    public static void generate(String name) throws Exception {
+
+
+        GeneratorParams generatorParams = new GeneratorParams();
+        generatorParams.maxAtoms = 4;
+        generatorParams.clauses  = 4;
+        generatorParams.maxLiteralsInClause = 4;
+
+
+        PropositionalProblemGenerator propositionalProblemGenerator = new PropositionalProblemGenerator(generatorParams);
+
+        long start = System.currentTimeMillis();
+        System.out.println();
+
+        List<Pair<List<Formula>, Boolean>> problems = propositionalProblemGenerator.generate(1000);
+
+        long end = System.currentTimeMillis();
+
+        long count = problems.stream().filter(Pair::second).count();
+
+        Vectorizer vectorizer = new Vectorizer(generatorParams);
+
+        vectorizer.vectorizePropositionalProblems(problems, name);
+
+        System.out.println("Total Time: " + (end-start));
+        System.out.println("Count: " + count);
+    }
+
 }

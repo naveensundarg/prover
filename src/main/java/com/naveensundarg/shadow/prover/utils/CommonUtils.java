@@ -8,6 +8,7 @@ import us.bpsm.edn.parser.Parsers;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -172,6 +173,13 @@ public class CommonUtils {
 
         return formulaeOfTypeWithConstraint(formulas, c, f -> true);
 
+    }
+
+    public static <T> T pickRandom(Set<T> set){
+
+        List<T> things = new ArrayList<>(set);
+
+        return things.get(ThreadLocalRandom.current().nextInt(0, things.size()));
     }
 
     public static <T> Set<T> level2FormulaeOfType(Set<Formula> formulas, Class c) {
