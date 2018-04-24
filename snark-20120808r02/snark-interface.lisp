@@ -56,7 +56,7 @@
 
 
 
-(defun setup-snark (&key (time-limit 50) (verbose nil))
+(defun setup-snark (&key (time-limit 500) (verbose nil))
 
   (snark:initialize :verbose  verbose)
   (if (not verbose) (snark-deverbose) )
@@ -69,8 +69,9 @@
   (snark::declare-code-for-numbers)
   
   (snark:allow-skolem-symbols-in-answers nil)
-  (assert-domain 10)
-  (assert-add-table 10))
+  ;(assert-domain 10)
+  ;(assert-add-table 10)
+  )
 
 
 

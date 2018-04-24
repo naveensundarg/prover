@@ -1,16 +1,20 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
 import com.naveensundarg.shadow.prover.core.*;
+import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderCognitiveCalculusProver;
+import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderProver;
+import com.naveensundarg.shadow.prover.core.proof.HigherOrderUnification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.generators.GeneratorParams;
-import com.naveensundarg.shadow.prover.generators.PropositionalProblemGenerator;
-import com.naveensundarg.shadow.prover.generators.Vectorizer;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 
+import java.io.FileInputStream;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 import static us.bpsm.edn.Keyword.newKeyword;
 
@@ -19,58 +23,70 @@ import static us.bpsm.edn.Keyword.newKeyword;
  */
 public class Sandbox {
 
+
+
     public static void main1(String[] args) throws Exception {
 
-        Prover prover = new SecondOrderCognitiveCalculusProver();
+
+        List<Problem> tests = ProblemReader.readFrom(new FileInputStream("./src/main/resources/com/naveensundarg/shadow/prover/core/ccprovers/sandbox.clj"));
 
 
-        Formula kp1  = Reader.readFormulaFromString("(Knows! I now (forall [?x] (if (Agent ?x)   (or (= ?x I)   (= ?x P1)   (= ?x P2)   (= ?x P3)))))");
+        Problem p = (tests.get(0));
 
-        Formula inf_assumption= Reader.readFormulaFromString("(Knows! I (if PA (= 0 (multiply 27 0))))");
 
-        Formula inf_goal = Reader.readFormulaFromString("(forall [?Q] (Knows! I (or (if PA (= 0 (multiply 27 0))) ?Q)) )");
-        Justification justification = prover.prove(Sets.with(inf_assumption), inf_goal).get();
+        CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
 
-        System.out.println(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
-        System.out.println(justification);
 
+        Optional<Justification> justificationOptional = (cognitiveCalculusProver.prove(p.getAssumptions(), p.getGoal()));
+
+
+
+        if(justificationOptional.isPresent()){
+
+            System.out.println("Proved!");
+        } else {
+
+            System.out.println("No!");
+
+        }
+    }
+
+
+    public static void main2(String[] args) throws Exception {
+
+
+        SecondOrderProver secondOrderProver = new SecondOrderProver();
+        Formula formula1 = Reader.readFormulaFromString("(forall x (= (+ x 0) x))");
+        Formula formula2 = Reader.readFormulaFromString("(forall P (if (and (P 0) (forall x (if (P x) (P (s x))))) (forall x (P x))))");
+        Formula formula3univ = Reader.readFormulaFromString("(forall Y (exists Z (forall x (iff (Z x) (Y  x)))))");
+
+        Formula goal = Reader.readFormulaFromString("(exists Z (forall x (Z x)))");
+
+
+        Formula temp = (Logic.getFalseFormula());
+
+
+        Logic.transformSecondOrderToFirstOrderDeep(formula1);
+
+
+        Sets.fromArray(new Formula[]{formula1, formula2, formula3univ, goal}).stream().map(Logic::transformSecondOrderToFirstOrderDeep).forEach(System.out::println);
+
+        long start = System.currentTimeMillis();
+
+        System.out.println(secondOrderProver.prove(Sets.fromArray(new Formula[]{formula1, formula2, formula3univ}), goal));
+
+
+        long end = System.currentTimeMillis();
+
+        System.out.println(end-start);
 
     }
 
     public static void main(String[] args) throws Exception {
 
-        generate("./train");
-        generate("./test");
 
 
-    }
-
-    public static void generate(String name) throws Exception {
-
-
-        GeneratorParams generatorParams = new GeneratorParams();
-        generatorParams.maxAtoms = 4;
-        generatorParams.clauses  = 4;
-        generatorParams.maxLiteralsInClause = 4;
-
-
-        PropositionalProblemGenerator propositionalProblemGenerator = new PropositionalProblemGenerator(generatorParams);
-
-        long start = System.currentTimeMillis();
-        System.out.println();
-
-        List<Pair<List<Formula>, Boolean>> problems = propositionalProblemGenerator.generate(1000);
-
-        long end = System.currentTimeMillis();
-
-        long count = problems.stream().filter(Pair::second).count();
-
-        Vectorizer vectorizer = new Vectorizer(generatorParams);
-
-        vectorizer.vectorizePropositionalProblems(problems, name);
-
-        System.out.println("Total Time: " + (end-start));
-        System.out.println("Count: " + count);
+         SnarkWrapper.getInstance();
     }
 
 }

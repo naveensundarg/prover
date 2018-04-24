@@ -12,13 +12,11 @@ import org.armedbear.lisp.Interpreter;
 import org.armedbear.lisp.LispObject;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.net.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -37,9 +35,9 @@ public class SnarkWrapper implements Prover {
         SnarkWrapper.local.set(local);
     }
 
-    private final static Interpreter interpreter;
+    private  static Interpreter interpreter;
 
-    private SnarkWrapper(){
+    private SnarkWrapper() {
 
     }
 
@@ -48,7 +46,8 @@ public class SnarkWrapper implements Prover {
     static {
         INSTANCE = new SnarkWrapper();
     }
-    public static SnarkWrapper getInstance(){
+
+    public static SnarkWrapper getInstance() {
 
         return INSTANCE;
     }
@@ -140,7 +139,7 @@ public class SnarkWrapper implements Prover {
         }
 
         if (resultString.equals("YES")) {
-            return Optional.of(new TrivialJustification(assumptions, formula, ":FOLFromSnark" ));
+            return Optional.of(new TrivialJustification(assumptions, formula, ":FOLFromSnark"));
         } else {
             return Optional.empty();
         }
@@ -399,7 +398,7 @@ public class SnarkWrapper implements Prover {
 
             if (resultString.toLowerCase().equals("(nil)")) {
 
-                 return Optional.of(Pair.of(null, CollectionUtils.newEmptySet()));
+                return Optional.of(Pair.of(null, CollectionUtils.newEmptySet()));
             }
 
             try {

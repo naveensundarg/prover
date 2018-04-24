@@ -518,44 +518,12 @@
  :assumptions telephone
  :goal (HoldsAt (Connected phone1 phone2) 3)
  }
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-
-{
- :name "Counterfactual 1"
- :description ""
- :assumptions {
-               A1 (forall [?x]
-                     (if (GoToDoctor ?x) (not (Sick ?x))))
-               A2 (not (GoToDoctor john))}
-
- :goal (=> (GoToDoctor john) (not (Sick john)))
- }
-
-{
- :name "Counterfactual 2"
- :description ""
- :assumptions {
-               A1 (forall [?x]
-                     (if (GoToDoctor ?x) (not (Sick ?x))))
-               A2 (not (GoToDoctor john))}
-
- :goal (if (GoToDoctor john) Z)
- }
-
-
-{
- :name "Counterfactual modal 2"
- :description ""
- :assumptions {
-               A1 (Believes! a  (forall [?x]
-                                        (if (GoToDoctor ?x) (not (Sick ?x)))))
-               A2 (Believes! a (not (GoToDoctor john))) }
-
- :goal (Believes! a (=> (GoToDoctor john) (not (Sick john))))
- }
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -709,9 +677,392 @@
 
 
 
+
+
+{:name        "Self Sacrifice"
+ :description ""
+ :assumptions {A1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))
+               A2 (Knows! I now (= 1 (nu alpha I P1 now)))
+               A3 (Knows! I now (= 1 (nu alpha I P2 now)))
+               A4 (Knows! I now (= 1 (nu alpha I P3 now)))
+               A5 (Knows! I now (= (- 1) (nu alpha I I now)))
+               A6 (Knows! I now (= alpha (Drop (self I) track1 3)))
+               A7 (Common! (forall [a b] (if (= (self a) (self b)) (= a b))))
+               A8 (Knows! I now (forall [a] (= a (self a))))
+               A9 (Knows! I now (and (not (= P1 P2)) (not (= P1 P3)) (not (= P1 I)) (not (= P2 P3)) (not (= P2 I)) (not (= P3 I))))
+               A10 (Knows! I now (and (>> 1 0) (<< -1 0)))}
+
+ :goal       (Knows! I now (forall [?agent] (if (Agent ?agent) (if (not (= ?agent (self I))) (>> (nu alpha I ?agent now) 0))))) }
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+{:assumptions
+        {A1 (Perceives! student t1 (Believes! (embodiment a) t1  (Holds (Prop watch stopped) t1 )))
+         A2 (Perceives! student t2 (Believes! (embodiment b) t2  (Holds (Prop watch stopped) t2)))
+
+
+         A3 (Believes! student t3  (PersonalObject watch))
+         A4 (Believes! student t4  (if (exists [?agent1 ?agent2 ?u ?prop ?time1 ?time2]  (and  (PersonalObject ?u)
+                                                                                               (Believes! ?agent1 ?time1  (Holds (Prop ?u ?prop) ?time1))
+                                                                                               (Believes! ?agent2 ?time2  (Holds (Prop ?u ?prop) ?time2 ))))
+                                     (= (identityOf ?agent1) (identityOf ?agent2))))}
+
+
+ :goal  (Believes! student t5 (= (identityOf (embodiment a)) (identityOf (embodiment b))))}
+
+
+
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+{
+ :name        "Counterfactual 1"
+ :description ""
+ :assumptions {
+               A1 (forall [?x]
+                          (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal        (=> (GoToDoctor john) (not (Sick john)))
+ }
+
+{
+ :name        "Counterfactual 2"
+ :description ""
+ :assumptions {A1 (forall [?x]
+                          (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal        (if (GoToDoctor john) (and P (not P)))
+ }
+
+
+;{:name        "Counterfactual 3"
+; :description ""
+; :assumptions {A1 (forall [?x]
+;                          (if (GoToDoctor ?x) (not (Sick ?x))))
+;               A2 (not (GoToDoctor john))}
+;
+; :goal        (=> (GoToDoctor john) (and P (not P)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+{:name        "Counterfactual Mortality 1"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Human ?x) (Mortal ?x)))
+               A2 (Human socrates)}
+
+ :goal        (=> (not (Mortal socrates)) (not (Human socrates)))}
+
+
+{:name        "Counterfactual Mortality 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Human ?x) (Mortal ?x)))
+               A2 (Human socrates)}
+
+ :goal        (if (not (Mortal socrates)) (and P (not P)))}
+
+
+
+
+;{:name        "Counterfactual Mortality 3"
+; :description ""
+; :assumptions {A1 (forall [?x] (if (Human ?x) (Mortal ?x)))
+;               A2 (Human socrates)}
+;
+; :goal        (=> (not (Mortal socrates)) (and P (not P)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Identity A  1"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))}
+
+ :goal        (=> (= jack jim) (CanAffordLuxury jim))}
+
+
+
+{:name        "Counterfactual Identity A 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))}
+
+ :goal        (if (= jack jim) (and P (not P)))}
+
+
+
+;{:name        "Counterfactual Identity A 3"
+; :description ""
+; :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+;               A2 (Rich jack)
+;               A3 (not (Rich jim))}
+;
+; :goal        (=> (= jack jim) (and P (not P)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Identity B  1"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))
+               A4 (not (= jim jack))}
+
+ :goal        (=> (= jack jim) (CanAffordLuxury jim))}
+
+
+
+{:name        "Counterfactual Identity B 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+               A2 (Rich jack)
+               A3 (not (Rich jim))
+               A4 (not (= jim jack))}
+
+ :goal        (if (= jack jim) (and P (not P)))}
+
+
+
+;{:name        "Counterfactual Identity B 3"
+; :description ""
+; :assumptions {A1 (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x)))
+;               A2 (Rich jack)
+;               A3 (not (Rich jim))
+;               A4 (not (= jim jack))}
+;
+; :goal        (=> (= jack jim) (and P (not P)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Disjunction 1"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Big ?x) (Small ?x)))
+               A2 (Big tree)}
+
+ :goal        (=> (not (Big tree)) (Small tree))}
+
+
+{:name        "Counterfactual Disjunction 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Big ?x) (Small ?x)))
+               A2 (Big tree)}
+
+ :goal        (if (not (Big tree)) (and P (not P)))}
+
+;{:name        "Counterfactual Disjunction 3"
+; :description ""
+; :assumptions {A1 (forall [?x] (or (Big ?x) (Small ?x)))
+;               A2 (Big tree)}
+;
+; :goal        (=> (not (Big tree)) (and P (not P)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Disjunction A 1"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Human ?x) (Animal ?x)))
+               A2 (Human j)
+               A3 (forall [?x] (if (Human ?x) (Thinks ?x)))}
+
+ :goal        (=> (not (Thinks j)) (or (Animal j)
+                                       (exists [?x] (and (Human ?x) (not (Thinks ?x))))))}
+
+
+{:name        "Counterfactual Disjunction A 2"
+ :description ""
+ :assumptions {A1 (forall [?x] (or (Human ?x) (Animal ?x)))
+               A2 (Human j)
+               A3 (forall [?x] (if (Human ?x) (Thinks ?x)))}
+
+ :goal        (if (not (Thinks j)) (and P (not P)))}
+
+
+;{:name        "Counterfactual Disjunction A 3"
+; :description ""
+; :assumptions {A1 (forall [?x] (or (Human ?x) (Animal ?x)))
+;               A2 (Human j)
+;               A3 (forall [?x] (if (Human ?x) (Thinks ?x)))}
+;
+; :goal        (=> (not (Thinks j)) (and P (not P)))}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Linking A 1"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 (not P)
+               }
+
+ :goal        (=> P R)}
+
+
+{:name        "Counterfactual Linking A 2"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 (not P)
+               }
+
+ :goal        (if P (and P (not P)))}
+
+;{:name        "Counterfactual Linking A 3"
+; :description ""
+; :assumptions {A1 (if P Q)
+;               A2 (if Q R)
+;               A3 (if R S)
+;               A4 (not P)
+;               }
+;
+; :goal        (=> P (and P (not P)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Reverse Linking A 1"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S
+               }
+
+ :goal        (=> (not S) (not P))}
+
+
+{:name        "Counterfactual Reverse Linking A 2"
+ :description ""
+ :assumptions {A1 (if P Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S
+               }
+
+ :goal        (if (not S) (and P (not P)))}
+
+;{:name        "Counterfactual Reverse Linking A 3"
+; :description ""
+; :assumptions {A1 (if P Q)
+;               A2 (if Q R)
+;               A3 (if R S)
+;               A4 S
+;               }
+;
+; :goal        (=> (not S) (and P (not P)))}
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "Counterfactual Reverse Linking B 1"
+ :description ""
+ :assumptions {A1 (if (forall [?x] (P ?x)) Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S}
+
+ :goal        (=> (not S) (exists [?x] (not (P ?x))))}
+
+
+{:name        "Counterfactual Reverse Linking B 2"
+ :description ""
+ :assumptions {A1 (if (forall [?x] (P ?x)) Q)
+               A2 (if Q R)
+               A3 (if R S)
+               A4 S
+               }
+
+ :goal        (if (not S) (and P (not P)))}
+
+;{:name        "Counterfactual Reverse Linking B 2"
+; :description ""
+; :assumptions {A1 (if (forall [?x] (P ?x)) Q)
+;               A2 (if Q R)
+;               A3 (if R S)
+;               A4 S}
+;
+; :goal        (=> (not S) (and P (not P)))}
+;
+
+
+
+
+
+{
+ :name "Counterfactual 1"
+ :description ""
+ :assumptions {
+               A1 (forall [?x]
+                          (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal (=> (GoToDoctor john) (not (Sick john)))
+ }
+
+{
+ :name "Counterfactual 2"
+ :description ""
+ :assumptions {
+               A1 (forall [?x]
+                          (if (GoToDoctor ?x) (not (Sick ?x))))
+               A2 (not (GoToDoctor john))}
+
+ :goal (if (GoToDoctor john) Z)
+ }
+
+
+;{
+; :name "Counterfactual modal 3"
+; :description ""
+; :assumptions {
+;               A1 (Believes! a  (forall [?x]
+;                                        (if (GoToDoctor ?x) (not (Sick ?x)))))
+;               A2 (Believes! a (not (GoToDoctor john))) }
+;
+; :goal (Believes! a (=> (GoToDoctor john) (not (Sick john))))
+; }
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 {
  :name "Counterfactual modal 1"
  :description ""
@@ -735,28 +1086,18 @@
  :goal (Believes! a (if (GoToDoctor john) (and P (not P))))
  }
 
+;
+;{
+; :name "Counterfactual modal 3"
+; :description ""
+; :assumptions {
+;               A1 (Believes! a  (forall [?x]
+;                                        (if (GoToDoctor ?x) (not (Sick ?x)))))
+;               A2 (Believes! a (not (GoToDoctor john))) }
+;
+; :goal (Believes! a (=> (GoToDoctor john) (and P (not P))))
+; }
 
-{
- :name "Counterfactual modal 3"
- :description ""
- :assumptions {
-               A1 (Believes! a  (forall [?x]
-                                        (if (GoToDoctor ?x) (not (Sick ?x)))))
-               A2 (Believes! a (not (GoToDoctor john))) }
-
- :goal (Believes! a (=> (GoToDoctor john) (and P (not P))))
- }
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -778,12 +1119,12 @@
 
 
 
-{:name        "Counterfactual Mortality 3"
- :description ""
- :assumptions {A1 (Believes! a now (forall [?x] (if (Human ?x) (Mortal ?x))))
-               A2 (Believes! a now (Human socrates)) }
-
- :goal        (Believes! a now (=> (not (Mortal socrates)) (and P (not P)))) }
+;{:name        "Counterfactual Mortality 3"
+; :description ""
+; :assumptions {A1 (Believes! a now (forall [?x] (if (Human ?x) (Mortal ?x))))
+;               A2 (Believes! a now (Human socrates)) }
+;
+; :goal        (Believes! a now (=> (not (Mortal socrates)) (and P (not P)))) }
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -812,13 +1153,13 @@
 
 
 
-{:name        "Counterfactual Identity A 3"
- :description ""
- :assumptions {A1 (Believes! a now  (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x))))
-               A2 (Believes! a now (Rich jack))
-               A3 (Believes! a now  (not (Rich jim)))}
-
- :goal        (Believes! a now  (=> (= jack jim) (and P (not P))))}
+;{:name        "Counterfactual Identity A 3"
+; :description ""
+; :assumptions {A1 (Believes! a now  (forall [?x] (if (Rich ?x) (CanAffordLuxury ?x))))
+;               A2 (Believes! a now (Rich jack))
+;               A3 (Believes! a now  (not (Rich jim)))}
+;
+; :goal        (Believes! a now  (=> (= jack jim) (and P (not P))))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -840,12 +1181,12 @@
 
  :goal        (Believes! a now (if (not (Big tree)) (and P (not P)))) }
 
-{:name        "Counterfactual Disjunction 3"
- :description ""
- :assumptions {A1 (Believes! a now (forall [?x] (or (Big ?x) (Small ?x))))
-               A2 (Believes! a now (Big tree)) }
-
- :goal       (Believes! a now (=> (not (Big tree)) (and P (not P)))) }
+;{:name        "Counterfactual Disjunction 3"
+; :description ""
+; :assumptions {A1 (Believes! a now (forall [?x] (or (Big ?x) (Small ?x))))
+;               A2 (Believes! a now (Big tree)) }
+;
+; :goal       (Believes! a now (=> (not (Big tree)) (and P (not P)))) }
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -867,12 +1208,12 @@
 
  :goal        (Believes! a now (Believes! b now (if (not (Big tree)) (and P (not P)))) ) }
 
-{:name        "Counterfactual Disjunction A 3"
- :description ""
- :assumptions {A1 (Believes! a now (Believes! b now (forall [?x] (or (Big ?x) (Small ?x)))) )
-               A2 (Believes! a now (Believes! b now (Big tree)) ) }
-
- :goal       (Believes! a now (Believes! b now (=> (not (Big tree)) (and P (not P)))))  }
+;{:name        "Counterfactual Disjunction A 3"
+; :description ""
+; :assumptions {A1 (Believes! a now (Believes! b now (forall [?x] (or (Big ?x) (Small ?x)))) )
+;               A2 (Believes! a now (Believes! b now (Big tree)) ) }
+;
+; :goal       (Believes! a now (Believes! b now (=> (not (Big tree)) (and P (not P)))))  }
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -898,26 +1239,12 @@
  :goal       (Believes! a now (if (not (Thinks j)) (and P (not P)))) }
 
 
-{:name        "Counterfactual Disjunction Ab 3"
- :description ""
- :assumptions {A1 (Believes! a now (forall [?x] (or (Human ?x) (Animal ?x))))
-               A2 (Believes! a now (Human j))
-               A3 (Believes! a now (forall [?x] (if (Human ?x) (Thinks ?x)))) }
+;{:name        "Counterfactual Disjunction Ab 3"
+; :description ""
+; :assumptions {A1 (Believes! a now (forall [?x] (or (Human ?x) (Animal ?x))))
+;               A2 (Believes! a now (Human j))
+;               A3 (Believes! a now (forall [?x] (if (Human ?x) (Thinks ?x)))) }
+;
+; :goal       (Believes! a now (=> (not (Thinks j)) (and P (not P)))) }
+;
 
- :goal       (Believes! a now (=> (not (Thinks j)) (and P (not P)))) }
-
-
-{:name        "Self Sacrifice"
- :description ""
- :assumptions {A1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))
-               A2 (Knows! I now (= 1 (nu alpha I P1 now)))
-               A3 (Knows! I now (= 1 (nu alpha I P2 now)))
-               A4 (Knows! I now (= 1 (nu alpha I P3 now)))
-               A5 (Knows! I now (= (- 1) (nu alpha I I now)))
-               A6 (Knows! I now (= alpha (Drop (self I) track1 3)))
-               A7 (Common! (forall [a b] (if (= (self a) (self b)) (= a b))))
-               A8 (Knows! I now (forall [a] (= a (self a))))
-               A9 (Knows! I now (and (not (= P1 P2)) (not (= P1 P3)) (not (= P1 I)) (not (= P2 P3)) (not (= P2 I)) (not (= P3 I))))
-               A10 (Knows! I now (and (>> 1 0) (<< -1 0)))}
-
- :goal       (Knows! I now (forall [?agent] (if (Agent ?agent) (if (not (= ?agent (self I))) (>> (nu alpha I ?agent now) 0))))) }

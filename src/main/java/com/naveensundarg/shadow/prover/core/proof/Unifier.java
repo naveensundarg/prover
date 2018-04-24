@@ -776,7 +776,7 @@ public class Unifier {
     }
 
 
-    private static Map<Variable, Value> unify(Value x, Value y, Map<Variable, Value> theta) {
+    protected static Map<Variable, Value> unify(Value x, Value y, Map<Variable, Value> theta) {
 
         if (theta == null) {
             return null;
@@ -807,12 +807,12 @@ public class Unifier {
 
     }
 
-    private static Map<Variable, Value> unify(Value[] arr1, Value[] arr2, Map<Variable, Value> theta) {
+    protected static Map<Variable, Value> unify(Value[] arr1, Value[] arr2, Map<Variable, Value> theta) {
 
         return unify(arr1, arr2, theta, 0);
     }
 
-    private static Map<Variable, Value> unify(Value[] arr1, Value[] arr2, Map<Variable, Value> theta, int start) {
+    protected static Map<Variable, Value> unify(Value[] arr1, Value[] arr2, Map<Variable, Value> theta, int start) {
 
         if (arr1.length != arr2.length) {
             return null;

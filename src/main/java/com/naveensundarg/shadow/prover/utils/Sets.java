@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.utils;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +34,15 @@ public class Sets {
         Set<T> newSet = newSet();
 
         newSet.add(t);
+
+        return newSet;
+    }
+
+    public static <T> Set<T> fromArray(T[] t){
+
+        Set<T> newSet = newSet();
+
+        newSet.addAll(Arrays.asList(t));
 
         return newSet;
     }
