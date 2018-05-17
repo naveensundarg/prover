@@ -29,6 +29,20 @@ import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 public class Converter {
 
 
+    public static Formula convertToModalFormula(Formula formula, Problem problem){
+
+        if(formula instanceof Belief){
+
+            return new Belief(((Belief) formula).getAgent(), ((Belief) formula).getTime(),
+                                convertToCNF(((Belief) formula).getFormula(), problem).toFormula());
+
+        } else {
+
+            return convertToCNF(formula, problem).toFormula();
+        }
+
+    }
+
     public static CNFFormula convertToCNF(Formula formula, Problem problem) {
 
         return convertToCNFInternal(FolConverter.preProcess(formula,problem), newEmptyList(), problem);

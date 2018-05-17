@@ -52,7 +52,7 @@ public class Sandbox {
     }
 
 
-    public static void main2(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
 
         SecondOrderProver secondOrderProver = new SecondOrderProver();
@@ -82,7 +82,7 @@ public class Sandbox {
 
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void mainl(String[] args) throws Exception {
 
 
 

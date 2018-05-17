@@ -31,7 +31,7 @@ public class LispSandbox {
         result = interpreter.eval("(load \"./snark-20120808r02/snark-interface.lisp\")");
         System.out.println(result);
 
-        String s = "(prove-from-axioms-and-get-answer '((man socrates) (forall ?x (implies (man ?x) (mortal ?))))" +
+        String s = "(prove-from-axioms-and-get-answer '((man socrates) (forall ?x (implies (man ?x) (mortal ?x))))" +
                 " '(mortal ?x)  '?x)";
         System.out.println(s);
         result = interpreter.eval(s);
