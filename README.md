@@ -5,7 +5,7 @@
 **ShadowProver** uses a technique called **shadowing** to achieve speed without sacrificing
 consistency in the system. Extant first-order modal logic theorem provers that can work with arbitrary inference schemata are built upon first-order theorem provers. They achieve the reduction to first-order logic via two methods.
 In the first method, modal operators are simply represented by first-order predicates. This approach is the fastest but can quickly lead to well-known inconsistencies as demonstrated
-in [Bringsjord and Govindarajulu, 2012] (see the figure below). In the second
+in [Bringsjord and Govindarajulu, 2012] (see the Slate proof below). In the second
 method, the entire proof theory is implemented intricately
 in first-order logic, and the reasoning is carried out
 within first-order logic. Here, the first-order theorem prover
