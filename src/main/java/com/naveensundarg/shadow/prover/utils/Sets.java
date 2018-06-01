@@ -47,6 +47,15 @@ public class Sets {
         return newSet;
     }
 
+    public static <T> Set<T> from(T... t){
+
+        Set<T> newSet = newSet();
+
+        newSet.addAll(Arrays.asList(t));
+
+        return newSet;
+    }
+
     public static <T> Set<T> remove(Set<T> set, T t){
 
         Set<T> newSet = copy(set);

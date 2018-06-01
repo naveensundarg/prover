@@ -27,6 +27,11 @@ public abstract class Justification {
         return new CompoundJustification(name, subs);
     }
 
+    public static Justification atomic(String name, Formula... inputs){
+
+        return new AtomicJustification(name, inputs);
+    }
+
     public static Justification compound(String name, Justification sub){
         List<Justification> subs = new ArrayList<>();
         subs.add(sub);

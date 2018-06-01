@@ -31,9 +31,9 @@ public class TrivialJustification extends Justification{
 
     @Override
     public String toString() {
-        return "("  + message+ " ("
-                + base.stream().map(Formula::toString).reduce("", (x,y) -> x + " "  + y).trim()  +
-                ") "
+        return "("  + message+ "\n\t\t Givens:\n\t\t("
+                + base.stream().map(Formula::toString).reduce("\t\t", (x,y) -> x + "\n\t\t"  + y).trim()  +
+                ") \n\t\t Goals:\n\t\t"
                 + formula.toString() + ")";
     }
 }

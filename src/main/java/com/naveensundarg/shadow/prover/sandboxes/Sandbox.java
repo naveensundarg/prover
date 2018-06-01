@@ -1,11 +1,18 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
+import com.diogonunes.jcdp.color.ColoredPrinter;
+import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.*;
+import com.naveensundarg.shadow.prover.core.ccprovers.AxiologyProver;
 import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderCognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderProver;
+import com.naveensundarg.shadow.prover.core.internals.InductionSchemaGeneration;
 import com.naveensundarg.shadow.prover.core.proof.HigherOrderUnification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
+import com.naveensundarg.shadow.prover.generators.GeneratorParams;
+import com.naveensundarg.shadow.prover.generators.PropositionalProblemGenerator;
+import com.naveensundarg.shadow.prover.generators.Vectorizer;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
@@ -27,66 +34,30 @@ public class Sandbox {
 
     public static void main1(String[] args) throws Exception {
 
-
-        List<Problem> tests = ProblemReader.readFrom(new FileInputStream("./src/main/resources/com/naveensundarg/shadow/prover/core/ccprovers/sandbox.clj"));
-
-
-        Problem p = (tests.get(0));
-
-
-        CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver();
-
-
-        Optional<Justification> justificationOptional = (cognitiveCalculusProver.prove(p.getAssumptions(), p.getGoal()));
-
-
-
-        if(justificationOptional.isPresent()){
-
-            System.out.println("Proved!");
-        } else {
-
-            System.out.println("No!");
-
-        }
     }
 
 
+
+    private static ColoredPrinter coloredPrinter = new ColoredPrinter.Builder(1, false)
+            .foreground(Ansi.FColor.WHITE).background(Ansi.BColor.BLACK)   //setting format
+            .build();
     public static void main(String[] args) throws Exception {
 
 
-        SecondOrderProver secondOrderProver = new SecondOrderProver();
-        Formula formula1 = Reader.readFormulaFromString("(forall x (= (+ x 0) x))");
-        Formula formula2 = Reader.readFormulaFromString("(forall P (if (and (P 0) (forall x (if (P x) (P (s x))))) (forall x (P x))))");
-        Formula formula3univ = Reader.readFormulaFromString("(forall Y (exists Z (forall x (iff (Z x) (Y  x)))))");
-
-        Formula goal = Reader.readFormulaFromString("(exists Z (forall x (Z x)))");
 
 
-        Formula temp = (Logic.getFalseFormula());
+        Formula f1 = Reader.readFormulaFromString("(forall (x y) (iff (= x y) (forall X (iff (X x) (X y)))))");
+        Formula f2 = Reader.readFormulaFromString("(TwentyFive joan)");
+        Formula f3 = Reader.readFormulaFromString("(Thirty John)");
+        Formula f4 = Reader.readFormulaFromString("(forall x (if (TwentyFive x) (not (Thirty x))))");
+
+        Formula goal = Reader.readFormulaFromString("(not (= joan john))");
 
 
-        Logic.transformSecondOrderToFirstOrderDeep(formula1);
+        Prover prover = new SecondOrderProver();
 
+        System.out.println(prover.prove(Sets.from(f1, f2, f3, f4), goal).get());
 
-        Sets.fromArray(new Formula[]{formula1, formula2, formula3univ, goal}).stream().map(Logic::transformSecondOrderToFirstOrderDeep).forEach(System.out::println);
-
-        long start = System.currentTimeMillis();
-
-        System.out.println(secondOrderProver.prove(Sets.fromArray(new Formula[]{formula1, formula2, formula3univ}), goal));
-
-
-        long end = System.currentTimeMillis();
-
-        System.out.println(end-start);
-
-    }
-
-    public static void mainl(String[] args) throws Exception {
-
-
-
-         SnarkWrapper.getInstance();
     }
 
 }

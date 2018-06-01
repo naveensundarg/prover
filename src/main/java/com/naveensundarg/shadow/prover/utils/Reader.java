@@ -147,9 +147,14 @@ public class Reader {
 
     }
 
-    public static Formula readFormula(Object input) throws ParsingException {
+    public static Formula readFormula(Object input)  {
 
-        return readFormula(input, Sets.newSet());
+        try {
+            return readFormula(input, Sets.newSet());
+        } catch (ParsingException e) {
+
+            throw new AssertionError(e.getMessage());
+        }
 
     }
 
@@ -521,6 +526,12 @@ public class Reader {
 
                 }
 
+                if(name.toString().endsWith("!")){
+
+
+                    return constructGeneralModal(list, variableNames);
+                }
+
                 return constructPredicate(list, variableNames);
 
 
@@ -595,6 +606,20 @@ public class Reader {
             Object formula = list.get(1);
 
             return new Possibility(readFormula(formula, variableNames));
+
+        }
+
+
+    }
+
+    private static Formula constructGeneralModal(List list, Set<String> variableNames) throws ParsingException {
+
+        if (list.isEmpty()) {
+            throw new ParsingException("Possibility expresion cannot be empty!");
+        }  else {
+            Object formula = list.get(1);
+
+            return new GeneralModal(Reader.readLogicValue(list.get(0)), (List<Formula>) list.subList(1, list.size()).stream().map(Reader::readFormula).collect(Collectors.toList()));
 
         }
 

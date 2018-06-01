@@ -38,7 +38,7 @@ public class SecondOrderProver implements Prover {
 
             Formula args3 = Reader.readFormulaFromString("(forall (x y1 y2 y3) (= (ARGS x) (ARGS y1 y2 y3)))");
 
-            Set<Formula> argAxioms = Sets.fromArray(new Formula[]{args1});
+            Set<Formula> argAxioms = Sets.fromArray(new Formula[]{});
             return folProver.
                     prove(Sets.union(assumptions.stream().map(Logic::transformSecondOrderToFirstOrderDeep).collect(Collectors.toSet()), argAxioms),
                             Logic.transformSecondOrderToFirstOrderDeep(formula));

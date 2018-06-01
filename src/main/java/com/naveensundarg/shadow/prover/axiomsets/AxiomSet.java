@@ -69,7 +69,7 @@ public interface AxiomSet {
 
                 try {
                     axioms.add(Reader.readFormula(value));
-                } catch (Reader.ParsingException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     errorOccured.set(true);
                 }

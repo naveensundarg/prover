@@ -217,7 +217,7 @@ public class ProblemReader {
 
                 return Reader.readFormula(entry.getValue());
 
-            } catch (Reader.ParsingException e) {
+            } catch (Exception e) {
 
                 throw new AssertionError("Parsing Exception:" + e.getMessage());
 
