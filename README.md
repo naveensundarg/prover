@@ -36,7 +36,7 @@ Naveen Sundar Govindarajulu. Given the Web, What is
 Intelligence, Really? Metaphilosophy, 43(4):361–532, 2012.
 
 
-## 
+## Resources
 For more details see:
 
 https://drive.google.com/open?id=0B9Vb2O21ibhaZTNLd21wd21adjg
