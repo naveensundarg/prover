@@ -26,4 +26,10 @@ achieves speed without sacrificing consistency. The
 prover also lets us add arbitrary inference schemata to the
 calculus by using a special-purpose language. While we use
 the prover in our simulations, describing the prover in more
-detail is out of scope for the present paper.4
+detail is out of scope for the present paper.
+
+## References
+
+[Bringsjord and Govindarajulu, 2012] Selmer Bringsjord and
+Naveen Sundar Govindarajulu. Given the Web, What is
+Intelligence, Really? Metaphilosophy, 43(4):361–532, 2012.
