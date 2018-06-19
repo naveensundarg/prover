@@ -37,7 +37,7 @@ public class CognitiveCalculusProver implements Prover {
      *
      */
     private static boolean defeasible = false;
-    private static boolean verbose = false;
+    private static boolean verbose = true;
     private final boolean reductio;
     private final boolean theoremsToNec = false;
     private final CognitiveCalculusProver parent;
@@ -97,13 +97,13 @@ public class CognitiveCalculusProver implements Prover {
                 collect(Collectors.toSet());
     }
 
-    private static <T> Set<T> formulaOfType(Set<Formula> formulas, Class c) {
+    protected static <T> Set<T> formulaOfType(Set<Formula> formulas, Class c) {
 
         return formulaeOfTypeWithConstraint(formulas, c, f -> true);
 
     }
 
-    private static <T> Set<T> level2FormulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, Predicate<Formula> constraint) {
+    protected static <T> Set<T> level2FormulaeOfTypeWithConstraint(Set<Formula> formulas, Class c, Predicate<Formula> constraint) {
 
         return formulas.
                 stream().
@@ -114,7 +114,7 @@ public class CognitiveCalculusProver implements Prover {
                 collect(Collectors.toSet());
     }
 
-    private static <T> Set<T> level2FormulaeOfType(Set<Formula> formulas, Class c) {
+    protected static <T> Set<T> level2FormulaeOfType(Set<Formula> formulas, Class c) {
 
         return level2FormulaeOfTypeWithConstraint(formulas, c, f -> true);
 
@@ -303,7 +303,7 @@ public class CognitiveCalculusProver implements Prover {
         return Optional.empty();
     }
 
-    private Optional<Justification> tryIfIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryIfIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
         if (formula instanceof Implication) {
 
             Implication implication = (Implication) formula;
@@ -331,7 +331,7 @@ public class CognitiveCalculusProver implements Prover {
             return Optional.empty();
         }
     }
-    private Optional<Justification> tryCounterFactIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryCounterFactIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
         if (formula instanceof CounterFactual) {
 
             CounterFactual counterFactual = (CounterFactual) formula;
@@ -359,7 +359,7 @@ public class CognitiveCalculusProver implements Prover {
             return Optional.empty();
         }
     }
-    private Optional<Justification> tryExistsIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryExistsIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
         if (formula instanceof Existential) {
 
             Existential existential = (Existential) formula;
@@ -386,7 +386,7 @@ public class CognitiveCalculusProver implements Prover {
         }
     }
 
-    private Optional<Justification> tryForAllIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryForAllIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
         if (formula instanceof Universal) {
 
             Universal universal = (Universal) formula;
@@ -443,7 +443,7 @@ public class CognitiveCalculusProver implements Prover {
         }
     }
 
-    private Optional<Justification> tryNEC(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryNEC(Set<Formula> base, Formula formula, Set<Formula> added) {
         if (formula instanceof Necessity) {
 
             tryLog("Trying to prove necessity", formula);
@@ -463,7 +463,7 @@ public class CognitiveCalculusProver implements Prover {
         }
     }
 
-    private Optional<Justification> tryPOS(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryPOS(Set<Formula> base, Formula formula, Set<Formula> added) {
         if (formula instanceof Not && ((Not) formula).getArgument() instanceof Possibility) {
 
             Formula core = ((Possibility) ((Not) formula).getArgument()).getFormula();
@@ -562,7 +562,7 @@ public class CognitiveCalculusProver implements Prover {
         return null;
     }
 
-    private Optional<Justification> tryAND(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryAND(Set<Formula> base, Formula formula, Set<Formula> added) {
 
         if (formula instanceof And) {
 
@@ -589,7 +589,7 @@ public class CognitiveCalculusProver implements Prover {
         return Optional.empty();
     }
 
-    private Optional<Justification> tryOR(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryOR(Set<Formula> base, Formula formula, Set<Formula> added) {
 
         Set<Or> level2ORs = level2FormulaeOfType(base, Or.class);
 
@@ -628,7 +628,7 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private Optional<Justification> tryReductio(Set<Formula> base, Formula formula, Set<Formula> added) {
+    protected Optional<Justification> tryReductio(Set<Formula> base, Formula formula, Set<Formula> added) {
 
         Formula negated = Logic.negated(formula);
         if (base.contains(negated) || formula.toString().startsWith("$")) {
@@ -652,7 +652,7 @@ public class CognitiveCalculusProver implements Prover {
                 Optional.empty();
     }
 
-    private Optional<Justification> proveAgentClosure(Set<Formula> base, Formula goal) {
+    Optional<Justification> proveAgentClosure(Set<Formula> base, Formula goal) {
 
         if (goal instanceof Belief) {
 
@@ -724,7 +724,7 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
+    protected Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
 
 
         breakUpBiConditionals(base);
@@ -740,6 +740,7 @@ public class CognitiveCalculusProver implements Prover {
         expandUniversalElim(base, added, goal);
         expandKnowledgeConjunctions(base, added);
         expandNotExistsToForallNot(base, added);
+
         if(theoremsToNec){
            expandTheoremsToNecessity(base, added, goal);
         }
@@ -1146,7 +1147,7 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private Set<Formula> shadow(Set<Formula> formulas) {
+    protected Set<Formula> shadow(Set<Formula> formulas) {
         return formulas.stream().map(f -> f.shadow(1)).collect(Collectors.toSet());
     }
 
@@ -1180,7 +1181,7 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private static void tryAgentClosure(Formula formula){
+    protected static void tryAgentClosure(Formula formula){
                 if(!verbose) return;
 
         coloredPrinter.clear();

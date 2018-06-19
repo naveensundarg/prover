@@ -778,4 +778,13 @@ public class Logic {
 
     }
 
+
+    public static Formula instantiateActionType(Value agent, Value time, Value actionType){
+
+
+        Value action = new Compound("action", new Value[]{agent, actionType});
+
+        return new Predicate("happens", new Value[]{action, new Compound("next", new Value[]{time})});
+    }
+
 }

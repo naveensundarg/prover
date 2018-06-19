@@ -187,4 +187,41 @@ public class CommonUtils {
         return level2FormulaeOfTypeWithConstraint(formulas, c, f -> true);
 
     }
+
+
+    public static <U, V> Optional<Map<V,U>> reverseMap(Map<U,V> map){
+
+        Map<V, U> reversedMap = CollectionUtils.newMap();
+
+        for(Map.Entry<U, V> entry : map.entrySet()){
+
+            if(reversedMap.containsKey(entry.getValue())){
+                return  Optional.empty();
+            } else {
+
+                reversedMap.put(entry.getValue(), entry.getKey());
+            }
+        }
+
+        return Optional.of(reversedMap);
+
+    }
+
+    public static <U, V> Map<V,Set<U>> reverseMapSet(Map<U,V> map){
+
+        Map<V, Set<U>> reversedMap = CollectionUtils.newMap();
+
+        for(Map.Entry<U, V> entry : map.entrySet()){
+
+            if(!reversedMap.containsKey(entry.getValue())){
+
+                reversedMap.put(entry.getValue(), Sets.newSet());
+            }
+
+            reversedMap.put(entry.getValue(), Sets.add(reversedMap.get(entry.getValue()), entry.getKey()));
+        }
+
+        return reversedMap;
+
+    }
 }

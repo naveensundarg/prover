@@ -171,7 +171,7 @@ public class PropositionalModalConverter {
 /*
             Variable newVariable = SymbolGenerator.newVariable(problem);
 
-            Formula inner = convertInternal(((Possibility) formula).getFormula(), problem);
+            Formula inner = convertInternal(((Possibility) formula).getTriggeringCondition(), problem);
 
             Map<Variable, Value> map = CollectionUtils.newMap();
 
