@@ -7,6 +7,7 @@ import com.naveensundarg.shadow.prover.core.internals.FirstOrderAntiUnifier;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
 import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
@@ -265,17 +266,70 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
     }
 
 
-    private Set<Formula> induce(Set<Formula> currentAssumptions){
+    private Set<Formula> induce(Set<Formula> base){
 
 
-        Set<Belief> beliefs =  level2FormulaeOfType(currentAssumptions, Belief.class);
+        Set<Formula> expanded = Sets.newSet();
+        expanded.addAll(base);
+
+        Set<Belief> beliefs =  level2FormulaeOfType(base, Belief.class);
+
+        Set<Value> agents = beliefs.stream().map(Belief::getAgent).collect(Collectors.toSet());
+
+        agents.forEach(agent->{
+
+            List<Value> values = CollectionUtils.newEmptyList();
 
 
-        List<Value> values = CollectionUtils.newEmptyList();
+            beliefs.stream().filter(belief -> belief.getAgent().equals(agent)).forEach(belief -> {
 
-        
 
-        return currentAssumptions;
+                List<Value> matchingActions = base.stream().filter(formula ->
+                                formula instanceof Predicate &&
+                                ((Predicate) formula).getName().equals("happens") &&
+                                ((Predicate) formula).getArguments()[1].equals(
+                                        new Compound("next",
+                                                new Value[]{belief.getTime()}))).
+                        map(f->((Predicate) f).getArguments()[0].getArguments()[1]).collect(Collectors.toList());
+
+                try {
+                    if(!matchingActions.isEmpty()){
+
+                        values.add(new Compound("match", new Value[]{Reader.readLogicValueFromString(belief.getFormula().toString()),
+
+                                Reader.readLogicValueFromString(matchingActions.get(0).toString())
+                        }));
+                    }
+
+                } catch (Reader.ParsingException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            if(values.size() >= 2){
+
+                Value abstraction  =  FirstOrderAntiUnifier.antiUnify(values);
+
+
+                try {
+                    Trait trait = new Trait(new ArrayList<>(abstraction.variablesPresent()),
+                                            agent, Reader.NOW, Reader.readFormulaFromString(abstraction.getArguments()[0].toString()),
+                                            abstraction.getArguments()[1]);
+
+
+
+                    expanded.add(trait);
+
+                    System.out.println(trait);
+
+                } catch (Reader.ParsingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+        return expanded;
     }
 
 

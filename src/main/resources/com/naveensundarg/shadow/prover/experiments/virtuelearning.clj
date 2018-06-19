@@ -2,20 +2,16 @@
 
 
  :assumptions { ;; A's state of mind.
-                P2.1 (Believes! a t1 (holds (state x old) t1))
+                P2.1 (Believes! a t1 (holds (state x new) t1))
                 P2.2 (Believes! a t2 (holds (state y old) t2))
 
                 ;; D observes a's utterances
-                P4.1 (happens (action a (utter (state x old))) (next t1))
-                P4.1 (happens (action a (utter (state y old))) (next t2))
+                P4.1 (happens (action a (utters (state x new))) (next t1))
+                P4.2 (happens (action a (utters (state y old))) (next t2))
 
                 Back (holds (state u old) now)
 
-                Admire (Admire d a)
-                Trait (Trait! [?obj ?value ?time] a now (holds (state ?obj ?value) ?time)
-                             (utters (state ?obj ?value)))
+                Admire (Admire d a)}
 
-                }
-;;(happens (action  d (utters  (state  u old))) now)
- :goal (happens (action  d (utters  (state  u old))) (next now))
- }
+
+ :goal (happens (action  d (utters  (state  u old))) (next now))}
