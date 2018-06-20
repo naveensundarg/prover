@@ -60,6 +60,7 @@ public class Reader {
     private static final Symbol COMMUNICATES = Symbol.newSymbol("Communicates!");
 
     private static final Symbol OUGHT = Symbol.newSymbol("Ought!");
+    private static final Symbol TRAIT = Symbol.newSymbol("Trait!");
 
 
     private static final Symbol NEC = Symbol.newSymbol("nec");
@@ -67,16 +68,16 @@ public class Reader {
 
     private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
 
-    public static final Value NOW;
+    public static final Value NOW, I;
 
 
     static {
         try {
 
-            Parseable pbr = Parsers.newParseable(new StringReader("now"));
-            Parser p = Parsers.newParser(defaultConfiguration());
 
-            NOW = readLogicValue(p.nextValue(pbr));
+            NOW = readLogicValue("NOW");
+            I = readLogicValueFromString("I");
+
         } catch (Exception e) {
             throw new AssertionError("Could not instantiate basic constant: now");
         }
@@ -147,7 +148,7 @@ public class Reader {
 
     }
 
-    public static Formula readFormula(Object input)  {
+    public static Formula readFormula(Object input) {
 
         try {
             return readFormula(input, Sets.newSet());
@@ -307,10 +308,10 @@ public class Reader {
 
 
                     List<Phrase> assumptions = CollectionUtils.newEmptyList();
-                    for(int i = 1; i< list.size() - 2 ;i++){
+                    for (int i = 1; i < list.size() - 2; i++) {
                         assumptions.add(readPhrase(list.get(i), variableNames));
                     }
-                    Phrase D = readPhrase(list.get(list.size()-1), variableNames);
+                    Phrase D = readPhrase(list.get(list.size() - 1), variableNames);
 
                     if (D instanceof Deduction) {
                         return new AssumeStar(assumptions, (Deduction) D);
@@ -526,7 +527,13 @@ public class Reader {
 
                 }
 
-                if(name.toString().endsWith("!")){
+                if (name.equals(TRAIT)) {
+
+                    return constructTrait(list, variableNames);
+
+                }
+
+                if (name.toString().endsWith("!")) {
 
 
                     return constructGeneralModal(list, variableNames);
@@ -539,11 +546,11 @@ public class Reader {
 
         }
 
-        if(input.toString().equals("true")){
+        if (input.toString().equals("true")) {
             return new Atom("true");
         }
 
-        if(input.toString().equals("false")){
+        if (input.toString().equals("false")) {
             return new Atom("false");
         }
 
@@ -616,7 +623,7 @@ public class Reader {
 
         if (list.isEmpty()) {
             throw new ParsingException("Possibility expresion cannot be empty!");
-        }  else {
+        } else {
             Object formula = list.get(1);
 
             return new GeneralModal(Reader.readLogicValue(list.get(0)), (List<Formula>) list.subList(1, list.size()).stream().map(Reader::readFormula).collect(Collectors.toList()));
@@ -779,6 +786,85 @@ public class Reader {
                 Object ought = list.get(3);
 
                 return new Ought(readLogicValue(agent), NOW, readFormula(formula, variableNames), readFormula(ought, variableNames));
+
+            }
+        }
+    }
+
+    // (Trait! [vars] agent time Formula value)
+    private static Formula constructTrait(List list, Set<String> outerVariableNames) throws ParsingException {
+        if (list.isEmpty()) {
+            throw new ParsingException("Trait expresion cannot be empty!");
+        } else if (list.size() != 6 && list.size() != 5) {
+            throw new ParsingException("Trait expresion has wrong number of arguments! " + list);
+
+        } else {
+
+            Set<String> variableNames;
+
+            List<Variable> traitVars;
+            Object varListObject = list.get(1);
+            if (varListObject instanceof List) {
+                List listOfVars = (List) varListObject;
+                Variable[] variables = new Variable[((List) varListObject).size()];
+
+                variableNames = Sets.newSet();
+                for (int i = 0; i < variables.length; i++) {
+                    Object varObject = listOfVars.get(i);
+                    if (varObject instanceof Symbol) {
+
+                        variables[i] = new Variable(((Symbol) varObject).getName());
+
+                        variableNames.add(((Symbol) varObject).getName());
+                    } else {
+
+                        throw new ParsingException("Variable should be a string: " + varObject);
+
+                    }
+
+                }
+                Set<String> conflicts = Sets.intersection(outerVariableNames, variableNames);
+                if (!conflicts.isEmpty()) {
+                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
+                }
+
+                traitVars = Arrays.stream(variables).collect(Collectors.toList());
+            } else {
+
+
+                variableNames = Sets.with(((Symbol) varListObject).getName());
+
+                Set<String> conflicts = Sets.intersection(outerVariableNames, variableNames);
+                if (!conflicts.isEmpty()) {
+                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
+                }
+
+                traitVars = CollectionUtils.newEmptyList();
+                traitVars.add(new Variable(((Symbol) varListObject).getName()));
+            }
+            Set<String> allVars = Sets.union(outerVariableNames, variableNames);
+            if (list.size() == 6) {
+
+
+                Object agent = list.get(2);
+                Object time = list.get(3);
+                Object formula = list.get(4);
+
+                Object actionType = list.get(5);
+
+                return new Trait(traitVars, readLogicValue(agent), readLogicValue(time),
+                        readFormula(formula, allVars),
+                        readLogicValue(actionType, allVars));
+
+            } else {
+
+                Object agent = list.get(2);
+                Object formula = list.get(3);
+                Object actionType = list.get(4);
+
+                return new Trait(traitVars, readLogicValue(agent), NOW,
+                        readFormula(formula, allVars),
+                        readLogicValue(actionType, allVars));
 
             }
         }
