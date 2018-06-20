@@ -3,7 +3,7 @@ package com.naveensundarg.shadow.prover.core.ccprovers;
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.Logic;
-import com.naveensundarg.shadow.prover.utils.Problem;
+import com.naveensundarg.shadow.prover.utils.*;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
@@ -17,10 +17,6 @@ import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.CommonUtils;
-import com.naveensundarg.shadow.prover.utils.Constants;
-import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.time.Duration;
 import java.util.*;
@@ -79,6 +75,8 @@ public class CognitiveCalculusProver implements Prover {
     private static void log(String message) {
 
         if (verbose) {
+
+
 
             System.out.println(message);
         } else {
@@ -729,6 +727,7 @@ public class CognitiveCalculusProver implements Prover {
 
         breakUpBiConditionals(base);
         expandR4(base, added);
+        expandSelfBelief(base, added);
         expandPerceptionToKnowledge(base, added);
         expandModalConjunctions(base, added);
         expandModalImplications(base, added);
@@ -847,11 +846,30 @@ public class CognitiveCalculusProver implements Prover {
                 stream().
                 filter(f -> f instanceof Knowledge).
                 map(f -> ((Knowledge) f).getFormula()).
-                filter(f -> !added.contains(f)).
                 collect(Collectors.toSet());
 
         if(!base.containsAll(derived)){
                  expansionLog(String.format("Knows(P) ==> P", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
+
+        }
+
+        base.addAll(derived);
+        added.addAll(derived);
+
+    }
+
+
+    private void expandSelfBelief(Set<Formula> base, Set<Formula> added) {
+
+        Set<Formula> derived = base.
+                stream().
+                filter(f -> f instanceof Belief).
+                filter(f-> ((Belief) f).getAgent().equals(Reader.I)).
+                map(f -> ((Belief) f).getFormula()).
+                collect(Collectors.toSet());
+
+        if(!base.containsAll(derived)){
+            expansionLog(String.format("Belief(I, P) ==> P", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
 
         }
 
@@ -1152,7 +1170,7 @@ public class CognitiveCalculusProver implements Prover {
     }
 
 
-    private static void expansionLog(String principle, Set<Formula> newSet) {
+    protected static void expansionLog(String principle, Set<Formula> newSet) {
         if(!verbose) return;
 
         if (!newSet.isEmpty()) {
@@ -1169,7 +1187,7 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    private static void tryLog(String principle, Formula goal) {
+    protected static void tryLog(String principle, Formula goal) {
         if(!verbose) return;
 
 
@@ -1193,7 +1211,7 @@ public class CognitiveCalculusProver implements Prover {
             coloredPrinter.println("");
     }
 
-    private static void logFOLCall(boolean success, Set<Formula> newSet, Formula goal) {
+    protected static void logFOLCall(boolean success, Set<Formula> newSet, Formula goal) {
 
         if(!verbose) return;
         if(success){

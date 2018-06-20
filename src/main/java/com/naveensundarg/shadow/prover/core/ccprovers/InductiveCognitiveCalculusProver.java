@@ -199,6 +199,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
         expanded.addAll(base);
 
 
+
         Set<Formula> admires =  base.stream().filter(x-> x instanceof Predicate && ((Predicate) x).getName().equals("Admire")).collect(Collectors.toSet());
 
         admires.stream().forEach(x->{
@@ -211,11 +212,12 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
 
 
 
-            expanded.addAll(traits.stream().map(trait->
-                    new Trait(trait.getTraitVariables(), a1, trait.getTime(),
-                              trait.getTriggeringCondition(),
-                              trait.getActionType())).
-                    collect(Collectors.toSet()));
+            Set<Formula> newTraits = traits.stream().map(trait->
+                            new Trait(trait.getTraitVariables(), a1, trait.getTime(),
+                                    trait.getTriggeringCondition(),
+                                    trait.getActionType())).collect(Collectors.toSet());
+            expansionLog("transfering traits", newTraits);
+            expanded.addAll(newTraits);
 
         });
 
@@ -240,7 +242,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
             Prover prover = SnarkWrapper.getInstance();
 
             Optional<org.apache.commons.lang3.tuple.Pair<Justification, Set<Map<Variable, Value>>>> bindingsOpt =
-                    prover.proveAndGetMultipleBindings(shadow(Sets.remove(base, trait)),  triggeringCondition, trait.getTraitVariables());
+                    prover.proveAndGetMultipleBindings(shadow(Sets.remove(base, trait)),  triggeringCondition.shadow(1), trait.getTraitVariables());
 
             if(bindingsOpt.isPresent()){
 
@@ -285,6 +287,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
 
 
                 List<Value> matchingActions = base.stream().filter(formula ->
+                                !formula.equals(belief.getFormula()) &&
                                 formula instanceof Predicate &&
                                 ((Predicate) formula).getName().equals("happens") &&
                                 ((Predicate) formula).getArguments()[1].equals(
@@ -312,15 +315,21 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
 
 
                 try {
-                    Trait trait = new Trait(new ArrayList<>(abstraction.variablesPresent()),
-                                            agent, Reader.NOW, Reader.readFormulaFromString(abstraction.getArguments()[0].toString()),
-                                            abstraction.getArguments()[1]);
+
+                    if(!abstraction.getArguments()[0].toString().startsWith("?")){
+
+                        Trait trait = new Trait(new ArrayList<>(abstraction.variablesPresent()),
+                                agent, Reader.NOW, Reader.readFormulaFromString(abstraction.getArguments()[0].toString()),
+                                abstraction.getArguments()[1]);
+
+                        expanded.add(trait);
+
+                        System.out.println(trait);
+                    }
 
 
 
-                    expanded.add(trait);
 
-                    System.out.println(trait);
 
                 } catch (Reader.ParsingException e) {
                     e.printStackTrace();

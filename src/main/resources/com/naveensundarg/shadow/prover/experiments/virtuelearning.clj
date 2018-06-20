@@ -2,14 +2,14 @@
 
 
  :assumptions { ;; A's state of mind.
-                P2.1 (Believes! a t1 (holds (state x new) t1))
-                P2.2 (Believes! a t2 (holds (state y old) t2))
+                P1 (Believes! I now (and (Knows! a t1 (holds (state x new) t1))
+                                         (Knows! a t2 (holds (state y old) t2))))
 
                 ;; D observes a's utterances
-                P4.1 (happens (action a (utters (state x new))) (next t1))
-                P4.2 (happens (action a (utters (state y old))) (next t2))
+                P2 (Perceives! a t1 (happens (action a (utters (state x new))) (next t1)))
+                P3 (Perceives! a t2 (happens (action a (utters (state y old))) (next t2)))
 
-                Back (holds (state u old) now)
+                Background (Believes! I t0 (holds (state u old) now))
 
                 Admire (Admire d a)}
 

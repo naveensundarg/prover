@@ -68,16 +68,16 @@ public class Reader {
 
     private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
 
-    public static final Value NOW;
+    public static final Value NOW, I;
 
 
     static {
         try {
 
-            Parseable pbr = Parsers.newParseable(new StringReader("now"));
-            Parser p = Parsers.newParser(defaultConfiguration());
 
-            NOW = readLogicValue(p.nextValue(pbr));
+            NOW = readLogicValue("NOW");
+            I = readLogicValueFromString("I");
+
         } catch (Exception e) {
             throw new AssertionError("Could not instantiate basic constant: now");
         }
