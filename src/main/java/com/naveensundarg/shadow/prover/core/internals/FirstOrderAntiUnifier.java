@@ -1,7 +1,6 @@
 package com.naveensundarg.shadow.prover.core.internals;
 
 import clojure.lang.Var;
-import com.naveensundarg.common.Utils;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
@@ -18,7 +17,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.naveensundarg.common.Utils.mapWith;
+import static com.naveensundarg.shadow.prover.utils.CollectionUtils.mapWith;
+
 
 public class FirstOrderAntiUnifier {
 
@@ -79,7 +79,7 @@ public class FirstOrderAntiUnifier {
             if(bindings.containsKey(left) && !bindings.get(left).contains(right)){
 
 
-                Variable var =  (Variable) Utils.readValueFromString("?x" + variableNumber.getAndIncrement());
+                Variable var =  (Variable) CommonUtils.readValueFromString("?x" + variableNumber.getAndIncrement());
 
                 return Pair.of(var, mapWith(left, var, right, var));
 
@@ -94,7 +94,7 @@ public class FirstOrderAntiUnifier {
             if(bindings.containsKey(right) && !bindings.get(right).contains(right)){
 
 
-                Variable var =  (Variable) Utils.readValueFromString("?x" + variableNumber.getAndIncrement());
+                Variable var =  (Variable) CommonUtils.readValueFromString("?x" + variableNumber.getAndIncrement());
 
                 return Pair.of(var, mapWith(left, var, right, var));
 
@@ -105,7 +105,7 @@ public class FirstOrderAntiUnifier {
         if(left instanceof Constant && right instanceof Constant){
 
 
-            Variable var =  (Variable) Utils.readValueFromString("?x" + variableNumber.getAndIncrement());
+            Variable var =  (Variable) CommonUtils.readValueFromString("?x" + variableNumber.getAndIncrement());
 
             return Pair.of(var, mapWith(left, var, right, var));
         }
@@ -115,7 +115,7 @@ public class FirstOrderAntiUnifier {
 
             if ((!left.getName().equals(right.getName())) || (left.getArguments().length != right.getArguments().length)) {
 
-                Variable var =  (Variable) Utils.readValueFromString("?x" + variableNumber.getAndIncrement());
+                Variable var =  (Variable) CommonUtils.readValueFromString("?x" + variableNumber.getAndIncrement());
                 return Pair.of(var, mapWith(left, var, right, var));
 
             }
@@ -141,7 +141,7 @@ public class FirstOrderAntiUnifier {
 
         }
 
-        Variable var =  (Variable) Utils.readValueFromString("?x" + variableNumber.getAndIncrement());
+        Variable var =  (Variable) CommonUtils.readValueFromString("?x" + variableNumber.getAndIncrement());
 
 
         return Pair.of(var, mapWith(left, var, right, var));

@@ -1,6 +1,7 @@
 package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.value.Value;
 import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
 import us.bpsm.edn.parser.Parsers;
@@ -223,5 +224,15 @@ public class CommonUtils {
 
         return reversedMap;
 
+    }
+
+    public static Value readValueFromString(String s) {
+        Value term = null;
+        try {
+            term = Reader.readLogicValueFromString(s);
+        } catch (Reader.ParsingException e) {
+            e.printStackTrace();
+        }
+        return term;
     }
 }

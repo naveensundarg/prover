@@ -115,4 +115,24 @@ public class CollectionUtils {
 
 
     }
+
+    public static <U,V> Map<U, V> mapWith(U  u, V v){
+
+        Map<U, V> map = CollectionUtils.newMap();
+        map.put(u, v);
+
+        return map;
+
+    }
+
+    public static <U,V> Map<U, V> mapWith(U  u1, V v1, U u2, V v2){
+
+        Map<U, V> map = CollectionUtils.newMap();
+        map.put(u1, v1);
+        map.put(u2, v2);
+
+        return map;
+
+    }
 }
+
