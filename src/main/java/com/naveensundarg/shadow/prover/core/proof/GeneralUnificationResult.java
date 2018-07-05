@@ -3,7 +3,6 @@ package com.naveensundarg.shadow.prover.core.proof;
 import com.naveensundarg.shadow.prover.representations.formula.FormulaVariable;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.sun.javafx.collections.MappingChange;
 
 import java.util.Collections;
 import java.util.Map;
