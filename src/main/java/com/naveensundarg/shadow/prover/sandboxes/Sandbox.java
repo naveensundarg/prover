@@ -32,16 +32,30 @@ public class Sandbox {
 
 
 
-    public static void main1(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
+
+
+        Formula f1 = Reader.readFormulaFromString("(forall (x y) (iff (= x y) (forall X (iff (X x) (X y)))))");
+        Formula f2 = Reader.readFormulaFromString("(TwentyFive joan)");
+        Formula f3 = Reader.readFormulaFromString("(Thirty John)");
+        Formula f4 = Reader.readFormulaFromString("(forall x (if (TwentyFive x) (not (Thirty x))))");
+
+        Formula goal = Reader.readFormulaFromString("(= 5 (+ 2 3))");
+
+
+        Prover prover = new CognitiveCalculusProver();
+
+        System.out.println(prover.prove(Sets.from(), goal).get());
     }
+
 
 
 
     private static ColoredPrinter coloredPrinter = new ColoredPrinter.Builder(1, false)
             .foreground(Ansi.FColor.WHITE).background(Ansi.BColor.BLACK)   //setting format
             .build();
-    public static void main(String[] args) throws Exception {
+    public static void main2(String[] args) throws Exception {
 
 
 

@@ -19,11 +19,26 @@ public class AtomicJustification extends Justification {
 
     }
 
+    public AtomicJustification(String name){
+        this.name = name;
 
+        this.inputs = null;
 
+    }
+
+    public Formula[] getInputs() {
+        return inputs;
+    }
 
     @Override
     public String toString() {
-        return "(" + name + Arrays.toString(inputs) + ")";
+        if(inputs!=null){
+
+            return "(" + name + Arrays.toString(inputs) + ")";
+
+        } else {
+
+            return name;
+        }
     }
 }

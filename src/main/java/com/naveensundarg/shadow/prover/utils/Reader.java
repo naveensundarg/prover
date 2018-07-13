@@ -10,7 +10,6 @@ import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import us.bpsm.edn.Symbol;
 import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
@@ -70,6 +69,9 @@ public class Reader {
 
     public static final Value NOW, I;
 
+    private static final Map<String,String> SNARK_BUILTIN_RELATIONS = CollectionUtils.newMap();
+    private static final Map<String,String> SNARK_BUILTIN_FUNCTIONS = CollectionUtils.newMap();
+
 
     static {
         try {
@@ -77,6 +79,17 @@ public class Reader {
 
             NOW = readLogicValue("NOW");
             I = readLogicValueFromString("I");
+
+            SNARK_BUILTIN_RELATIONS.put("<", "$$$less");
+            SNARK_BUILTIN_RELATIONS.put("<=", "$$$lesseq");
+            SNARK_BUILTIN_RELATIONS.put(">", "$$$greater");
+            SNARK_BUILTIN_RELATIONS.put(">=", "$$$greatereq");
+
+            SNARK_BUILTIN_FUNCTIONS.put("+", "$$sum");
+            SNARK_BUILTIN_FUNCTIONS.put("-", "$$difference");
+            SNARK_BUILTIN_FUNCTIONS.put("*", "$$produce");
+            SNARK_BUILTIN_FUNCTIONS.put("/", "$$quotient_r");
+
 
         } catch (Exception e) {
             throw new AssertionError("Could not instantiate basic constant: now");
@@ -137,7 +150,8 @@ public class Reader {
 
                     arguments[i - 1] = readLogicValue(list.get(i), variableNames);
                 }
-                return new Compound(name, arguments);
+
+                return new Compound(SNARK_BUILTIN_FUNCTIONS.getOrDefault(name, name), arguments);
             }
             throw new ParsingException("name should be a string" + nameObject);
 
@@ -263,7 +277,9 @@ public class Reader {
                 throw new ParsingException("Could not resolve the method " + name);
             } else {
 
-                return new Atom(((Symbol) input).getName());
+
+                String atomName = ((Symbol) input).getName();
+                return new Atom(SNARK_BUILTIN_RELATIONS.getOrDefault(atomName, atomName));
             }
 
         }
@@ -359,7 +375,8 @@ public class Reader {
     private static Formula readFormula(Object input, Set<String> variableNames) throws ParsingException {
 
         if (input instanceof Symbol) {
-            return new Atom(((Symbol) input).getName());
+            String name = ((Symbol) input).getName();
+            return new Atom(SNARK_BUILTIN_RELATIONS.getOrDefault(name, name));
         }
 
         if (input instanceof List) {
@@ -964,9 +981,7 @@ public class Reader {
 
                 String name = ((Symbol) nameObject).getName();
 
-                if (name.startsWith("$")) {
-                    throw new AssertionError("Atom and predicate names cannot start with a $: " + name);
-                }
+
 
                 Value[] values = new Value[list.size() - 1];
 
@@ -975,7 +990,8 @@ public class Reader {
                     values[i - 1] = readLogicValue(list.get(i), variableNames);
                 }
 
-                return new Predicate(name, values);
+
+                return new Predicate(SNARK_BUILTIN_RELATIONS.getOrDefault(name, name), values);
 
             } else {
                 throw new ParsingException("Name of predicate should be a string! " + nameObject);

@@ -15,12 +15,13 @@ public class CompoundJustification extends Justification {
 
     }
 
-
-
+    public List<Justification> getSubs() {
+        return subs;
+    }
 
     @Override
     public String toString() {
         return "(" + name +"\n"+
-                "    "+ subs +")";
+                " "+ subs +")";
     }
 }

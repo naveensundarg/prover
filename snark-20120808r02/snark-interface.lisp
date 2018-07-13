@@ -45,7 +45,7 @@
 	    (assert `(= ,(+ i j) (+ ,j ,i ))))))
 
 (defun assert-domain (end)
-  (assert `(forall ((?p Number))
+  (assert `(forall (?p)
 	    (implies (Prior ?p ,end)
 	     ,(cons 'or (loop for i from 0 to end collect 
 		       `(= ,i ?p)))))))
@@ -56,10 +56,10 @@
 
 
 
-(defun setup-snark (&key (time-limit 500) (verbose t))
+(defun setup-snark (&key (time-limit 500) (verbose nil))
 
   (snark:initialize :verbose  verbose)
-  ;(if (not verbose) (snark-deverbose) )
+  (if (not verbose) (snark-deverbose) )
   (snark:run-time-limit time-limit)
   (snark:assert-supported t)
   (snark:assume-supported t)
@@ -69,9 +69,8 @@
   (snark::declare-code-for-numbers)
   
   (snark:allow-skolem-symbols-in-answers nil)
-  ;(assert-domain 10)
-  ;(assert-add-table 10)
-  )
+  (assert-domain 10)
+  (assert-add-table 10))
 
 
 
