@@ -36,15 +36,15 @@ public class Sandbox {
 
 
 
-        Formula f1 = Reader.readFormulaFromString("(forall (x y) (iff (= x y) (forall X (iff (X x) (X y)))))");
+        Formula f1 = Reader.readFormulaFromString("(forall (x y) (iff (= x y) (forall Q (iff (Q x) (Q y)))))");
         Formula f2 = Reader.readFormulaFromString("(TwentyFive joan)");
-        Formula f3 = Reader.readFormulaFromString("(Thirty John)");
+        Formula f3 = Reader.readFormulaFromString("(Thirty john)");
         Formula f4 = Reader.readFormulaFromString("(forall x (if (TwentyFive x) (not (Thirty x))))");
 
-        Formula goal = Reader.readFormulaFromString("(= 5 (+ 2 3))");
+        Formula goal = Reader.readFormulaFromString("(exists [x] (< 3 6))");
 
 
-        Prover prover = new CognitiveCalculusProver();
+        Prover prover = SnarkWrapper.getInstance();
 
         System.out.println(prover.prove(Sets.from(), goal).get());
     }
