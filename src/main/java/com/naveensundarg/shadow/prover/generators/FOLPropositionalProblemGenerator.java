@@ -1,19 +1,16 @@
 package com.naveensundarg.shadow.prover.generators;
 
 
-import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.proof.AtomicJustification;
+import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.ImmutablePair;
-import com.naveensundarg.shadow.prover.utils.Pair;
-import com.naveensundarg.shadow.prover.utils.Sets;
+import com.naveensundarg.shadow.prover.utils.*;
 
 import javax.swing.text.html.Option;
 import java.util.*;
@@ -24,9 +21,8 @@ import java.util.stream.Collectors;
 
 public class FOLPropositionalProblemGenerator {
 
-    static Prover prover;
+   static Prover prover = SnarkWrapper.getInstance();
 
-    private final int maxLiteralsInClause;
     private final int maxAtoms;
     private final int totalClauses;
     private final int maxArity;
@@ -42,10 +38,9 @@ public class FOLPropositionalProblemGenerator {
         generatorParams.maxLiteralsInClause = 5;
         generatorParams.clauses = 5;
         generatorParams.maxArity = 3;
-        generatorParams.maxTermDepth = 1;
+        generatorParams.maxTermDepth = 2;
         generatorParams.maxFormulaDepth = 2;
-        generatorParams.maxInferenceDepth = 8;
-
+        generatorParams.maxInferenceDepth = 20;
         FOLPropositionalProblemGenerator folPropositionalProblemGenerator = new FOLPropositionalProblemGenerator(generatorParams);
 
         Pair<Set<Formula>, Formula> problem = folPropositionalProblemGenerator.generateProblem();
@@ -56,12 +51,14 @@ public class FOLPropositionalProblemGenerator {
         System.out.println("------");
 
         System.out.println(problem.second());
+        System.out.println(problem.second().getWeight());
+
     }
 
     private FOLPropositionalProblemGenerator(GeneratorParams generatorParams) {
 
         this.maxAtoms = generatorParams.maxAtoms;
-        this.maxLiteralsInClause = generatorParams.maxLiteralsInClause;
+        int maxLiteralsInClause = generatorParams.maxLiteralsInClause;
         this.totalClauses = generatorParams.clauses;
         this.maxArity = generatorParams.maxArity;
         this.maxTermDepth = generatorParams.maxTermDepth;
@@ -100,7 +97,27 @@ public class FOLPropositionalProblemGenerator {
 
             f = formulaOptional.get();
         }
-        for (int i = 0; i < maxInferenceDepth + 1; i++) {
+
+/*
+        for(int i =0; i< 1000; i ++){
+
+            Formula randomConclusion = (generateRandomFormula(0, CollectionUtils.newEmptyList()));
+
+            if(!formulae.contains(randomConclusion)){
+
+
+                Optional<Integer> proofLength =  prover.proofLength(formulae, randomConclusion);
+
+                if(proofLength.isPresent() && proofLength.get()>= 3){
+
+                    return ImmutablePair.from(formulae, f);
+
+                }
+            }
+        }
+*/
+Map<Formula, Integer> proofs = CollectionUtils.newMap();
+      for (int i = 0; i < maxInferenceDepth + 1; i++) {
 
             formulaOptional = randomlyInfer(assumptionBase, maxFormulaDepth, 0);
 
@@ -111,7 +128,16 @@ public class FOLPropositionalProblemGenerator {
                 f = formulaOptional.get();
 
             }
-        }
+
+            Optional<Integer> proofLength =  prover.proofLength(formulae, f);
+
+          if(proofLength.isPresent() && proofLength.get()>= 10){
+
+              return ImmutablePair.from(formulae, f);
+
+          }
+
+      }
 
 
         return ImmutablePair.from(formulae, f);
@@ -127,7 +153,7 @@ public class FOLPropositionalProblemGenerator {
 
     private Variable generateRandomVariable() {
 
-        return new Variable("?x" + ThreadLocalRandom.current().nextInt(0,100));
+        return new Variable(Names.VARIABLES[ThreadLocalRandom.current().nextInt(Names.VARIABLES.length)]);
 
     }
 
@@ -136,9 +162,10 @@ public class FOLPropositionalProblemGenerator {
         List<String> scope = new ArrayList<>(Sets.difference(Arrays.stream(Names.VARIABLES).collect(Collectors.toSet()), exclusions.stream().map(Variable::toString).collect(Collectors.toSet())));
 
 
-        return new Variable("?x" + ThreadLocalRandom.current().nextInt(0,100));
+        return new Variable(scope.get(ThreadLocalRandom.current().nextInt(scope.size())));
 
     }
+
     private Value generateRandomGroundValue(int depth) {
 
         if (depth > maxTermDepth || ThreadLocalRandom.current().nextBoolean()) {
@@ -186,11 +213,22 @@ public class FOLPropositionalProblemGenerator {
 
         if (depth > maxFormulaDepth || ThreadLocalRandom.current().nextBoolean()) {
 
-            return generateRandomPredicate(variables);
+            Formula f = generateRandomPredicate(variables);
+            f.setAssumptions(Sets.with(f));
+
+            return f;
         } else {
 
 
-            Supplier generateAnd = () -> new And(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
+            Supplier generateAnd = () -> {
+
+                Formula f1 = generateRandomFormula(depth + 1, variables);
+                Formula f2 = generateRandomFormula(depth + 1, variables);
+                Formula and = new And(f1, f2);
+                and.setJustification(new CompoundJustification("and-intro", CollectionUtils.listOf(f1.getJustification(), f2.getJustification())));
+                return and;
+            };
+
             Supplier generateOr = () -> new Or(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
             Supplier generateIf = () -> new Implication(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
             Supplier generateIff = () -> new BiConditional(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
@@ -200,13 +238,13 @@ public class FOLPropositionalProblemGenerator {
 
             Supplier generateForAll = () -> {
 
-                Variable var = generateRandomVariable();
+                Variable var = generateRandomVariable(new HashSet<>(variables));
                 return new Universal(new Variable[]{var}, generateRandomFormula(depth + 1, CollectionUtils.addToList(variables, var)));
             };
 
             Supplier generateExists = () -> {
 
-                Variable var = generateRandomVariable();
+                Variable var = generateRandomVariable(new HashSet<>(variables));
                 return new Existential(new Variable[]{var}, generateRandomFormula(depth + 1, CollectionUtils.addToList(variables, var)));
             };
 
@@ -214,7 +252,10 @@ public class FOLPropositionalProblemGenerator {
             Supplier<Formula>[] connectives = new Supplier[]{generateEquals, generateAnd, generateOr, generateIf, generateIff, generateNot, generateForAll, generateExists};
 
 
-            return connectives[ThreadLocalRandom.current().nextInt(0, connectives.length)].get();
+            Formula f = connectives[ThreadLocalRandom.current().nextInt(0, connectives.length)].get();
+            f.setAssumptions(Sets.with(f));
+
+            return f;
         }
 
 
@@ -259,7 +300,7 @@ public class FOLPropositionalProblemGenerator {
     private Optional<Formula> randomlyInfer(Set<Formula> formulae, int maxFormulaDepth, int depth) {
 
 
-        List<Formula> givens = formulae.stream().collect(Collectors.toList());
+        List<Formula> givens = new ArrayList<>(formulae);
 
         Supplier<Formula> randomFormula = () -> givens.get(ThreadLocalRandom.current().nextInt(givens.size()));
 
@@ -282,54 +323,65 @@ public class FOLPropositionalProblemGenerator {
 
         } else {
 
-            Supplier generateAnd = () -> Optional.of(new And(randomFormula.get(), randomFormula.get()));
-            Supplier splitAnd = () -> {
-
-                Optional<Formula> someAnd = randomFormulaSatisfying.apply(f -> f instanceof And);
-
-
-                if (someAnd.isPresent()) {
-
-                    Formula[] args = ((And) someAnd.get()).getArguments();
-
-                    return Optional.of(args[ThreadLocalRandom.current().nextInt(args.length)]);
-                } else {
-
-                    return Optional.empty();
-                }
-
-            };
 
             Supplier instantiateUniversal = () -> {
 
-                Optional<Formula> someUniversal = randomFormulaSatisfying.apply(f -> f instanceof Universal);
+                Optional<Formula> someUniversalOpt = randomFormulaSatisfying.apply(f -> f instanceof Universal);
 
+                return someUniversalOpt.map(formula -> {
 
-                if (someUniversal.isPresent()) {
-
-                    Universal universal = ((Universal) someUniversal.get());
+                    Universal universal = ((Universal) formula);
                     Variable[] vars = universal.vars();
 
-                    return Optional.of(someUniversal.get().apply(CollectionUtils.mapWith(vars[0], generateRandomGroundValue(0))));
-                } else {
+                    Formula answer = universal.apply(CollectionUtils.mapWith(vars[0], generateRandomGroundValue(0)));
 
-                    return Optional.empty();
-                }
+                    answer.setAssumptions(universal.getAssumptions());
+
+                    return answer;
+                });
 
             };
 
             Supplier generalizeToUniversal = () -> {
 
-                Optional<Formula> someCompoundFormula = randomFormulaSatisfying.apply(f -> !f.valuesPresent().isEmpty());
+                Formula someCompoundFormula = generateRandomFormula(depth);
+
+                Set<Value> currentValues = formulae.stream().map(Formula::valuesPresent).reduce(Sets.newSet(), Sets::union);
+                Set<Value> newValues = Sets.difference(someCompoundFormula.valuesPresent(), currentValues);
+
+                if (!newValues.isEmpty()) {
+
+                    List<Value> values = new ArrayList<>(newValues);
 
 
-                if (someCompoundFormula.isPresent()) {
+                    Optional<Formula> conclusionOpt = randomlyInfer(Sets.add(formulae, someCompoundFormula), maxFormulaDepth - 1, depth + 1);
 
-                    List<Value> values = new ArrayList<>(someCompoundFormula.get().valuesPresent());
 
-                    Value value = values.get(ThreadLocalRandom.current().nextInt(values.size()));
-                    Variable variable = generateRandomVariable(someCompoundFormula.get().variablesPresent());
-                    return Optional.of(new Universal(new Variable[]{variable}, someCompoundFormula.get().replace(value, variable)));
+                    if(conclusionOpt.isPresent()&&someCompoundFormula.variablesPresent().isEmpty() && conclusionOpt.get().variablesPresent().isEmpty()){
+
+                        Value value = values.get(ThreadLocalRandom.current().nextInt(values.size()));
+
+                        Variable variable = generateRandomVariable(Sets.union(someCompoundFormula.variablesPresent(), conclusionOpt.get().variablesPresent()));
+
+                        try{
+                             Optional.of(new Universal(new Variable[]{variable}, (new Implication(someCompoundFormula, conclusionOpt.get())).replace(value, variable)));
+
+                        }
+                        catch (AssertionError e)
+                        {
+
+                            int x = 1;
+                        }
+                        Formula answer = (new Universal(new Variable[]{variable}, (new Implication(someCompoundFormula, conclusionOpt.get())).replace(value, variable)));
+
+                        answer.setAssumptions(Sets.add(conclusionOpt.get().getAssumptions(), someCompoundFormula));
+                        return Optional.of(answer);
+
+                    } else {
+
+                        return Optional.empty();
+                    }
+
                 } else {
 
                     return Optional.empty();
@@ -337,30 +389,83 @@ public class FOLPropositionalProblemGenerator {
 
             };
 
-            Supplier generateOr1 = () -> Optional.of(new Or(randomFormula.get(), generateRandomFormula(maxFormulaDepth)));
-            Supplier generateOr2 = () -> Optional.of(new Or(generateRandomFormula(maxFormulaDepth), randomFormula.get()));
+            Supplier generateAnd = () -> {
 
-            Supplier generateAssumption = () -> {
-                Formula randomAssumption = generateRandomFormula(maxFormulaDepth);
-                Optional<Formula> conclusionOpt = randomlyInfer(Sets.add(formulae, randomAssumption), maxFormulaDepth - 1, depth + 1);
+                Formula input1 = randomFormula.get();
+                Formula input2 = randomFormula.get();
 
-                return conclusionOpt.map(formula -> new Implication(randomAssumption, formula));
+                Formula conclusion = new And(input1, input2);
+                conclusion.setAssumptions(Sets.union(input1.getAssumptions(), input2.getAssumptions()));
+                return Optional.of(conclusion);
+
+            };
+            Supplier splitAnd = () -> {
+
+                Optional<Formula> someAndOpt =  randomFormulaSatisfying.apply(f -> f instanceof And);
+
+                return someAndOpt.map(formula -> {
+
+                    Formula conj = ((And) formula).getArguments()[ThreadLocalRandom.current().nextInt(0,2)];
+                    try {
+                        Formula answer = Reader.readFormulaFromString(conj.toString());
+
+                        answer.setAssumptions(formula.getAssumptions());
+                        return answer;
+
+                    } catch (Reader.ParsingException e) {
+                        e.printStackTrace();
+                        throw new AssertionError("");
+                    }
+
+                });
+
             };
 
 
-            Supplier<Optional<Formula>>[] inferenceRules = new Supplier[]{splitAnd, generateAnd, generateOr1, generateOr2, instantiateUniversal, generateAssumption};
+            Supplier generateOr1 = () -> {
+
+                Formula input = randomFormula.get();
+                Formula conclusion = new Or(input, generateRandomFormula(maxFormulaDepth));
+                conclusion.setAssumptions(input.getAssumptions());
+                return Optional.of(conclusion);
+            };
+
+            Supplier generateOr2 = () -> {
+
+                Formula input = randomFormula.get();
+                Formula conclusion = new Or(generateRandomFormula(maxFormulaDepth), input);
+                conclusion.setAssumptions(input.getAssumptions());
+                return Optional.of(conclusion);
+            };
+
+            Supplier generateImplication = () -> {
+                Formula randomAssumption = generateRandomFormula(maxFormulaDepth);
+                Optional<Formula> conclusionOpt = randomlyInfer(Sets.add(formulae, randomAssumption), maxFormulaDepth - 1, depth + 1);
+
+                if(conclusionOpt.isPresent() && !formulae.contains(conclusionOpt.get())){
+                    return conclusionOpt.map(formula -> {
 
 
-            List<Formula> generated = Arrays.stream(inferenceRules).map(Supplier::get).filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+                        Formula result = new Implication(randomAssumption, formula);
+                        result.setAssumptions(Sets.add(formula.getAssumptions(), randomAssumption));
 
-            if (generated.isEmpty()) {
+                        return result;
+                    });
+                }
 
                 return Optional.empty();
-            } else {
 
-                return Optional.of(generated.get(ThreadLocalRandom.current().nextInt(generated.size())));
+            };
 
-            }
+
+            Supplier<Optional<Formula>>[] inferenceRules = new Supplier[]{splitAnd, splitAnd, splitAnd, generateAnd, generateOr1, generateOr2,
+                    instantiateUniversal, instantiateUniversal, instantiateUniversal,
+                    instantiateUniversal, generalizeToUniversal, generateImplication, generateImplication};
+
+
+            Optional<Formula> generated = inferenceRules[ThreadLocalRandom.current().nextInt(inferenceRules.length)].get();
+
+            return generated;
 
 
         }

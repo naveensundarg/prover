@@ -8,6 +8,7 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import org.apache.commons.lang3.tuple.Pair;
+import org.armedbear.lisp.Fixnum;
 import org.armedbear.lisp.Interpreter;
 import org.armedbear.lisp.LispObject;
 
@@ -77,6 +78,39 @@ public class SnarkWrapper implements Prover {
 
 
     @Override
+    public Optional<Integer> proofLength(Set<Formula> assumptions, Formula formula) {
+
+
+        String assumptionsListString = assumptions.stream().map(Formula::toString).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toString();
+
+        assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
+        goalString = goalString.replace("\n", "").replace("\r", "");
+
+        String result = "";
+        if (local.get()) {
+
+            synchronized (interpreter) {
+
+
+                LispObject resultVal = interpreter.eval("(prove-from-axioms-and-get-complexity " + assumptionsListString + goalString + " :verbose nil)");
+
+                return Optional.of(Fixnum.getInt(resultVal));
+
+             }
+        }
+
+        else {
+
+            return null;
+        }
+
+
+
+    }
+
+
+
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
 
@@ -146,7 +180,6 @@ public class SnarkWrapper implements Prover {
 
 
     }
-
 
     @Override
     public Optional<Value> proveAndGetBinding(Set<Formula> assumptions, Formula formula, Variable variable) {

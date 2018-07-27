@@ -16,7 +16,8 @@ public class Names {
     public static final String[] BINARY_RELATIONS= {"Killed", "Saw", "Asked", "Advised", "Promised"};
 
     public static final String[] UNARY_FUNCTIONS = {"parentOf", "grandParentOf"};
-    public static final String[] VARIABLES = {"?p", "?q", "?r", "?s", "?t", "?x", "?y", "?z"};
+    public static final String[] VARIABLES = {"?p1", "?q1", "?r1", "?s1", "?t1", "?x1", "?y1", "?z1",
+            "?p2", "?q2", "?r2", "?s2", "?t2", "?x2", "?y2", "?z2"};
 
     private static final Map<String,Integer> NAME_TO_INT = CollectionUtils.newMap();
 

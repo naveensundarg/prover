@@ -21,7 +21,7 @@ public abstract class Formula extends Expression {
 
 
     private Justification justification;
-
+    private Set<Formula> assumptions;
 
     public Justification getJustification() {
         return justification;
@@ -53,6 +53,13 @@ public abstract class Formula extends Expression {
         throw new NotImplementedException();
     }
 
+    public Set<Formula> getAssumptions() {
+        return assumptions;
+    }
+
+    public void setAssumptions(Set<Formula> assumptions) {
+        this.assumptions = assumptions;
+    }
 
     public abstract Formula shadow(int level);
 
