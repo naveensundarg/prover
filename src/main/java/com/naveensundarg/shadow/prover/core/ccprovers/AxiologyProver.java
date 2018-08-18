@@ -21,7 +21,7 @@ public class AxiologyProver implements Prover {
 
     private List<String> operations;
 
-    private static boolean VERBOSE = true;
+    private static boolean VERBOSE = false;
     private static String indent = "";
 
     private static ColoredPrinter coloredPrinter = new ColoredPrinter.Builder(1, false)
@@ -237,6 +237,8 @@ public class AxiologyProver implements Prover {
 
     private static void tryMessage(String s){
 
+        if(!VERBOSE) return;
+
         coloredPrinter.clear();
         coloredPrinter.print(indent+ "Trying " + s , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.YELLOW);
 
@@ -251,6 +253,9 @@ public class AxiologyProver implements Prover {
     }
 
     private static void successMessage(String s){
+
+        if(!VERBOSE) return;
+
         coloredPrinter.print(indent+ "", Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
         coloredPrinter.print("success" , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.GREEN);
         coloredPrinter.print(s , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
@@ -268,6 +273,7 @@ public class AxiologyProver implements Prover {
 
     private static void failureMessage(String s){
 
+        if(!VERBOSE) return;
         coloredPrinter.print(indent+ ""  , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
         coloredPrinter.print("failure" , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.RED);
         coloredPrinter.print( s , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);

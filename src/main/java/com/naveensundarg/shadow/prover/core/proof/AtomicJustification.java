@@ -24,6 +24,6 @@ public class AtomicJustification extends Justification {
 
     @Override
     public String toString() {
-        return "(" + name + Arrays.toString(inputs) + ")";
+        return "(" + name + Arrays.stream(inputs).map(x-> x+"\n").reduce("",(x,y)-> (x + y)) + ")";
     }
 }

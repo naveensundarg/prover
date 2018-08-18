@@ -44,23 +44,20 @@ public class AxiologyExample {
 
         Sets.from(f1, f2, f3).forEach(f-> {
 
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+
             coloredPrinter.println("    \t"+ f, Ansi.Attribute.BOLD, Ansi.FColor.BLACK, Ansi.BColor.NONE);
         });
 
         coloredPrinter.println("                                  " , Ansi.Attribute.UNDERLINE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
-        Thread.sleep(500);
-        coloredPrinter.println(" \t Goal", Ansi.Attribute.BOLD, Ansi.FColor.MAGENTA, Ansi.BColor.NONE);
+         coloredPrinter.println(" \t Goal", Ansi.Attribute.BOLD, Ansi.FColor.MAGENTA, Ansi.BColor.NONE);
 
-        coloredPrinter.println("    \t"+ t3, Ansi.Attribute.BOLD, Ansi.FColor.GREEN, Ansi.BColor.NONE);
+        coloredPrinter.println("    \t"+ t1, Ansi.Attribute.BOLD, Ansi.FColor.GREEN, Ansi.BColor.NONE);
         coloredPrinter.println("===================================" , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
 
-        prover.prove(Sets.from(f1, f2, f3), t3).ifPresent(proof->{
+        long start = System.currentTimeMillis();
+        prover.prove(Sets.from(f1, f2, f3), t1).ifPresent(proof->{
 
+            coloredPrinter.print("Time taken: " + (System.currentTimeMillis() - start) + " (ms)", Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
             System.out.println();
 
             coloredPrinter.print("", Ansi.Attribute.REVERSE, Ansi.FColor.BLACK, Ansi.BColor.WHITE);
