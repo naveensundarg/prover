@@ -29,11 +29,34 @@ public class TrivialJustification extends Justification{
         this.message = message;
     }
 
+    private String printFormula(Formula f){
+
+        if(f.getJustification()==null){
+
+            return f.toString();
+        }
+        else {
+
+            return "\n(" + f.toString()  + "\n    "   + f.getJustification() + ")";
+        }
+    }
     @Override
     public String toString() {
-        return "("  + message+ "\n\t\t Givens:\n\t\t("
-                + base.stream().map(Formula::toString).reduce("\t\t", (x,y) -> x + "\n\t\t"  + y).trim()  +
-                ") \n\t\t Goals:\n\t\t"
+        return "("  + message+ "\n Givens:\n("
+                + base.stream().map(this::printFormula).reduce("", (x, y) -> x + "\n"  + y).trim()  +
+                ") \n Goals:\n"
                 + formula.toString() + ")";
+    }
+
+    public Formula getFormula() {
+        return formula;
+    }
+
+    public Set<Formula> getBase() {
+        return base;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

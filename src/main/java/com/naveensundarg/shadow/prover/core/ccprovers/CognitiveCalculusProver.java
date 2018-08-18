@@ -3,6 +3,7 @@ package com.naveensundarg.shadow.prover.core.ccprovers;
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.Logic;
+import com.naveensundarg.shadow.prover.core.proof.AtomicJustification;
 import com.naveensundarg.shadow.prover.utils.*;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
@@ -138,6 +139,13 @@ public class CognitiveCalculusProver implements Prover {
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
+        assumptions.forEach(x-> {
+
+            if(x.getJustification() == null){
+
+                x.setJustification(new AtomicJustification("GIVEN"));
+            }
+        });
         return prove(assumptions, formula, CollectionUtils.newEmptySet());
     }
 
@@ -169,19 +177,7 @@ public class CognitiveCalculusProver implements Prover {
     private synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
 
-        currentAssumptions = assumptions;
 
-
-        if (defeasible) {
-
-            Optional<Justification> got = defeasible(formula);
-
-            if (got != null) return got;
-
-        } else {
-
-
-        }
 
 
         Prover folProver = SnarkWrapper.getInstance();
@@ -204,7 +200,7 @@ public class CognitiveCalculusProver implements Prover {
             int sizeAfterExpansion = base.size();
 
             if (base.contains(formula)) {
-                return Optional.of(TrivialJustification.trivial(assumptions, formula));
+                return Optional.of(TrivialJustification.trivial(base, formula));
             }
 
             Optional<Justification> andProofOpt = tryAND(base, formula, added);
@@ -288,17 +284,10 @@ public class CognitiveCalculusProver implements Prover {
           //  logFOLCall(true, shadow(base), shadowedGoal);
             return shadowedJustificationOpt;
         }
-        else{
+        //   logFOLCall(false, shadow(base), shadowedGoal);
 
-         //   logFOLCall(false, shadow(base), shadowedGoal);
+        return agentClosureJustificationOpt;
 
-        }
-        if (agentClosureJustificationOpt.isPresent()) {
-
-            return agentClosureJustificationOpt;
-        }
-
-        return Optional.empty();
     }
 
     protected Optional<Justification> tryIfIntro(Set<Formula> base, Formula formula, Set<Formula> added) {
@@ -729,6 +718,9 @@ public class CognitiveCalculusProver implements Prover {
         expandR4(base, added);
         expandSelfBelief(base, added);
         expandPerceptionToKnowledge(base, added);
+        expandSaysToBelief(base, added);
+        expandIntentionToPerception(base, added);
+
         expandModalConjunctions(base, added);
         expandModalImplications(base, added);
         expandDR1(base, added, goal);
@@ -885,11 +877,51 @@ public class CognitiveCalculusProver implements Prover {
                 filter(f -> f instanceof Perception).
                 map(f -> {
                     Perception p = (Perception) f;
-                    return new Knowledge(p.getAgent(), p.getTime(), p.getFormula());
+                    Knowledge k = new Knowledge(p.getAgent(), p.getTime(), p.getFormula());
+                    k.setJustification(new CompoundJustification("Perception to knowledge " + p,  CollectionUtils.listOf(p.getJustification())));
+                    return k;
                 }).
                 collect(Collectors.toSet());
 
         expansionLog(String.format("Perceives(P) ==> P", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
+
+        base.addAll(derived);
+        added.addAll(derived);
+    }
+
+    private void expandIntentionToPerception(Set<Formula> base, Set<Formula> added) {
+
+        Set<Formula> derived = base.
+                stream().
+                filter(f -> f instanceof Intends).
+                map(f -> {
+                    Intends i = (Intends) f;
+                    Perception k = new Perception(i.getAgent(), i.getTime(), i.getFormula());
+                    k.setJustification(new CompoundJustification("Intention to Perception " + i,  CollectionUtils.listOf(i.getJustification())));
+                    return k;
+                }).
+                collect(Collectors.toSet());
+
+        expansionLog(String.format("Intends(P) ==> Perceives(P)", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
+
+        base.addAll(derived);
+        added.addAll(derived);
+    }
+
+    private void expandSaysToBelief(Set<Formula> base, Set<Formula> added) {
+
+        Set<Formula> derived = base.
+                stream().
+                filter(f -> f instanceof Says).
+                map(f -> {
+                    Says s = (Says) f;
+                    Belief b = new Belief(s.getAgent(), s.getTime(), s.getFormula());
+                    b.setJustification(new CompoundJustification("Says to belief", CollectionUtils.listOf(s.getJustification())));
+                    return b;
+                }).
+                collect(Collectors.toSet());
+
+        expansionLog(String.format("Says(P) ==> Belief(P)", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
 
         base.addAll(derived);
         added.addAll(derived);

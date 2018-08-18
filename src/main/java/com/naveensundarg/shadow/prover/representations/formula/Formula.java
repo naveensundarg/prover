@@ -19,6 +19,7 @@ public abstract class Formula extends Expression {
 
 
 
+
     private Justification justification;
 
 
