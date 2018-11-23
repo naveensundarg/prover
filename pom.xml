@@ -6,7 +6,7 @@
 
     <groupId>com.naveensundarg</groupId>
     <artifactId>prover</artifactId>
-    <version>1.03-SNAPSHOT</version>
+    <version>1.03</version>
     <packaging>jar</packaging>
 
 
@@ -28,7 +28,7 @@
         <developerConnection>scm:git:https://github.com/naveensundarg/prover.git</developerConnection>
 
         <url>https://github.com/naveensundarg/prover</url>
-      <tag>HEAD</tag>
+      <tag>prover-1.03</tag>
   </scm>
 
 
