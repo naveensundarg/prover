@@ -4,7 +4,6 @@ import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.representations.ErrorPhrase;
 import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-
 import java.util.List;
 import java.util.Set;
 
