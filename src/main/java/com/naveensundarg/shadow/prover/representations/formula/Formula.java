@@ -6,7 +6,7 @@ import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Reader;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +21,7 @@ public abstract class Formula extends Expression {
 
 
     private Justification justification;
-
+    private Set<Formula> assumptions;
 
     public Justification getJustification() {
         return justification;
@@ -50,9 +50,16 @@ public abstract class Formula extends Expression {
 
     public  Formula generalize(Map<Value, Variable> substitution){
 
-        throw new NotImplementedException();
+        throw new NotImplementedException("generalize");
     }
 
+    public Set<Formula> getAssumptions() {
+        return assumptions;
+    }
+
+    public void setAssumptions(Set<Formula> assumptions) {
+        this.assumptions = assumptions;
+    }
 
     public abstract Formula shadow(int level);
 

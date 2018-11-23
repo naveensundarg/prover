@@ -1,4 +1,16 @@
 
+
+  {:name "Example 2"
+   :assumptions {:f1 q
+                 :f2 (or (not q) (Believes! a1 r))
+                 :f3 (Believes! a1 (or (not s) (not r)))
+                 :f4 (Believes! a2 (not q))
+                 :f5 (Believes! a1 (Believes! a2 r))
+                 :f6 (Believes! a1 (Believes! a2 s))}
+
+   :goal (Believes! a1 (not s))}
+
+
 {:name        "Self Sacrifice"
  :description ""
  :assumptions {A1 (Knows! I now (forall [?x] (if (Agent ?x) (or (= ?x I) (= ?x P1) (= ?x P2) (= ?x P3)))))

@@ -40,28 +40,28 @@ public class VirtueLearning {
         System.out.println();
         coloredPrinter.println("===================================" , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
 
-
         coloredPrinter.println("    \t"+ "STARTING STATE", Ansi.Attribute.BOLD, Ansi.FColor.BLACK, Ansi.BColor.NONE);
 
         problem.getAssumptions().forEach(f-> {
 
-            try {
-                Thread.sleep(1000);
+          /*  try {
+         //       Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
             coloredPrinter.println("    \t"+ f, Ansi.Attribute.BOLD, Ansi.FColor.BLACK, Ansi.BColor.NONE);
         });
 
         coloredPrinter.println("                                  " , Ansi.Attribute.UNDERLINE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
-        Thread.sleep(1000);
+       // Thread.sleep(1000);
         coloredPrinter.println(" \t Goal", Ansi.Attribute.BOLD, Ansi.FColor.MAGENTA, Ansi.BColor.NONE);
-        Thread.sleep(1000);
+       // Thread.sleep(1000);
 
         coloredPrinter.println("    \t"+ problem.getGoal(), Ansi.Attribute.BOLD, Ansi.FColor.GREEN, Ansi.BColor.NONE);
         coloredPrinter.println("===================================" , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
 
-        Thread.sleep(1000);
+      //  Thread.sleep(1000);
+        long start = System.currentTimeMillis();
 
         Optional<Justification> proofOpt = (prover.prove(problem.getAssumptions(), problem.getGoal()));
 
@@ -69,13 +69,15 @@ public class VirtueLearning {
         if(proofOpt.isPresent()){
 
             coloredPrinter.println("                                  " , Ansi.Attribute.UNDERLINE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
-            Thread.sleep(500);
+          //  Thread.sleep(500);
             coloredPrinter.println(" \t INFERRED", Ansi.Attribute.BOLD, Ansi.FColor.MAGENTA, Ansi.BColor.NONE);
 
             coloredPrinter.println("    \t"+ problem.getGoal(), Ansi.Attribute.BOLD, Ansi.FColor.BLUE, Ansi.BColor.NONE);
             coloredPrinter.println("===================================" , Ansi.Attribute.NONE, Ansi.FColor.BLACK, Ansi.BColor.NONE);
 
         }
+
+        System.out.println(System.currentTimeMillis() - start);
 
 
     }

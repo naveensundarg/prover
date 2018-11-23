@@ -6,10 +6,23 @@ import java.util.Map;
 
 public class Names {
 
+    //TODO: Read these from a config file.
 
     public static final String[] NAMES= {"a", "b", "c", "d", "e"};
 
-    public static final Map<String,Integer> NAME_TO_INT = CollectionUtils.newMap();
+    public static final String[] CONSTANTS= {"lever", "axel", "gear", "wheel", "button", "light", "dial", "mirror"};
+
+    public static final String[] UNARY_RELATIONS= {"Broken", "Fixed", "Operational", "New"};
+
+    public static final String[] BINARY_RELATIONS= {"ConnectedTo", "Overrides", "MakesObselete", "Fixes"};
+
+    public static final String[] UNARY_FUNCTIONS = {"enclosingPart"};
+
+
+    public static final String[] VARIABLES = {"?p1", "?q1", "?r1", "?s1", "?t1", "?x1", "?y1", "?z1",
+            "?p2", "?q2", "?r2", "?s2", "?t2", "?x2", "?y2", "?z2"};
+
+    private static final Map<String,Integer> NAME_TO_INT = CollectionUtils.newMap();
 
 
     static {

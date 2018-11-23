@@ -18,6 +18,12 @@ import java.util.Set;
  */
 public interface Prover {
 
+    default Optional<Integer> proofLength(Set<Formula> assumptions, Formula formula){
+
+        throw new NotImplementedException("Proof length not implemented in: " + this.getClass());
+
+    }
+
     Optional<Justification> prove(Set<Formula> assumptions, Formula formula);
 
 

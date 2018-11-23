@@ -36,17 +36,19 @@ public class Sandbox {
 
 
 
-        Formula f1 = Reader.readFormulaFromString("(forall (x y) (iff (= x y) (forall X (iff (X x) (X y)))))");
-        Formula f2 = Reader.readFormulaFromString("(TwentyFive joan)");
-        Formula f3 = Reader.readFormulaFromString("(Thirty John)");
-        Formula f4 = Reader.readFormulaFromString("(forall x (if (TwentyFive x) (not (Thirty x))))");
+        Formula f1 = Reader.readFormulaFromString("q");
+        Formula f2 = Reader.readFormulaFromString("(or (not q) (Believes! a1 r))");
+        Formula f3 = Reader.readFormulaFromString("(Believes! a1 (or (not s) (not r)))");
+        Formula f4 = Reader.readFormulaFromString("(Believes! a2 (not q))");
+        Formula f5 = Reader.readFormulaFromString("(Believes! a1 (Believes! a2 r))");
+        Formula f6 = Reader.readFormulaFromString("(Believes! a1 (Believes! a2 s))");
 
-        Formula goal = Reader.readFormulaFromString("(= 5 (+ 2 3))");
+        Formula goal = Reader.readFormulaFromString("(Believes! a1 (not s))");
 
 
-        Prover prover = new CognitiveCalculusProver();
+        CognitiveCalculusProver prover = new CognitiveCalculusProver();
 
-        System.out.println(prover.prove(Sets.from(), goal).get());
+        System.out.println(prover.prove(Sets.from(f1, f2, f3, f4, f5, f6), goal).get());
     }
 
 
