@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class FOLPropositionalProblemGenerator {
 
-   static Prover prover = SnarkWrapper.getInstance();
+    //static Prover prover = SnarkWrapper.getInstance();
 
     private final int maxAtoms;
     private final int totalClauses;
@@ -44,7 +44,6 @@ public class FOLPropositionalProblemGenerator {
         FOLPropositionalProblemGenerator folPropositionalProblemGenerator = new FOLPropositionalProblemGenerator(generatorParams);
 
         Pair<Set<Formula>, Formula> problem = folPropositionalProblemGenerator.generateProblem();
-
 
         problem.first().forEach(System.out::println);
 
@@ -74,7 +73,6 @@ public class FOLPropositionalProblemGenerator {
 
     private Pair<Set<Formula>, Formula> generateProblem() {
 
-        List<Formula> clauses = CollectionUtils.newEmptyList();
 
         Set<Formula> formulae = CollectionUtils.newEmptySet();
 
@@ -98,26 +96,7 @@ public class FOLPropositionalProblemGenerator {
             f = formulaOptional.get();
         }
 
-/*
-        for(int i =0; i< 1000; i ++){
-
-            Formula randomConclusion = (generateRandomFormula(0, CollectionUtils.newEmptyList()));
-
-            if(!formulae.contains(randomConclusion)){
-
-
-                Optional<Integer> proofLength =  prover.proofLength(formulae, randomConclusion);
-
-                if(proofLength.isPresent() && proofLength.get()>= 3){
-
-                    return ImmutablePair.from(formulae, f);
-
-                }
-            }
-        }
-*/
-Map<Formula, Integer> proofs = CollectionUtils.newMap();
-      for (int i = 0; i < maxInferenceDepth + 1; i++) {
+        for (int i = 0; i < maxInferenceDepth + 1; i++) {
 
             formulaOptional = randomlyInfer(assumptionBase, maxFormulaDepth, 0);
 
@@ -129,18 +108,12 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
 
             }
 
-            Optional<Integer> proofLength =  prover.proofLength(formulae, f);
-
-          if(proofLength.isPresent() && proofLength.get()>= 10){
-
-              return ImmutablePair.from(formulae, f);
-
-          }
-
-      }
+        }
 
 
-        return ImmutablePair.from(formulae, f);
+        Set<Formula> usable = assumptionBase.stream().filter(x -> !(x instanceof Or) && !(x instanceof And)).collect(Collectors.toSet());
+        ArrayList<Formula> dervied = new ArrayList<>(Sets.difference(usable, formulae));
+        return ImmutablePair.from(formulae, dervied.get(ThreadLocalRandom.current().nextInt(dervied.size())));
 
     }
 
@@ -222,17 +195,17 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
 
             Supplier generateAnd = () -> {
 
-                Formula f1 = generateRandomFormula(depth + 1, variables);
-                Formula f2 = generateRandomFormula(depth + 1, variables);
+                Formula f1  = generateRandomFormula(depth + 1, variables);
+                Formula f2  = generateRandomFormula(depth + 1, variables);
                 Formula and = new And(f1, f2);
                 and.setJustification(new CompoundJustification("and-intro", CollectionUtils.listOf(f1.getJustification(), f2.getJustification())));
                 return and;
             };
 
-            Supplier generateOr = () -> new Or(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
-            Supplier generateIf = () -> new Implication(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
-            Supplier generateIff = () -> new BiConditional(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
-            Supplier generateNot = () -> new Not(generateRandomFormula(depth + 1, variables));
+            Supplier generateOr     = () -> new Or(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
+            Supplier generateIf     = () -> new Implication(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
+            Supplier generateIff    = () -> new BiConditional(generateRandomFormula(depth + 1, variables), generateRandomFormula(depth + 1, variables));
+            Supplier generateNot    = () -> new Not(generateRandomFormula(depth + 1, variables));
             Supplier generateEquals = () -> new Predicate("=", new Value[]{generateRandomGroundValue(0), generateRandomGroundValue(0)});
 
 
@@ -268,7 +241,7 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
 
 
         String predicateName = arity == 1 ? (Names.UNARY_RELATIONS[ThreadLocalRandom.current().nextInt(0, Names.UNARY_RELATIONS.length)]) :
-                (Names.BINARY_RELATIONS[ThreadLocalRandom.current().nextInt(0, Names.BINARY_RELATIONS.length)]);
+                               (Names.BINARY_RELATIONS[ThreadLocalRandom.current().nextInt(0, Names.BINARY_RELATIONS.length)]);
 
 
         Value[] arguments = new Value[arity];
@@ -330,8 +303,8 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
 
                 return someUniversalOpt.map(formula -> {
 
-                    Universal universal = ((Universal) formula);
-                    Variable[] vars = universal.vars();
+                    Universal  universal = ((Universal) formula);
+                    Variable[] vars      = universal.vars();
 
                     Formula answer = universal.apply(CollectionUtils.mapWith(vars[0], generateRandomGroundValue(0)));
 
@@ -347,7 +320,7 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
                 Formula someCompoundFormula = generateRandomFormula(depth);
 
                 Set<Value> currentValues = formulae.stream().map(Formula::valuesPresent).reduce(Sets.newSet(), Sets::union);
-                Set<Value> newValues = Sets.difference(someCompoundFormula.valuesPresent(), currentValues);
+                Set<Value> newValues     = Sets.difference(someCompoundFormula.valuesPresent(), currentValues);
 
                 if (!newValues.isEmpty()) {
 
@@ -357,18 +330,16 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
                     Optional<Formula> conclusionOpt = randomlyInfer(Sets.add(formulae, someCompoundFormula), maxFormulaDepth - 1, depth + 1);
 
 
-                    if(conclusionOpt.isPresent()&&someCompoundFormula.variablesPresent().isEmpty() && conclusionOpt.get().variablesPresent().isEmpty()){
+                    if (conclusionOpt.isPresent() && someCompoundFormula.variablesPresent().isEmpty() && conclusionOpt.get().variablesPresent().isEmpty()) {
 
                         Value value = values.get(ThreadLocalRandom.current().nextInt(values.size()));
 
                         Variable variable = generateRandomVariable(Sets.union(someCompoundFormula.variablesPresent(), conclusionOpt.get().variablesPresent()));
 
-                        try{
-                             Optional.of(new Universal(new Variable[]{variable}, (new Implication(someCompoundFormula, conclusionOpt.get())).replace(value, variable)));
+                        try {
+                            Optional.of(new Universal(new Variable[]{variable}, (new Implication(someCompoundFormula, conclusionOpt.get())).replace(value, variable)));
 
-                        }
-                        catch (AssertionError e)
-                        {
+                        } catch (AssertionError e) {
 
                             int x = 1;
                         }
@@ -401,11 +372,11 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
             };
             Supplier splitAnd = () -> {
 
-                Optional<Formula> someAndOpt =  randomFormulaSatisfying.apply(f -> f instanceof And);
+                Optional<Formula> someAndOpt = randomFormulaSatisfying.apply(f -> f instanceof And);
 
                 return someAndOpt.map(formula -> {
 
-                    Formula conj = ((And) formula).getArguments()[ThreadLocalRandom.current().nextInt(0,2)];
+                    Formula conj = ((And) formula).getArguments()[ThreadLocalRandom.current().nextInt(0, 2)];
                     try {
                         Formula answer = Reader.readFormulaFromString(conj.toString());
 
@@ -424,7 +395,7 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
 
             Supplier generateOr1 = () -> {
 
-                Formula input = randomFormula.get();
+                Formula input      = randomFormula.get();
                 Formula conclusion = new Or(input, generateRandomFormula(maxFormulaDepth));
                 conclusion.setAssumptions(input.getAssumptions());
                 return Optional.of(conclusion);
@@ -432,17 +403,17 @@ Map<Formula, Integer> proofs = CollectionUtils.newMap();
 
             Supplier generateOr2 = () -> {
 
-                Formula input = randomFormula.get();
+                Formula input      = randomFormula.get();
                 Formula conclusion = new Or(generateRandomFormula(maxFormulaDepth), input);
                 conclusion.setAssumptions(input.getAssumptions());
                 return Optional.of(conclusion);
             };
 
             Supplier generateImplication = () -> {
-                Formula randomAssumption = generateRandomFormula(maxFormulaDepth);
-                Optional<Formula> conclusionOpt = randomlyInfer(Sets.add(formulae, randomAssumption), maxFormulaDepth - 1, depth + 1);
+                Formula           randomAssumption = generateRandomFormula(maxFormulaDepth);
+                Optional<Formula> conclusionOpt    = randomlyInfer(Sets.add(formulae, randomAssumption), maxFormulaDepth - 1, depth + 1);
 
-                if(conclusionOpt.isPresent() && !formulae.contains(conclusionOpt.get())){
+                if (conclusionOpt.isPresent() && !formulae.contains(conclusionOpt.get())) {
                     return conclusionOpt.map(formula -> {
 
 
