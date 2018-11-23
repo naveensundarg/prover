@@ -4,7 +4,6 @@ import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.ImmutablePair;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 
 import java.util.Comparator;
 import java.util.Optional;
