@@ -7,7 +7,7 @@ import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import us.bpsm.edn.Keyword;
 import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
@@ -131,7 +131,7 @@ public class ProblemReader {
             //TODO: Define the class
 
             SortSystem sortSystem = SortSystem.buildFrom((Map<?, ?>) map.get(SORTSYSTEM_KEY));
-            throw new NotImplementedException();
+            throw new NotImplementedException("buildChunk");
 
         } else {
 
@@ -173,7 +173,7 @@ public class ProblemReader {
             //TODO: Define the class
 
             SortSystem sortSystem = SortSystem.buildFrom((Map<?, ?>) map.get(SORTSYSTEM_KEY));
-            throw new NotImplementedException();
+            throw new NotImplementedException("buildProblem");
 
         } else {
 
