@@ -68,6 +68,7 @@ public class Reader {
     private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
 
     public static final Value NOW, I;
+    public static final Formula FALSE;
 
     private static final Map<String,String> SNARK_BUILTIN_RELATIONS = CollectionUtils.newMap();
     private static final Map<String,String> SNARK_BUILTIN_FUNCTIONS = CollectionUtils.newMap();
@@ -79,7 +80,7 @@ public class Reader {
 
             NOW = readLogicValue("NOW");
             I = readLogicValueFromString("I");
-
+            FALSE = readFormulaFromString("FALSE");
             SNARK_BUILTIN_RELATIONS.put("<", "$$$less");
             SNARK_BUILTIN_RELATIONS.put("<=", "$$$lesseq");
             SNARK_BUILTIN_RELATIONS.put(">", "$$$greater");

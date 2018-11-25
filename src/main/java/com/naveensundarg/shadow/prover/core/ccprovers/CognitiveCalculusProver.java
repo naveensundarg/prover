@@ -77,11 +77,8 @@ public class CognitiveCalculusProver implements Prover {
 
         if (verbose) {
 
-
-
             System.out.println(message);
         } else {
-
 
         }
     }

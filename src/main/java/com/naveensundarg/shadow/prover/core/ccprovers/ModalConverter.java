@@ -14,10 +14,7 @@ import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
 import javafx.geometry.Pos;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newEmptyList;
@@ -27,65 +24,59 @@ import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 /**
  * Created by naveensundarg on 4/12/16.
  */
-public class Converter {
+public class ModalConverter {
 
-    public static Formula convertToModalFormula(Formula formula, Problem problem){
 
-        if(formula instanceof Belief){
 
-            return new Belief(((Belief) formula).getAgent(), ((Belief) formula).getTime(),
-                    convertToCNF(((Belief) formula).getFormula(), problem).toFormula());
-
-        } else {
-
-            return convertToCNF(formula, problem).toFormula();
-        }
-
-    }
-
-    public static CNFFormula convertToCNF(Formula formula, Problem problem) {
+    public static Set<Formula> convertToCNF(Formula formula, Problem problem) {
 
         return convertToCNFInternal(FolConverter.preProcess(formula,problem), newEmptyList(), problem);
     }
 
 
-    private static CNFFormula convertToCNFInternal(Formula formula, List<Variable> variables, Problem problem){
+    private static Set<Formula> convertToCNFInternal(Formula formula, List<Variable> variables, Problem problem){
 
         if(formula instanceof Atom){
-            return new CNFFormula((Atom) formula);
+            return Sets.with(formula);
         }
 
         if(formula instanceof Predicate){
 
-            return new CNFFormula((Predicate) formula);
+            return Sets.with(formula);
         }
 
 
         if(formula instanceof And){
             And and = (And) formula;
 
-            Set<Clause> clauses = Arrays.stream(and.getArguments()).
+            Set<Formula> conjuncts = Arrays.stream(and.getArguments()).
                     map(x->convertToCNFInternal(x, variables, problem)).
-                    map(CNFFormula::getClauses).
                     reduce(Sets.newSet(), Sets::union);
 
-            return new CNFFormula(clauses);
+            return conjuncts;
         }
 
         if(formula instanceof Or){
 
             Or or = (Or) formula;
 
-            List<Set<Clause>> clauses = Arrays.stream(or.getArguments()).
+            List<Set<Formula>> clauses = Arrays.stream(or.getArguments()).
                     map(x->convertToCNFInternal(x, variables, problem)).
-                    map(CNFFormula::getClauses).collect(Collectors.toList());
+                    collect(Collectors.toList());
 
+            Set<List<Formula>> prod = cartesianProduct(clauses);
+            /**
+             * Flattens arguments
+             */
+            return prod.stream().map(argsList -> new ArrayList<>(argsList.stream().map(arg -> {
+                if (arg instanceof Or) {
 
-            Set<List<Clause>> prod = cartesianProduct(clauses);
+                    return Arrays.stream(((Or) arg).getArguments()).collect(Collectors.toSet());
+                } else {
+                    return Sets.with(arg);
+                }
 
-            return new CNFFormula(prod.stream().map(Clause::fromClauses).collect(Collectors.toSet()));
-
-
+            }).reduce(Sets.newSet(), Sets::union))).map(Or::new).collect(Collectors.toSet());
         }
 
         if(formula instanceof Implication){
@@ -159,6 +150,23 @@ public class Converter {
             return convertToCNFInternal(formula, variables, problem);
 
         }
+
+        if(formula instanceof Possibility){
+
+
+            Set<Formula> inner = convertToCNFInternal(((Possibility) formula).getFormula(), variables, problem);
+
+            List<Formula> innerContext = new ArrayList<>(inner);
+            if(innerContext.size()==1){
+
+                return Sets.from((new Possibility(innerContext.get(0))));
+
+            } else {
+
+                return Sets.from((new Possibility(new And(innerContext))));
+            }        }
+        
+        
         if(isLiteral(formula)){
             Literal literal;
             if(formula instanceof Predicate){
@@ -173,7 +181,7 @@ public class Converter {
             else{
                 throw new AssertionError(formula);
             }
-            return new CNFFormula(Sets.with(new Clause(false, Sets.with(literal))));
+            return (Sets.with(new Clause(false, Sets.with(literal)).toFormula()));
         }
 
         if(formula instanceof Not){
@@ -246,6 +254,24 @@ public class Converter {
             }
 
 
+
+            if(notArg instanceof Possibility){
+
+
+                Set<Formula> inner = convertToCNFInternal(((Possibility) notArg).getFormula(), variables, problem);
+
+                List<Formula> innerContext = new ArrayList<>(inner);
+                if(innerContext.size()==1){
+
+                    return Sets.from(new Not(new Possibility((innerContext.get(0)))));
+
+                } else {
+
+                    return Sets.from(new Not(new Possibility(new And(innerContext))));
+                }
+
+
+            }
         }
 
         return null;
