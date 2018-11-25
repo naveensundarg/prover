@@ -73,10 +73,3 @@
  :assumptions {}
  :goal (or (or p (not p)) (pos (and p (not p))))}
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-{:name "test 10"
- :description ""
- :assumptions {1 (or q (and p (not p)))}
- :goal (pos (and p (not p)))}
-
