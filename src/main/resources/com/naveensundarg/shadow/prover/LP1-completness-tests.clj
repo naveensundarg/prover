@@ -56,3 +56,11 @@
  :description ""
  :assumptions {}
  :goal (or p (not p) (pos q))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name "test 8"
+ :description ""
+ :assumptions {}
+ :goal (or (or p (not p)) (pos q))}
