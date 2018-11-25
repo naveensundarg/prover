@@ -23,12 +23,17 @@ public abstract class LP implements Prover {
 
         Problem problem = new Problem("LP", "LP base prover", assumptions, formula);
 
-        Set<Formula> clausesR = assumptions.
+        Set<Formula> base = CollectionUtils.newEmptySet();
+        base.addAll(assumptions);
+        base.add(Logic.negated(formula));
+        applyLP1Rule(base);
+
+
+        Set<Formula> clausesR = base.
                 stream().
                 map(x -> ModalConverter.convertToCNF(x, problem)).
                 reduce(Sets.newSet(), Sets::union);
 
-        clausesR.addAll(ModalConverter.convertToCNF(Logic.negated(formula), problem));
 
         Pair<Optional<Justification>, Set<Formula>> startPair   = runResolutionTillEnd(clausesR);
         Set<Formula>                                currentBase = startPair.getRight();

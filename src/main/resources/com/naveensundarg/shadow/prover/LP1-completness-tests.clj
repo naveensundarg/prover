@@ -1,82 +1,95 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 1"
+{:name        "test 1"
  :description ""
  :assumptions {1 P}
- :goal P}
+ :goal        P}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 2"
+{:name        "test 2"
  :description ""
  :assumptions {1 (or P Q)}
- :goal (pos P)}
+ :goal        (pos P)}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 3"
+{:name        "test 3"
  :description ""
  :assumptions {1 (or P Q)}
- :goal (pos P)}
-
+ :goal        (pos P)}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 4"
+{:name        "test 4"
  :description ""
  :assumptions {1 (or p q)
                2 (if (pos p) (and u (or a b)))}
- :goal (pos a)}
-
+ :goal        (pos a)}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 5"
+{:name        "test 5"
  :description ""
  :assumptions {1 (or p q)
                2 (if (pos p) (and u (or a (or b c))))}
- :goal (pos c)}
+ :goal        (pos c)}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 6"
+{:name        "test 6"
  :description ""
  :assumptions {1 (or p q)
                2 (if (pos p) (and u (or a (or b c))))}
- :goal (pos c)}
+ :goal        (pos c)}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 7"
+{:name        "test 7"
  :description ""
  :assumptions {}
- :goal (or p (not p) (pos q))}
+ :goal        (or p (not p) (pos q))}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 8"
+{:name        "test 8"
  :description ""
  :assumptions {}
- :goal (or (or p (not p)) (pos q))}
+ :goal        (or (or p (not p)) (pos q))}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 9"
+{:name        "test 9"
  :description ""
  :assumptions {}
- :goal (or (or p (not p)) (pos (and p (not p))))}
+ :goal        (or (or p (not p)) (pos (and p (not p))))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name "test 10"
+{:name        "test 10"
  :description ""
  :assumptions {1 (or q (and p (not p)))}
- :goal (pos (and p (not p)))}
+ :goal        (pos (and p (not p)))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "test 11"
+ :description ""
+ :assumptions {1 (if raining
+                   (if dark
+                     (if outside
+                       (if searching
+                         (if need-light
+                           (if store-open
+                             buy-torch))))))}
+ :goal        (and (pos (not raining))
+                   (pos buy-torch))}
 
