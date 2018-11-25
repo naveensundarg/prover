@@ -50,7 +50,7 @@ public class LP1 implements Prover {
         Set<Or> disjunctions = base.stream().filter(f -> f instanceof Or).map(or -> (Or) or).collect(Collectors.toSet());
 
         disjunctions.forEach(disjunction -> {
-            Arrays.stream(disjunction.getArguments()).forEach(disjunct -> base.add(new Possibility(disjunct)));
+            Arrays.stream(disjunction.getArguments()).filter(this::canApplyRule).forEach(disjunct -> base.add(new Possibility(disjunct)));
         });
     }
 
@@ -237,6 +237,11 @@ public class LP1 implements Prover {
 
         }).collect(Collectors.toSet());
 
+    }
+
+
+    public boolean canApplyRule(Formula f){
+        return true;
     }
 
 }
