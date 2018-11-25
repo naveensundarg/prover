@@ -3,25 +3,12 @@ package com.naveensundarg.shadow.prover.sandboxes;
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.*;
-import com.naveensundarg.shadow.prover.core.ccprovers.AxiologyProver;
-import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
-import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderCognitiveCalculusProver;
-import com.naveensundarg.shadow.prover.core.ccprovers.SecondOrderProver;
-import com.naveensundarg.shadow.prover.core.internals.InductionSchemaGeneration;
-import com.naveensundarg.shadow.prover.core.proof.HigherOrderUnification;
-import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.generators.GeneratorParams;
-import com.naveensundarg.shadow.prover.generators.PropositionalProblemGenerator;
-import com.naveensundarg.shadow.prover.generators.Vectorizer;
+import com.naveensundarg.shadow.prover.core.ccprovers.*;
+import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP;
+import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP1;
+import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP2;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
-
-import java.io.FileInputStream;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Optional;
 
 import static us.bpsm.edn.Keyword.newKeyword;
 
@@ -36,19 +23,15 @@ public class Sandbox {
 
 
 
-        Formula f1 = Reader.readFormulaFromString("q");
-        Formula f2 = Reader.readFormulaFromString("(or (not q) (Believes! a1 r))");
-        Formula f3 = Reader.readFormulaFromString("(Believes! a1 (or (not s) (not r)))");
-        Formula f4 = Reader.readFormulaFromString("(Believes! a2 (not q))");
-        Formula f5 = Reader.readFormulaFromString("(Believes! a1 (Believes! a2 r))");
-        Formula f6 = Reader.readFormulaFromString("(Believes! a1 (Believes! a2 s))");
 
-        Formula goal = Reader.readFormulaFromString("(Believes! a1 (not s))");
+        Formula f1 = Reader.readFormulaFromString("(or q (and p (not p))))");
+
+        Formula goal = Reader.readFormulaFromString("(pos (and p (not p)))");
 
 
-        CognitiveCalculusProver prover = new CognitiveCalculusProver();
-
-        System.out.println(prover.prove(Sets.from(f1, f2, f3, f4, f5, f6), goal).get());
+        System.out.println(ModalConverter.convertToCNF(f1, new Problem("","", Sets.from(f1), goal)));
+        Prover prover = new LP2();
+        System.out.println(prover.prove(Sets.from(), goal).get());
     }
 
 

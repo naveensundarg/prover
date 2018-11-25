@@ -6,6 +6,7 @@ import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import javafx.geometry.Pos;
 
 import java.util.Arrays;
 import java.util.List;
@@ -109,7 +110,13 @@ public class FolConverter {
             Value time = perception.getTime();
 
             return new Perception(agent, time, Step1_EliminateImplicationsInt(arg));
-        } else {
+        }
+        if(formula instanceof Possibility){
+
+            return new Possibility(Step1_EliminateImplicationsInt(((Possibility) formula).getFormula()));
+        }
+
+        else {
             throw new AssertionError("Unknown formula type");
         }
 
@@ -247,6 +254,12 @@ public class FolConverter {
                 return Step2_MoveNegationsInWardInt(new Not(arg), ColoredConverter.addToColor(ColoredConverter.NOT, ColoredConverter.addToColor(new Constant("P"), ColoredConverter.addToColor(agent, ColoredConverter.addToColor(time, color)))));
             }
 
+            if(notArg instanceof Possibility){
+
+                return new Not(new Possibility(Step2_MoveNegationsInWardInt(((Possibility) notArg).getFormula(), color)));
+            }
+
+
         }
 
         if (formula instanceof Or) {
@@ -342,7 +355,13 @@ public class FolConverter {
             Value time = perception.getTime();
 
             return new Perception(agent, time, Step2_MoveNegationsInWardInt(arg, color));
-        } else {
+        }
+        if(formula instanceof Possibility){
+
+            return new Possibility(Step2_MoveNegationsInWardInt(((Possibility) formula).getFormula(), color));
+        }
+
+        else {
             throw new AssertionError("Unknown formula type: " + formula);
         }
 
