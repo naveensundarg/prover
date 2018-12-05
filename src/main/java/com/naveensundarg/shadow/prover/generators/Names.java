@@ -13,6 +13,7 @@ public class Names {
     public static final String[] CONSTANTS= {"lever", "axel", "gear", "wheel", "button", "light", "dial", "mirror"};
 
     public static final String[] UNARY_RELATIONS= {"Broken", "Fixed", "Operational", "New"};
+    public static final String[] TYPES= {"Gear", "Box"};
 
     public static final String[] BINARY_RELATIONS= {"ConnectedTo", "Overrides", "MakesObselete", "Fixes"};
 
