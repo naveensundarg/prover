@@ -27,13 +27,10 @@ public class NDProver implements Prover {
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
 
-        WorkSpace workSpace = WorkSpace.createWorkSpaceFromGiven(assumptions);
-
+        WorkSpace      workSpace = WorkSpace.createWorkSpaceFromGiven(assumptions);
         Optional<Node> provedOpt = prove(workSpace, assumptions, formula);
 
-
         if (provedOpt.isPresent()) {
-
 
             if (visualize) {
                 try {
@@ -59,15 +56,10 @@ public class NDProver implements Prover {
 
         do {
             previousSize = workSpace.size();
-            andElim(workSpace);
-            ifElim(workSpace, assumptions, formula);
-            iffElim(workSpace, assumptions, formula);
 
-            orElim(workSpace, assumptions, formula);
-
-            Optional<Node> trivialOpt1 = workSpace.fetch(assumptions, formula);
-
-            if (trivialOpt1.isPresent()) {
+            applyEliminations(workSpace, assumptions, formula);
+            Optional<Node> trivialOpt1 = checkIfGoalReached(workSpace, assumptions, formula);
+            if (trivialOpt1 != null) {
                 return trivialOpt1;
             }
             currentSize = workSpace.size();
@@ -75,13 +67,37 @@ public class NDProver implements Prover {
         } while (currentSize != previousSize);
 
 
-        Optional<Node> trivialOpt = workSpace.fetch(assumptions, formula);
-
-        if (trivialOpt.isPresent()) {
+        Optional<Node> trivialOpt = checkIfGoalReached(workSpace, assumptions, formula);
+        if (trivialOpt != null) {
             return trivialOpt;
         }
 
+        Optional<Node> andIntroOpt1 = applyIntroductions(workSpace, assumptions, formula);
+        if (andIntroOpt1 != null) return andIntroOpt1;
 
+
+        Optional<Node> reductioOpt = tryReductio(workSpace, assumptions, formula);
+
+        if (reductioOpt.isPresent()) {
+            return reductioOpt;
+        }
+
+        do {
+            previousSize = workSpace.size();
+            applyEliminations(workSpace, assumptions, formula);
+            Optional<Node> trivialOpt1 = checkIfGoalReached(workSpace, assumptions, formula);
+            if (trivialOpt1 != null) {
+                return trivialOpt1;
+            }
+            currentSize = workSpace.size();
+
+        } while (currentSize != previousSize);
+
+
+        return Optional.empty();
+    }
+
+    private Optional<Node> applyIntroductions(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
         Optional<Node> andIntroOpt = tryAndIntro(workSpace, assumptions, formula);
 
         if (andIntroOpt.isPresent()) {
@@ -105,35 +121,28 @@ public class NDProver implements Prover {
         if (iffIntroOpt.isPresent()) {
             return iffIntroOpt;
         }
-
-
-        Optional<Node> reductioOpt = tryReductio(workSpace, assumptions, formula);
-
-        if (reductioOpt.isPresent()) {
-            return reductioOpt;
-        }
-        do {
-            previousSize = workSpace.size();
-            andElim(workSpace);
-            ifElim(workSpace, assumptions, formula);
-            iffElim(workSpace, assumptions, formula);
-
-            orElim(workSpace, assumptions, formula);
-
-            Optional<Node> trivialOpt1 = workSpace.fetch(assumptions, formula);
-
-            if (trivialOpt1.isPresent()) {
-                return trivialOpt1;
-            }
-            currentSize = workSpace.size();
-
-        } while (currentSize != previousSize);
-
-
-        return Optional.empty();
+        return null;
     }
 
-    private void andElim(WorkSpace workSpace) {
+    private Optional<Node> checkIfGoalReached(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
+        Optional<Node> trivialOpt1 = workSpace.fetch(assumptions, formula);
+
+        if (trivialOpt1.isPresent()) {
+            return trivialOpt1;
+        }
+        return null;
+    }
+
+    private void applyEliminations(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
+
+        andElim(workSpace, assumptions, formula);
+        ifElim(workSpace, assumptions, formula);
+        iffElim(workSpace, assumptions, formula);
+        orElim(workSpace, assumptions, formula);
+
+    }
+
+    private void andElim(WorkSpace workSpace, Set<Formula> assumptions, Formula goal) {
 
         Set<Node> newNodes = workSpace.
                 getNodes().
