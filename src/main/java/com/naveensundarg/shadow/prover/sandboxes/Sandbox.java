@@ -4,10 +4,13 @@ import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.*;
 import com.naveensundarg.shadow.prover.core.ccprovers.*;
+import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP;
 import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP1;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.*;
+
+import java.util.Optional;
 
 import static us.bpsm.edn.Keyword.newKeyword;
 

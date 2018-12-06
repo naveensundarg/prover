@@ -29,7 +29,7 @@ public class NDProverTests {
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem>tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("propositional-completness-tests.clj"));
+        List<Problem>tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../propositional-completness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -60,7 +60,7 @@ public class NDProverTests {
     @DataProvider(name="debugTestProvider")
     public Object[][] debugTestProvider() throws Reader.ParsingException {
 
-        List<Problem>tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("debug.clj"));
+        List<Problem>tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -93,7 +93,7 @@ public class NDProverTests {
     @DataProvider(name="soundnessTestsProvider")
     public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("propositional-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../propositional-soundness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
