@@ -57,39 +57,23 @@ public class NDProver implements Prover {
         do {
             previousSize = workSpace.size();
 
-            applyEliminations(workSpace, assumptions, formula);
-            Optional<Node> trivialOpt1 = checkIfGoalReached(workSpace, assumptions, formula);
-            if (trivialOpt1 != null) {
-                return trivialOpt1;
+            Optional<Node> eliminationsProof = applyEliminations(workSpace, assumptions, formula);
+            if (eliminationsProof != null) {
+                return eliminationsProof;
             }
+
+            Optional<Node> introductionsProof = applyIntroductions(workSpace, assumptions, formula);
+            if (introductionsProof != null) {
+                return introductionsProof;
+            }
+
+            Optional<Node> reductioOpt = tryReductio(workSpace, assumptions, formula);
+            if (reductioOpt.isPresent()) {
+                return reductioOpt;
+            }
+
             currentSize = workSpace.size();
 
-        } while (currentSize != previousSize);
-
-
-        Optional<Node> trivialOpt = checkIfGoalReached(workSpace, assumptions, formula);
-        if (trivialOpt != null) {
-            return trivialOpt;
-        }
-
-        Optional<Node> andIntroOpt1 = applyIntroductions(workSpace, assumptions, formula);
-        if (andIntroOpt1 != null) return andIntroOpt1;
-
-
-        Optional<Node> reductioOpt = tryReductio(workSpace, assumptions, formula);
-
-        if (reductioOpt.isPresent()) {
-            return reductioOpt;
-        }
-
-        do {
-            previousSize = workSpace.size();
-            applyEliminations(workSpace, assumptions, formula);
-            Optional<Node> trivialOpt1 = checkIfGoalReached(workSpace, assumptions, formula);
-            if (trivialOpt1 != null) {
-                return trivialOpt1;
-            }
-            currentSize = workSpace.size();
 
         } while (currentSize != previousSize);
 
@@ -133,12 +117,14 @@ public class NDProver implements Prover {
         return null;
     }
 
-    private void applyEliminations(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
+    private Optional<Node> applyEliminations(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
 
         andElim(workSpace, assumptions, formula);
         ifElim(workSpace, assumptions, formula);
         iffElim(workSpace, assumptions, formula);
         orElim(workSpace, assumptions, formula);
+
+        return checkIfGoalReached(workSpace, assumptions, formula);
 
     }
 
