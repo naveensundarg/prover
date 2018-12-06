@@ -18,9 +18,10 @@ public class NDProver implements Prover {
 
 
     public boolean visualize = false;
+    // private final Prover resolutionProverOracle;
 
     public NDProver() {
-
+        // resolutionProverOracle = SnarkWrapper.getInstance();
     }
 
     @Override
@@ -308,7 +309,9 @@ public class NDProver implements Prover {
 
     private void orElim(WorkSpace workSpace, Set<Formula> assumptions, Formula goal) {
 
-
+        /**
+         * newNodes := disjunctions that are not expanded, and that are not introduced by extra assumptions
+         */
         Set<Node> newNodes = workSpace.
                 getNodes().
                 stream().
@@ -318,61 +321,61 @@ public class NDProver implements Prover {
 
 
         Set<Node> toBeAdded = newNodes.stream().
-                map(node -> {
-                    Or or = (Or) node.getFormula();
-
-                    Formula[] disjuncts = or.getArguments();
-
-                    workSpace.addToExpanded(or);
-
-                    List<Node> provedNodes = CollectionUtils.newEmptyList();
-                    for (int i = 0; i < disjuncts.length; i++) {
-
-
-                        Node disjunctNode = Node.newAssumption(disjuncts[i]);
-                        workSpace.assume(disjunctNode);
-
-
-                        Optional<Node> provedConsequentOpt = prove(workSpace, Sets.add(assumptions, disjuncts[i]), goal);
-
-
-                        if (!provedConsequentOpt.isPresent()) {
-                            workSpace.getExpanded().remove(or);
-                            return null;
-                        } else {
-
-                            if (!provedConsequentOpt.get().getDerivedFrom().contains(disjuncts[i])) {
-                                return null;
-                            }
-
-                            provedNodes.add(provedConsequentOpt.get());
-
-                        }
-
-
-                    }
-                    for (int i = 0; i < disjuncts.length; i++) {
-
-                        workSpace.addNode(provedNodes.get(i));
-                    }
-
-                    provedNodes.add(node);
-
-                    Node finalNode = new Node(goal, NDRule.OR_ELIM, provedNodes);
-                    workSpace.addNode(finalNode);
-
-
-                    workSpace.getExpanded().remove(or);
-
-
-                    return finalNode;
-
-
-                }).filter(Objects::nonNull).collect(Collectors.toSet());
+                map(node -> getNode(workSpace, assumptions, goal, node)).
+                filter(Objects::nonNull).
+                collect(Collectors.toSet());
 
         workSpace.getNodes().addAll(toBeAdded);
 
 
+    }
+
+    private Node getNode(WorkSpace workSpace, Set<Formula> assumptions, Formula goal, Node node) {
+
+        Or or = (Or) node.getFormula();
+
+        Formula[] disjuncts = or.getArguments();
+        workSpace.addToExpanded(or);
+
+        List<Node> provedNodes = CollectionUtils.newEmptyList();
+        for (int i = 0; i < disjuncts.length; i++) {
+
+
+            Node disjunctNode = Node.newAssumption(disjuncts[i]);
+            workSpace.assume(disjunctNode);
+
+            Optional<Node> provedConsequentOpt = prove(workSpace, Sets.add(assumptions, disjuncts[i]), goal);
+
+            if (!provedConsequentOpt.isPresent()) {
+                workSpace.getExpanded().remove(or);
+                return null;
+            } else {
+
+                if (!provedConsequentOpt.get().getDerivedFrom().contains(disjuncts[i])) {
+                    return null;
+                }
+
+                provedNodes.add(provedConsequentOpt.get());
+
+            }
+
+
+        }
+        for (int i = 0; i < disjuncts.length; i++) {
+
+            workSpace.addNode(provedNodes.get(i));
+        }
+
+        provedNodes.add(node);
+
+        Node finalNode = new Node(goal, NDRule.OR_ELIM, provedNodes);
+        workSpace.addNode(finalNode);
+        workSpace.addNode(node);
+
+        workSpace.getExpanded().remove(or);
+
+
+        return finalNode;
     }
 
     private Optional<Node> tryAndIntro(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
@@ -537,7 +540,7 @@ public class NDProver implements Prover {
             Node n1 = alreadyOpt.get();
 
 
-            if(negatedAlreadyOpt.isPresent()) {
+            if (negatedAlreadyOpt.isPresent()) {
 
                 Node n2 = negatedAlreadyOpt.get();
 
@@ -547,12 +550,10 @@ public class NDProver implements Prover {
                 workSpace.addNode(proved);
                 workSpace.removeFromCurrentReductioSet(formula);
                 return Optional.of(proved);
-            }
-            else {
+            } else {
 
                 return Optional.empty();
             }
-
 
 
         }
