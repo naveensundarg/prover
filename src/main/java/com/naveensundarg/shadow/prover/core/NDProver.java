@@ -18,17 +18,13 @@ public class NDProver implements Prover {
 
 
     public boolean visualize = false;
+
     public NDProver() {
 
     }
 
-
-
-
-
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
-
 
 
         WorkSpace workSpace = WorkSpace.createWorkSpaceFromGiven(assumptions);
@@ -39,7 +35,7 @@ public class NDProver implements Prover {
         if (provedOpt.isPresent()) {
 
 
-            if(visualize){
+            if (visualize) {
                 try {
                     Visualizer.renderToDot(provedOpt.get());
                 } catch (FileNotFoundException e) {
@@ -145,7 +141,7 @@ public class NDProver implements Prover {
                 filter(node -> !workSpace.getExpanded().contains(node.getFormula())).
                 filter(node -> node.getFormula() instanceof And).
                 flatMap(node -> {
-                    And and = (And) node.getFormula();
+                    And       and       = (And) node.getFormula();
                     Formula[] conjuncts = and.getArguments();
 
                     return Arrays.stream(conjuncts).map(conjunct -> new Node(conjunct, NDRule.AND_ELIM, CollectionUtils.listOf(node)));
@@ -170,8 +166,8 @@ public class NDProver implements Prover {
         Set<Node> toBeAdded = newNodes.stream().
                 map(node -> {
                     Implication implication = (Implication) node.getFormula();
-                    Formula antecedent = implication.getAntecedent();
-                    Formula consequent = implication.getConsequent();
+                    Formula     antecedent  = implication.getAntecedent();
+                    Formula     consequent  = implication.getConsequent();
 
 
                     workSpace.addToExpanded(implication);
@@ -189,7 +185,7 @@ public class NDProver implements Prover {
                         return consequentNode;
 
 
-                    } else{
+                    } else {
 
 
                         Node newAssumption = Node.newAssumption(antecedent);
@@ -204,9 +200,6 @@ public class NDProver implements Prover {
 
 
                     }
-
-
-
 
 
                 }).filter(Objects::nonNull).collect(Collectors.toSet());
@@ -230,8 +223,8 @@ public class NDProver implements Prover {
         Set<Node> rightToBeAdded = newNodes.stream().
                 map(node -> {
                     BiConditional biConditional = (BiConditional) node.getFormula();
-                    Formula left = biConditional.getLeft();
-                    Formula right = biConditional.getRight();
+                    Formula       left          = biConditional.getLeft();
+                    Formula       right         = biConditional.getRight();
 
 
                     workSpace.addToExpanded(biConditional);
@@ -247,11 +240,11 @@ public class NDProver implements Prover {
                         return consequentNode;
 
 
-                    }else{
+                    } else {
 
 
-                        Node newAssumption = workSpace.assumeAndFetch(left);
-                        List<Node> parents = CollectionUtils.listOf(newAssumption);
+                        Node       newAssumption = workSpace.assumeAndFetch(left);
+                        List<Node> parents       = CollectionUtils.listOf(newAssumption);
                         parents.add(node);
                         Node consequentNode = new Node(right, NDRule.IFF_ELIM, parents);
 
@@ -269,8 +262,8 @@ public class NDProver implements Prover {
         Set<Node> leftToBeAdded = newNodes.stream().
                 map(node -> {
                     BiConditional biConditional = (BiConditional) node.getFormula();
-                    Formula left = biConditional.getLeft();
-                    Formula right = biConditional.getRight();
+                    Formula       left          = biConditional.getLeft();
+                    Formula       right         = biConditional.getRight();
 
 
                     workSpace.addToExpanded(biConditional);
@@ -285,11 +278,11 @@ public class NDProver implements Prover {
                         return consequentNode;
 
 
-                    }else{
+                    } else {
 
 
-                        Node newAssumption = workSpace.assumeAndFetch(right);
-                        List<Node> parents = CollectionUtils.listOf(newAssumption);
+                        Node       newAssumption = workSpace.assumeAndFetch(right);
+                        List<Node> parents       = CollectionUtils.listOf(newAssumption);
                         parents.add(node);
                         Node consequentNode = new Node(left, NDRule.IFF_ELIM, parents);
 
@@ -299,9 +292,6 @@ public class NDProver implements Prover {
 
 
                     }
-
-
-
 
 
                 }).filter(Objects::nonNull).collect(Collectors.toSet());
@@ -344,13 +334,12 @@ public class NDProver implements Prover {
                         Optional<Node> provedConsequentOpt = prove(workSpace, Sets.add(assumptions, disjuncts[i]), goal);
 
 
-
                         if (!provedConsequentOpt.isPresent()) {
                             workSpace.getExpanded().remove(or);
                             return null;
-                        }  else {
+                        } else {
 
-                            if(!provedConsequentOpt.get().getDerivedFrom().contains(disjuncts[i])){
+                            if (!provedConsequentOpt.get().getDerivedFrom().contains(disjuncts[i])) {
                                 return null;
                             }
 
@@ -497,11 +486,11 @@ public class NDProver implements Prover {
         if (formula instanceof BiConditional) {
             BiConditional biConditional = (BiConditional) formula;
 
-            Formula left = biConditional.getLeft();
+            Formula left  = biConditional.getLeft();
             Formula right = biConditional.getRight();
 
 
-            Formula leftImplication = new Implication(left, right);
+            Formula leftImplication  = new Implication(left, right);
             Formula rightImplication = new Implication(right, left);
 
             WorkSpace workSpace1 = workSpace.copy();
@@ -523,8 +512,6 @@ public class NDProver implements Prover {
             }
 
 
-
-
         }
 
         return Optional.empty();
@@ -536,22 +523,22 @@ public class NDProver implements Prover {
         Formula negated = Logic.negated(formula);
 
 
-        Set<Node> relevantNodes  = workSpace.getNodes().stream().filter(node->Sets.subset(node.getDerivedFrom(),assumptions)).collect(Collectors.toSet());
+        Set<Node>    relevantNodes   = workSpace.getNodes().stream().filter(node -> Sets.subset(node.getDerivedFrom(), assumptions)).collect(Collectors.toSet());
         Set<Formula> relevantFormula = relevantNodes.stream().map(Node::getFormula).collect(Collectors.toSet());
 
-        Optional<Node> alreadyOpt = relevantNodes.stream().filter(n-> relevantFormula.contains(Logic.negated(n.getFormula()))).findAny();
+        Optional<Node> alreadyOpt = relevantNodes.stream().filter(n -> relevantFormula.contains(Logic.negated(n.getFormula()))).findAny();
 
-        if(alreadyOpt.isPresent()){
+        if (alreadyOpt.isPresent()) {
 
-            Optional<Node> negatedAlreadyOpt = relevantNodes.stream().filter(n-> alreadyOpt.get().getFormula().equals(Logic.negated(n.getFormula()))).findAny();
+            Optional<Node> negatedAlreadyOpt = relevantNodes.stream().filter(n -> alreadyOpt.get().getFormula().equals(Logic.negated(n.getFormula()))).findAny();
 
             Node n1 = alreadyOpt.get();
 
             Node n2 = negatedAlreadyOpt.get();
 
 
-            NDRule ndRule = formula instanceof Not? NDRule.NOT_INTRO:NDRule.NOT_ELIM;
-            Node proved = new Node(formula, ndRule, CollectionUtils.listOf(n1,n2), negated);
+            NDRule ndRule = formula instanceof Not ? NDRule.NOT_INTRO : NDRule.NOT_ELIM;
+            Node   proved = new Node(formula, ndRule, CollectionUtils.listOf(n1, n2), negated);
 
             workSpace.addNode(proved);
 
@@ -561,10 +548,9 @@ public class NDProver implements Prover {
 
         }
 
-        if(workSpace.isReductioBeingTriedOn(formula) || workSpace.hasAlreadyFailed(assumptions, formula)){
+        if (workSpace.isReductioBeingTriedOn(formula) || workSpace.hasAlreadyFailed(assumptions, formula)) {
             return Optional.empty();
         }
-
 
 
         workSpace.addToCurrentReductioSet(formula);
@@ -586,13 +572,13 @@ public class NDProver implements Prover {
         for (Formula absurdTarget : absurdTargets) {
 
 
-            Optional<Node> provedConsequent = prove(workSpace, Sets.add(assumptions, negated), absurdTarget);
+            Optional<Node> provedConsequent        = prove(workSpace, Sets.add(assumptions, negated), absurdTarget);
             Optional<Node> provedConsequentNegated = prove(workSpace, Sets.add(assumptions, negated), Logic.negated(absurdTarget));
 
-            if(provedConsequent.isPresent() && provedConsequentNegated.isPresent() && (provedConsequent.get().getDerivedFrom().contains(negated) || provedConsequentNegated.get().getDerivedFrom().contains(negated))){
+            if (provedConsequent.isPresent() && provedConsequentNegated.isPresent() && (provedConsequent.get().getDerivedFrom().contains(negated) || provedConsequentNegated.get().getDerivedFrom().contains(negated))) {
 
-                NDRule ndRule = formula instanceof Not? NDRule.NOT_INTRO:NDRule.NOT_ELIM;
-                Node proved = new Node(formula, ndRule, CollectionUtils.listOf(provedConsequent.get(), provedConsequentNegated.get()), negated);
+                NDRule ndRule = formula instanceof Not ? NDRule.NOT_INTRO : NDRule.NOT_ELIM;
+                Node   proved = new Node(formula, ndRule, CollectionUtils.listOf(provedConsequent.get(), provedConsequentNegated.get()), negated);
 
                 workSpace.addNode(proved);
 

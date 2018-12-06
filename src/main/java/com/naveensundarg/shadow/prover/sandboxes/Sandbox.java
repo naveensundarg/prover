@@ -4,11 +4,14 @@ import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.*;
 import com.naveensundarg.shadow.prover.core.ccprovers.*;
+import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP;
 import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP1;
 import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP2;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.*;
+
+import java.util.Optional;
 
 import static us.bpsm.edn.Keyword.newKeyword;
 
@@ -24,14 +27,17 @@ public class Sandbox {
 
 
 
-        Formula f1 = Reader.readFormulaFromString("(or q (and p (not p))))");
+        Formula f1 = Reader.readFormulaFromString("p");
 
-        Formula goal = Reader.readFormulaFromString("(pos (and p (not p)))");
+        Formula goal = Reader.readFormulaFromString("p");
 
 
-        System.out.println(ModalConverter.convertToCNF(f1, new Problem("","", Sets.from(f1), goal)));
-        Prover prover = new LP2();
-        System.out.println(prover.prove(Sets.from(), goal).get());
+        Prover                 prover = new NDProver();
+        Optional<Justification> proof  = prover.prove(Sets.from(f1), goal);
+
+        proof.ifPresent(System.out::println);
+
+
     }
 
 
