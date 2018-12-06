@@ -47,6 +47,13 @@ public class NDProver implements Prover {
         }
     }
 
+    /**
+     * Core prover loop.
+     * @param workSpace
+     * @param assumptions
+     * @param formula
+     * @return
+     */
 
     private Optional<Node> prove(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
 
@@ -67,9 +74,9 @@ public class NDProver implements Prover {
                 return introductionsProof;
             }
 
-            Optional<Node> reductioOpt = tryReductio(workSpace, assumptions, formula);
-            if (reductioOpt.isPresent()) {
-                return reductioOpt;
+            Optional<Node> contradictionProof = tryReductio(workSpace, assumptions, formula);
+            if (contradictionProof.isPresent()) {
+                return contradictionProof;
             }
 
             currentSize = workSpace.size();
@@ -553,7 +560,7 @@ public class NDProver implements Prover {
         Node negatedNode = Node.newAssumption(negated);
 
         Set<Formula> atomicFormulae =
-                assumptions.stream().
+                Sets.add(assumptions, formula).stream().
                         map(Formula::subFormulae).reduce(Sets.newSet(), Sets::union).stream().
                         filter(x -> x instanceof Atom || x instanceof Predicate).collect(Collectors.toSet());
 

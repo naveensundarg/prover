@@ -26,14 +26,13 @@ public class Sandbox {
 
 
 
-        Formula f1 = Reader.readFormulaFromString("(and P (if E Q)  (if P (if A (if B (if D E)))))");
+        Formula f1 = Reader.readFormulaFromString("P");
 
-        Formula goal = Reader.readFormulaFromString("(pos Q)");
+        Formula goal = Reader.readFormulaFromString("(or P (not P))");
 
 
-        System.out.println(ModalConverter.convertToCNF(f1, new Problem("","", Sets.from(f1), goal)));
-        Prover prover = new LP1();
-        System.out.println(prover.prove(Sets.from(f1), goal).get());
+        Prover prover = new NDProver();
+        System.out.println(prover.prove(Sets.from(), goal).get());
     }
 
 
