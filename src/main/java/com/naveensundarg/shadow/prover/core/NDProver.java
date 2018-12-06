@@ -536,16 +536,23 @@ public class NDProver implements Prover {
 
             Node n1 = alreadyOpt.get();
 
-            Node n2 = negatedAlreadyOpt.get();
 
+            if(negatedAlreadyOpt.isPresent()) {
 
-            NDRule ndRule = formula instanceof Not ? NDRule.NOT_INTRO : NDRule.NOT_ELIM;
-            Node   proved = new Node(formula, ndRule, CollectionUtils.listOf(n1, n2), negated);
+                Node n2 = negatedAlreadyOpt.get();
 
-            workSpace.addNode(proved);
+                NDRule ndRule = formula instanceof Not ? NDRule.NOT_INTRO : NDRule.NOT_ELIM;
+                Node   proved = new Node(formula, ndRule, CollectionUtils.listOf(n1, n2), negated);
 
-            workSpace.removeFromCurrentReductioSet(formula);
-            return Optional.of(proved);
+                workSpace.addNode(proved);
+                workSpace.removeFromCurrentReductioSet(formula);
+                return Optional.of(proved);
+            }
+            else {
+
+                return Optional.empty();
+            }
+
 
 
         }

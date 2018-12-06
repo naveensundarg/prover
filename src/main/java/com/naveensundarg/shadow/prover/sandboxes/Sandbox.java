@@ -26,12 +26,11 @@ public class Sandbox {
 
 
 
-        Formula f1 = Reader.readFormulaFromString("P");
-
-        Formula goal = Reader.readFormulaFromString("(or P (not P))");
+        Formula goal = Reader.readFormulaFromString("(or P (not (not (not P))))");
 
 
-        Prover prover = new NDProver();
+        NDProver prover = new NDProver();
+        prover.visualize = true;
         System.out.println(prover.prove(Sets.from(), goal).get());
     }
 
