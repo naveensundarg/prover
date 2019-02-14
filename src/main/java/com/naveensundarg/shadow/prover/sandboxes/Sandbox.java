@@ -24,14 +24,8 @@ public class Sandbox {
     public static void main(String[] args) throws Exception {
 
 
-
-
-        Formula goal = Reader.readFormulaFromString("(or P (not (not (not P))))");
-
-
-        NDProver prover = new NDProver();
-        prover.visualize = true;
-        System.out.println(prover.prove(Sets.from(), goal).get());
+        Formula goal = Reader.readFormulaFromString("\"A\"");
+         System.out.println(goal);
     }
 
 

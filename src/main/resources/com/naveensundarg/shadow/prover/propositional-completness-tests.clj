@@ -262,7 +262,7 @@
 {:name "*prop-nd-true-test-34* Problem 13a"
  :description ""
  :assumptions {}
- :goal (iff (or p (and q r ) ) (and (or p q ) (or p r ) ))}
+ :goal (if (or p (and q r ) ) (and (or p q ) (or p r ) ))}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

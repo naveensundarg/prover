@@ -200,7 +200,11 @@ public class Reader {
     }
 
     private static Phrase readPhrase(Object input, Set<String> variableNames) throws ParsingException {
+        if(input instanceof String) {
 
+            return new Atom((String) input, true);
+
+        }
         if (input instanceof Symbol) {
 
             Symbol symbol = (Symbol) input;
@@ -378,6 +382,9 @@ public class Reader {
         if (input instanceof Symbol) {
             String name = ((Symbol) input).getName();
             return new Atom(SNARK_BUILTIN_RELATIONS.getOrDefault(name, name));
+        }
+        if(input instanceof String) {
+            return new Atom((String) input, true);
         }
 
         if (input instanceof List) {
