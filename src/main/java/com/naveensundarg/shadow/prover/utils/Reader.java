@@ -1178,7 +1178,7 @@ public class Reader {
 
 
     public static final String preprocess(String x) {
-        return x.replace("'", "%!%");
+        return x; //replace("'", "%!%");
     }
 
 }
