@@ -24,16 +24,8 @@ public class Sandbox {
     public static void main(String[] args) throws Exception {
 
 
-
-
-        Formula f1 = Reader.readFormulaFromString("(and P (if E Q)  (if P (if A (if B (if D E)))))");
-
-        Formula goal = Reader.readFormulaFromString("(pos Q)");
-
-
-        System.out.println(ModalConverter.convertToCNF(f1, new Problem("","", Sets.from(f1), goal)));
-        Prover prover = new LP1();
-        System.out.println(prover.prove(Sets.from(f1), goal).get());
+        Formula goal = Reader.readFormulaFromString("\"A\"");
+         System.out.println(goal);
     }
 
 

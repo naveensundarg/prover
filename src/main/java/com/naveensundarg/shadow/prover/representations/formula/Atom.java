@@ -17,6 +17,7 @@ public final class Atom extends Predicate{
     private final Set<Formula> subFormulae;
     private final Set<Variable> variables;
     private final Set<Variable> boundVariables;
+    private final boolean isStringName; // e.g. "It is raining";
     public Atom(String name){
         super(name);
         this.name = name;
@@ -26,6 +27,22 @@ public final class Atom extends Predicate{
 
         this.variables = Sets.newSet();
         this.boundVariables = Sets.newSet();
+
+        //TODO: Check if
+        this.isStringName = false;
+    }
+
+    public Atom(String name, boolean isStringName){
+        super(name);
+        this.name = name;
+
+        this.subFormulae = Sets.newSet();
+        subFormulae.add(this);
+
+        this.variables = Sets.newSet();
+        this.boundVariables = Sets.newSet();
+
+        this.isStringName = isStringName;
     }
 
     public String getName() {
@@ -34,7 +51,12 @@ public final class Atom extends Predicate{
 
     @Override
     public String toString() {
-        return name;
+
+        if(!isStringName) {
+            return name;
+        } else {
+            return "\"" + name + "\"";
+        }
     }
 
     @Override

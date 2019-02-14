@@ -18,22 +18,20 @@ public class NDProver implements Prover {
 
 
     public boolean visualize = false;
+    // private final Prover resolutionProverOracle;
 
     public NDProver() {
-
+        // resolutionProverOracle = SnarkWrapper.getInstance();
     }
 
     @Override
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
 
-        WorkSpace workSpace = WorkSpace.createWorkSpaceFromGiven(assumptions);
-
+        WorkSpace      workSpace = WorkSpace.createWorkSpaceFromGiven(assumptions);
         Optional<Node> provedOpt = prove(workSpace, assumptions, formula);
 
-
         if (provedOpt.isPresent()) {
-
 
             if (visualize) {
                 try {
@@ -50,6 +48,13 @@ public class NDProver implements Prover {
         }
     }
 
+    /**
+     * Core prover loop.
+     * @param workSpace
+     * @param assumptions
+     * @param formula
+     * @return
+     */
 
     private Optional<Node> prove(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
 
@@ -59,29 +64,32 @@ public class NDProver implements Prover {
 
         do {
             previousSize = workSpace.size();
-            andElim(workSpace);
-            ifElim(workSpace, assumptions, formula);
-            iffElim(workSpace, assumptions, formula);
 
-            orElim(workSpace, assumptions, formula);
-
-            Optional<Node> trivialOpt1 = workSpace.fetch(assumptions, formula);
-
-            if (trivialOpt1.isPresent()) {
-                return trivialOpt1;
+            Optional<Node> eliminationsProof = applyEliminations(workSpace, assumptions, formula);
+            if (eliminationsProof != null) {
+                return eliminationsProof;
             }
+
+            Optional<Node> introductionsProof = applyIntroductions(workSpace, assumptions, formula);
+            if (introductionsProof != null) {
+                return introductionsProof;
+            }
+
+            Optional<Node> contradictionProof = tryReductio(workSpace, assumptions, formula);
+            if (contradictionProof.isPresent()) {
+                return contradictionProof;
+            }
+
             currentSize = workSpace.size();
+
 
         } while (currentSize != previousSize);
 
 
-        Optional<Node> trivialOpt = workSpace.fetch(assumptions, formula);
+        return Optional.empty();
+    }
 
-        if (trivialOpt.isPresent()) {
-            return trivialOpt;
-        }
-
-
+    private Optional<Node> applyIntroductions(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
         Optional<Node> andIntroOpt = tryAndIntro(workSpace, assumptions, formula);
 
         if (andIntroOpt.isPresent()) {
@@ -105,35 +113,30 @@ public class NDProver implements Prover {
         if (iffIntroOpt.isPresent()) {
             return iffIntroOpt;
         }
-
-
-        Optional<Node> reductioOpt = tryReductio(workSpace, assumptions, formula);
-
-        if (reductioOpt.isPresent()) {
-            return reductioOpt;
-        }
-        do {
-            previousSize = workSpace.size();
-            andElim(workSpace);
-            ifElim(workSpace, assumptions, formula);
-            iffElim(workSpace, assumptions, formula);
-
-            orElim(workSpace, assumptions, formula);
-
-            Optional<Node> trivialOpt1 = workSpace.fetch(assumptions, formula);
-
-            if (trivialOpt1.isPresent()) {
-                return trivialOpt1;
-            }
-            currentSize = workSpace.size();
-
-        } while (currentSize != previousSize);
-
-
-        return Optional.empty();
+        return null;
     }
 
-    private void andElim(WorkSpace workSpace) {
+    private Optional<Node> checkIfGoalReached(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
+        Optional<Node> trivialOpt1 = workSpace.fetch(assumptions, formula);
+
+        if (trivialOpt1.isPresent()) {
+            return trivialOpt1;
+        }
+        return null;
+    }
+
+    private Optional<Node> applyEliminations(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
+
+        andElim(workSpace, assumptions, formula);
+        ifElim(workSpace, assumptions, formula);
+        iffElim(workSpace, assumptions, formula);
+        orElim(workSpace, assumptions, formula);
+
+        return checkIfGoalReached(workSpace, assumptions, formula);
+
+    }
+
+    private void andElim(WorkSpace workSpace, Set<Formula> assumptions, Formula goal) {
 
         Set<Node> newNodes = workSpace.
                 getNodes().
@@ -306,7 +309,9 @@ public class NDProver implements Prover {
 
     private void orElim(WorkSpace workSpace, Set<Formula> assumptions, Formula goal) {
 
-
+        /**
+         * newNodes := disjunctions that are not expanded, and that are not introduced by extra assumptions
+         */
         Set<Node> newNodes = workSpace.
                 getNodes().
                 stream().
@@ -316,61 +321,61 @@ public class NDProver implements Prover {
 
 
         Set<Node> toBeAdded = newNodes.stream().
-                map(node -> {
-                    Or or = (Or) node.getFormula();
-
-                    Formula[] disjuncts = or.getArguments();
-
-                    workSpace.addToExpanded(or);
-
-                    List<Node> provedNodes = CollectionUtils.newEmptyList();
-                    for (int i = 0; i < disjuncts.length; i++) {
-
-
-                        Node disjunctNode = Node.newAssumption(disjuncts[i]);
-                        workSpace.assume(disjunctNode);
-
-
-                        Optional<Node> provedConsequentOpt = prove(workSpace, Sets.add(assumptions, disjuncts[i]), goal);
-
-
-                        if (!provedConsequentOpt.isPresent()) {
-                            workSpace.getExpanded().remove(or);
-                            return null;
-                        } else {
-
-                            if (!provedConsequentOpt.get().getDerivedFrom().contains(disjuncts[i])) {
-                                return null;
-                            }
-
-                            provedNodes.add(provedConsequentOpt.get());
-
-                        }
-
-
-                    }
-                    for (int i = 0; i < disjuncts.length; i++) {
-
-                        workSpace.addNode(provedNodes.get(i));
-                    }
-
-                    provedNodes.add(node);
-
-                    Node finalNode = new Node(goal, NDRule.OR_ELIM, provedNodes);
-                    workSpace.addNode(finalNode);
-
-
-                    workSpace.getExpanded().remove(or);
-
-
-                    return finalNode;
-
-
-                }).filter(Objects::nonNull).collect(Collectors.toSet());
+                map(node -> getNode(workSpace, assumptions, goal, node)).
+                filter(Objects::nonNull).
+                collect(Collectors.toSet());
 
         workSpace.getNodes().addAll(toBeAdded);
 
 
+    }
+
+    private Node getNode(WorkSpace workSpace, Set<Formula> assumptions, Formula goal, Node node) {
+
+        Or or = (Or) node.getFormula();
+
+        Formula[] disjuncts = or.getArguments();
+        workSpace.addToExpanded(or);
+
+        List<Node> provedNodes = CollectionUtils.newEmptyList();
+        for (int i = 0; i < disjuncts.length; i++) {
+
+
+            Node disjunctNode = Node.newAssumption(disjuncts[i]);
+            workSpace.assume(disjunctNode);
+
+            Optional<Node> provedConsequentOpt = prove(workSpace, Sets.add(assumptions, disjuncts[i]), goal);
+
+            if (!provedConsequentOpt.isPresent()) {
+                workSpace.getExpanded().remove(or);
+                return null;
+            } else {
+
+                if (!provedConsequentOpt.get().getDerivedFrom().contains(disjuncts[i])) {
+                    return null;
+                }
+
+                provedNodes.add(provedConsequentOpt.get());
+
+            }
+
+
+        }
+        for (int i = 0; i < disjuncts.length; i++) {
+
+            workSpace.addNode(provedNodes.get(i));
+        }
+
+        provedNodes.add(node);
+
+        Node finalNode = new Node(goal, NDRule.OR_ELIM, provedNodes);
+        workSpace.addNode(finalNode);
+        workSpace.addNode(node);
+
+        workSpace.getExpanded().remove(or);
+
+
+        return finalNode;
     }
 
     private Optional<Node> tryAndIntro(WorkSpace workSpace, Set<Formula> assumptions, Formula formula) {
@@ -534,16 +539,21 @@ public class NDProver implements Prover {
 
             Node n1 = alreadyOpt.get();
 
-            Node n2 = negatedAlreadyOpt.get();
 
+            if (negatedAlreadyOpt.isPresent()) {
 
-            NDRule ndRule = formula instanceof Not ? NDRule.NOT_INTRO : NDRule.NOT_ELIM;
-            Node   proved = new Node(formula, ndRule, CollectionUtils.listOf(n1, n2), negated);
+                Node n2 = negatedAlreadyOpt.get();
 
-            workSpace.addNode(proved);
+                NDRule ndRule = formula instanceof Not ? NDRule.NOT_INTRO : NDRule.NOT_ELIM;
+                Node   proved = new Node(formula, ndRule, CollectionUtils.listOf(n1, n2), negated);
 
-            workSpace.removeFromCurrentReductioSet(formula);
-            return Optional.of(proved);
+                workSpace.addNode(proved);
+                workSpace.removeFromCurrentReductioSet(formula);
+                return Optional.of(proved);
+            } else {
+
+                return Optional.empty();
+            }
 
 
         }
@@ -558,7 +568,7 @@ public class NDProver implements Prover {
         Node negatedNode = Node.newAssumption(negated);
 
         Set<Formula> atomicFormulae =
-                assumptions.stream().
+                Sets.add(assumptions, formula).stream().
                         map(Formula::subFormulae).reduce(Sets.newSet(), Sets::union).stream().
                         filter(x -> x instanceof Atom || x instanceof Predicate).collect(Collectors.toSet());
 
