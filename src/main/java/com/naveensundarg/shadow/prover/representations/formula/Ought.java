@@ -157,6 +157,15 @@ public class Ought extends BaseFormula{
     }
 
     @Override
+    public String toSnarkString() {
+        return "(Ought! "
+                + agent.toSnarkString() + " "
+                + time.toSnarkString() + " "+
+                precondition.toSnarkString() + " " +
+                ought.toSnarkString() + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

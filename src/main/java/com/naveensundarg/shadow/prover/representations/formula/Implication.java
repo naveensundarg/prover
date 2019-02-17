@@ -50,6 +50,11 @@ public class Implication extends Formula{
     }
 
     @Override
+    public String toSnarkString() {
+        return "(implies " + antecedent.toSnarkString() + " " + consequent.toSnarkString() + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

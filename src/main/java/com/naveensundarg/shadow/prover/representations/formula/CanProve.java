@@ -132,6 +132,13 @@ public final class CanProve extends  BaseFormula{
     }
 
     @Override
+    public String toSnarkString() {
+        return "(CanProve " +
+                formula.toString() +
+                ')';
+    }
+
+    @Override
     public Set<Value> allValues() {
         return allValues;
     }

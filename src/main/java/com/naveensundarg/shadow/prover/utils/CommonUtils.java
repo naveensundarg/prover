@@ -50,6 +50,19 @@ public class CommonUtils {
         return stringBuilder.toString();
     }
 
+    public static String toSnarkString(Formula[] formulae) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+
+        for (Formula formula : formulae) {
+            stringBuilder.append(formula.toSnarkString());
+            stringBuilder.append(" ");
+        }
+
+        return stringBuilder.toString();
+    }
+
 
     public static List<Pair<Set<Formula>, Formula>> readCases(InputStream testFile) throws Reader.ParsingException {
 

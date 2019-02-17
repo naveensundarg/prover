@@ -23,9 +23,15 @@ public class Sandbox {
 
     public static void main(String[] args) throws Exception {
 
+        Formula f1 = Reader.readFormulaFromString("(if \"A premise\" B)");
+        Formula f2 = Reader.readFormulaFromString("\"A premise\"");
 
-        Formula goal = Reader.readFormulaFromString("\"A\"");
-         System.out.println(goal);
+        Formula goal = Reader.readFormulaFromString("B");
+
+
+        Prover prover = SnarkWrapper.getInstance();
+
+        System.out.println(prover.prove(Sets.from(f1, f2), goal).get());
     }
 
 

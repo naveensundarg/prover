@@ -85,6 +85,13 @@ public class Possibility extends  BaseFormula{
                 formula + ")";
     }
 
+    @Override
+    public String toSnarkString() {
+        return "(pos "
+                +
+                formula.toSnarkString() + ")";
+    }
+
 
     @Override
     public Set<Value> allValues() {

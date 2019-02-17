@@ -73,6 +73,11 @@ public final class And extends Formula {
     }
 
     @Override
+    public String toSnarkString() {
+        return "(and "  + CommonUtils.toSnarkString(arguments) + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

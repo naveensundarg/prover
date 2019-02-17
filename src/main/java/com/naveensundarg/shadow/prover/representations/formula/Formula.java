@@ -79,4 +79,6 @@ public abstract class Formula extends Expression {
 
         return formula.toString().replace("implies ", "if ");
     }
+
+    public abstract String toSnarkString();
 }

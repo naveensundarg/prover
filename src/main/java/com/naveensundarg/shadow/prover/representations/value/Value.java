@@ -100,4 +100,8 @@ public abstract class Value extends Expression implements  Comparable{
 
     }
 
+    public String toSnarkString() {
+        return this.toString();
+    }
+
  }

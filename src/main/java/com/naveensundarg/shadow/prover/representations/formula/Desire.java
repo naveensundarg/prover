@@ -117,6 +117,14 @@ public class Desire extends BaseFormula{
     }
 
     @Override
+    public String toSnarkString() {
+        return "(Desires! "
+                + agent.toSnarkString() + " "
+                + time.toSnarkString() + " "+
+                formula.toSnarkString() + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

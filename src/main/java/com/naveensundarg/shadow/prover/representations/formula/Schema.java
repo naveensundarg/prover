@@ -120,6 +120,13 @@ public class Schema extends Formula {
     }
 
     @Override
+    public String toSnarkString() {
+        return "(schema " + "(" + StringUtils.trim(Arrays.stream(vars).map(Variable::toSnarkString).reduce("", (x, y) -> x  + y + " "))
+                + ")" + " "
+                + argument.toSnarkString() + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

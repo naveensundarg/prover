@@ -56,6 +56,11 @@ public class Not extends Formula {
     }
 
     @Override
+    public String toSnarkString() {
+        return "(not " + argument.toSnarkString() +")";
+    }
+
+    @Override
     public Set<Formula> subFormulae() {
         return subFormulae;
     }

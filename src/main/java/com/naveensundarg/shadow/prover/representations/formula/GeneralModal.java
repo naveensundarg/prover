@@ -109,6 +109,13 @@ public final class GeneralModal extends  BaseFormula{
     }
 
     @Override
+    public String toSnarkString() {
+        return "(" + name
+                +
+                formulae.stream().map(Formula::toSnarkString).reduce(" ", (x, y)-> x + " " +y) + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

@@ -72,6 +72,11 @@ public class Or extends Formula {
         return "(or " + CommonUtils.toString(arguments) +")";
     }
 
+    @Override
+    public String toSnarkString() {
+        return "(or " + CommonUtils.toSnarkString(arguments) +")";
+    }
+
 
     @Override
     public boolean equals(Object o) {

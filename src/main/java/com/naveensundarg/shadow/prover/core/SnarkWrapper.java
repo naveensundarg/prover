@@ -81,8 +81,8 @@ public class SnarkWrapper implements Prover {
     public Optional<Integer> proofLength(Set<Formula> assumptions, Formula formula) {
 
 
-        String assumptionsListString = assumptions.stream().map(Formula::toString).reduce("'(", (x, y) -> x + " " + y) + ") ";
-        String goalString = "'" + formula.toString();
+        String assumptionsListString = assumptions.stream().map(Formula::toSnarkString).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toSnarkString();
 
         assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
         goalString = goalString.replace("\n", "").replace("\r", "");
@@ -114,8 +114,8 @@ public class SnarkWrapper implements Prover {
     public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
 
-        String assumptionsListString = assumptions.stream().map(Formula::toString).reduce("'(", (x, y) -> x + " " + y) + ") ";
-        String goalString = "'" + formula.toString();
+        String assumptionsListString = assumptions.stream().map(Formula::toSnarkString).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toSnarkString();
 
         assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
         goalString = goalString.replace("\n", "").replace("\r", "");
@@ -185,8 +185,8 @@ public class SnarkWrapper implements Prover {
     public Optional<Value> proveAndGetBinding(Set<Formula> assumptions, Formula formula, Variable variable) {
 
 
-        String assumptionsListString = assumptions.stream().map(Formula::toString).reduce("'(", (x, y) -> x + " " + y) + ") ";
-        String goalString = "'" + formula.toString();
+        String assumptionsListString = assumptions.stream().map(Formula::toSnarkString).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toSnarkString();
 
         assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
         goalString = goalString.replace("\n", "").replace("\r", "");
@@ -265,8 +265,8 @@ public class SnarkWrapper implements Prover {
 
         String varListString = "(" + variables.stream().map(Variable::toString).reduce(" ", (x, y) -> x + " " + y) + ")";
 
-        String assumptionsListString = assumptions.stream().map(Formula::toString).reduce("'(", (x, y) -> x + " " + y) + ") ";
-        String goalString = "'" + formula.toString();
+        String assumptionsListString = assumptions.stream().map(Formula::toSnarkString).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toSnarkString();
 
         assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
         goalString = goalString.replace("\n", "").replace("\r", "");
@@ -367,8 +367,8 @@ public class SnarkWrapper implements Prover {
 
         String varListString = "(" + variables.stream().map(Variable::toString).reduce(" ", (x, y) -> x + " " + y) + ")";
 
-        String assumptionsListString = assumptions.stream().map(Formula::toString).reduce("'(", (x, y) -> x + " " + y) + ") ";
-        String goalString = "'" + formula.toString();
+        String assumptionsListString = assumptions.stream().map(Formula::toSnarkString).reduce("'(", (x, y) -> x + " " + y) + ") ";
+        String goalString = "'" + formula.toSnarkString();
 
         assumptionsListString = assumptionsListString.replace("\n", "").replace("\r", "");
         goalString = goalString.replace("\n", "").replace("\r", "");
@@ -472,5 +472,8 @@ public class SnarkWrapper implements Prover {
 
     }
 
+    private static String escapeString(String input) {
+        return input.replaceAll("\"", "|");
+    }
 
 }

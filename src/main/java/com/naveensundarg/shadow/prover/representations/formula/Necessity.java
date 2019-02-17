@@ -90,6 +90,13 @@ public class Necessity extends  BaseFormula{
                 formula + ")";
     }
 
+    @Override
+    public String toSnarkString() {
+        return "(nec "
+                +
+                formula.toSnarkString() + ")";
+    }
+
 
     @Override
     public Set<Value> allValues() {

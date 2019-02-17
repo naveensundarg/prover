@@ -131,6 +131,16 @@ public class Trait extends  BaseFormula{
     }
 
     @Override
+    public String toSnarkString() {
+        return "(Trait! " + "(" + StringUtils.trim((traitVariables).stream().map(Variable::toSnarkString).reduce("", (x, y) -> x  + y + " "))
+                + ") "
+                + agent.toSnarkString() + " "
+                + time.toSnarkString() + " "+
+                triggeringCondition.toSnarkString() + " "+
+                actionType.toSnarkString() + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

@@ -52,6 +52,12 @@ public final class BiConditional extends Formula {
     }
 
     @Override
+    public String toSnarkString() {
+        return "(iff " + left.toString() + " " + right.toSnarkString() + ")";
+    }
+
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

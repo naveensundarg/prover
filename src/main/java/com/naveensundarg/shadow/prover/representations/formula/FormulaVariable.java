@@ -104,6 +104,11 @@ public class FormulaVariable extends Formula {
     }
 
     @Override
+    public String toSnarkString() {
+        return name;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

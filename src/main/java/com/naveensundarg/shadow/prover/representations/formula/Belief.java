@@ -145,6 +145,14 @@ public final class Belief extends BaseFormula{
     }
 
     @Override
+    public String toSnarkString() {
+        return "(Believes! "
+                + agent.toSnarkString() + " "
+                + time.toSnarkString() + " "+
+                formula.toSnarkString() + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
