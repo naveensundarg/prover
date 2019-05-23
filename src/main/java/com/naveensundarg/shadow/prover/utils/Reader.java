@@ -74,13 +74,16 @@ public class Reader {
     private static final Map<String,String> SNARK_BUILTIN_FUNCTIONS = CollectionUtils.newMap();
 
 
-    static {
-        try {
+    private static boolean AUTO_CONVERT_TO_SNARK_BUILTINS = false;
 
+    public static boolean isAutoConvertToSnarkBuiltins() {
+        return AUTO_CONVERT_TO_SNARK_BUILTINS;
+    }
 
-            NOW = readLogicValue("NOW");
-            I = readLogicValueFromString("I");
-            FALSE = readFormulaFromString("FALSE");
+    public static void setAutoConvertToSnarkBuiltins(boolean autoConvertToSnarkBuiltins) {
+        AUTO_CONVERT_TO_SNARK_BUILTINS = autoConvertToSnarkBuiltins;
+
+        if(autoConvertToSnarkBuiltins) {
             SNARK_BUILTIN_RELATIONS.put("<", "$$$less");
             SNARK_BUILTIN_RELATIONS.put("<=", "$$$lesseq");
             SNARK_BUILTIN_RELATIONS.put(">", "$$$greater");
@@ -91,6 +94,41 @@ public class Reader {
             SNARK_BUILTIN_FUNCTIONS.put("*", "$$produce");
             SNARK_BUILTIN_FUNCTIONS.put("/", "$$quotient_r");
 
+        } else {
+            SNARK_BUILTIN_RELATIONS.remove("<", "$$$less");
+            SNARK_BUILTIN_RELATIONS.remove("<=", "$$$lesseq");
+            SNARK_BUILTIN_RELATIONS.remove(">", "$$$greater");
+            SNARK_BUILTIN_RELATIONS.remove(">=", "$$$greatereq");
+
+            SNARK_BUILTIN_FUNCTIONS.remove("+", "$$sum");
+            SNARK_BUILTIN_FUNCTIONS.remove("-", "$$difference");
+            SNARK_BUILTIN_FUNCTIONS.remove("*", "$$produce");
+            SNARK_BUILTIN_FUNCTIONS.remove("/", "$$quotient_r");
+
+
+        }
+    }
+
+    static {
+        try {
+
+
+            NOW = readLogicValue("NOW");
+            I = readLogicValueFromString("I");
+            FALSE = readFormulaFromString("FALSE");
+
+            if(AUTO_CONVERT_TO_SNARK_BUILTINS) {
+                SNARK_BUILTIN_RELATIONS.put("<", "$$$less");
+                SNARK_BUILTIN_RELATIONS.put("<=", "$$$lesseq");
+                SNARK_BUILTIN_RELATIONS.put(">", "$$$greater");
+                SNARK_BUILTIN_RELATIONS.put(">=", "$$$greatereq");
+
+                SNARK_BUILTIN_FUNCTIONS.put("+", "$$sum");
+                SNARK_BUILTIN_FUNCTIONS.put("-", "$$difference");
+                SNARK_BUILTIN_FUNCTIONS.put("*", "$$produce");
+                SNARK_BUILTIN_FUNCTIONS.put("/", "$$quotient_r");
+
+            }
 
         } catch (Exception e) {
             throw new AssertionError("Could not instantiate basic constant: now");

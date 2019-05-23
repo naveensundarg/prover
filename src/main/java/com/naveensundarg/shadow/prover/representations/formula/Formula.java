@@ -3,14 +3,18 @@ package com.naveensundarg.shadow.prover.representations.formula;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.Expression;
 import com.naveensundarg.shadow.prover.representations.Phrase;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Reader;
+import com.naveensundarg.shadow.prover.utils.Sets;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -81,4 +85,40 @@ public abstract class Formula extends Expression {
     }
 
     public abstract String toSnarkString();
+
+    public Set<Variable> freeVariablesPresent() {
+
+        Set<Variable> freeVariables = this.valuesPresent().stream().
+                filter(value -> value instanceof Variable).
+                map(value -> (Variable) value).
+                collect(Collectors.toSet());
+
+        return Sets.difference(freeVariables, this.boundVariablesPresent());
+    }
+    public Set<Constant> constantsPresent() {
+
+        return this.valuesPresent().stream().
+                filter(value -> value instanceof Constant).
+                map(c -> (Constant) c).
+                collect(Collectors.toSet());
+
+    }
+
+    public int maxPredicateArity() {
+        return this.subFormulae().stream().
+                filter(f-> f instanceof Predicate).
+                map(f -> (Predicate) f).
+                mapToInt(p -> p.getArguments().length).
+                max().orElse(0);
+    }
+
+
+    public int maxFunctionArity() {
+        return this.valuesPresent().stream().
+                filter(v-> v instanceof Compound).
+                map(c -> (Compound) c).
+                mapToInt(c -> c.getArguments().length).
+                max().orElse(0);
+    }
+
 }

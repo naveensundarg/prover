@@ -34,7 +34,9 @@ public class CognitiveCalculusProver implements Prover {
      *
      */
     private static boolean defeasible = false;
-    private static boolean verbose = true;
+    private static int MAX_EXPAND_FACTOR = 100;
+
+    private boolean verbose = true;
     private final boolean reductio;
     private final boolean theoremsToNec = false;
     private final CognitiveCalculusProver parent;
@@ -42,6 +44,7 @@ public class CognitiveCalculusProver implements Prover {
     private Set<Formula> currentAssumptions;
     private Set<Formula> prohibited;
     private Problem currentProblem;
+    private int maxExpansionFactor = MAX_EXPAND_FACTOR;
 
     static  String indent = "";
 
@@ -55,6 +58,28 @@ public class CognitiveCalculusProver implements Prover {
         parent = null;
         reductio = false;
         expanders = CollectionUtils.newEmptySet();
+        maxExpansionFactor = MAX_EXPAND_FACTOR;
+    }
+
+    public CognitiveCalculusProver(boolean verbose) {
+
+        prohibited = Sets.newSet();
+        parent = null;
+        reductio = false;
+        expanders = CollectionUtils.newEmptySet();
+        this.verbose = verbose;
+        maxExpansionFactor = MAX_EXPAND_FACTOR;
+
+    }
+
+    public CognitiveCalculusProver(boolean verbose, int maxExpansionFactor) {
+
+        prohibited = Sets.newSet();
+        parent = null;
+        reductio = false;
+        expanders = CollectionUtils.newEmptySet();
+        this.verbose = verbose;
+        this.maxExpansionFactor = maxExpansionFactor;
     }
 
     private CognitiveCalculusProver(CognitiveCalculusProver parent) {
@@ -63,6 +88,10 @@ public class CognitiveCalculusProver implements Prover {
         this.parent = parent;
         reductio = false;
         expanders = CollectionUtils.newEmptySet();
+        this.maxExpansionFactor = parent.maxExpansionFactor;
+        this.verbose = parent.verbose;
+
+
     }
 
     private CognitiveCalculusProver(CognitiveCalculusProver parent, boolean reductio) {
@@ -71,9 +100,12 @@ public class CognitiveCalculusProver implements Prover {
         this.parent = parent;
         this.reductio = reductio;
         expanders = CollectionUtils.newEmptySet();
+        this.maxExpansionFactor = parent.maxExpansionFactor;
+        this.verbose = parent.verbose;
+
     }
 
-    private static void log(String message) {
+    private void log(String message) {
 
         if (verbose) {
 
@@ -196,6 +228,9 @@ public class CognitiveCalculusProver implements Prover {
             base = expand(base, added, formula);
             int sizeAfterExpansion = base.size();
 
+           if(sizeAfterExpansion > maxExpansionFactor * assumptions.size()) {
+                return Optional.empty();
+            }
             if (base.contains(formula)) {
                 return Optional.of(TrivialJustification.trivial(base, formula));
             }
@@ -1001,13 +1036,14 @@ public class CognitiveCalculusProver implements Prover {
     private void expandDR1(Set<Formula> base, Set<Formula> added, Formula goal) {
         Set<Common> commons = level2FormulaeOfType(base, Common.class);
         Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
-        List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, 2);
+        List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, 3);
 
         for (Common c : commons) {
             for (List<Value> agentPair : agent1Agent2) {
                 Formula formula = c.getFormula();
                 Value time = c.getTime();
-                Knowledge inner = new Knowledge(agentPair.get(1), time, formula);
+                Knowledge innerMost = new Knowledge(agentPair.get(2), time, formula);
+                Knowledge inner = new Knowledge(agentPair.get(1), time, innerMost);
                 Knowledge outer = new Knowledge(agentPair.get(0), time, inner);
 
                 if (!added.contains(outer)) {
@@ -1017,7 +1053,6 @@ public class CognitiveCalculusProver implements Prover {
 
             }
         }
-
 
     }
 
@@ -1199,7 +1234,7 @@ public class CognitiveCalculusProver implements Prover {
     }
 
 
-    protected static void expansionLog(String principle, Set<Formula> newSet) {
+    protected  void expansionLog(String principle, Set<Formula> newSet) {
         if(!verbose) return;
 
         if (!newSet.isEmpty()) {
@@ -1216,7 +1251,7 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    protected static void tryLog(String principle, Formula goal) {
+    protected  void tryLog(String principle, Formula goal) {
         if(!verbose) return;
 
 
@@ -1228,7 +1263,7 @@ public class CognitiveCalculusProver implements Prover {
 
     }
 
-    protected static void tryAgentClosure(Formula formula){
+    protected void tryAgentClosure(Formula formula){
                 if(!verbose) return;
 
         coloredPrinter.clear();
@@ -1240,7 +1275,7 @@ public class CognitiveCalculusProver implements Prover {
             coloredPrinter.println("");
     }
 
-    protected static void logFOLCall(boolean success, Set<Formula> newSet, Formula goal) {
+    protected void logFOLCall(boolean success, Set<Formula> newSet, Formula goal) {
 
         if(!verbose) return;
         if(success){

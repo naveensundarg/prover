@@ -177,8 +177,12 @@ public class Predicate extends BaseFormula {
 
     @Override
     public String toSnarkString() {
-        return "(" + name + " "+ Arrays.stream(arguments).map(Value::toSnarkString).
-                reduce("", (x,y)-> x.isEmpty()? y: x + " " +y) +")";
+        if (arguments.length == 0) {
+            return name;
+        } else {
+            return "(" + name + " " + Arrays.stream(arguments).map(Value::toSnarkString).
+                    reduce("", (x, y) -> x.isEmpty() ? y : x + " " + y) + ")";
+        }
     }
 
     @Override

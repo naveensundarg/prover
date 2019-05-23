@@ -119,7 +119,7 @@ public class Perception extends BaseFormula{
 
     @Override
     public String toString() {
-        return "(Perception! "
+        return "(Perceives! "
                 + agent + " "
                 + time + " "+
                 formula + ")";
@@ -127,7 +127,7 @@ public class Perception extends BaseFormula{
 
     @Override
     public String toSnarkString() {
-        return "(Perception! "
+        return "(Perceives! "
                 + agent.toSnarkString() + " "
                 + time.toSnarkString() + " "+
                 formula.toSnarkString() + ")";

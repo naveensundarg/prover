@@ -140,6 +140,28 @@
           (length (snark:row-ancestry (snark:proof)))
           -1))))
 
+(defun prove-from-axioms-and-get-proof (all-axioms f
+                        &key
+                          (time-limit 5)
+                          (verbose nil)
+                          sortal-setup-fn)
+(let ((axioms (remove-duplicates all-axioms :test #'equalp)))
+  (setup-snark :time-limit time-limit :verbose verbose)
+  (if sortal-setup-fn (funcall sortal-setup-fn))
+  (let* ((n-a (make-hash-table :test #'equalp))
+         (a-n (make-hash-table :test #'equalp)))
+    (mapcar (lambda (axiom)
+              (let ((name (gensym)))
+                (setf (gethash (princ-to-string axiom) a-n) name)
+                (setf (gethash (princ-to-string name) n-a) axiom))) axioms)
+    (mapcar (lambda (axiom)
+              (snark::assert axiom
+                             ))
+            (mapcar #'!@ axioms))
+    (if (equalp :PROOF-FOUND (snark:prove (!@ f)))
+         (format nil "~a" (snark:row-ancestry (snark:proof)))
+         "nil"))))
+
 (defun prove-from-axioms-yes-no (all-axioms f
                           &key
                             (time-limit 5)
