@@ -33,15 +33,16 @@ public class Run {
         Set<Formula> assumptions = new HashSet<>(CollectionUtils.listOf(premise1, premise2));
 
         Formula goal = Reader.readFormulaFromString("(Mortal socrates)");
-        System.out.println("Running from with assumptions "+  assumptions  + " and goal: " + goal);
 
 
         Prover prover = SnarkWrapper.getInstance();
 
+        System.out.println("Running from with assumptions " + assumptions + " and goal: " + goal);
+
 
         Optional<Justification> justificationOptional = prover.prove(assumptions, goal);
 
-        if(justificationOptional.isPresent()) {
+        if (justificationOptional.isPresent()) {
             System.out.println("Success");
         } else {
             System.out.println("Failure");
@@ -49,6 +50,7 @@ public class Run {
         }
 
     }
+
     public static void runFromProblemFile() throws Exception {
 
 
@@ -65,7 +67,7 @@ public class Run {
 
         Optional<Justification> justificationOptional = prover.prove(firstProblem.getAssumptions(), firstProblem.getGoal());
 
-        if(justificationOptional.isPresent()) {
+        if (justificationOptional.isPresent()) {
             System.out.println("Success");
         } else {
             System.out.println("Failure");
