@@ -19,14 +19,14 @@ public class Run {
 
     public static void main(String[] args) throws Exception {
 
-        runFromProblemFile();
         runFromStringInputs();
+        runFromProblemFile();
     }
 
     public static void runFromStringInputs() throws Exception {
 
 
-        Formula premise1 = Reader.readFormulaFromString("(forall (x) (if (Mortal x) (Man x)))");
+        Formula premise1 = Reader.readFormulaFromString("(forall (x) (if (Man x) (Mortal x)))");
         Formula premise2 = Reader.readFormulaFromString("(Man socrates)");
 
 
