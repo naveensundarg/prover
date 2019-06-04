@@ -2,7 +2,6 @@ package com.naveensundarg.shadow.prover.representations.formula;
 
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.Expression;
-import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
@@ -25,7 +24,12 @@ public abstract class Formula extends Expression {
 
 
     private Justification justification;
-    private Set<Formula> assumptions;
+    private Set<Formula>  assumptions;
+    private int           strengthFactor;
+
+    public Formula(){
+        this.strengthFactor = Integer.MAX_VALUE;
+    }
 
     public Justification getJustification() {
         return justification;
@@ -72,6 +76,14 @@ public abstract class Formula extends Expression {
     public abstract int getLevel();
 
     public abstract int getWeight();
+
+    public int getStrengthFactor(){
+        return strengthFactor;
+    }
+
+    public void setStrengthFactor(int strength){
+        this.strengthFactor = strength;
+    }
 
     public abstract Formula replaceSubFormula(Formula oldFormula, Formula newFormula);
 
