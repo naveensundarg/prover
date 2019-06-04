@@ -112,10 +112,17 @@ public final class AgentSnapShot {
 
         intends.stream().forEach(intend -> {
 
-            Value agent = intend.getAgent();
-            Value time = intend.getTime();
+            if (intend != null) {
+                Value agent = intend.getAgent();
+                Value time = intend.getTime();
 
-            intendSnapShots.get(agent).get(time).add(intend.getFormula());
+                if(intendSnapShots!=null&& intendSnapShots.get(agent)!=null && intendSnapShots.get(agent).get(time)!=null) {
+
+                    intendSnapShots.get(agent).get(time).add(intend.getFormula());
+
+                }
+
+            }
 
         });
 

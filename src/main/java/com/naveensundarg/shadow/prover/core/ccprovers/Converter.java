@@ -12,8 +12,6 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.ImmutablePair;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Sets;
-import javafx.geometry.Pos;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
