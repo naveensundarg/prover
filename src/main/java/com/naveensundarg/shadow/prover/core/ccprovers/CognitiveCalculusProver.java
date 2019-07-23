@@ -1058,7 +1058,7 @@ public class CognitiveCalculusProver implements Prover {
                 Formula current = formula;
 
                 for(int i = 0; i<knowledgeIterationDepth; i++ ) {
-                    current = new Knowledge(agentPair.get(2), time, current);
+                    current = new Knowledge(agentPair.get(i), time, current);
                 }
 
                 if (!added.contains(current)) {
