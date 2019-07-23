@@ -46,14 +46,27 @@ public class CognitiveCalculusProver implements Prover {
     private Problem currentProblem;
     private int maxExpansionFactor = MAX_EXPAND_FACTOR;
 
+    private int knowledgeIterationDepth = 3;
     static  String indent = "";
 
     static ColoredPrinter coloredPrinter = new ColoredPrinter.Builder(1, false)
             .foreground(Ansi.FColor.WHITE).background(Ansi.BColor.BLACK)   //setting format
             .build();
 
+
     public CognitiveCalculusProver() {
 
+        knowledgeIterationDepth = 3;
+        prohibited = Sets.newSet();
+        parent = null;
+        reductio = false;
+        expanders = CollectionUtils.newEmptySet();
+        maxExpansionFactor = MAX_EXPAND_FACTOR;
+    }
+
+    public CognitiveCalculusProver(int knowledgeIterationDepth) {
+
+        this.knowledgeIterationDepth = knowledgeIterationDepth;
         prohibited = Sets.newSet();
         parent = null;
         reductio = false;
@@ -1034,21 +1047,23 @@ public class CognitiveCalculusProver implements Prover {
     }
 
     private void expandDR1(Set<Formula> base, Set<Formula> added, Formula goal) {
-        Set<Common> commons = level2FormulaeOfType(base, Common.class);
+         Set<Common> commons = level2FormulaeOfType(base, Common.class);
         Set<Value> agents = Logic.allAgents(CollectionUtils.addToSet(base, goal));
-        List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, 3);
+        List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, knowledgeIterationDepth);
 
         for (Common c : commons) {
             for (List<Value> agentPair : agent1Agent2) {
                 Formula formula = c.getFormula();
                 Value time = c.getTime();
-                Knowledge innerMost = new Knowledge(agentPair.get(2), time, formula);
-                Knowledge inner = new Knowledge(agentPair.get(1), time, innerMost);
-                Knowledge outer = new Knowledge(agentPair.get(0), time, inner);
+                Formula current = formula;
 
-                if (!added.contains(outer)) {
-                    base.add(outer);
-                    added.add(outer);
+                for(int i = 0; i<knowledgeIterationDepth; i++ ) {
+                    current = new Knowledge(agentPair.get(2), time, current);
+                }
+
+                if (!added.contains(current)) {
+                    base.add(current);
+                    added.add(current);
                 }
 
             }
