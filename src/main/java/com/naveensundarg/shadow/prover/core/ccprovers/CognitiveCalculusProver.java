@@ -35,7 +35,7 @@ public class CognitiveCalculusProver implements Prover {
      */
     private static boolean defeasible = false;
     private static int MAX_EXPAND_FACTOR = 100;
-
+    private static boolean EXPAND_MODUS_TOLLENS = false;
     private boolean verbose = true;
     private final boolean reductio;
     private final boolean theoremsToNec = false;
@@ -1177,13 +1177,16 @@ public class CognitiveCalculusProver implements Prover {
             newReducedBase.remove(implication);
 
 
-            Optional<Justification> negatedConsequentJustificationOpt = cognitiveCalculusProver.prove(newReducedBase, Logic.negated(consequent), CollectionUtils.setFrom(added));
-            if (negatedConsequentJustificationOpt.isPresent()) {
-                if (!added.contains(consequent)) {
-                    base.add(Logic.negated(antecedent));
-                    added.add(Logic.negated(antecedent));
+            if(EXPAND_MODUS_TOLLENS) {
+                Optional<Justification> negatedConsequentJustificationOpt = cognitiveCalculusProver.prove(newReducedBase, Logic.negated(consequent), CollectionUtils.setFrom(added));
+                if (negatedConsequentJustificationOpt.isPresent()) {
+                    if (!added.contains(consequent)) {
+                        base.add(Logic.negated(antecedent));
+                        added.add(Logic.negated(antecedent));
+                    }
                 }
             }
+
 
 
         }

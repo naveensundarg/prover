@@ -70,7 +70,7 @@
   
   (snark:allow-skolem-symbols-in-answers nil)
  ; (assert-domain 10)
-  ;(assert-add-table 10)
+  (assert-add-table 10)
   )
 
 
