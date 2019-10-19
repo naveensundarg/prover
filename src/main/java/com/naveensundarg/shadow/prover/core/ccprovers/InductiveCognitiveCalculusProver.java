@@ -13,10 +13,7 @@ import com.naveensundarg.shadow.prover.representations.formula.Trait;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.Problem;
-import com.naveensundarg.shadow.prover.utils.Reader;
-import com.naveensundarg.shadow.prover.utils.Sets;
+import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -214,7 +211,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
             Value a1 = ((Predicate) x).getArguments()[0];
             Value a2 = ((Predicate) x).getArguments()[1];
 
-            Set<Trait> traits =  formulaOfType(base, Trait.class).stream().map(t-> (Trait) t).filter(t-> t.getAgent().equals(a2)).collect(Collectors.toSet());
+            Set<Trait> traits =  CommonUtils.formulaOfType(base, Trait.class).stream().map(t-> (Trait) t).filter(t-> t.getAgent().equals(a2)).collect(Collectors.toSet());
 
 
 
@@ -239,7 +236,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
         Set<Formula> expanded = Sets.newSet();
         expanded.addAll(base);
 
-        Set<Trait> traits =  formulaOfType(base, Trait.class);
+        Set<Trait> traits =  CommonUtils.formulaOfType(base, Trait.class);
 
         traits.stream().forEach(trait -> {
 
@@ -280,7 +277,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
         Set<Formula> expanded = Sets.newSet();
         expanded.addAll(base);
 
-        Set<Belief> beliefs =  level2FormulaeOfType(base, Belief.class);
+        Set<Belief> beliefs =  CommonUtils.level2FormulaeOfType(base, Belief.class);
 
         Set<Value> agents = beliefs.stream().map(Belief::getAgent).collect(Collectors.toSet());
 
