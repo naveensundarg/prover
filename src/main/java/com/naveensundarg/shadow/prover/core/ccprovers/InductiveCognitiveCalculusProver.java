@@ -88,10 +88,10 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
 
         Optional<Justification> shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
 
-        indent = indent + "\t";
-        tryAgentClosure(formula);
-        indent = indent.substring(0, indent.length()-1);
+        this.logger.addContext();
+        this.logger.tryAgentClosure(formula);
         Optional<Justification> agentClosureJustificationOpt = this.proveAgentClosure(base, formula);
+        this.logger.removeContext();
 
         while (!shadowedJustificationOpt.isPresent() && !agentClosureJustificationOpt.isPresent()) {
 
@@ -222,7 +222,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
                             new Trait(trait.getTraitVariables(), a1, trait.getTime(),
                                     trait.getTriggeringCondition(),
                                     trait.getActionType())).collect(Collectors.toSet());
-            expansionLog("transfering traits", newTraits);
+            this.logger.expansionLog("transfering traits", newTraits);
             expanded.addAll(newTraits);
 
         });
