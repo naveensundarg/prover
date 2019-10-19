@@ -1,6 +1,5 @@
 package com.naveensundarg.shadow.prover.core.proof;
 
-import clojure.lang.Var;
 import com.naveensundarg.shadow.prover.representations.Expression;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
@@ -9,7 +8,6 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import javax.swing.text.html.Option;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;

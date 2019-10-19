@@ -1,8 +1,6 @@
 package com.naveensundarg.shadow.prover.core.rules;
 
-import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 
 import java.util.List;
 import java.util.Set;

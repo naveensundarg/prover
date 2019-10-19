@@ -3,14 +3,13 @@ package com.naveensundarg.shadow.prover.core.ccprovers;
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.Logic;
-import com.naveensundarg.shadow.prover.core.proof.AtomicJustification;
-import com.naveensundarg.shadow.prover.utils.*;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
 import com.naveensundarg.shadow.prover.core.internals.ConsistentSubsetFinder;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
 import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
+import com.naveensundarg.shadow.prover.core.proof.AtomicJustification;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
@@ -18,6 +17,7 @@ import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.*;
 
 import java.time.Duration;
 import java.util.*;
@@ -62,37 +62,6 @@ public class CognitiveCalculusProver implements Prover {
         reductio = false;
         expanders = CollectionUtils.newEmptySet();
         maxExpansionFactor = MAX_EXPAND_FACTOR;
-    }
-
-    public CognitiveCalculusProver(int knowledgeIterationDepth) {
-
-        this.knowledgeIterationDepth = knowledgeIterationDepth;
-        prohibited = Sets.newSet();
-        parent = null;
-        reductio = false;
-        expanders = CollectionUtils.newEmptySet();
-        maxExpansionFactor = MAX_EXPAND_FACTOR;
-    }
-
-    public CognitiveCalculusProver(boolean verbose) {
-
-        prohibited = Sets.newSet();
-        parent = null;
-        reductio = false;
-        expanders = CollectionUtils.newEmptySet();
-        this.verbose = verbose;
-        maxExpansionFactor = MAX_EXPAND_FACTOR;
-
-    }
-
-    public CognitiveCalculusProver(boolean verbose, int maxExpansionFactor) {
-
-        prohibited = Sets.newSet();
-        parent = null;
-        reductio = false;
-        expanders = CollectionUtils.newEmptySet();
-        this.verbose = verbose;
-        this.maxExpansionFactor = maxExpansionFactor;
     }
 
     private CognitiveCalculusProver(CognitiveCalculusProver parent) {

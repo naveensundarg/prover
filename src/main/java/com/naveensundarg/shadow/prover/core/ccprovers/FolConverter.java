@@ -1,12 +1,11 @@
 package com.naveensundarg.shadow.prover.core.ccprovers;
 
 import com.naveensundarg.shadow.prover.core.Logic;
-import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import javafx.geometry.Pos;
+import com.naveensundarg.shadow.prover.utils.Problem;
 
 import java.util.Arrays;
 import java.util.List;
