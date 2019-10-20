@@ -71,7 +71,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
     }
 
 
-    private synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
+    public synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
 
         currentAssumptions = assumptions;

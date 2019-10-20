@@ -3,6 +3,7 @@ package com.naveensundarg.shadow.prover.core.ccprovers;
 import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
+import com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus.*;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
 import com.naveensundarg.shadow.prover.core.internals.ConsistentSubsetFinder;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
@@ -29,31 +30,59 @@ public class CognitiveCalculusProver implements Prover {
     /*
      *
      */
-    private static int                     MAX_EXPAND_FACTOR    = 100;
-    private static boolean                 EXPAND_MODUS_TOLLENS = false;
-    private        boolean                 verbose              = true;
-    private final  boolean                 reductio;
-    private final  boolean                 theoremsToNec        = false;
-    private final  Set<Expander>           expanders;
-    private        Set<Formula>            prohibited;
+    private static int            MAX_EXPAND_FACTOR    = 100;
+    private static boolean        EXPAND_MODUS_TOLLENS = false;
+    private        boolean        verbose              = true;
+    private final  boolean        reductio;
+    private final  boolean        theoremsToNec        = false;
+    private final  List<Expander> expanders;
+    private        Set<Formula>   prohibited;
 
-    private int    knowledgeIterationDepth = 3;
 
     protected Logger logger;
+
     public CognitiveCalculusProver() {
 
-        knowledgeIterationDepth = 3;
         prohibited = Sets.newSet();
         reductio = false;
-        expanders = CollectionUtils.newEmptySet();
+        expanders = CollectionUtils.newEmptyList();
+
+        expanders.add(BreakupBiConditionals.INSTANCE);
+        expanders.add(R4.INSTANCE);
+        expanders.add(SelfBelief.INSTANCE);
+        expanders.add(PerceptionToKnowledge.INSTANCE);
+        expanders.add(SaysToBelief.INSTANCE);
+        expanders.add(IntentionToPerception.INSTANCE);
+        expanders.add(ModalConjunctions.INSTANCE);
+        expanders.add(ModalImplications.INSTANCE);
+
+        expanders.add(DR1.INSTANCE);
+        expanders.add(DR2.INSTANCE);
+        expanders.add(DR3.INSTANCE);
+        expanders.add(DR5.INSTANCE);
+
+        expanders.add(OughtSchema.INSTANCE);
+
+        expanders.add(UniversalElim.INSTANCE);
+        expanders.add(KnowledgeConjunctions.INSTANCE);
+
+        expanders.add(NotExistsToForallNot.INSTANCE);
+
+        expanders.add(NecToPos.INSTANCE);
+
+        if (theoremsToNec) {
+            expanders.add(TheoremsToNecessity.INSTANCE);
+        }
         logger = new Logger();
     }
 
-    private CognitiveCalculusProver(CognitiveCalculusProver parent) {
+
+    public CognitiveCalculusProver(CognitiveCalculusProver parent) {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
         reductio = false;
-        expanders = CollectionUtils.newEmptySet();
+        expanders = parent.expanders;
+
         this.verbose = parent.verbose;
         this.logger = parent.logger;
 
@@ -63,9 +92,9 @@ public class CognitiveCalculusProver implements Prover {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
         this.reductio = reductio;
-        expanders = CollectionUtils.newEmptySet();
+        expanders = parent.expanders;
         this.verbose = parent.verbose;
-        this.logger  = parent.logger;
+        this.logger = parent.logger;
     }
 
 
@@ -83,7 +112,7 @@ public class CognitiveCalculusProver implements Prover {
     }
 
 
-    private synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
+    public synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
 
         Prover folProver = SnarkWrapper.getInstance();
@@ -546,493 +575,17 @@ public class CognitiveCalculusProver implements Prover {
 
     protected Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
 
+        expanders.forEach(expander -> expander.expand(this, base, added, goal));
 
-        breakUpBiConditionals(base);
-        expandR4(base, added);
-        expandSelfBelief(base, added);
-        expandPerceptionToKnowledge(base, added);
-        expandSaysToBelief(base, added);
-        expandIntentionToPerception(base, added);
-
-        expandModalConjunctions(base, added);
-        expandModalImplications(base, added);
-        expandDR1(base, added, goal);
-        expandDR2(base, added, goal);
-        expandDR3(base, added);
-        expandDR5(base, added);
-        expandOughtRule(base, added);
-        expandUniversalElim(base, added, goal);
-        expandKnowledgeConjunctions(base, added);
-        expandNotExistsToForallNot(base, added);
-
-        if (theoremsToNec) {
-            expandTheoremsToNecessity(base, added, goal);
+        if (prohibited != null) {
+            base.removeAll(prohibited);
         }
-        expandNecToPos(base, added, goal);
 
-
-        if (prohibited != null) base.removeAll(prohibited);
         return base;
-    }
-
-    private void expandNecToPos(Set<Formula> base, Set<Formula> added, Formula goal) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Necessity).
-                map(f -> (Necessity) f).
-                filter(necessity -> necessity.getFormula() instanceof Not).
-                map(necessity -> new Not(new Possibility(((Not) necessity.getFormula()).getArgument()))).collect(Collectors.toSet());
-
-        logger.expansionLog(" Necessarily not => Impossible", derived);
-        base.addAll(derived);
-        added.addAll(derived);
-    }
-
-    private void expandNotExistsToForallNot(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Not).
-                map(f -> (Not) f).
-                filter(not -> not.getArgument() instanceof Existential).
-                map(notExists -> {
-                    Existential existential = (Existential) notExists.getArgument();
-                    Variable[]  variables   = existential.vars();
-                    Formula     kernel      = existential.getArgument();
-                    return new Universal(variables, new Not(kernel));
-                }).collect(Collectors.toSet());
-
-        logger.expansionLog("Not exists => Forall not", derived);
-
-        base.addAll(derived);
-        added.addAll(derived);
-    }
-
-    private void expandKnowledgeConjunctions(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Knowledge).
-                map(f -> (Knowledge) f).
-                filter(k -> k.getFormula() instanceof And).
-                flatMap(k -> {
-
-                    Value agent = k.getAgent();
-                    Value time  = k.getTime();
-                    And   and   = (And) k.getFormula();
-
-                    return Arrays.stream(and.getArguments()).map(conjunct -> new Knowledge(agent, time, conjunct));
-
-                }).collect(Collectors.toSet());
-
-        logger.expansionLog("Know(P and Q) ==> Know(P) and Know(Q)", derived);
-
-        base.addAll(derived);
-        added.addAll(derived);
-    }
-
-    private void expandTheoremsToNecessity(Set<Formula> base, Set<Formula> added, Formula goal) {
-
-
-        Set<Formula> theorems = base.stream().map(Formula::subFormulae).reduce(Sets.newSet(), Sets::union).
-                stream().filter(x -> !x.equals(goal) && this.prove(Sets.newSet(), x).isPresent()).collect(Collectors.toSet());
-
-        Set<Formula> necs = theorems.stream().map(Necessity::new).collect(Collectors.toSet());
-
-        logger.expansionLog(String.format("{} %s %s ==>  %s %s", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), necs);
-
-        base.addAll(necs);
-        added.addAll(necs);
-
-    }
-
-    private void breakUpBiConditionals(Set<Formula> base) {
-
-
-        Set<BiConditional> biConditionals = CommonUtils.formulaOfType(base, BiConditional.class);
-
-        biConditionals.forEach(biConditional -> {
-
-            base.add(new Implication(biConditional.getLeft(), biConditional.getRight()));
-            base.add(new Implication(biConditional.getRight(), biConditional.getLeft()));
-            base.add(new Implication(Logic.negated(biConditional.getLeft()), Logic.negated(biConditional.getRight())));
-            base.add(new Implication(Logic.negated(biConditional.getRight()), Logic.negated(biConditional.getLeft())));
-
-        });
-
-
-    }
-
-    private void expandR4(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Knowledge).
-                map(f -> ((Knowledge) f).getFormula()).
-                collect(Collectors.toSet());
-
-        if (!base.containsAll(derived)) {
-            logger.expansionLog(String.format("Knows(P) ==> P", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
-
-        }
-
-        base.addAll(derived);
-        added.addAll(derived);
-
-    }
-
-
-    private void expandSelfBelief(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Belief).
-                filter(f -> ((Belief) f).getAgent().equals(Reader.I)).
-                map(f -> ((Belief) f).getFormula()).
-                collect(Collectors.toSet());
-
-        if (!base.containsAll(derived)) {
-            logger.expansionLog(String.format("Belief(I, P) ==> P", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
-
-        }
-
-        base.addAll(derived);
-        added.addAll(derived);
-
-    }
-
-    private void expandPerceptionToKnowledge(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Perception).
-                map(f -> {
-                    Perception p = (Perception) f;
-                    Knowledge  k = new Knowledge(p.getAgent(), p.getTime(), p.getFormula());
-                    k.setJustification(new CompoundJustification("Perception to knowledge " + p, CollectionUtils.listOf(p.getJustification())));
-                    return k;
-                }).
-                collect(Collectors.toSet());
-
-        logger.expansionLog(String.format("Perceives(P) ==> P", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
-
-        base.addAll(derived);
-        added.addAll(derived);
-    }
-
-    private void expandIntentionToPerception(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Intends).
-                map(f -> {
-                    Intends    i = (Intends) f;
-                    Perception k = new Perception(i.getAgent(), i.getTime(), i.getFormula());
-                    k.setJustification(new CompoundJustification("Intention to Perception " + i, CollectionUtils.listOf(i.getJustification())));
-                    return k;
-                }).
-                collect(Collectors.toSet());
-
-        logger.expansionLog(String.format("Intends(P) ==> Perceives(P)", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
-
-        base.addAll(derived);
-        added.addAll(derived);
-    }
-
-    private void expandSaysToBelief(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Says).
-                map(f -> {
-                    Says   s = (Says) f;
-                    Belief b = new Belief(s.getAgent(), s.getTime(), s.getFormula());
-                    b.setJustification(new CompoundJustification("Says to belief", CollectionUtils.listOf(s.getJustification())));
-                    return b;
-                }).
-                collect(Collectors.toSet());
-
-        logger.expansionLog(String.format("Says(P) ==> Belief(P)", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
-
-        base.addAll(derived);
-        added.addAll(derived);
-
-    }
-
-    private void expandR11a(Set<Formula> base, Set<Formula> added) {
-
-        Set<Belief> implicationBeliefs =
-                CommonUtils.level2FormulaeOfTypeWithConstraint(base, Belief.class, b -> ((Belief) b).getFormula() instanceof Implication);
-
-
-        Set<Formula> validConsequentBeliefss = implicationBeliefs.stream().
-                filter(b -> base.contains(new Belief(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getAntecedent()))).
-                map(b -> new Belief(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getConsequent())).
-                filter(f -> !added.contains(f)).
-                collect(Collectors.toSet());
-
-        base.addAll(validConsequentBeliefss);
-        added.addAll(added);
-
-    }
-
-    private void expandOughtRule(Set<Formula> base, Set<Formula> added) {
-
-        Predicate<Formula> filterSelfOughts = f -> {
-
-            if (!(f instanceof Belief)) {
-
-                return false;
-            }
-
-            Belief  b        = (Belief) f;
-            Formula believed = b.getFormula();
-            if (!(believed instanceof Ought)) {
-                return false;
-            }
-            Ought   ought        = (Ought) believed;
-            Formula precondition = ought.getPrecondition();
-            Value   outerAgent   = b.getAgent();
-            Value   innerAgent   = ought.getAgent();
-            return innerAgent.equals(outerAgent);
-        };
-
-        Set<Belief> obligationBeliefs =
-                CommonUtils.level2FormulaeOfTypeWithConstraint(base,
-                        Belief.class,
-                        filterSelfOughts);
-
-
-        for (Belief b : obligationBeliefs) {
-            Ought                   ought                   = (Ought) b.getFormula();
-            Formula                 precondition            = ought.getPrecondition();
-            Value                   outerTime               = b.getTime();
-            Value                   agent                   = b.getAgent();
-            Belief                  preConditionBelief      = new Belief(agent, outerTime, precondition);
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
-            Set<Formula>            smaller                 = CollectionUtils.setFrom(base);
-            smaller.remove(b);
-            smaller = smaller.stream().filter(x -> !x.subFormulae().contains(ought)).collect(Collectors.toSet());
-            Optional<Justification> preconditionBelievedOpt = cognitiveCalculusProver.prove(smaller, preConditionBelief);
-
-            if (preconditionBelievedOpt.isPresent()) {
-                Formula oughtAction = ought.getOught();
-                //  Value action = new Compound("action", new Value[]{agent, actionType});
-                //Formula happens = new Predicate("happens", new Value[]{action, ought.getTime()});
-                added.add(oughtAction);
-                base.add(oughtAction);
-
-                base.add(new Intends(agent, outerTime, oughtAction));
-                added.add(new Intends(agent, outerTime, oughtAction));
-            }
-
-
-        }
-
-
-    }
-
-    private void expandDR1(Set<Formula> base, Set<Formula> added, Formula goal) {
-        Set<Common>       commons      = CommonUtils.level2FormulaeOfType(base, Common.class);
-        Set<Value>        agents       = Logic.allAgents(CollectionUtils.addToSet(base, goal));
-        List<List<Value>> agent1Agent2 = CommonUtils.setPower(agents, knowledgeIterationDepth);
-
-        for (Common c : commons) {
-            for (List<Value> agentPair : agent1Agent2) {
-                Formula formula = c.getFormula();
-                Value   time    = c.getTime();
-                Formula current = formula;
-
-                for (int i = 0; i < knowledgeIterationDepth; i++) {
-                    current = new Knowledge(agentPair.get(i), time, current);
-                }
-
-                if (!added.contains(current)) {
-                    base.add(current);
-                    added.add(current);
-                }
-
-            }
-        }
-
-    }
-
-    private void expandDR5(Set<Formula> base, Set<Formula> added) {
-        Set<Knowledge> knows = CommonUtils.level2FormulaeOfType(base, Knowledge.class);
-
-        for (Knowledge k : knows) {
-
-            Value   agent   = k.getAgent();
-            Value   time    = k.getTime();
-            Formula formula = k.getFormula();
-
-            Belief belief = new Belief(agent, time, formula);
-            if (!added.contains(belief)) {
-                base.add(belief);
-                added.add(belief);
-            }
-
-        }
-    }
-
-    private void expandDR2(Set<Formula> base, Set<Formula> added, Formula goal) {
-        Set<Common> commons = CommonUtils.level2FormulaeOfType(base, Common.class);
-        Set<Value>  agents  = Logic.allAgents(CollectionUtils.addToSet(base, goal));
-
-        for (Common c : commons) {
-            for (Value agent : agents) {
-                Formula   formula   = c.getFormula();
-                Value     time      = c.getTime();
-                Knowledge knowledge = new Knowledge(agent, time, formula);
-
-                if (!added.contains(knowledge)) {
-                    base.add(knowledge);
-                    added.add(knowledge);
-                }
-            }
-        }
-
-
-    }
-
-    private void expandDR3(Set<Formula> base, Set<Formula> added) {
-        Set<Common> commons = CommonUtils.level2FormulaeOfType(base, Common.class);
-
-        for (Common c : commons) {
-            Formula formula = c.getFormula();
-            if (!added.contains(formula)) {
-                base.add(formula);
-                added.add(formula);
-            }
-        }
-
-
-    }
-
-    private void expandModalConjunctions(Set<Formula> base, Set<Formula> added) {
-
-        Set<And> level2Ands = CommonUtils.level2FormulaeOfType(base, And.class);
-
-        for (And and : level2Ands) {
-
-            Set<Formula> level2Conjuncts = Arrays.stream(and.getArguments()).
-                    filter(conjunct -> conjunct.getLevel() == 2).
-                    filter(x -> !added.contains(x)).
-                    collect(Collectors.toSet());
-
-            added.addAll(level2Conjuncts);
-            base.addAll(level2Conjuncts);
-
-
-        }
     }
 
     private void expandModalImplications(Set<Formula> base, Set<Formula> added) {
 
-
-        Set<Implication> level2Ifs = CommonUtils.level2FormulaeOfType(base, Implication.class);
-
-        for (Implication implication : level2Ifs) {
-
-            if (prohibited.contains(implication)) {
-                continue;
-            }
-
-            Formula antecedent = implication.getAntecedent();
-            Formula consequent = implication.getConsequent();
-
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
-            cognitiveCalculusProver.prohibited.addAll(prohibited);
-            cognitiveCalculusProver.prohibited.add(implication);
-
-            Set<Formula> reducedBase = CollectionUtils.setFrom(base);
-
-            reducedBase.remove(implication);
-
-            //TODO: use actual ancestors
-
-            boolean                 alreadyExpanded            = false;
-            Optional<Justification> antecedentJustificationOpt = cognitiveCalculusProver.prove(reducedBase, antecedent, CollectionUtils.setFrom(added));
-            if (antecedentJustificationOpt.isPresent()) {
-                if (!added.contains(consequent)) {
-                    base.add(consequent);
-                    added.add(consequent);
-
-                    alreadyExpanded = true;
-                }
-            }
-
-            Set<Formula> newReducedBase = CollectionUtils.setFrom(base);
-            newReducedBase.remove(implication);
-
-
-            if (EXPAND_MODUS_TOLLENS && !alreadyExpanded) {
-                Optional<Justification> negatedConsequentJustificationOpt = cognitiveCalculusProver.prove(newReducedBase, Logic.negated(consequent), CollectionUtils.setFrom(added));
-                if (negatedConsequentJustificationOpt.isPresent()) {
-                    if (!added.contains(consequent)) {
-                        base.add(Logic.negated(antecedent));
-                        added.add(Logic.negated(antecedent));
-                    }
-                }
-            }
-
-
-        }
-
-
-    }
-
-    private void expandUniversalElim(Set<Formula> base, Set<Formula> added, Formula goal) {
-
-        //TODO: Less stupid elimination
-
-        Set<Formula> formulae = CollectionUtils.setFrom(base);
-        formulae.add(goal);
-
-        Set<Universal> universals = base.stream().filter(f -> f instanceof Universal).map(f -> (Universal) f).collect(Collectors.toSet());
-
-/*
-        Set<Value> values = Logic.baseFormulae(formulae).stream().
-                map(Predicate::allValues).
-                reduce(Sets.newSet(), Sets::union).stream().filter(v -> !(v instanceof Variable) ).
-
-                collect(Collectors.toSet());
-*/
-
-
-        universals.stream().forEach(universal -> {
-
-            Formula formula = universal.getArgument();
-
-            List<Set<Value>> smartValues = UniversalInstantiation.smartHints(universal, formulae);
-
-            Set<List<Value>> substitutions = cartesianProduct(smartValues);
-            Variable[]       vars          = universal.vars();
-
-            Map<Variable, Value> mapping = CollectionUtils.newMap();
-            substitutions.stream().forEach(substitution -> {
-
-                        for (int i = 0; i < vars.length; i++) {
-
-                            mapping.put(vars[i], substitution.get(vars.length - 1 - i));
-
-
-                        }
-
-                        Formula derived = universal.getArgument().apply(mapping);
-
-                        if (!added.contains(derived)) {
-                            base.add(derived);
-                            added.add(derived);
-                        }
-
-                    }
-
-            );
-
-
-        });
 
     }
 
@@ -1040,7 +593,13 @@ public class CognitiveCalculusProver implements Prover {
         return formulas.stream().map(f -> f.shadow(1)).collect(Collectors.toSet());
     }
 
+    @Override
+    public Logger getLogger() {
+        return logger;
+    }
 
-
+    public Set<Formula> getProhibited() {
+        return prohibited;
+    }
 
 }
