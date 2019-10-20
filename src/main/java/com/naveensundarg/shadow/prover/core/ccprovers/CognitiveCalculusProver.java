@@ -54,6 +54,7 @@ public class CognitiveCalculusProver implements Prover {
         expanders.add(SaysToBelief.INSTANCE);
         expanders.add(IntentionToPerception.INSTANCE);
         expanders.add(ModalConjunctions.INSTANCE);
+        expanders.add(ModalImplications.INSTANCE);
 
         expanders.add(DR1.INSTANCE);
         expanders.add(DR2.INSTANCE);
@@ -111,7 +112,7 @@ public class CognitiveCalculusProver implements Prover {
     }
 
 
-    private synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
+    public synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula, Set<Formula> added) {
 
 
         Prover folProver = SnarkWrapper.getInstance();
@@ -576,8 +577,6 @@ public class CognitiveCalculusProver implements Prover {
 
         expanders.forEach(expander -> expander.expand(this, base, added, goal));
 
-        expandModalImplications(base, added);
-
         if (prohibited != null) {
             base.removeAll(prohibited);
         }
@@ -588,58 +587,8 @@ public class CognitiveCalculusProver implements Prover {
     private void expandModalImplications(Set<Formula> base, Set<Formula> added) {
 
 
-        Set<Implication> level2Ifs = CommonUtils.level2FormulaeOfType(base, Implication.class);
-
-        for (Implication implication : level2Ifs) {
-
-            if (prohibited.contains(implication)) {
-                continue;
-            }
-
-            Formula antecedent = implication.getAntecedent();
-            Formula consequent = implication.getConsequent();
-
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
-            cognitiveCalculusProver.prohibited.addAll(prohibited);
-            cognitiveCalculusProver.prohibited.add(implication);
-
-            Set<Formula> reducedBase = CollectionUtils.setFrom(base);
-
-            reducedBase.remove(implication);
-
-            //TODO: use actual ancestors
-
-            boolean                 alreadyExpanded            = false;
-            Optional<Justification> antecedentJustificationOpt = cognitiveCalculusProver.prove(reducedBase, antecedent, CollectionUtils.setFrom(added));
-            if (antecedentJustificationOpt.isPresent()) {
-                if (!added.contains(consequent)) {
-                    base.add(consequent);
-                    added.add(consequent);
-
-                    alreadyExpanded = true;
-                }
-            }
-
-            Set<Formula> newReducedBase = CollectionUtils.setFrom(base);
-            newReducedBase.remove(implication);
-
-
-            if (EXPAND_MODUS_TOLLENS && !alreadyExpanded) {
-                Optional<Justification> negatedConsequentJustificationOpt = cognitiveCalculusProver.prove(newReducedBase, Logic.negated(consequent), CollectionUtils.setFrom(added));
-                if (negatedConsequentJustificationOpt.isPresent()) {
-                    if (!added.contains(consequent)) {
-                        base.add(Logic.negated(antecedent));
-                        added.add(Logic.negated(antecedent));
-                    }
-                }
-            }
-
-
-        }
-
-
     }
-    
+
     protected Set<Formula> shadow(Set<Formula> formulas) {
         return formulas.stream().map(f -> f.shadow(1)).collect(Collectors.toSet());
     }
@@ -647,6 +596,10 @@ public class CognitiveCalculusProver implements Prover {
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    public Set<Formula> getProhibited() {
+        return prohibited;
     }
 
 }
