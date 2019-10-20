@@ -30,25 +30,24 @@ public class CognitiveCalculusProver implements Prover {
     /*
      *
      */
-    private static int                     MAX_EXPAND_FACTOR    = 100;
-    private static boolean                 EXPAND_MODUS_TOLLENS = false;
-    private        boolean                 verbose              = true;
-    private final  boolean                 reductio;
-    private final  boolean                 theoremsToNec        = false;
-    private final  List<Expander>           expanders;
-    private        Set<Formula>            prohibited;
+    private static int            MAX_EXPAND_FACTOR    = 100;
+    private static boolean        EXPAND_MODUS_TOLLENS = false;
+    private        boolean        verbose              = true;
+    private final  boolean        reductio;
+    private final  boolean        theoremsToNec        = false;
+    private final  List<Expander> expanders;
+    private        Set<Formula>   prohibited;
 
-    private int    knowledgeIterationDepth = 3;
 
     protected Logger logger;
 
     public CognitiveCalculusProver() {
 
-        knowledgeIterationDepth = 3;
         prohibited = Sets.newSet();
         reductio = false;
         expanders = CollectionUtils.newEmptyList();
 
+        expanders.add(BreakupBiConditionals.INSTANCE);
         expanders.add(R4.INSTANCE);
         expanders.add(SelfBelief.INSTANCE);
         expanders.add(PerceptionToKnowledge.INSTANCE);
@@ -63,6 +62,16 @@ public class CognitiveCalculusProver implements Prover {
 
         expanders.add(OughtSchema.INSTANCE);
 
+        expanders.add(UniversalElim.INSTANCE);
+        expanders.add(KnowledgeConjunctions.INSTANCE);
+
+        expanders.add(NotExistsToForallNot.INSTANCE);
+
+        expanders.add(NecToPos.INSTANCE);
+
+        if (theoremsToNec) {
+            expanders.add(TheoremsToNecessity.INSTANCE);
+        }
         logger = new Logger();
     }
 
@@ -71,7 +80,7 @@ public class CognitiveCalculusProver implements Prover {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
         reductio = false;
-        expanders  = parent.expanders;
+        expanders = parent.expanders;
 
         this.verbose = parent.verbose;
         this.logger = parent.logger;
@@ -82,9 +91,9 @@ public class CognitiveCalculusProver implements Prover {
 
         prohibited = CollectionUtils.setFrom(parent.prohibited);
         this.reductio = reductio;
-        expanders  = parent.expanders;
+        expanders = parent.expanders;
         this.verbose = parent.verbose;
-        this.logger  = parent.logger;
+        this.logger = parent.logger;
     }
 
 
@@ -565,136 +574,16 @@ public class CognitiveCalculusProver implements Prover {
 
     protected Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
 
-
-        breakUpBiConditionals(base);
-
         expanders.forEach(expander -> expander.expand(this, base, added, goal));
-
 
         expandModalImplications(base, added);
 
-        expandUniversalElim(base, added, goal);
-        expandKnowledgeConjunctions(base, added);
-        expandNotExistsToForallNot(base, added);
-
-        if (theoremsToNec) {
-            expandTheoremsToNecessity(base, added, goal);
+        if (prohibited != null) {
+            base.removeAll(prohibited);
         }
-        expandNecToPos(base, added, goal);
 
-
-        if (prohibited != null) base.removeAll(prohibited);
         return base;
     }
-
-    private void expandNecToPos(Set<Formula> base, Set<Formula> added, Formula goal) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Necessity).
-                map(f -> (Necessity) f).
-                filter(necessity -> necessity.getFormula() instanceof Not).
-                map(necessity -> new Not(new Possibility(((Not) necessity.getFormula()).getArgument()))).collect(Collectors.toSet());
-
-        logger.expansionLog(" Necessarily not => Impossible", derived);
-        base.addAll(derived);
-        added.addAll(derived);
-    }
-
-    private void expandNotExistsToForallNot(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Not).
-                map(f -> (Not) f).
-                filter(not -> not.getArgument() instanceof Existential).
-                map(notExists -> {
-                    Existential existential = (Existential) notExists.getArgument();
-                    Variable[]  variables   = existential.vars();
-                    Formula     kernel      = existential.getArgument();
-                    return new Universal(variables, new Not(kernel));
-                }).collect(Collectors.toSet());
-
-        logger.expansionLog("Not exists => Forall not", derived);
-
-        base.addAll(derived);
-        added.addAll(derived);
-    }
-
-    private void expandKnowledgeConjunctions(Set<Formula> base, Set<Formula> added) {
-
-        Set<Formula> derived = base.
-                stream().
-                filter(f -> f instanceof Knowledge).
-                map(f -> (Knowledge) f).
-                filter(k -> k.getFormula() instanceof And).
-                flatMap(k -> {
-
-                    Value agent = k.getAgent();
-                    Value time  = k.getTime();
-                    And   and   = (And) k.getFormula();
-
-                    return Arrays.stream(and.getArguments()).map(conjunct -> new Knowledge(agent, time, conjunct));
-
-                }).collect(Collectors.toSet());
-
-        logger.expansionLog("Know(P and Q) ==> Know(P) and Know(Q)", derived);
-
-        base.addAll(derived);
-        added.addAll(derived);
-    }
-
-    private void expandTheoremsToNecessity(Set<Formula> base, Set<Formula> added, Formula goal) {
-
-
-        Set<Formula> theorems = base.stream().map(Formula::subFormulae).reduce(Sets.newSet(), Sets::union).
-                stream().filter(x -> !x.equals(goal) && this.prove(Sets.newSet(), x).isPresent()).collect(Collectors.toSet());
-
-        Set<Formula> necs = theorems.stream().map(Necessity::new).collect(Collectors.toSet());
-
-        logger.expansionLog(String.format("{} %s %s ==>  %s %s", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), necs);
-
-        base.addAll(necs);
-        added.addAll(necs);
-
-    }
-
-    private void breakUpBiConditionals(Set<Formula> base) {
-
-
-        Set<BiConditional> biConditionals = CommonUtils.formulaOfType(base, BiConditional.class);
-
-        biConditionals.forEach(biConditional -> {
-
-            base.add(new Implication(biConditional.getLeft(), biConditional.getRight()));
-            base.add(new Implication(biConditional.getRight(), biConditional.getLeft()));
-            base.add(new Implication(Logic.negated(biConditional.getLeft()), Logic.negated(biConditional.getRight())));
-            base.add(new Implication(Logic.negated(biConditional.getRight()), Logic.negated(biConditional.getLeft())));
-
-        });
-
-
-    }
-
-
-
-    private void expandR11a(Set<Formula> base, Set<Formula> added) {
-
-        Set<Belief> implicationBeliefs =
-                CommonUtils.level2FormulaeOfTypeWithConstraint(base, Belief.class, b -> ((Belief) b).getFormula() instanceof Implication);
-
-
-        Set<Formula> validConsequentBeliefss = implicationBeliefs.stream().
-                filter(b -> base.contains(new Belief(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getAntecedent()))).
-                map(b -> new Belief(b.getAgent(), b.getTime(), ((Implication) b.getFormula()).getConsequent())).
-                filter(f -> !added.contains(f)).
-                collect(Collectors.toSet());
-
-        base.addAll(validConsequentBeliefss);
-        added.addAll(added);
-
-    }
-
 
     private void expandModalImplications(Set<Formula> base, Set<Formula> added) {
 
@@ -750,67 +639,13 @@ public class CognitiveCalculusProver implements Prover {
 
 
     }
-
-    private void expandUniversalElim(Set<Formula> base, Set<Formula> added, Formula goal) {
-
-        //TODO: Less stupid elimination
-
-        Set<Formula> formulae = CollectionUtils.setFrom(base);
-        formulae.add(goal);
-
-        Set<Universal> universals = base.stream().filter(f -> f instanceof Universal).map(f -> (Universal) f).collect(Collectors.toSet());
-
-/*
-        Set<Value> values = Logic.baseFormulae(formulae).stream().
-                map(Predicate::allValues).
-                reduce(Sets.newSet(), Sets::union).stream().filter(v -> !(v instanceof Variable) ).
-
-                collect(Collectors.toSet());
-*/
-
-
-        universals.stream().forEach(universal -> {
-
-            Formula formula = universal.getArgument();
-
-            List<Set<Value>> smartValues = UniversalInstantiation.smartHints(universal, formulae);
-
-            Set<List<Value>> substitutions = cartesianProduct(smartValues);
-            Variable[]       vars          = universal.vars();
-
-            Map<Variable, Value> mapping = CollectionUtils.newMap();
-            substitutions.stream().forEach(substitution -> {
-
-                        for (int i = 0; i < vars.length; i++) {
-
-                            mapping.put(vars[i], substitution.get(vars.length - 1 - i));
-
-
-                        }
-
-                        Formula derived = universal.getArgument().apply(mapping);
-
-                        if (!added.contains(derived)) {
-                            base.add(derived);
-                            added.add(derived);
-                        }
-
-                    }
-
-            );
-
-
-        });
-
-    }
-
+    
     protected Set<Formula> shadow(Set<Formula> formulas) {
         return formulas.stream().map(f -> f.shadow(1)).collect(Collectors.toSet());
     }
 
-
     @Override
-    public Logger getLogger(){
+    public Logger getLogger() {
         return logger;
     }
 
