@@ -5,9 +5,14 @@ import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.ccprovers.ModalConverter;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.cnf.PseudoLiteral;
-import com.naveensundarg.shadow.prover.representations.formula.*;
-import com.naveensundarg.shadow.prover.utils.*;
-import javafx.geometry.Pos;
+import com.naveensundarg.shadow.prover.representations.formula.And;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Or;
+import com.naveensundarg.shadow.prover.representations.formula.Possibility;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Problem;
+import com.naveensundarg.shadow.prover.utils.Reader;
+import com.naveensundarg.shadow.prover.utils.Sets;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 

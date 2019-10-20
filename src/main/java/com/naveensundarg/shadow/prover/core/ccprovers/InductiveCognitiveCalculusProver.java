@@ -6,7 +6,10 @@ import com.naveensundarg.shadow.prover.core.internals.Expander;
 import com.naveensundarg.shadow.prover.core.internals.FirstOrderAntiUnifier;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
-import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.formula.Belief;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Predicate;
+import com.naveensundarg.shadow.prover.representations.formula.Trait;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -82,10 +85,10 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
 
         Optional<Justification> shadowedJustificationOpt = folProver.prove(shadow(base), shadowedGoal);
 
-        indent = indent + "\t";
-        tryAgentClosure(formula);
-        indent = indent.substring(0, indent.length()-1);
+        this.logger.addContext();
+        this.logger.tryAgentClosure(formula);
         Optional<Justification> agentClosureJustificationOpt = this.proveAgentClosure(base, formula);
+        this.logger.removeContext();
 
         while (!shadowedJustificationOpt.isPresent() && !agentClosureJustificationOpt.isPresent()) {
 
@@ -208,7 +211,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
             Value a1 = ((Predicate) x).getArguments()[0];
             Value a2 = ((Predicate) x).getArguments()[1];
 
-            Set<Trait> traits =  formulaOfType(base, Trait.class).stream().map(t-> (Trait) t).filter(t-> t.getAgent().equals(a2)).collect(Collectors.toSet());
+            Set<Trait> traits =  CommonUtils.formulaOfType(base, Trait.class).stream().map(t-> (Trait) t).filter(t-> t.getAgent().equals(a2)).collect(Collectors.toSet());
 
 
 
@@ -216,7 +219,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
                             new Trait(trait.getTraitVariables(), a1, trait.getTime(),
                                     trait.getTriggeringCondition(),
                                     trait.getActionType())).collect(Collectors.toSet());
-            expansionLog("transfering traits", newTraits);
+            this.logger.expansionLog("transfering traits", newTraits);
             expanded.addAll(newTraits);
 
         });
@@ -233,7 +236,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
         Set<Formula> expanded = Sets.newSet();
         expanded.addAll(base);
 
-        Set<Trait> traits =  formulaOfType(base, Trait.class);
+        Set<Trait> traits =  CommonUtils.formulaOfType(base, Trait.class);
 
         traits.stream().forEach(trait -> {
 
@@ -274,7 +277,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
         Set<Formula> expanded = Sets.newSet();
         expanded.addAll(base);
 
-        Set<Belief> beliefs =  level2FormulaeOfType(base, Belief.class);
+        Set<Belief> beliefs =  CommonUtils.level2FormulaeOfType(base, Belief.class);
 
         Set<Value> agents = beliefs.stream().map(Belief::getAgent).collect(Collectors.toSet());
 

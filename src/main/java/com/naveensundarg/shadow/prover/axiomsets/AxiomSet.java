@@ -37,15 +37,6 @@ public interface AxiomSet {
 
             return SimpleEventCalculus.INSTANCE.get();
         }
-        if(name.equals("telephone")){
-
-            return Telephone.INSTANCE.get();
-        }
-
-        if(name.equals("cognitive-telephone")){
-
-            return CognitiveTelephone.INSTANCE.get();
-        }
 
         else {
 

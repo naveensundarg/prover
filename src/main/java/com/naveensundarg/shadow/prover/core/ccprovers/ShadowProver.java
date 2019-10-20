@@ -1,6 +1,5 @@
 package com.naveensundarg.shadow.prover.core.ccprovers;
 
-import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;

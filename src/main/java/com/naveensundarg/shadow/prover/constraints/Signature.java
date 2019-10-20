@@ -1,12 +1,9 @@
 package com.naveensundarg.shadow.prover.constraints;
 
-import com.naveensundarg.shadow.prover.axiomsets.SimpleEventCalculus;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
-import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;

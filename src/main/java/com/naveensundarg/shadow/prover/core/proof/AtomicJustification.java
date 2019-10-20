@@ -3,7 +3,6 @@ package com.naveensundarg.shadow.prover.core.proof;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

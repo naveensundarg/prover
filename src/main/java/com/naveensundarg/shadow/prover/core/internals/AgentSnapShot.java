@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.core.internals;
 
+import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.representations.formula.Belief;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Intends;
@@ -7,7 +8,6 @@ import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.core.Logic;
 
 import java.util.Map;
 import java.util.Set;
