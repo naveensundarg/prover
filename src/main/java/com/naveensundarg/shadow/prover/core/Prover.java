@@ -5,6 +5,7 @@ import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.Logger;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -46,6 +47,11 @@ public interface Prover {
     default Optional<Pair<Justification, Set<Map<Variable, Value>>>> proveAndGetMultipleBindings(Set<Formula> assumptions, Formula formula, List<Variable> variable){
 
         return Optional.empty();
+    }
+
+    default Logger getLogger(){
+
+        throw new NotImplementedException("No logger set.");
     }
 
 }

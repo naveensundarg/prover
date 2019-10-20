@@ -2,15 +2,16 @@ package com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus;
 
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
+import com.naveensundarg.shadow.prover.representations.formula.Belief;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
 import com.naveensundarg.shadow.prover.utils.Constants;
-import com.naveensundarg.shadow.prover.utils.Logger;
+import com.naveensundarg.shadow.prover.utils.Reader;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public enum R4 implements Expander {
+public enum SelfBelief implements Expander {
 
     INSTANCE;
 
@@ -20,12 +21,13 @@ public enum R4 implements Expander {
 
         Set<Formula> derived = base.
                 stream().
-                filter(f -> f instanceof Knowledge).
-                map(f -> ((Knowledge) f).getFormula()).
+                filter(f -> f instanceof Belief).
+                filter(f -> ((Belief) f).getAgent().equals(Reader.I)).
+                map(f -> ((Belief) f).getFormula()).
                 collect(Collectors.toSet());
 
         if (!base.containsAll(derived)) {
-            prover.getLogger().expansionLog("Knows(P) ==> P "  + Constants.VDASH + Constants.PHI + Constants.NEC + Constants.PHI, derived);
+            prover.getLogger().expansionLog(String.format("Belief(I, P) ==> P", Constants.VDASH, Constants.PHI, Constants.NEC, Constants.PHI), derived);
 
         }
 
@@ -33,6 +35,4 @@ public enum R4 implements Expander {
         added.addAll(derived);
 
     }
-
-
 }
