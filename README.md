@@ -28,8 +28,8 @@ in first-order logic, and the reasoning is carried out
 within first-order logic. Here, the first-order theorem prover
 simply functions as a declarative programming system. This
 approach, while accurate, can be excruciatingly slow.
+<img align="middle" width="500px" src="https://raw.githubusercontent.com/naveensundarg/prover/master/docs/inconsistency.png"/>
 
-![inconsistency](https://raw.githubusercontent.com/naveensundarg/prover/master/docs/inconsistency.png) 
 
 
 We use
@@ -44,8 +44,9 @@ calculus by using a special-purpose language. While we use
 the prover in our simulations, describing the prover in more
 detail is out of scope for the present paper.
 
-![concept](https://raw.githubusercontent.com/naveensundarg/prover/master/docs/concept.png) 
+<img align="middle" width="500px" src="https://raw.githubusercontent.com/naveensundarg/prover/master/docs/concept.png"/>
 
+ 
 
 ### References
 
