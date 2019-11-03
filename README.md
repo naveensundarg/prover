@@ -28,6 +28,7 @@ in first-order logic, and the reasoning is carried out
 within first-order logic. Here, the first-order theorem prover
 simply functions as a declarative programming system. This
 approach, while accurate, can be excruciatingly slow.
+
 <img align="middle" width="500px" src="https://raw.githubusercontent.com/naveensundarg/prover/master/docs/inconsistency.png"/>
 
 
