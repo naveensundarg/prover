@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.ccprovers.ModalConverter;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
+import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
 import com.naveensundarg.shadow.prover.representations.cnf.PseudoLiteral;
 import com.naveensundarg.shadow.prover.representations.formula.And;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
@@ -23,45 +24,72 @@ import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newEmptyList
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
 public abstract class LP implements Prover {
-    @Override
-    public Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
 
+    private Map<Formula, Set<Formula>> ancestors;
+    @Override
+    public synchronized Optional<Justification> prove(Set<Formula> assumptions, Formula formula) {
+
+        ancestors = CollectionUtils.newMap();
         Problem problem = new Problem("LP", "LP base prover", assumptions, formula);
 
         Set<Formula> base = CollectionUtils.newEmptySet();
         base.addAll(assumptions);
         base.add(Logic.negated(formula));
-        applyLP1Rule(base);
+        applyLP1Rule(assumptions, base);
 
 
         Set<Formula> clausesR = base.
                 stream().
-                map(x -> ModalConverter.convertToCNF(x, problem)).
+                map(x -> {
+
+                    Set<Formula> c = ModalConverter.convertToCNF(x, problem);
+
+                    c.forEach(u -> ancestors.put(u, Sets.from(x)));
+                    return c;
+                }).
                 reduce(Sets.newSet(), Sets::union);
+
+
 
 
         Pair<Optional<Justification>, Set<Formula>> startPair   = runResolutionTillEnd(clausesR);
         Set<Formula>                                currentBase = startPair.getRight();
-        applyLP1Rule(currentBase);
+        applyLP1Rule(assumptions, currentBase);
 
         Pair<Optional<Justification>, Set<Formula>> nextPair = runResolutionTillEnd(currentBase);
 
-        while (nextPair.getRight().size() != startPair.getRight().size()) {
+        while ((nextPair.getRight().size() != startPair.getRight().size()) && !nextPair.getLeft().isPresent()) {
 
             startPair = nextPair;
             currentBase = startPair.getRight();
-            applyLP1Rule(currentBase);
+            applyLP1Rule(assumptions, currentBase);
             nextPair = runResolutionTillEnd(startPair.getRight());
         }
+
+        System.out.println(Reader.FALSE);
+        printAncestors(Reader.FALSE);
 
         return nextPair.getLeft();
     }
 
-    private void applyLP1Rule(Set<Formula> base) {
+    private void printAncestors(Formula f){
+
+        if(ancestors.containsKey(f)){
+            System.out.println(f + "<---- " + ancestors.get(f).stream().map(Object::toString).collect(Collectors.joining(" -- ")));
+
+            ancestors.get(f).forEach(this::printAncestors);
+        }
+
+    }
+    private void applyLP1Rule(Set<Formula> assumptions, Set<Formula> base) {
         Set<Or> disjunctions = base.stream().filter(f -> f instanceof Or).map(or -> (Or) or).collect(Collectors.toSet());
 
         disjunctions.forEach(disjunction -> {
-            Arrays.stream(disjunction.getArguments()).filter(this::canApplyRule).forEach(disjunct -> base.add(new Possibility(disjunct)));
+            Arrays.stream(disjunction.getArguments()).filter(f -> this.canApplyRule(assumptions, f)).forEach(disjunct -> {
+                Formula f = new Possibility(disjunct);
+                 ancestors.put(f, Sets.from(disjunction));
+                base.add(f);
+            });
         });
 
         Set<Possibility> possibilities = base.stream().filter(f -> f instanceof Possibility).map(pos -> (Possibility) pos).collect(Collectors.toSet());
@@ -75,8 +103,11 @@ public abstract class LP implements Prover {
 
                     Formula and = new And(possibility1.getFormula(), possibility2.getFormula());
 
-                    if(canApplyRule(and)){
-                        base.add(new Possibility(and));
+                    if(canApplyRule(assumptions, and)){
+                        Formula f = new Possibility(and);
+                        ancestors.put(f, Sets.from(and));
+                        f.setJustification(TrivialJustification.atomic("LP rule"));
+                        base.add(f);
                     }
                 }
             });
@@ -127,11 +158,14 @@ public abstract class LP implements Prover {
 
                     if (resolvand.equals(Reader.FALSE) || (resolvand instanceof Or && ((Or) resolvand).getArguments().length == 0)) {
 
+                        ancestors.put(Reader.FALSE, Sets.from(parent, given));
+
                         return org.apache.commons.lang3.tuple.ImmutablePair.of(
                                 Optional.of(Justification.atomic("Proved")),
                                 clauses);
 
                     } else {
+                        ancestors.put(resolvand, Sets.from(parent, given));
 
                         if (!weightQueue.contains(resolvand) && !usableList.contains(resolvand)) {
 
@@ -161,7 +195,7 @@ public abstract class LP implements Prover {
 
         }
 
-        return ImmutablePair.of(Optional.empty(), Sets.union(Sets.union(clauses, weightQueue.stream().collect(Collectors.toSet())), ageQueue.stream().collect(Collectors.toSet())));
+        return ImmutablePair.of(Optional.of(TrivialJustification.trivial(clauses, Logic.getFalseFormula())), Sets.union(Sets.union(clauses, weightQueue.stream().collect(Collectors.toSet())), ageQueue.stream().collect(Collectors.toSet())));
     }
 
     private Formula getNextFromStores(int k, PriorityQueue<Formula> weightQueue, Queue<Formula> ageQueue, int ageWeightCounter) {
@@ -270,6 +304,6 @@ public abstract class LP implements Prover {
 
     }
 
-    public abstract boolean canApplyRule(Formula f);
 
+    public abstract boolean canApplyRule(Set<Formula> background, Formula f);
 }
