@@ -1,6 +1,22 @@
 
+##
+ShadowProver is a theorem prover (multi-modal logic with quantifiers). 
 
-## ShadowProver
+```python
+
+from interface import prove
+
+assumptions = [
+    "(Believes! john happy)", 
+    "(Believes! john smiling)" ]
+
+goal = "(Believes! john (and happy smiling))"
+
+prove(assumptions, goal)
+
+```
+
+### Under the hood
 
 ShadowProver is a novel multi-modal + extensional logic theorem prover that uses a technique called **shadowing** to achieve speed without sacrificing consistency in the system. Extant first-order modal logic theorem provers that can work with arbitrary inference schemata are built upon first-order theorem provers. They achieve the reduction to first-order logic via two methods.
 In the first method, modal operators are simply represented by first-order predicates. This approach is the fastest but can quickly lead to well-known inconsistencies as demonstrated
@@ -29,14 +45,14 @@ detail is out of scope for the present paper.
 ![concept](https://raw.githubusercontent.com/naveensundarg/prover/master/docs/concept.png) 
 
 
-## References
+### References
 
 [Bringsjord and Govindarajulu, 2012] Selmer Bringsjord and
 Naveen Sundar Govindarajulu. Given the Web, What is
 Intelligence, Really? Metaphilosophy, 43(4):361–532, 2012.
 
 
-## Resources
+### Resources
 For more details see:
 
 https://drive.google.com/open?id=0B9Vb2O21ibhaZTNLd21wd21adjg
