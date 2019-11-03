@@ -1,6 +1,8 @@
 
-##
+## ShadowProver
 ShadowProver is a theorem prover (multi-modal logic with quantifiers). 
+
+There is a Python API for the prover. 
 
 ```python
 
