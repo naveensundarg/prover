@@ -69,27 +69,21 @@
 {:name        "test 9"
  :description ""
  :assumptions {}
- :goal        (or (or p (not p)) (pos (and p (not p))))}
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-{:name        "test 10"
- :description ""
- :assumptions {1 (or q (and p (not p)))}
- :goal        (pos (and p (not p)))}
+ :goal        (or p (not p))}
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-{:name        "test 11"
- :description ""
- :assumptions {1 (if raining
-                   (if dark
-                     (if outside
-                       (if searching
-                         (if need-light
-                           (if store-open
-                             buy-torch))))))}
- :goal        (and (pos (not raining))
-                   (pos buy-torch))}
+  {:name        "LP1 Problem"
+   :description "Possible to buy a torch."
+   :assumptions {1 (if raining
+                     (if dark
+                       (if outside
+                         (if searching
+                           (if need-light
+                             (if store-open
+                               buy-torch))))))}
+
+   :goal        (and (pos (not raining))
+                     (pos buy-torch))}
 

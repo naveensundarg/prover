@@ -584,10 +584,6 @@ public class CognitiveCalculusProver implements Prover {
         return base;
     }
 
-    private void expandModalImplications(Set<Formula> base, Set<Formula> added) {
-
-
-    }
 
     protected Set<Formula> shadow(Set<Formula> formulas) {
         return formulas.stream().map(f -> f.shadow(1)).collect(Collectors.toSet());

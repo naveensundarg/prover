@@ -28,13 +28,21 @@ public class Sandbox {
     public static void main(String[] args) throws Exception {
 
 
-        Prover prover = SnarkWrapper.getInstance();
-        Formula f1 = Reader.readFormulaFromString("(iff P (not P))");
-        f1.toSnarkString();
-        Formula f2 = Reader.readFormulaFromString("(or P (not P))");
-        Formula goal = Reader.readFormulaFromString("G");
+        Prover prover = new LP1();
 
-        System.out.println(prover.prove(Sets.from(f1, f2), goal));
+        Formula f1 = Reader.readFormulaFromString("(if raining\n" +
+                "                   (if dark\n" +
+                "                     (if outside\n" +
+                "                       (if searching\n" +
+                "                         (if need-light\n" +
+                "                           (if store-open\n" +
+                "                             buy-torch))))))");
+
+        Formula goal = Reader.readFormulaFromString(" (and (pos (not raining))\n" +
+                "                   (pos buy-torch))");
+
+
+        System.out.println(prover.prove(Sets.from(f1), goal));
     }
 
 
