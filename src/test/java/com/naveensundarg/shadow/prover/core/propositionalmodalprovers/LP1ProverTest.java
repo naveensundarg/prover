@@ -86,32 +86,4 @@ public class LP1ProverTest {
     }
 
 
-    @DataProvider(name="soundnessTestsProvider")
-    public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
-
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../LP1-soundness-tests.clj"));
-        Object[][] cases =  new Object[tests.size()][2];
-
-        for(int  i = 0; i < tests.size(); i++){
-
-            Problem test = tests.get(i);
-
-            cases[i][0] =  test.getAssumptions();
-            cases[i][1] = test.getGoal();
-
-        }
-
-
-        return cases;
-
-    }
-
-
-    @Test(dataProvider = "soundnessTestsProvider")
-    public void testSoundess(Set<Formula> assumptions, Formula formula){
-
-        Assert.assertFalse(prover.prove(assumptions, formula).isPresent());
-
-    }
-
 }

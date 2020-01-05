@@ -66,9 +66,6 @@ public abstract class LP implements Prover {
             nextPair = runResolutionTillEnd(startPair.getRight());
         }
 
-        System.out.println(Reader.FALSE);
-        printAncestors(Reader.FALSE);
-
         return nextPair.getLeft();
     }
 

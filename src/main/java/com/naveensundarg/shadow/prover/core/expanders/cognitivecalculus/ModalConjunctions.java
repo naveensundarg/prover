@@ -2,6 +2,8 @@ package com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus;
 
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
+import com.naveensundarg.shadow.prover.core.proof.InferenceJustification;
+import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.And;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
@@ -24,9 +26,12 @@ public enum ModalConjunctions implements Expander {
 
         for (And and : level2Ands) {
 
+            Justification j = InferenceJustification.from(this.getClass().getSimpleName(), and);
+
             Set<Formula> level2Conjuncts = Arrays.stream(and.getArguments()).
                     filter(conjunct -> conjunct.getLevel() == 2).
                     filter(x -> !added.contains(x)).
+                    map(x-> x.setJustification(j)).
                     collect(Collectors.toSet());
 
             added.addAll(level2Conjuncts);

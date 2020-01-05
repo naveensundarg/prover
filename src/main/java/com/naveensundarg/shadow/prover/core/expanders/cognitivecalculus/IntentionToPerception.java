@@ -3,6 +3,8 @@ package com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
+import com.naveensundarg.shadow.prover.core.proof.InferenceJustification;
+import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Intends;
 import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
@@ -28,7 +30,10 @@ public enum IntentionToPerception implements Expander {
                     Intends    i = (Intends) f;
                     Perception k = new Perception(i.getAgent(), i.getTime(), i.getFormula());
                     k.setJustification(new CompoundJustification("Intention to Perception " + i, CollectionUtils.listOf(i.getJustification())));
-                    return k;
+
+                    Justification j = InferenceJustification.from(this.getClass().getSimpleName(), i);
+
+                    return k.setJustification(j);
                 }).
                 collect(Collectors.toSet());
 

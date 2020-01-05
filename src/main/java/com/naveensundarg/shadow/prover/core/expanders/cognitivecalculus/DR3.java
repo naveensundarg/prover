@@ -3,6 +3,8 @@ package com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus;
 import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
+import com.naveensundarg.shadow.prover.core.proof.InferenceJustification;
+import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Common;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
@@ -22,9 +24,13 @@ public enum DR3 implements Expander {
         Set<Common> commons = CommonUtils.level2FormulaeOfType(base, Common.class);
 
         for (Common c : commons) {
+
+            Justification j = InferenceJustification.from(this.getClass().getSimpleName(), c);
+
             Formula formula = c.getFormula();
+
             if (!added.contains(formula)) {
-                base.add(formula);
+                base.add(formula.setJustification(j));
                 added.add(formula);
             }
         }

@@ -2,6 +2,8 @@ package com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus;
 
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
+import com.naveensundarg.shadow.prover.core.proof.InferenceJustification;
+import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.And;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
@@ -30,9 +32,12 @@ public enum KnowledgeConjunctions implements Expander {
                     Value time  = k.getTime();
                     And   and   = (And) k.getFormula();
 
-                    return Arrays.stream(and.getArguments()).map(conjunct -> new Knowledge(agent, time, conjunct));
+                    Justification j = InferenceJustification.from(this.getClass().getSimpleName(), k);
+
+                    return Arrays.stream(and.getArguments()).map(conjunct -> new Knowledge(agent, time, conjunct).setJustification(j));
 
                 }).collect(Collectors.toSet());
+
 
         prover.getLogger().expansionLog("Know(P and Q) ==> Know(P) and Know(Q)", derived);
 

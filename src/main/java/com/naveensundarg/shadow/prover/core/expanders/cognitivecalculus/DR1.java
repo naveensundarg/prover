@@ -3,6 +3,8 @@ package com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus;
 import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
+import com.naveensundarg.shadow.prover.core.proof.InferenceJustification;
+import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Common;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Knowledge;
@@ -37,8 +39,9 @@ public enum DR1 implements Expander {
                     current = new Knowledge(agentPair.get(i), time, current);
                 }
 
+                Justification j = InferenceJustification.from(this.getClass().getSimpleName(), c);
                 if (!added.contains(current)) {
-                    base.add(current);
+                    base.add(current.setJustification(j));
                     added.add(current);
                 }
 

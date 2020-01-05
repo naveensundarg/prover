@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Created by naveensundarg on 4/8/16.
  */
-public abstract class Formula extends Expression {
+public abstract class Formula extends Expression implements Cloneable{
 
 
 
