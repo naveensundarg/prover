@@ -60,6 +60,16 @@ public final class Atom extends Predicate{
     }
 
     @Override
+    public String toSnarkString(){
+
+        if(!isStringName) {
+            return name;
+        } else {
+            return "\"" + name + "\"";
+        }
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
