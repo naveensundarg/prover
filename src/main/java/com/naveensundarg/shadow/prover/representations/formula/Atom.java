@@ -65,7 +65,7 @@ public final class Atom extends Predicate{
         if(!isStringName) {
             return name;
         } else {
-            return "\"" + name + "\"";
+            return "\"" + name.replaceAll(" ", "_") + "\"";
         }
     }
 

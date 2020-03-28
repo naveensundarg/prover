@@ -12,11 +12,9 @@ import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
-import com.google.gson.Gson;
 
 import java.util.*;
 
-import static spark.Spark.*;
 
 
 public final class Server {
@@ -33,55 +31,6 @@ public final class Server {
             System.exit(-1);
         }
 
-    }
-    public static void main(String[] args) {
-        port(7000);
-
-        get("/", (req, res) -> "Hello World!");
-
-        post("/", "application/json", (req, res) -> {
-            RequestPayload obj = new Gson().fromJson(req.body(), RequestPayload.class);
-
-            Set<Formula> assumptions = Sets.newSet();
-            for (int i = 0; i < obj.assumptions.length; i++) {
-                assumptions.add(Reader.readFormulaFromString(obj.assumptions[i]));
-            }
-
-            Formula goal = Reader.readFormulaFromString(obj.goal);
-            SnarkWrapper prover = SnarkWrapper.getInstance();
-
-            String return_string = "";
-            if (obj.method.equals("prove")) {
-                Optional<Justification> justification = prover.prove(assumptions, goal);
-                return_string = "{\"proved\": " + (justification.isPresent() ? "true" : "false") + "}";
-            }
-            else if (obj.method.equalsIgnoreCase("proveAndGetBinding")) {
-                Variable variable = new Variable(obj.variable);
-                Optional<Value> justification = prover.proveAndGetBinding(assumptions, goal, variable);
-                StringBuilder inner = new StringBuilder();
-                inner.append("\"").append(variable.getName()).append("\": \"");
-                justification.ifPresent(value -> inner.append(value.toString()));
-                inner.append("\"");
-                return_string = "{\"proved\": " + (justification.isPresent() ? "true" : "false") + ", " + inner.toString() + "}";
-            }
-            else if (obj.method.equals("proveAndGetBindings")) {
-                ArrayList<Variable> variables = new ArrayList<>();
-                for (String variable : obj.variables) {
-                    variables.add(new Variable(variable));
-                }
-                Optional<Map<Variable, Value>> justification = prover.proveAndGetBindings(assumptions, goal, variables);
-                StringBuilder inner = new StringBuilder();
-                inner.append("\"variables\": {");
-                if (justification.isPresent()) {
-                    for (Variable variable : variables) {
-                        inner.append("\"").append(variable.getName()).append("\": \"").append(justification.get().get(variable).toString()).append("\"");
-                    }
-                }
-                inner.append("}");
-                return_string = "{\"proved\": " + (justification.isPresent() ? "true" : "false") + ", " + inner.toString() + "}";
-            }
-            return return_string;
-        });
     }
 
     public class RequestPayload {
