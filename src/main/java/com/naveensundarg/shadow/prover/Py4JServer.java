@@ -28,8 +28,11 @@ public final class Py4JServer {
 
     public static void main(String[] args) {
 
+        System.out.println("--------------- Starting GatewayServer --------------- ");
         GatewayServer server = new GatewayServer(new Py4JServer());
         server.start();
+        System.out.println("---------------     Started Server     --------------- ");
+
     }
 
     public String prove(ArrayList assumptionsArrayList, String goal) {
