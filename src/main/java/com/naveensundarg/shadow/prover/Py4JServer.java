@@ -35,6 +35,9 @@ public final class Py4JServer {
 
     }
 
+    public ArrayList newEmptyList(){
+        return new ArrayList();
+    }
     public String prove(ArrayList assumptionsArrayList, String goal) {
 
         boolean error ;
