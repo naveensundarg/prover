@@ -31,14 +31,15 @@ public final class Py4JServer {
     public static void main(String[] args) throws UnknownHostException {
 
         System.out.println("--------------- Starting GatewayServer --------------- ");
+        System.out.println("--------------- Started Py4J Gateway   --------------- ");
 
         InetAddress addr;
         System.setProperty("java.net.preferIPv4Stack", "true");
         addr = Inet4Address.getByName("0.0.0.0");
         GatewayServer server = new GatewayServer(new Py4JServer(),25333, 25334, addr,addr, 0, 0, null);
+        System.out.println("--------------- Started Py4J Gateway   --------------- ");
 
         server.start();
-        System.out.println("---------------    Started Py4J Gateway     --------------- ");
 
     }
 

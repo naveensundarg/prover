@@ -1,0 +1,7 @@
+version: "3.0"
+services:
+  py-shadowprover:
+    image: naveensundarg/py-shadowprover:0.1-prover-1.34
+    ports:
+      - "25334:25334"
+      - "25333:25333"
