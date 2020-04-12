@@ -2,7 +2,15 @@
 ## ShadowProver
 ShadowProver is a theorem prover (multi-modal logic with quantifiers). 
 
-There is a Python API for the prover. 
+There is a Python API for the prover. (Requires docker to run the prover in a clean container.)
+
+
+To start the prover
+
+```
+cd prover
+docker-compose up
+```
 
 ```python
 
@@ -17,6 +25,9 @@ goal = "(Believes! john (and happy smiling))"
 prove(assumptions, goal)
 
 ```
+
+
+
 
 ### Under the hood
 
