@@ -5,7 +5,9 @@ import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import py4j.GatewayServer;
-
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,16 +28,22 @@ public final class Py4JServer {
         return cognitiveCalculusProver;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
 
         System.out.println("--------------- Starting GatewayServer --------------- ");
-        GatewayServer server = new GatewayServer(new Py4JServer());
+
+        InetAddress addr;
+        System.setProperty("java.net.preferIPv4Stack", "true");
+        addr = Inet4Address.getByName("0.0.0.0");
+        GatewayServer server = new GatewayServer(new Py4JServer(),25333, 25334, addr,addr, 0, 0, null);
+
         server.start();
-        System.out.println("---------------     Started Server     --------------- ");
+        System.out.println("---------------    Started Py4J Gateway     --------------- ");
 
     }
 
     public ArrayList newEmptyList(){
+
         return new ArrayList();
     }
     public String prove(ArrayList assumptionsArrayList, String goal) {

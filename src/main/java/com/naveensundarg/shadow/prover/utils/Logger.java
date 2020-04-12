@@ -3,7 +3,6 @@ package com.naveensundarg.shadow.prover.utils;
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import sun.rmi.runtime.Log;
 
 import java.util.Set;
 

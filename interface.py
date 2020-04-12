@@ -1,20 +1,20 @@
 import subprocess
 from py4j.java_gateway import JavaGateway
 
-
-q = None
 gateway = None
 
 def start():
-    global q, gateway
-    if(not(q)):
-        q = subprocess.Popen("mvn exec:java -Dexec.mainClass=com.naveensundarg.shadow.prover.Py4JServer".split())
+    #global q,
+    global gateway
+    if(not(gateway)):
+        #q = subprocess.Popen("mvn exec:java -Dexec.mainClass=com.naveensundarg.shadow.prover.Py4JServer".split())
         gateway = JavaGateway()
 
 def stop():
-    global q, gateway
-    if(q):
-        q.kill()
+    #global q,
+    global gateway
+    if(gateway):
+        #q.kill()
         gateway = None
 
 
@@ -24,7 +24,7 @@ def prove(assumptions, goal):
     if(not(gateway)):
         start()
 
-    lst = gateway.jvm.java.util.ArrayList()
+    lst = gateway.newEmptyList()
 
     for assumption in assumptions:
         lst.append(assumption)

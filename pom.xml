@@ -44,7 +44,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.naveensundarg.shadow.prover.sandboxes.Sandbox</mainClass>
+                                    <mainClass>com.naveensundarg.shadow.prover.Py4JServer</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
@@ -63,7 +63,7 @@
                             <archive>
                                 <manifest>
                                     <addClasspath>true</addClasspath>
-                                    <mainClass>com.naveensundarg.shadow.prover.Server</mainClass>
+                                    <mainClass>com.naveensundarg.shadow.prover.Py4JServer</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
@@ -149,6 +149,7 @@
             <artifactId>py4j</artifactId>
             <version>0.8.1</version>
         </dependency>
+
 
 
 
