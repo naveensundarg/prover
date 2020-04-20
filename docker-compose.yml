@@ -6,7 +6,7 @@ services:
       - "25334:25334"
       - "25333:25333"
   interface:
-    image: naveensundar/py-interface-shadowprover:0.11
+    image: naveensundarg/py-interface-shadowprover:0.11
     ports:
       - "8888:8888"
     volumes:
