@@ -5,3 +5,7 @@ services:
     ports:
       - "25334:25334"
       - "25333:25333"
+  interface:
+    image: naveensundar/py-interface-shadowprover:0.1
+    ports:
+      - "8888:8888"
