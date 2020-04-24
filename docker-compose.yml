@@ -6,8 +6,8 @@ services:
       - "25334:25334"
       - "25333:25333"
   interface:
-    image: naveensundarg/py-interface-shadowprover:0.11
+    image: naveensundarg/py-interface-shadowprover:0.121
     ports:
       - "8888:8888"
     volumes:
-      - ./files:/base/files
+      - ./files:/base
