@@ -13,6 +13,7 @@ import com.naveensundarg.shadow.prover.representations.measures.QuantifierRank;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,21 +29,11 @@ public class Sandbox {
     public static void main(String[] args) throws Exception {
 
 
-        Prover prover = new LP1();
+        Prover prover =  new CognitiveCalculusProver();
 
-        Formula f1 = Reader.readFormulaFromString("(if raining\n" +
-                "                   (if dark\n" +
-                "                     (if outside\n" +
-                "                       (if searching\n" +
-                "                         (if need-light\n" +
-                "                           (if store-open\n" +
-                "                             buy-torch))))))");
+        Problem problem = ProblemReader.readFrom(new FileInputStream("./example.clj")).get(0);
 
-        Formula goal = Reader.readFormulaFromString(" (and (pos (not raining))\n" +
-                "                   (pos buy-torch))");
-
-
-        System.out.println(prover.prove(Sets.from(f1), goal));
+        System.out.println(prover.prove((problem.getAssumptions()), problem.getGoal()));
     }
 
 

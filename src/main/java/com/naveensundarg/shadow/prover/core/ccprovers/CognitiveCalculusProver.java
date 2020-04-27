@@ -13,6 +13,7 @@ import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
 import com.naveensundarg.shadow.prover.representations.formula.*;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -70,6 +71,7 @@ public class CognitiveCalculusProver implements Prover {
 
         expanders.add(NecToPos.INSTANCE);
 
+        expanders.add(InnerModalForward.INSTANCE);
         if (theoremsToNec) {
             expanders.add(TheoremsToNecessity.INSTANCE);
         }
@@ -503,77 +505,68 @@ public class CognitiveCalculusProver implements Prover {
 
     Optional<Justification> proveAgentClosure(Set<Formula> base, Formula goal) {
 
-        if (goal instanceof Belief) {
-
-            Belief  belief     = (Belief) goal;
-            Value   agent      = belief.getAgent();
-            Value   time       = belief.getTime();
-            Formula goalBelief = belief.getFormula();
-
-            AgentSnapShot agentSnapShot = AgentSnapShot.from(base);
-
-            Set<Formula> allBelievedTillTime = agentSnapShot.allBelievedByAgentTillTime(agent, time);
-
-
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
-            Optional<Justification> inner                   = cognitiveCalculusProver.prove(allBelievedTillTime, goalBelief);
-            if (inner.isPresent()) {
-                //TODO: Augment this
-
-                return inner;
-            }
-
-        }
-
-        if (goal instanceof Intends) {
-
-
-            Intends intends       = (Intends) goal;
-            Value   agent         = intends.getAgent();
-            Value   time          = intends.getTime();
-            Formula goalKnowledge = intends.getFormula();
-
-            AgentSnapShot agentSnapShot = AgentSnapShot.from(base);
-
-            Set<Formula> allIntendedByTillTime = agentSnapShot.allIntendedByAgentTillTime(agent, time);
-
-
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
-            Optional<Justification> inner                   = cognitiveCalculusProver.prove(allIntendedByTillTime, goalKnowledge);
-            if (inner.isPresent()) {
-                //TODO: Augment this
-
-                return inner;
-            }
-        }
-
-        if (goal instanceof Knowledge) {
-
-
-            Knowledge knowledge     = (Knowledge) goal;
-            Value     agent         = knowledge.getAgent();
-            Value     time          = knowledge.getTime();
-            Formula   goalKnowledge = knowledge.getFormula();
-
-            AgentSnapShot agentSnapShot = AgentSnapShot.from(base);
-
-            Set<Formula> allKnownByTillTime = agentSnapShot.allKnownByAgentTillTime(agent, time);
-
-
-            CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
-            Optional<Justification> inner                   = cognitiveCalculusProver.prove(allKnownByTillTime, goalKnowledge);
-            if (inner.isPresent()) {
-                //TODO: Augment this
-
-                return inner;
-            }
-        }
+       if(goal instanceof UnaryModalFormula) {
+           return snapShotGoalProveInternal(base, (UnaryModalFormula) goal);
+       }
 
         return Optional.empty();
 
     }
 
-    protected Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
+    private void expandInner(Prover prover, Set<Formula> base, Set<Formula> added, Formula goal) {
+
+        if(goal instanceof UnaryModalFormula) {
+            UnaryModalFormula formula = (UnaryModalFormula) goal;
+            Value agent         = formula.getAgent();
+            Value    time          = formula.getTime();
+            Formula  innerGoalFormula = formula.getFormula();
+
+            AgentSnapShot agentSnapShot = AgentSnapShot.from(base);
+
+            Set<Formula> innerGivens = agentSnapShot.allBelievedByAgentTillTime(agent, time);
+
+
+
+        }
+    }
+
+    private Optional<Justification> snapShotGoalProveInternal(Set<Formula> base, UnaryModalFormula formula) {
+
+        Value agent         = formula.getAgent();
+        Value    time          = formula.getTime();
+        Formula  innerGoalFormula = formula.getFormula();
+
+        AgentSnapShot agentSnapShot = AgentSnapShot.from(base);
+
+        Set<Formula> innerGivens = Sets.newSet();
+
+
+
+
+        if(formula instanceof Knowledge){
+            innerGivens = agentSnapShot.allKnownByAgentTillTime(agent, time);
+        }
+
+        if(formula instanceof Belief){
+            innerGivens = agentSnapShot.allBelievedByAgentTillTime(agent, time);
+        }
+
+        if(formula instanceof Intends){
+            innerGivens = agentSnapShot.allIntendedByAgentTillTime(agent, time);
+        }
+
+
+
+
+        CognitiveCalculusProver cognitiveCalculusProver = new CognitiveCalculusProver(this);
+        Optional<Justification> inner                   = cognitiveCalculusProver.prove(innerGivens, innerGoalFormula);
+
+
+
+        return inner.map(justification -> new CompoundJustification(formula.getClass().toString(), CollectionUtils.listOf(justification)));
+    }
+
+    public Set<Formula> expand(Set<Formula> base, Set<Formula> added, Formula goal) {
 
         expanders.forEach(expander -> expander.expand(this, base, added, goal));
 

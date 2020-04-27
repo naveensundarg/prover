@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Knowledge extends BaseFormula{
+public class Knowledge extends BaseFormula implements UnaryModalFormula{
     private final Value agent;
     private final Value time;
     private final Formula formula;

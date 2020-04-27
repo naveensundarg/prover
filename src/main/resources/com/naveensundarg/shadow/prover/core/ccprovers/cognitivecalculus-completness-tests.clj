@@ -382,34 +382,34 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  {:name        "Cogito Ergo Sum"
-   :description "A formaliztion of Descartes' 'Cogito, Ergo Sum'"
-   :assumptions {S1                  (Believes! I t1 (forall [x] (or (Name x) (Thing x))))
-                 S2                  (Believes! I t1 (forall (x) (iff (Name x) (not (Thing x)))))
-                 S3                  (Believes! I t1 (forall (x) (if (Thing x) (or (Real x) (Fictional x)))))
-                 S4                  (Believes! I t1 (forall (x) (if (Thing x) (iff (Real x) (not (Fictional x))))))
-                 A1                  (Believes! I t1 (forall (x) (if (Name x) (Thing (* x)))))
-                 A2                  (Believes! I t1
-                                                (forall (y)
-                                                        (if (Name y)
-                                                          (iff (DeReExists y)
-                                                               (exists x (and (Real x) (= x (* y))))))))
-                 Suppose             (Believes! I t1 (not (DeReExists I)))
-
-
-                 given               (Believes! I t1 (Name I))
-
-                 ;;;
-                 Perceive-the-belief (Believes! I t1 (Perceives! I t2 (Believes! I t3 (not (DeReExists I)))))
-                 If_P_B
-
-                 (Believes!
-                  I t1
-                  (forall [?agent]
-                          (if (Perceives! t2 I (Believes! t3 ?agent (not (DeReExists ?agent))))
-                            (Real (* ?agent)))))}
-   :goal        (and (Believes! I t1 (not (Real (* I))))
-                     (Believes! I t1 (Real (* I))))}
+;  {:name        "Cogito Ergo Sum"
+;   :description "A formaliztion of Descartes' 'Cogito, Ergo Sum'"
+;   :assumptions {S1                  (Believes! I t1 (forall [x] (or (Name x) (Thing x))))
+;                 S2                  (Believes! I t1 (forall (x) (iff (Name x) (not (Thing x)))))
+;                 S3                  (Believes! I t1 (forall (x) (if (Thing x) (or (Real x) (Fictional x)))))
+;                 S4                  (Believes! I t1 (forall (x) (if (Thing x) (iff (Real x) (not (Fictional x))))))
+;                 A1                  (Believes! I t1 (forall (x) (if (Name x) (Thing (* x)))))
+;                 A2                  (Believes! I t1
+;                                                (forall (y)
+;                                                        (if (Name y)
+;                                                          (iff (DeReExists y)
+;                                                               (exists x (and (Real x) (= x (* y))))))))
+;                 Suppose             (Believes! I t1 (not (DeReExists I)))
+;
+;
+;                 given               (Believes! I t1 (Name I))
+;
+;                 ;;;
+;                 Perceive-the-belief (Believes! I t1 (Perceives! I t2 (Believes! I t3 (not (DeReExists I)))))
+;                 If_P_B
+;
+;                 (Believes!
+;                  I t1
+;                  (forall [?agent]
+;                          (if (Perceives! t2 I (Believes! t3 ?agent (not (DeReExists ?agent))))
+;                            (Real (* ?agent)))))}
+;   :goal        (and (Believes! I t1 (not (Real (* I))))
+;                     (Believes! I t1 (Real (* I))))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -479,16 +479,17 @@
    :description "Dupin's reasoning as he goes through the case"
 
    :assumptions {1 (Believes! g t1 (hide m elaborate))
-                 2 (Knows! d  t1 (exists ?method (and (hide m ?method)
+               2 (Knows! d  t1 (exists ?method (and (hide m ?method)
                                                          (or (= ?method plain)
                                                              (= ?method elaborate)))))
                  3 (Believes! m t1 (Believes! g t2  (hide m elaborate)))
-              ;   4 (if (Believes! t1 m (Believes! g t2 (hide m elaborate))) (hide m plain))
+                 4 (if (Believes! t1 m (Believes! g t2 (hide m elaborate))) (hide m plain))
                  5 (if (Believes! m t1 (Believes! g t2 (hide m plain))) (hide m elaborate))
                  6 (Believes! m (Believes! g (hide m elaborate)))
                  7 (Believes! d t1 (if (Believes! m t2 (Believes! g (hide m elaborate))) (hide m plain)))
-                 8 (Believes! d t1 (if (Believes! m t2 (Believes! g t3 (hide m plain))) (hide m elaborate)))
-                 9 (Believes! d t1 (Believes! m  t2 (Believes! g t3 (hide m elaborate))))}
+               ;  8 (Believes! d t1 (if (Believes! m t2 (Believes! g t3 (hide m plain))) (hide m elaborate)))
+                 ;9 (Believes! d t1 (Believes! m  t2 (Believes! g t3 (hide m elaborate))))
+                                                         }
 
    :goal        (Believes! d t4 (hide m plain))}
 
@@ -992,3 +993,25 @@
 
    :goal        (Knows! holmes (Believes! watson (not (Amateur holmes))))}
 
+
+{
+  :description "Forward inference within modal formulae"
+
+  :assumptions {
+                 1 (Knows! ua now (LessUnethical emptyroad fieldwithpowerlines))
+                 2 (Knows! ua now (LessUnethical fieldwithpowerlines fieldwithpeople))
+
+                 3 (Knows! ua now (forall [?x ?y ?z] (implies (and (LessUnethical ?x ?y) (LessUnethical ?y ?z))
+                                                              (LessUnethical ?x ?z))))
+
+                 4 (Knows! ua now (if (and (LessUnethical emptyroad fieldwithpowerlines)
+                                           (LessUnethical emptyroad fieldwithpeople))
+                                    (BestOption emptyroad)))
+
+                 6 (Knows! ua now (implies (BestOption emptyroad)
+                                           (Ought! ua now crisis (happens (action ua (Land emptyroad)) now))))
+
+                 7 (Believes! ua now crisis)
+                 }
+  :goal (Intends! ua now  (happens (action ua (Land emptyroad)) now))
+  }

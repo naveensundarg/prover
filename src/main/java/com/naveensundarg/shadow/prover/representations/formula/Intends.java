@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 5/4/16.
  */
-public final class Intends extends BaseFormula{
+public final class Intends extends BaseFormula implements UnaryModalFormula{
 
     private final Value agent;
     private final Value time;

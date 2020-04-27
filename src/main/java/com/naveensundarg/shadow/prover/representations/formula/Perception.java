@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 /**
  * Created by naveensundarg on 7/9/16.
  */
-public class Perception extends BaseFormula{
+public class Perception extends BaseFormula implements UnaryModalFormula{
     private final Value agent;
     private final Value time;
     private final Formula formula;

@@ -159,14 +159,15 @@
     (t
      (initialize-clocks)
      (when verbose
-       (format t "~&; Running SNARK from ~A in ~A ~A~:[~; (64-bit)~] on ~A at "
-               cl-user::*snark-system-pathname*
-               (lisp-implementation-type)
-               (lisp-implementation-version)
-               (member :x86-64 *features*)
-               (machine-instance))
-       (print-current-time)
-       (format t "~%")
+        (format t ".")
+   ;    (format t "~&;   SNARK from ~A in ~A ~A~:[~; (64-bit)~] on ~A at "
+   ;           cl-user::*snark-system-pathname*
+   ;          (lisp-implementation-type)
+   ;         (lisp-implementation-version)
+   ;        (member :x86-64 *features*)
+   ;       (machine-instance))
+      ; (print-current-time)
+       ;(format t "~%")
        (force-output))
 ;;   (setf *random-state* (make-random-state t))
      (setf *szs-conjecture* nil)
