@@ -32,7 +32,6 @@ public class CognitiveCalculusProver implements Prover {
      *
      */
     private static int            MAX_EXPAND_FACTOR    = 100;
-    private static boolean        EXPAND_MODUS_TOLLENS = false;
     private        boolean        verbose              = true;
     private final  boolean        reductio;
     private final  boolean        theoremsToNec        = false;

@@ -3,8 +3,12 @@ package com.naveensundarg.shadow.prover;
 import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.utils.Problem;
+import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import py4j.GatewayServer;
+
+import java.io.ByteArrayInputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -47,6 +51,28 @@ public final class Py4JServer {
 
         return new ArrayList();
     }
+
+    public String proveFromDescription(String fileString){
+        try {
+            List<Problem> problems = ProblemReader.readFrom(new ByteArrayInputStream(fileString.getBytes()));
+
+            Problem problem = problems.get(0);
+
+            Optional<Justification> optionalJustification =  cognitiveCalculusProver.prove(problem.getAssumptions(), problem.getGoal());
+
+            if(optionalJustification.isPresent()) {
+                return optionalJustification.get().toString();
+            }
+            else {
+                return "FAILED";
+            }
+
+        } catch (Reader.ParsingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public String prove(ArrayList assumptionsArrayList, String goal) {
 
         boolean error ;

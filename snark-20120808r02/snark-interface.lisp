@@ -56,7 +56,7 @@
 
 
 
-(defun setup-snark (&key (time-limit 500) (verbose nil))
+(defun setup-snark (&key (time-limit 59) (verbose nil))
 
   (snark:initialize :verbose  t)
  (if (not verbose) (snark-deverbose) )

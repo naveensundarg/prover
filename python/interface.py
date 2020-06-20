@@ -24,3 +24,11 @@ def prove(assumptions, goal):
         lst.append(assumption)
 
     return gateway.prove(lst, goal)
+
+
+def proveFromDescription(description):
+    global gateway
+    if not gateway:
+        start()
+
+    return gateway.proveFromDescription(description)
