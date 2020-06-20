@@ -9,7 +9,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name        "QAV-1"
- :description "Quantification across variables"
+ :description "Quantification across modals"
  :assumptions {
 
                 A1 (forall [?x] (if
@@ -23,7 +23,7 @@
 
 
 {:name        "QAV-2"
- :description "Quantification across variables"
+ :description "Quantification across modals"
  :assumptions {
 
                 A1 (forall [?agent ?x] (if
@@ -33,6 +33,19 @@
                 }
 
  :goal        (Believes! john (Mortal mary))
+ }
+
+{:name        "QAV-3"
+ :description "Quantification across modals"
+ :assumptions {
+
+                A1 (forall [?agent ?t ?x] (if
+                                         (Believes! ?agent ?t (Human ?x))
+                                         (Believes! ?agent (next ?t) (Mortal ?x))))
+                A2 (Believes! john t1 (Human mary))
+                }
+
+ :goal        (Believes! john (next t1) (Mortal mary))
  }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
