@@ -1,9 +1,39 @@
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 {:name        "*cognitive-calculus-completeness-test-1*"
  :description "kicking the tires"
  :assumptions {1 (Knows! a1 t1 P)}
  :goal        P}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+{:name        "QAV-1"
+ :description "Quantification across variables"
+ :assumptions {
+
+                A1 (forall [?x] (if
+                                  (Believes! john (Human ?x))
+                                  (Believes! john (Mortal ?x))))
+                A2 (Believes! john (Human mary))
+                }
+
+ :goal        (Believes! john (Mortal mary))
+ }
+
+
+{:name        "QAV-2"
+ :description "Quantification across variables"
+ :assumptions {
+
+                A1 (forall [?agent ?x] (if
+                                  (Believes! ?agent (Human ?x))
+                                  (Believes! ?agent (Mortal ?x))))
+                A2 (Believes! john (Human mary))
+                }
+
+ :goal        (Believes! john (Mortal mary))
+ }
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -967,29 +997,32 @@
 
 
 
-  {:name        "Holmes and Watson"
-   :description ""
-   :assumptions {Premise1 (Knows! holmes
-                                  (if (Believes! watson
-                                                 (and (not (Knows! holmes t1 (PersonalFact (inMilitary watson))))
-                                                      (Knows! holmes t2 (PersonalFact (inMilitary watson)))))
-                                    (Believes! watson (not (Amateur holmes)))))
+{:name        "Holmes and Watson"
+ :description ""
+ :assumptions {Premise1 (Knows! holmes
+                                (if (Believes! watson
+                                               (and (not (Knows! holmes t1 (PersonalFact (inMilitary watson))))
+                                                    (Knows! holmes t2 (PersonalFact (inMilitary watson)))))
+                                  (Believes! watson (not (Amateur holmes)))))
 
-                 Premise2 (Knows! holmes (Knows! watson (not (Knows! holmes t1 (PersonalFact (inMilitary watson))))))
+               Premise2 (Knows! holmes (Knows! watson (not (Knows! holmes t1 (PersonalFact (inMilitary watson))))))
 
-                 Premise3 (Knows! holmes
-                                  (Believes! watson
-                                             (Knows! holmes t2
-                                                     (if (and (tan watson) (wounded watson))
-                                                       (PersonalFact (inMilitary watson))))))
-                 Premise4 (Knows! holmes
-                                  (Believes! watson
-                                             (Knows! holmes t2
-                                                     (and (tand watson) (wounded watson)))))
-                 }
+               Premise3 (Knows! holmes
+                                (Believes! watson
+                                           (Knows! holmes t2
+                                                   (if (and (tan watson) (wounded watson))
+                                                     (PersonalFact (inMilitary watson))))))
+               Premise4 (Knows! holmes
+                                (Believes! watson
+                                           (Knows! holmes t2
+                                                   (and (tan watson) (wounded watson)))))
+               }
 
-   :goal        (Knows! holmes (Believes! watson (not (Amateur holmes))))}
 
+ :goal        (Knows! holmes (Believes! watson (not (Amateur holmes))))
+
+
+ }
 
 {
   :description "Forward inference within modal formulae"
