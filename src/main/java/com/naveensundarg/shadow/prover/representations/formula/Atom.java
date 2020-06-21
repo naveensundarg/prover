@@ -72,6 +72,9 @@ public final class Atom extends Predicate{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if(o instanceof Predicate){
+            return  ((Predicate) o).getArguments().length == 0 && name.equals(((Predicate) o).getName());
+        }
         if (o == null || getClass() != o.getClass()) return false;
 
         Atom atom = (Atom) o;

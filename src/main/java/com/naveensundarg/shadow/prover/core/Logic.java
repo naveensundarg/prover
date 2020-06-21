@@ -773,11 +773,32 @@ public class Logic {
             return new Possibility(transformSecondOrderToFirstOrder(possibility.getFormula()));
         }
 
+        if(formula instanceof Exemplar) {
+            Exemplar exemplar = (Exemplar) formula;
+
+
+            return new Exemplar(transformSecondOrderToFirstOrder(exemplar.getInput()), transformSecondOrderToFirstOrder(exemplar.getOutput()));
+        }
+
 
         throw new AssertionError("Cannot transform into FOL: " + formula);
 
     }
 
+    public static Set<Formula> getNonSubFormulae(Set<Formula>  formulas){
+
+        return formulas.stream().filter(f-> formulas.stream().allMatch(other -> {
+
+            if(other.equals(f)) {
+                return true;
+            }
+            else {
+                return !other.subFormulae().contains(f);
+            }
+
+        })).collect(Collectors.toSet());
+
+    }
 
     public static Formula instantiateActionType(Value agent, Value time, Value actionType){
 

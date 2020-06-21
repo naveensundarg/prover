@@ -100,6 +100,14 @@ public final class Belief extends BaseFormula implements UnaryModalFormula{
     }
 
     @Override
+    public  Formula generalize(Map<Value, Variable> substitution){
+
+        return new Belief(agent.generalize(substitution), time.generalize(substitution), formula.generalize(substitution));
+    }
+
+
+
+    @Override
     public Formula shadow(int level) {
         return new Atom("|"+ CommonUtils.sanitizeShadowedString(toString())+"|");
     }

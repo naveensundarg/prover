@@ -188,6 +188,9 @@ public class Predicate extends BaseFormula {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if(o instanceof Atom){
+            return arguments.length == 0 && name.equals(((Atom) o).getName());
+        }
         if (o == null || getClass() != o.getClass()) return false;
 
         Predicate predicate = (Predicate) o;
@@ -202,8 +205,13 @@ public class Predicate extends BaseFormula {
     @Override
     public int hashCode() {
         int result = safeHashCode(name);
-        result = 31 * result + Arrays.toString(arguments).hashCode();
-        return result;
+        if(arguments.length> 0 ){
+            return 31 * result + Arrays.toString(arguments).hashCode();
+
+        }
+        else {
+            return result;
+        }
     }
 
 

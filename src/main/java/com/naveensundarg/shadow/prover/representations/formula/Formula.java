@@ -61,6 +61,8 @@ public abstract class Formula extends Expression implements Cloneable{
         throw new NotImplementedException("generalize");
     }
 
+
+
     public Set<Formula> getAssumptions() {
         return assumptions;
     }

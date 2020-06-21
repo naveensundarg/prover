@@ -59,6 +59,10 @@ public class Reader {
     private static final Symbol COMMUNICATES = Symbol.newSymbol("Communicates!");
 
     private static final Symbol OUGHT = Symbol.newSymbol("Ought!");
+
+    private static final Symbol EXEMPLAR = Symbol.newSymbol("Exemplar!");
+    private static final Symbol EXEMPLAR_SHORT_FORM = Symbol.newSymbol("e=>");
+
     private static final Symbol TRAIT = Symbol.newSymbol("Trait!");
 
 
@@ -571,6 +575,11 @@ public class Reader {
                     return constructOught(list, variableNames);
                 }
 
+                if (name.equals(EXEMPLAR) || name.equals(EXEMPLAR_SHORT_FORM)) {
+
+                    return constructExemplar(list, variableNames);
+                }
+
 
                 if (name.equals(CAN_PROVE)) {
 
@@ -851,6 +860,22 @@ public class Reader {
                 return new Ought(readLogicValue(agent), NOW, readFormula(formula, variableNames), readFormula(ought, variableNames));
 
             }
+        }
+    }
+
+    // (Exemplar! input output)
+    private static Formula constructExemplar(List list, Set<String> variableNames) throws ParsingException {
+        if (list.isEmpty()) {
+            throw new ParsingException("Exemplar expresion cannot be empty!");
+        } else if (list.size() != 3) {
+            throw new ParsingException("Exemplar expresion has wrong number of arguments! " + list);
+
+        } else {
+
+            Object input = list.get(1);
+            Object output = list.get(2);
+
+            return new Exemplar(readFormula(input, variableNames), readFormula(output, variableNames));
         }
     }
 
