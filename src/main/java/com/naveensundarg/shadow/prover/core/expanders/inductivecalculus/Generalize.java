@@ -56,9 +56,11 @@ public enum Generalize implements Expander {
         Set<Value> commonValues = Sets.intersection(inputValues, outputValues);
         Set<Formula> commonFormula = Logic.getNonSubFormulae(Sets.intersection(inputFormulae, outputFormulae));
 
+        Set<Value> nonGeneralizableValues = commonFormula.stream().map(Formula::valuesPresent).reduce(Sets.newSet(), Sets::union);
+        Set<Value> generalizableValues = Sets.difference(commonValues, nonGeneralizableValues);
 
         AtomicInteger variableId  = new AtomicInteger(1);
-        Map<Value, Variable> valueGeneralizationMap = commonValues.stream().collect(Collectors.toMap(
+        Map<Value, Variable> valueGeneralizationMap = generalizableValues.stream().collect(Collectors.toMap(
                 e -> e, e -> new Variable("$x" + variableId.getAndIncrement() +"?" )
         ));
 

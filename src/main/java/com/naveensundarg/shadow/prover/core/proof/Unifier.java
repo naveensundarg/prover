@@ -1,15 +1,15 @@
 package com.naveensundarg.shadow.prover.core.proof;
 
+import com.kitfox.svg.A;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.utils.CollectionUtils;
-import com.naveensundarg.shadow.prover.utils.ImmutablePair;
-import com.naveensundarg.shadow.prover.utils.Pair;
-import com.naveensundarg.shadow.prover.utils.Sets;
+import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
@@ -325,12 +325,8 @@ public class Unifier {
 
     public static Optional<Map<Variable, Value>> unifyFormula(Formula f1, Formula f2){
 
-        if(f1.getLevel()>=2 || f2.getLevel()>=2){
 
-            throw new UnsupportedOperationException("unify formula not supported for modals");
-        }
-
-        if(!f1.getClass().equals(f2.getClass())){
+        if(! (f1.getClass().isAssignableFrom(f2.getClass()) || f2.getClass().isAssignableFrom(f1.getClass())) ){
 
             return Optional.empty();
 
@@ -561,8 +557,6 @@ public class Unifier {
 
         }
 
-
-
         return Optional.empty();
 
     }
@@ -610,11 +604,20 @@ public class Unifier {
             Value a1 = k1.getAgent();
             Value a2 = k2.getAgent();
 
+            Formula f1 = k1.getFormula();
+            Formula f2 = k2.getFormula();
 
             Map<Variable, Value> m1 = unify(t1, t2);
             Map<Variable, Value> m2 = unify(a1, a2);
+            Map<Variable, Value> m3 = combineVariableValueMap(m1, m2);
+            Optional<Map<Variable, Value>> m4Opt= unifyFormula(f1, f2);
 
-            return combineVariableValueMap(m1, m2);
+            if(m4Opt.isPresent()) {
+                return combineVariableValueMap(m3, m4Opt.get());
+
+            } else {
+                return m3;
+            }
 
 
         }
@@ -748,22 +751,66 @@ public class Unifier {
         return all;
     }
 
+    public static boolean isVariable(String name){
+
+        return name.endsWith("?");
+    }
     public static Map<Variable, Value> unify(Predicate p1, Predicate p2) {
 
+        boolean isVariable = false;
 
-        if (!p1.getName().equals(p2.getName())) {
+        if (!p1.getName().equals(p2.getName()) && !isVariable(p1.getName()) && !isVariable(p2.getName())) {
+            return null;
+        }
+        Map<Variable, Value> theta = newMap();
+        if(isVariable(p1.getName())){
+            isVariable = true;
+            if(p1.getArguments().length == 0) {
+
+                try {
+                    theta.put(new Variable(p1.getName()), Reader.readLogicValueFromString(p2.toString()));
+                } catch (Reader.ParsingException e) {
+                    e.printStackTrace();
+                }
+                return theta;
+
+            } else {
+                theta.put(new Variable(p1.getName()), new Constant(p2.getName()));
+
+            }
+        }
+
+        if(isVariable(p2.getName())){
+
+            if(p2.getArguments().length == 0) {
+
+                try {
+                    theta.put(new Variable(p2.getName()), Reader.readLogicValueFromString(p1.toString()));
+                } catch (Reader.ParsingException e) {
+                    e.printStackTrace();
+                }
+                return theta;
+
+            } else {
+                theta.put(new Variable(p2.getName()), new Constant(p1.getName()));
+
+            }
+        }
+
+        if (!isVariable &&  p1.getArguments().length != p2.getArguments().length) {
             return null;
         }
 
-        if (p1.getArguments().length != p2.getArguments().length) {
-            return null;
+        if(isVariable && (p1.getArguments().length == 0 || p2.getArguments().length == 0)) {
+
+            return theta;
         }
 
 
         Value[] args1 = p1.getArguments();
         Value[] args2 = p2.getArguments();
 
-        return unify(args1, args2, newMap(), 0);
+        return unify(args1, args2, theta, 0);
 
     }
 

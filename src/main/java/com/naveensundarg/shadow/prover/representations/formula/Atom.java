@@ -1,7 +1,11 @@
 package com.naveensundarg.shadow.prover.representations.formula;
 
+import com.naveensundarg.shadow.prover.core.Logic;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
@@ -100,7 +104,23 @@ public final class Atom extends Predicate{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return this;
+
+        Variable varName = new Variable(name);
+        if (substitution.containsKey(varName)) {
+            if (!(substitution.get(varName) instanceof Compound)) {
+                return new Atom(substitution.get(varName).toString());
+            } else {
+                try {
+                    return Reader.readFormulaFromString(substitution.get(varName).toString());
+                } catch (Reader.ParsingException e) {
+                    return Logic.getTrueFormula();
+                }
+
+            }
+        } else {
+            return this;
+
+        }
     }
 
     @Override

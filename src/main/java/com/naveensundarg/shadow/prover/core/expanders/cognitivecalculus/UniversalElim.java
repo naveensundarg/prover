@@ -42,8 +42,8 @@ public enum UniversalElim implements Expander {
             Set<List<Value>> substitutions = cartesianProduct(smartValues);
             Variable[]       vars          = universal.vars();
 
-            Map<Variable, Value> mapping = CollectionUtils.newMap();
             substitutions.forEach(substitution -> {
+                Map<Variable, Value> mapping = CollectionUtils.newMap();
 
                         for (int i = 0; i < vars.length; i++) {
 

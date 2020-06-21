@@ -561,7 +561,7 @@ public class Logic {
             Predicate predicate = (Predicate) formula;
 
             Set<String> varNames = Sets.union(universalVars, existentialVars).stream().map(Variable::getName).collect(Collectors.toSet());
-            if(varNames.contains(predicate.getName()) || true){
+            if(varNames.contains(predicate.getName())){
 
                 Value[] args = new Value[predicate.getArguments().length];
 
@@ -676,6 +676,12 @@ public class Logic {
         }
 
 
+        if(formula instanceof Exemplar) {
+            Exemplar exemplar = (Exemplar) formula;
+
+
+            return new Exemplar(transformSecondOrderToFirstOrderDeep(exemplar.getInput()), transformSecondOrderToFirstOrderDeep(exemplar.getOutput()));
+        }
         throw new AssertionError("Cannot transform into FOL: " + formula);
 
     }

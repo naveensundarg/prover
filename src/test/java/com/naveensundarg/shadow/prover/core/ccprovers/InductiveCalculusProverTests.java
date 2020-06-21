@@ -30,14 +30,15 @@ public class InductiveCalculusProverTests {
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
        List<Problem >tests = ProblemReader.readFrom(CognitiveCalculusProver.class.getResourceAsStream("inductivecalculus-completness-tests.clj"));
-       Object[][] cases =  new Object[tests.size()][2];
+       Object[][] cases =  new Object[tests.size()][3];
 
         for(int  i = 0; i < tests.size(); i++){
 
             Problem test = tests.get(i);
 
-            cases[i][0] =  test.getAssumptions();
-            cases[i][1] = test.getGoal();
+            cases[i][0] = test.getName();
+            cases[i][1] =  test.getAssumptions();
+            cases[i][2] = test.getGoal();
 
         }
 
@@ -48,7 +49,7 @@ public class InductiveCalculusProverTests {
 
 
     @Test(dataProvider = "completenessTestsProvider")
-    public void testCompleteness(Set<Formula> assumptions, Formula formula){
+    public void testCompleteness(String name, Set<Formula> assumptions, Formula formula){
 
 
         Assert.assertTrue(prover.prove(assumptions, formula).isPresent());

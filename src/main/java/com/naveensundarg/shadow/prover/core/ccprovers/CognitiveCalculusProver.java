@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
 
-public class CognitiveCalculusProver implements Prover {
+public class CognitiveCalculusProver implements CCProver {
 
     /*
      *
