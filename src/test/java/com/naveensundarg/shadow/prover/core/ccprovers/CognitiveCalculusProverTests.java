@@ -79,7 +79,7 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="soundnessTestsProvider")
     public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("cognitivecalculus-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom(CognitiveCalculusProver.class.getResourceAsStream("cognitivecalculus-soundness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -97,7 +97,7 @@ public class CognitiveCalculusProverTests {
     }
 
 
-   // @Test(dataProvider = "soundnessTestsProvider")
+    @Test(dataProvider = "soundnessTestsProvider")
     public void testSoundess(Set<Formula> assumptions, Formula formula){
 
         Assert.assertFalse(prover.prove(assumptions, formula).isPresent());

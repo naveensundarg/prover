@@ -53,7 +53,7 @@ public enum Generalize implements Expander {
         Set<Formula> inputFormulae = input.subFormulae();
         Set<Formula> outputFormulae = output.subFormulae();
 
-        Set<Value> commonValues = Sets.intersection(inputValues, outputValues);
+        Set<Value> commonValues = Sets.union(inputValues, outputValues);
         Set<Formula> commonFormula = Logic.getNonSubFormulae(Sets.intersection(inputFormulae, outputFormulae));
 
         Set<Value> nonGeneralizableValues = commonFormula.stream().map(Formula::valuesPresent).reduce(Sets.newSet(), Sets::union);

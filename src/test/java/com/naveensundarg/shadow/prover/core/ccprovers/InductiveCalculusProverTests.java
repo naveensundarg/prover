@@ -23,13 +23,13 @@ public class InductiveCalculusProverTests {
     Map<Problem, Pair<Clause, Clause>> used;
     InductiveCalculusProverTests(){
 
-        prover = new CognitiveCalculusProver();
+        prover = new InductiveCalculusProver();
     }
 
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-       List<Problem >tests = ProblemReader.readFrom(CognitiveCalculusProver.class.getResourceAsStream("inductivecalculus-completness-tests.clj"));
+       List<Problem >tests = ProblemReader.readFrom(InductiveCalculusProver.class.getResourceAsStream("inductivecalculus-completness-tests.clj"));
        Object[][] cases =  new Object[tests.size()][3];
 
         for(int  i = 0; i < tests.size(); i++){

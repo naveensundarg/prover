@@ -1,6 +1,5 @@
 package com.naveensundarg.shadow.prover.core.proof;
 
-import com.kitfox.svg.A;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
@@ -9,7 +8,6 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static com.naveensundarg.shadow.prover.utils.CollectionUtils.newMap;
@@ -322,9 +320,37 @@ public class Unifier {
 
     }
 
+    public static boolean fullFormulaIsVariable(Formula formula) {
+
+        if(formula instanceof Predicate){
+
+           return isVariable(((Predicate) formula).getName()) && ((Predicate) formula).getArguments().length == 0;
+        }
+        return false;
+    }
 
     public static Optional<Map<Variable, Value>> unifyFormula(Formula f1, Formula f2){
 
+        if(fullFormulaIsVariable(f1)){
+
+            try {
+                Variable variable = new Variable(((Predicate)f1).getName());
+                Value value =  Reader.readLogicValueFromString(f2.toString());
+                return Optional.of(CollectionUtils.mapWith(variable, value));
+            } catch (Reader.ParsingException e) {
+                e.printStackTrace();
+            }
+        }
+        if(fullFormulaIsVariable(f2)){
+
+            try {
+                Variable variable = new Variable(((Predicate)f2).getName());
+                Value value =  Reader.readLogicValueFromString(f1.toString());
+                return Optional.of(CollectionUtils.mapWith(variable, value));
+            } catch (Reader.ParsingException e) {
+                e.printStackTrace();
+            }
+        }
 
         if(! (f1.getClass().isAssignableFrom(f2.getClass()) || f2.getClass().isAssignableFrom(f1.getClass())) ){
 

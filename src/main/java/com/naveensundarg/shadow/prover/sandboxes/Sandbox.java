@@ -37,14 +37,14 @@ public class Sandbox {
 
         System.out.println(prover.prove((problem.getAssumptions()), problem.getGoal()));*/
 
-       Formula exemplar = Reader.readFormulaFromString("(Exemplar! (Knows! a P) (Believes! a P))");
-        Formula f1 = Reader.readFormulaFromString("(Knows! b t2  (R e) )");
+       Formula exemplar = Reader.readFormulaFromString("(e=> (Knows! a t1 P) P)");
+        Formula f1 = Reader.readFormulaFromString("(Knows! c t3 (Knows! d t4 R))");
 
         InductiveCalculusProver inductiveCalculusProver = new InductiveCalculusProver();
 
 
         System.out.println(inductiveCalculusProver.prove(Sets.from(exemplar, f1),
-                Reader.readFormulaFromString("(Believes! b t2 (R e))")));
+                Reader.readFormulaFromString("R")));
 
     }
 

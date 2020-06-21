@@ -31,7 +31,7 @@
  :goal        (Believes! b t2 (Holds (Weather (not calm)) t4))}
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-{:name        "IC21."
+{:name        "IC2.1"
  :description "Learning that knowledge is true."
  :assumptions {:example (e=> (Knows! a t1 P) P)
                :input (Knows! b t2 Q)
@@ -42,6 +42,15 @@
 {:name        "IC2.2"
  :description "Learning that knowledge is true.
                Nested knowledge is also true."
+ :assumptions {:example (e=> (Knows! a t1 P) P)
+               :input (Knows! c t3 (Knows! d t4 R))
+               }
+ :goal        R}
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:name        "IC2.3"
+ :description "Learning that knowledge is true.
+               Deeper nesting."
  :assumptions {:example (e=> (Knows! a t1 P) P)
                :input (Knows! c t3 (Knows! d t4 (Knows! e t5 R)))
                }
