@@ -38,7 +38,6 @@ public class InductiveCalculusProver implements Prover {
         //expanders.add(ModalImplications.INSTANCE);
         expanders.add(UniversalElim.INSTANCE);
         expanders.add(NotExistsToForallNot.INSTANCE);
-
         logger = new Logger();
 
     }

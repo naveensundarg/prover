@@ -8,6 +8,7 @@ import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Constants;
+import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.HashSet;
@@ -39,6 +40,16 @@ public enum Generalize implements Expander {
         base.addAll(derived);
         added.addAll(derived);
 
+    }
+
+    static Formula BLANK = Logic.getTrueFormula();
+
+    static {
+        try {
+            BLANK = Reader.readFormulaFromString("_");
+        } catch (Reader.ParsingException e) {
+            e.printStackTrace();
+        }
     }
 
     private Formula generalize(Exemplar exemplar) {

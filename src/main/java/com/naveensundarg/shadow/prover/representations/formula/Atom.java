@@ -1,5 +1,6 @@
 package com.naveensundarg.shadow.prover.representations.formula;
 
+import clojure.lang.Compiler;
 import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
@@ -147,6 +148,13 @@ public final class Atom extends Predicate{
 
     }
 
+    @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+
+        String newName = substitution.getOrDefault(new Constant(name), new Variable(name)).getName();
+
+        return new Atom(newName);
+    }
     @Override
     public Set<Variable> boundVariablesPresent() {
         return boundVariables;

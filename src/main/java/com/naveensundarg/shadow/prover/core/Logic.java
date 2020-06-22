@@ -751,6 +751,12 @@ public class Logic {
             return new Existential(existential.vars(), transformSecondOrderToFirstOrder(existential.getArgument()));
         }
 
+        if (formula instanceof Common) {
+
+            Common common = (Common) formula;
+
+            return new Common(common.getTime(), transformSecondOrderToFirstOrder(common.getFormula()));
+        }
         if (formula instanceof Knowledge) {
 
             Knowledge knowledge = (Knowledge) formula;
@@ -764,6 +770,7 @@ public class Logic {
 
             return new Belief(belief.getAgent(), belief.getTime(), transformSecondOrderToFirstOrder(belief.getFormula()));
         }
+
 
         if (formula instanceof Necessity) {
 

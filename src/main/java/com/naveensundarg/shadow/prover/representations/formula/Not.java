@@ -4,9 +4,11 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Created by naveensundarg on 4/8/16.
@@ -84,6 +86,10 @@ public class Not extends Formula {
         return new Not(argument.applyOperation(operator));
     }
 
+    @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+        return new Not(argument.generalize(substitution));
+    }
     @Override
     public int getLevel() {
         return argument.getLevel();

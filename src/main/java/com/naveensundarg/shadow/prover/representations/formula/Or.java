@@ -63,6 +63,11 @@ public class Or extends Formula {
 
 
     }
+    @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+        return new Or(Arrays.stream(arguments).map(x->x.generalize(substitution)).collect(Collectors.toList()));
+
+    }
     public Formula[] getArguments() {
         return arguments;
     }
