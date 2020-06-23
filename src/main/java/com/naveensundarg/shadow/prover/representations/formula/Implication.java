@@ -3,6 +3,7 @@ package com.naveensundarg.shadow.prover.representations.formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.Sets;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Map;
 import java.util.Set;
@@ -87,6 +88,12 @@ public class Implication extends Formula{
     public Formula apply(Map<Variable, Value> substitution) {
         return new Implication(antecedent.apply(substitution), consequent.apply(substitution));
     }
+
+    public  Formula generalize(Map<Value, Variable> substitution){
+
+        return new Implication(antecedent.generalize(substitution), consequent.generalize(substitution));
+    }
+
 
     @Override
     public Formula shadow(int level) {

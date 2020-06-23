@@ -1,8 +1,11 @@
 package com.naveensundarg.shadow.prover.representations.formula;
 
+import com.naveensundarg.shadow.prover.core.Logic;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
+import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.*;
@@ -109,7 +112,24 @@ public class Predicate extends BaseFormula {
             argumentTheta[i] = arguments[i].apply(substitution);
         }
 
-        return new Predicate(name, argumentTheta);
+        String newName = name;
+        Variable varName = new Variable(name);
+        if (substitution.containsKey(varName)) {
+            if (!(substitution.get(varName) instanceof Compound)) {
+                return new Atom(substitution.get(varName).toString());
+            } else {
+                try {
+                    return Reader.readFormulaFromString(substitution.get(varName).toString());
+                } catch (Reader.ParsingException e) {
+                    return Logic.getTrueFormula();
+                }
+
+            }
+        } else {
+            return new Predicate(newName, argumentTheta);
+        }
+
+
     }
 
     @Override
@@ -188,6 +208,9 @@ public class Predicate extends BaseFormula {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if(o instanceof Atom){
+            return arguments.length == 0 && name.equals(((Atom) o).getName());
+        }
         if (o == null || getClass() != o.getClass()) return false;
 
         Predicate predicate = (Predicate) o;
@@ -202,8 +225,13 @@ public class Predicate extends BaseFormula {
     @Override
     public int hashCode() {
         int result = safeHashCode(name);
-        result = 31 * result + Arrays.toString(arguments).hashCode();
-        return result;
+        if(arguments.length> 0 ){
+            return 31 * result + Arrays.toString(arguments).hashCode();
+
+        }
+        else {
+            return result;
+        }
     }
 
 

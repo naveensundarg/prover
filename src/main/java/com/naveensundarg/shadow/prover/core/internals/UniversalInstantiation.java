@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.formula.BaseFormula;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.formula.Universal;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
@@ -40,8 +41,11 @@ public final class UniversalInstantiation {
 
         Set<BaseFormula> baseFormulaeContainingVariable = Logic.baseFormulae(universal).
                 stream().
-                filter(baseFormulae -> baseFormulae.allValues().
-                        contains(firstVariable)).
+                filter(baseFormulae -> {return
+                        baseFormulae.allValues().
+                                contains(firstVariable) ||
+                                baseFormulae.subFormulae().contains(new Predicate(firstVariable.toString()));
+                }).
                 collect(Collectors.toSet());
 
 

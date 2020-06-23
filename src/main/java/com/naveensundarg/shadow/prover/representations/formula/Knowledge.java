@@ -5,6 +5,7 @@ import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 import com.naveensundarg.shadow.prover.utils.Sets;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Map;
 import java.util.Set;
@@ -91,6 +92,14 @@ public class Knowledge extends BaseFormula implements UnaryModalFormula{
     public Formula applyOperation(UnaryOperator<Formula> operator) {
         return null;
     }
+
+    @Override
+    public  Formula generalize(Map<Value, Variable> substitution){
+
+        return new Knowledge(agent.generalize(substitution), time.generalize(substitution), formula.generalize(substitution));
+    }
+
+
 
     @Override
     public int getLevel() {

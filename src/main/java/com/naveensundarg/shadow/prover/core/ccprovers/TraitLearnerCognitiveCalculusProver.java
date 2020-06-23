@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static com.naveensundarg.shadow.prover.core.Logic.instantiateActionType;
 
 
-public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
+public class TraitLearnerCognitiveCalculusProver extends CognitiveCalculusProver {
 
     /*
      *
@@ -30,7 +30,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
     private static boolean verbose = true;
     private final boolean reductio;
     private final boolean theoremsToNec = false;
-    private final InductiveCognitiveCalculusProver parent;
+    private final TraitLearnerCognitiveCalculusProver parent;
     private final Set<Expander> expanders;
     private Set<Formula> currentAssumptions;
     private Set<Formula> prohibited;
@@ -38,7 +38,7 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
 
 
 
-    public InductiveCognitiveCalculusProver() {
+    public TraitLearnerCognitiveCalculusProver() {
 
         prohibited = Sets.newSet();
         parent = null;
@@ -47,10 +47,10 @@ public class InductiveCognitiveCalculusProver extends CognitiveCalculusProver {
     }
 
 
-    private static InductiveCognitiveCalculusProver root(InductiveCognitiveCalculusProver cognitiveCalculusProver) {
+    private static TraitLearnerCognitiveCalculusProver root(TraitLearnerCognitiveCalculusProver cognitiveCalculusProver) {
 
 
-        InductiveCognitiveCalculusProver current = cognitiveCalculusProver.parent;
+        TraitLearnerCognitiveCalculusProver current = cognitiveCalculusProver.parent;
 
         if (current == null) {
             return cognitiveCalculusProver;

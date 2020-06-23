@@ -95,6 +95,12 @@ public final class Common extends  BaseFormula{
     }
 
     @Override
+    public  Formula generalize(Map<Value, Variable> substitution){
+
+        return new Common(time.generalize(substitution), formula.generalize(substitution));
+    }
+
+    @Override
     public int getLevel() {
         return 2;
     }

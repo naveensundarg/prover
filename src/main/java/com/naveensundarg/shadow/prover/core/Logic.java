@@ -561,7 +561,7 @@ public class Logic {
             Predicate predicate = (Predicate) formula;
 
             Set<String> varNames = Sets.union(universalVars, existentialVars).stream().map(Variable::getName).collect(Collectors.toSet());
-            if(varNames.contains(predicate.getName()) || true){
+            if(varNames.contains(predicate.getName())){
 
                 Value[] args = new Value[predicate.getArguments().length];
 
@@ -676,6 +676,12 @@ public class Logic {
         }
 
 
+        if(formula instanceof Exemplar) {
+            Exemplar exemplar = (Exemplar) formula;
+
+
+            return new Exemplar(transformSecondOrderToFirstOrderDeep(exemplar.getInput()), transformSecondOrderToFirstOrderDeep(exemplar.getOutput()));
+        }
         throw new AssertionError("Cannot transform into FOL: " + formula);
 
     }
@@ -745,6 +751,12 @@ public class Logic {
             return new Existential(existential.vars(), transformSecondOrderToFirstOrder(existential.getArgument()));
         }
 
+        if (formula instanceof Common) {
+
+            Common common = (Common) formula;
+
+            return new Common(common.getTime(), transformSecondOrderToFirstOrder(common.getFormula()));
+        }
         if (formula instanceof Knowledge) {
 
             Knowledge knowledge = (Knowledge) formula;
@@ -758,6 +770,7 @@ public class Logic {
 
             return new Belief(belief.getAgent(), belief.getTime(), transformSecondOrderToFirstOrder(belief.getFormula()));
         }
+
 
         if (formula instanceof Necessity) {
 
@@ -773,11 +786,32 @@ public class Logic {
             return new Possibility(transformSecondOrderToFirstOrder(possibility.getFormula()));
         }
 
+        if(formula instanceof Exemplar) {
+            Exemplar exemplar = (Exemplar) formula;
+
+
+            return new Exemplar(transformSecondOrderToFirstOrder(exemplar.getInput()), transformSecondOrderToFirstOrder(exemplar.getOutput()));
+        }
+
 
         throw new AssertionError("Cannot transform into FOL: " + formula);
 
     }
 
+    public static Set<Formula> getNonSubFormulae(Set<Formula>  formulas){
+
+        return formulas.stream().filter(f-> formulas.stream().allMatch(other -> {
+
+            if(other.equals(f)) {
+                return true;
+            }
+            else {
+                return !other.subFormulae().contains(f);
+            }
+
+        })).collect(Collectors.toSet());
+
+    }
 
     public static Formula instantiateActionType(Value agent, Value time, Value actionType){
 

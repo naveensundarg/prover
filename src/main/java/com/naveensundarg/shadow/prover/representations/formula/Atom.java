@@ -1,7 +1,12 @@
 package com.naveensundarg.shadow.prover.representations.formula;
 
+import clojure.lang.Compiler;
+import com.naveensundarg.shadow.prover.core.Logic;
+import com.naveensundarg.shadow.prover.representations.value.Compound;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Map;
@@ -72,6 +77,9 @@ public final class Atom extends Predicate{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+        if(o instanceof Predicate){
+            return  ((Predicate) o).getArguments().length == 0 && name.equals(((Predicate) o).getName());
+        }
         if (o == null || getClass() != o.getClass()) return false;
 
         Atom atom = (Atom) o;
@@ -97,7 +105,23 @@ public final class Atom extends Predicate{
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        return this;
+
+        Variable varName = new Variable(name);
+        if (substitution.containsKey(varName)) {
+            if (!(substitution.get(varName) instanceof Compound)) {
+                return new Atom(substitution.get(varName).toString());
+            } else {
+                try {
+                    return Reader.readFormulaFromString(substitution.get(varName).toString());
+                } catch (Reader.ParsingException e) {
+                    return Logic.getTrueFormula();
+                }
+
+            }
+        } else {
+            return this;
+
+        }
     }
 
     @Override
@@ -124,6 +148,13 @@ public final class Atom extends Predicate{
 
     }
 
+    @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+
+        String newName = substitution.getOrDefault(new Constant(name), new Variable(name)).getName();
+
+        return new Atom(newName);
+    }
     @Override
     public Set<Variable> boundVariablesPresent() {
         return boundVariables;

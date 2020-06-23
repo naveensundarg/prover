@@ -4,15 +4,11 @@ import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
-import com.naveensundarg.shadow.prover.core.ccprovers.InductiveCognitiveCalculusProver;
+import com.naveensundarg.shadow.prover.core.ccprovers.TraitLearnerCognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
-import com.naveensundarg.shadow.prover.utils.Reader;
-import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -31,7 +27,7 @@ public class VirtueLearning {
 
 
 
-        Prover prover = new InductiveCognitiveCalculusProver();
+        Prover prover = new TraitLearnerCognitiveCalculusProver();
 
         Problem problem = ProblemReader.readFrom(VirtueLearning.class.getResourceAsStream("virtuelearning.clj")).get(0);
 

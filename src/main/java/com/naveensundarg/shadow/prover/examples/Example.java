@@ -3,15 +3,9 @@ package com.naveensundarg.shadow.prover.examples;
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi;
 import com.naveensundarg.shadow.prover.core.Prover;
-import com.naveensundarg.shadow.prover.core.SnarkWrapper;
-import com.naveensundarg.shadow.prover.core.ccprovers.AxiologyProver;
-import com.naveensundarg.shadow.prover.core.ccprovers.InductiveCognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
-import com.naveensundarg.shadow.prover.utils.Reader;
-import com.naveensundarg.shadow.prover.utils.Sets;
 
 import java.util.Optional;
 

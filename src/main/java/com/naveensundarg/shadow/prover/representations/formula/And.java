@@ -30,7 +30,7 @@ public final class And extends Formula {
         this.arguments = arguments;
         this.subFormulae = Arrays.stream(arguments).map(Formula::subFormulae).
                 reduce(Sets.newSet(), Sets::union);
-
+        this.subFormulae.add(this);
         this.variables = Arrays.stream(arguments).map(Formula::variablesPresent).reduce(Sets.newSet(), Sets::union);
         this.values = Arrays.stream(arguments).map(Formula::valuesPresent).reduce(Sets.newSet(), Sets::union);
         this.boundVariables = Arrays.stream(arguments).map(Formula::boundVariablesPresent).reduce(Sets.newSet(), Sets::union);
