@@ -132,6 +132,7 @@ public class SnarkWrapper implements Prover {
             synchronized (interpreter) {
 
 
+
                 LispObject result = interpreter.eval("(prove-from-axioms-yes-no " + assumptionsListString + goalString + " :verbose nil)");
 
                 resultString = result.toString();

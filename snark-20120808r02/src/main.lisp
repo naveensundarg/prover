@@ -159,7 +159,7 @@
     (t
      (initialize-clocks)
      (when verbose
-        (format t ".")
+        (format t "SHADOWING~%")
    ;    (format t "~&;   SNARK from ~A in ~A ~A~:[~; (64-bit)~] on ~A at "
    ;           cl-user::*snark-system-pathname*
    ;          (lisp-implementation-type)

@@ -144,6 +144,12 @@ public class Universal extends Formula implements Quantifier{
     }
 
     @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+        return new Universal(vars, argument.generalize(substitution));
+
+    }
+
+    @Override
     public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
         return new Universal(vars, argument.replaceSubFormula(oldFormula, newFormula));
     }

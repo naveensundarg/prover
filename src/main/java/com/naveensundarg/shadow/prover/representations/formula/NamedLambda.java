@@ -12,38 +12,37 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-/**
- * Created by naveensundarg on 4/11/16.
- */
-public class Existential extends Formula implements Quantifier {
+
+public  class NamedLambda extends Formula implements Quantifier{
 
     private final Formula argument;
     private final Variable[] vars;
     private Set<Formula> subFormulae;
     private final Set<Variable> variables;
     private final Set<Value> values;
+    private final String name;
 
     private final Set<Variable> boundVariables;
-
     private final int weight;
-    public Existential(Variable[] vars, Formula argument){
+    private boolean isRelation;
+    private String toStringKeyword;
 
-        if(!(vars.length>0)){
-            throw new AssertionError("Existential should have at least one variable");
-        }
+    public NamedLambda(String name, boolean isRelation, Variable[] vars, Formula argument) {
 
+        this.name = name;
         this.vars = vars;
+        this.isRelation = isRelation;
         this.argument = argument;
-        this.subFormulae = Sets.with(argument);
-        this.subFormulae.add(this);
-
+        this.toStringKeyword = isRelation? "def!" : "def";
+        this.subFormulae = Sets.copy(argument.subFormulae());
         this.variables = argument.variablesPresent();
         this.values = Sets.union(Arrays.stream(vars).collect(Collectors.toSet()),  argument.valuesPresent());
         this.boundVariables = Sets.union(Arrays.stream(vars).collect(Collectors.toSet()), argument.boundVariablesPresent());
-
-
+        this.subFormulae.add(this);
         Arrays.stream(vars).forEach(this.variables::add);
+
         this.weight = 1 + variables.stream().mapToInt(Value::getWeight).reduce(0, Integer::sum)  + argument.getWeight();
+
     }
 
     public Formula getArgument() {
@@ -62,8 +61,8 @@ public class Existential extends Formula implements Quantifier {
 
     @Override
     public Formula apply(Map<Variable, Value> substitution) {
-        //TODO: Variable capture
-        return new Existential(vars, argument.apply(substitution));
+        //TODO:
+        return new NamedLambda(name, isRelation, vars, argument.apply(substitution));
     }
 
     @Override
@@ -74,30 +73,26 @@ public class Existential extends Formula implements Quantifier {
 
         } else if (level == 1) {
 
-            return new Existential(vars, argument.shadow(level));
+            return new NamedLambda(name, isRelation, vars, argument.shadow(level));
         }
 
         throw new AssertionError("Invalid shadow getLevel: " + level);
     }
 
+
     @Override
     public Formula applyOperation(UnaryOperator<Formula> operator) {
-        return new Existential(vars, argument.applyOperation(operator));
+        return new NamedLambda(name, isRelation, vars, argument.applyOperation(operator));
     }
 
     @Override
     public int getLevel() {
-        return argument.getLevel();
+        return 1;
     }
 
     @Override
     public int getWeight() {
         return weight;
-    }
-
-    @Override
-    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
-        return new Existential(vars, argument.replaceSubFormula(oldFormula, newFormula));
     }
 
     public Variable[] vars() {
@@ -116,33 +111,28 @@ public class Existential extends Formula implements Quantifier {
 
     @Override
     public String toString() {
-        return "(exists " + "(" + StringUtils.trim(Arrays.stream(vars).map(Variable::toString).reduce("", (x, y) -> x  + y + " "))
+        return "(" + this.toStringKeyword  + " " + name + " (" + StringUtils.trim(Arrays.stream(vars).map(Variable::toString).reduce("", (x, y) -> x  + y + " "))
                 + ")" + " "
-                + argument.toString() + ")";    }
+                + argument.toString() + ")";
+    }
 
     @Override
     public String toSnarkString() {
-        return "(exists " + "(" + StringUtils.trim(Arrays.stream(vars).map(Variable::toSnarkString).reduce("", (x, y) -> x  + y + " "))
+        return "(" + this.toStringKeyword  + " " + name + " (" + StringUtils.trim(Arrays.stream(vars).map(Variable::toSnarkString).reduce("", (x, y) -> x  + y + " "))
                 + ")" + " "
-                + argument.toSnarkString() + ")";    }
+                + argument.toSnarkString() + ")";
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Existential that = (Existential) o;
+        NamedLambda functionDefinition = (NamedLambda) o;
 
-        if (!argument.equals(that.argument)) return false;
+        if (!argument.equals(functionDefinition.argument)) return false;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(vars, that.vars);
-
-    }
-
-
-    @Override
-    public Formula generalize(Map<Value, Variable> substitution) {
-        return new Existential(vars, argument.generalize(substitution));
+        return Arrays.equals(vars, functionDefinition.vars);
 
     }
 
@@ -153,5 +143,14 @@ public class Existential extends Formula implements Quantifier {
         return result;
     }
 
+    @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+        return new NamedLambda(name, isRelation, vars, argument.generalize(substitution));
 
+    }
+
+    @Override
+    public Formula replaceSubFormula(Formula oldFormula, Formula newFormula) {
+        return new NamedLambda(name, isRelation, vars, argument.replaceSubFormula(oldFormula, newFormula));
+    }
 }

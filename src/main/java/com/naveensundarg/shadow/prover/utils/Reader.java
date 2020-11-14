@@ -1,7 +1,5 @@
 package com.naveensundarg.shadow.prover.utils;
 
-import clojure.lang.IFn;
-import com.naveensundarg.shadow.prover.representations.ErrorPhrase;
 import com.naveensundarg.shadow.prover.representations.Phrase;
 import com.naveensundarg.shadow.prover.representations.deduction.*;
 import com.naveensundarg.shadow.prover.representations.formula.*;
@@ -15,8 +13,6 @@ import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
 import us.bpsm.edn.parser.Parsers;
 
-import java.io.StringReader;
-import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +25,10 @@ public class Reader {
 
     private enum QuantifierType {
         Universal, Existential, Schema
+    }
+
+    private enum NamedLambda {
+        Function, Relation
     }
 
     private static final String ASSUME = "assume";
@@ -68,6 +68,10 @@ public class Reader {
 
     private static final Symbol NEC = Symbol.newSymbol("nec");
     private static final Symbol POS = Symbol.newSymbol("pos");
+
+    private static final Symbol DEF_FUN = Symbol.newSymbol("def");
+    private static final Symbol DEF_REL = Symbol.newSymbol("def!");
+
 
     private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
 
@@ -517,7 +521,12 @@ public class Reader {
                 //EXISTS
                 if (name.equals(EXISTS)) {
 
-                    return constructQuantifier(list, QuantifierType.Existential, variableNames);
+                    return constructNamedLambda(list, QuantifierType.Existential, variableNames);
+
+                }
+
+                if(name.equals(DEF_FUN)){
+                    return constructNamedLambda(list, NamedLambda., variableNames);
 
                 }
 
@@ -1068,6 +1077,80 @@ public class Reader {
                 throw new ParsingException("Name of predicate should be a string! " + nameObject);
 
             }
+
+        }
+    }
+
+    private static Formula constructNamedLambda(List list, QuantifierType quantifierType, Set<String> outerVariableNames) throws ParsingException {
+        if (list.size() == 3) {
+
+            Object varListObject = list.get(1);
+            if (varListObject instanceof List) {
+                List listOfVars = (List) varListObject;
+                Variable[] variables = new Variable[((List) varListObject).size()];
+
+                Set<String> variableNames = Sets.newSet();
+                for (int i = 0; i < variables.length; i++) {
+                    Object varObject = listOfVars.get(i);
+                    if (varObject instanceof Symbol) {
+
+                        variables[i] = new Variable(((Symbol) varObject).getName());
+
+                        variableNames.add(((Symbol) varObject).getName());
+                    } else {
+
+                        throw new ParsingException("Variable should be a string: " + varObject);
+
+                    }
+
+                }
+                Set<String> conflicts = Sets.intersection(outerVariableNames, variableNames);
+                if (!conflicts.isEmpty()) {
+                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
+                }
+                Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames, variableNames));
+                if (quantifierType.equals(QuantifierType.Universal)) {
+                    return new Universal(variables, argument);
+                }
+                if (quantifierType.equals(QuantifierType.Existential)) {
+                    return new Existential(variables, argument);
+                } else {
+                    return new Schema(variables, argument);
+                }
+
+            } else if (varListObject instanceof Symbol) {
+
+                Variable[] variables = new Variable[1];
+
+                variables[0] = new Variable(((Symbol) varListObject).getName());
+
+                Set<String> variableNames = Sets.with(((Symbol) varListObject).getName());
+
+                Set<String> conflicts = Sets.intersection(outerVariableNames, variableNames);
+                if (!conflicts.isEmpty()) {
+                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
+                }
+                Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames, variableNames));
+                if (quantifierType.equals(QuantifierType.Universal)) {
+                    return new Universal(variables, argument);
+                }
+                if (quantifierType.equals(QuantifierType.Existential)) {
+                    return new Existential(variables, argument);
+                } else {
+                    return new Schema(variables, argument);
+                }
+
+
+            } else {
+
+                throw new ParsingException("The variable list for this quantifier formula is not valid: " + list);
+
+            }
+
+
+        } else {
+
+            throw new ParsingException("quantifiers should have exactly 3 arguments: " + list);
 
         }
     }

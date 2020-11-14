@@ -31,7 +31,7 @@ public class CognitiveCalculusProver implements CCProver {
     /*
      *
      */
-    private static int            MAX_EXPAND_FACTOR    = 100;
+    private static int            MAX_EXPAND_FACTOR    = 500;
     private        boolean        verbose              = true;
     private final  boolean        reductio;
     private final  boolean        theoremsToNec        = false;

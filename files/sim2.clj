@@ -1,16 +1,24 @@
-{:description "The adjudicator reasoning about the hdrone. "
+
+{:description "The adjudicator reasoning about the faulty ldrone. "
  :assumptions
- {
-  ;;; It is common knowledge at the start what is needed to satisfy clause 2.
-  :common  (Common! t0
-                    (iff clause2
-                         (and
-                          (exists p
-                                  (and (Inside p Building)
-                                       (Planning p)))
-                          (forall p (if (Inside p Building) (not (Civilian p)))))))
+ {;; It is common knowledge that if an agent reports inconsistent information,
+ ;; then as protective measure, we assume that the agent has no belief either way.
+   :inconsistent (Common! t0
+                          (if (Believes! ldrone t1 False)
+                            (and (not (Believes! ldrone t1 clause2))
+                                 (not (Believes! ldrone t1 (not clause2))))))
+   ;;; Report from the high altitude drone.
+   :report       (Believes! a t1
+                            (Believes! ldrone t1
+                                       (exists p
+                                               (and (Inside p Building)
+                                                    (not (Inside p Building))))))}
 
-  ;;; Report from the high altitude drone.
-  :report_from_hdrone (Believes! adj t1 (Believes! hdrone t0 (not (exists p (Inside p Building)))))}
+ :goal        (Believes! a t2
+                         (and (not (Believes! ldrone t1 clause2))
+                              (not (Believes! ldrone t1 (not clause2)))))}
 
- :goal        (Believes! adj t1 (Believes! hdrone t0 (not clause2)))}
+
+
+
+

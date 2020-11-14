@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>sim1.clj</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #000000;}
+.s1 { color: #808000;}
+.s2 { color: #008000; font-weight: bold;}
+.s3 { color: #808080; font-style: italic;}
+.s4 { color: #000080; font-weight: bold;}
+.s5 { color: #000000;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+sim1.clj</font>
+</center></td></tr></table>
+<pre>
+{<span class="s1">:description </span><span class="s2">&quot;The adjudicator reasoning about hdrone. &quot;</span>
+ <span class="s1">:assumptions</span>
+ {<span class="s3">;;; It is common knowledge at the start what is needed to satisfy clause 2.</span>
+   <span class="s1">:common </span>(<span class="s4">Common! </span>t0
+                    (<span class="s4">iff </span>clause2
+                         (<span class="s4">and</span>
+                          (<span class="s4">exists </span>p
+                                  (<span class="s4">and </span>(<span class="s4">Inside </span>p Building)
+                                       (<span class="s4">Planning </span>p)))
+                          (<span class="s4">forall </span>p (<span class="s4">if </span>(<span class="s4">Inside </span>p Building) (<span class="s4">not </span>(<span class="s4">Civilian </span>p)))))))
+
+   <span class="s3">;;; Report from the high altitude drone.</span>
+   <span class="s1">:report </span>(<span class="s4">Believes! </span>adj t0 (<span class="s4">Believes! </span>hdrone t0 (<span class="s4">not </span>(<span class="s4">exists </span>p (<span class="s4">Inside </span>p Building)))))}
+
+ <span class="s1">:goal        </span>(<span class="s4">Believes! </span>adj t1 (<span class="s4">Believes! </span>hdrone t0 (<span class="s4">not </span>clause2)))}
+
+
+
+
+</pre>
+</body>
+</html>
