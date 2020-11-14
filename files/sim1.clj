@@ -1,5 +1,5 @@
 
-{:description "The adjudicator reasoning about information from the fixed ldrone."
+{:description "The adjudicator reasoning about hdrone. "
  :assumptions
  {;;; It is common knowledge at the start what is needed to satisfy clause 2.
    :common (Common! t0
@@ -10,12 +10,13 @@
                                        (Planning p)))
                           (forall p (if (Inside p Building) (not (Civilian p)))))))
 
-   ;;; Report from the the fixed ldrone.
-   :report (Believes! adj t3
-                      (Believes! ldrone t3
-                                 (exists p (and (Inside p Building) (Civilian p)))))}
+   ;;; Report from the high altitude drone.
+   :report (Believes! adj t0 (Believes! hdrone t0 (not (exists p (Inside p Building)))))}
 
- :goal        (Believes! adj t4 (Believes! ldrone t3 (not clause2)))}
+ :goal        (Believes! adj t1 (Believes! hdrone t0 (not clause2)))}
+
+
+
 
 
 

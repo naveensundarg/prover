@@ -57,6 +57,12 @@ public final class BiConditional extends Formula {
     }
 
 
+
+    @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+        return new BiConditional(left.generalize(substitution), right.generalize(substitution));
+
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

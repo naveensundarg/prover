@@ -37,3 +37,5 @@ proof_1.pdf
 .idea/libraries/Maven__us_bpsm_edn_java_0_4_6.xml
 pom.xml.releaseBackup
 out
+*.ipynb
+*.pyc

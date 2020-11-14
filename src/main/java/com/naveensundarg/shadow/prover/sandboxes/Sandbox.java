@@ -28,7 +28,7 @@ public class Sandbox {
 
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main1(String[] args) throws Exception {
 
 
        /* Prover prover =  new CognitiveCalculusProver();
@@ -46,6 +46,50 @@ public class Sandbox {
 
         System.out.println(inductiveCalculusProver.prove(Sets.from(exemplar, f1),
                 Reader.readFormulaFromString("(Believes! a now Q)")));
+
+    }
+
+    public static void main(String[] args) throws Exception {
+
+
+        Prover prover =  new InductiveCalculusProver();
+
+        Problem problem = ProblemReader.readFrom(new FileInputStream("./example.clj")).get(0);
+
+        Optional<Justification> opt = (prover.prove((problem.getAssumptions()), problem.getGoal()));
+
+        System.out.println("");
+
+//setting a format for all messages
+
+        if(opt.isPresent()) {
+            System.out.println("=========================");
+
+            System.out.println(opt.get());
+            System.out.println("=========================");
+
+            ColoredPrinter cp = new ColoredPrinter.Builder(0, false)
+                    .foreground(Ansi.FColor.NONE).background(Ansi.BColor.GREEN)
+                    .build();
+            cp.print("GOAL REACHED", Ansi.Attribute.BOLD, Ansi.FColor.BLACK, Ansi.BColor.GREEN);
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+
+        } else {
+            ColoredPrinter cp = new ColoredPrinter.Builder(0, false)
+                    .foreground(Ansi.FColor.RED).background(Ansi.BColor.BLUE)   //setting format
+                    .build();
+            cp.println("GOAL FAILED.");
+            cp.clear();
+
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+
+        }
 
     }
 

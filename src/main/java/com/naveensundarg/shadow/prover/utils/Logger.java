@@ -15,6 +15,7 @@ public class Logger {
     private String indent = "";
     public Logger(){
 
+        verbose = true;
         this.coloredPrinter = new ColoredPrinter.Builder(1, false)
                 .foreground(Ansi.FColor.WHITE).background(Ansi.BColor.BLACK)   //setting format
                 .build();
