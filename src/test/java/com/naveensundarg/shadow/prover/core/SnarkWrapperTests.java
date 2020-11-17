@@ -1,4 +1,4 @@
-package com.naveensundarg.shadow.prover;
+package com.naveensundarg.shadow.prover.core;
 
 import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
@@ -13,6 +13,7 @@ import junit.framework.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,9 +32,9 @@ public class SnarkWrapperTests {
     }
 
     @DataProvider(name="completenessTestsProvider")
-    public Object[][] completenessTestsProvider() throws Reader.ParsingException {
+    public Object[][] completenessTestsProvider() throws Reader.ParsingException, FileNotFoundException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("firstorder-completness-tests.clj"));
+        List<Problem> tests = ProblemReader.readFrom("problems/firstorder-completeness-tests.clj");
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -59,9 +60,9 @@ public class SnarkWrapperTests {
     }
 
     @DataProvider(name="debugTestsProvider")
-    public Object[][] debugTestsProvider() throws Reader.ParsingException {
+    public Object[][] debugTestsProvider() throws Reader.ParsingException, FileNotFoundException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("firstorder-debug-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom("problems/firstorder-debug-tests.clj");
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -88,9 +89,9 @@ public class SnarkWrapperTests {
 
 
     @DataProvider(name="soundnessTestsProvider")
-    public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
+    public Object[][] soundnessTestsProvider() throws Reader.ParsingException, FileNotFoundException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("firstorder-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom("problems/firstorder-soundness-tests.clj");
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

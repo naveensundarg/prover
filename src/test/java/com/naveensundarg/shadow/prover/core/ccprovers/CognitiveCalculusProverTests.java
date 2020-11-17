@@ -12,6 +12,7 @@ import junit.framework.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,9 +28,9 @@ public class CognitiveCalculusProverTests {
     }
 
     @DataProvider(name="completenessTestsProvider")
-    public Object[][] completenessTestsProvider() throws Reader.ParsingException {
+    public Object[][] completenessTestsProvider() throws Reader.ParsingException, FileNotFoundException {
 
-       List<Problem >tests = ProblemReader.readFrom(CognitiveCalculusProver.class.getResourceAsStream("cognitivecalculus-completness-tests.clj"));
+       List<Problem >tests = ProblemReader.readFrom("problems/cognitivecalculus-completness-tests.clj");
        Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -58,7 +59,7 @@ public class CognitiveCalculusProverTests {
     @DataProvider(name="debugTestsProvider")
     public Object[][] debugTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("problems/debug.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -77,9 +78,9 @@ public class CognitiveCalculusProverTests {
 
 
     @DataProvider(name="soundnessTestsProvider")
-    public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
+    public Object[][] soundnessTestsProvider() throws Reader.ParsingException, FileNotFoundException {
 
-        List<Problem >tests = ProblemReader.readFrom(CognitiveCalculusProver.class.getResourceAsStream("cognitivecalculus-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom("problems/cognitivecalculus-soundness-tests.clj");
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
