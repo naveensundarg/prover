@@ -13,6 +13,8 @@ import us.bpsm.edn.parser.Parseable;
 import us.bpsm.edn.parser.Parser;
 import us.bpsm.edn.parser.Parsers;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -56,6 +58,11 @@ public class ProblemReader {
 
         return problems;
 
+    }
+
+    public static List<Problem> readFrom(String path) throws Reader.ParsingException, FileNotFoundException {
+
+        return readFrom( new FileInputStream(path));
     }
 
     public static List<DPLChunk> readDPLChunkFrom(InputStream inputStream) throws Reader.ParsingException {

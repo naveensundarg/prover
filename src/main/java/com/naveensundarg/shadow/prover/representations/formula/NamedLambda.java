@@ -136,6 +136,10 @@ public  class NamedLambda extends Formula implements Quantifier{
 
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public int hashCode() {
         int result = safeHashCode(argument);

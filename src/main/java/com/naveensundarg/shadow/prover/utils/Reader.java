@@ -27,7 +27,7 @@ public class Reader {
         Universal, Existential, Schema
     }
 
-    private enum NamedLambda {
+    private enum NamedLambdaType {
         Function, Relation
     }
 
@@ -69,8 +69,8 @@ public class Reader {
     private static final Symbol NEC = Symbol.newSymbol("nec");
     private static final Symbol POS = Symbol.newSymbol("pos");
 
-    private static final Symbol DEF_FUN = Symbol.newSymbol("def");
-    private static final Symbol DEF_REL = Symbol.newSymbol("def!");
+    private static final Symbol DEF_FUN = Symbol.newSymbol("defn");
+    private static final Symbol DEF_REL = Symbol.newSymbol("defn!");
 
 
     private static final Symbol CAN_PROVE = Symbol.newSymbol("CAN_PROVE!");
@@ -78,8 +78,8 @@ public class Reader {
     public static final Value NOW, I;
     public static final Formula FALSE;
 
-    private static final Map<String,String> SNARK_BUILTIN_RELATIONS = CollectionUtils.newMap();
-    private static final Map<String,String> SNARK_BUILTIN_FUNCTIONS = CollectionUtils.newMap();
+    private static final Map<String, String> SNARK_BUILTIN_RELATIONS = CollectionUtils.newMap();
+    private static final Map<String, String> SNARK_BUILTIN_FUNCTIONS = CollectionUtils.newMap();
 
 
     private static boolean AUTO_CONVERT_TO_SNARK_BUILTINS = false;
@@ -91,7 +91,7 @@ public class Reader {
     public static void setAutoConvertToSnarkBuiltins(boolean autoConvertToSnarkBuiltins) {
         AUTO_CONVERT_TO_SNARK_BUILTINS = autoConvertToSnarkBuiltins;
 
-        if(autoConvertToSnarkBuiltins) {
+        if (autoConvertToSnarkBuiltins) {
             SNARK_BUILTIN_RELATIONS.put("<", "$$$less");
             SNARK_BUILTIN_RELATIONS.put("<=", "$$$lesseq");
             SNARK_BUILTIN_RELATIONS.put(">", "$$$greater");
@@ -121,11 +121,11 @@ public class Reader {
         try {
 
 
-            NOW = readLogicValue("NOW");
+            NOW = readLogicValueFromString("NOW");
             I = readLogicValueFromString("I");
             FALSE = readFormulaFromString("FALSE");
 
-            if(AUTO_CONVERT_TO_SNARK_BUILTINS) {
+            if (AUTO_CONVERT_TO_SNARK_BUILTINS) {
                 SNARK_BUILTIN_RELATIONS.put("<", "$$$less");
                 SNARK_BUILTIN_RELATIONS.put("<=", "$$$lesseq");
                 SNARK_BUILTIN_RELATIONS.put(">", "$$$greater");
@@ -190,7 +190,7 @@ public class Reader {
             Object nameObject = list.get(0);
 
             if (nameObject instanceof Symbol) {
-                String name = ((Symbol) nameObject).getName();
+                String name = ((Symbol) nameObject).toString();
                 Value[] arguments = new Value[list.size() - 1];
 
                 for (int i = 1; i < list.size(); i++) {
@@ -203,7 +203,7 @@ public class Reader {
             throw new ParsingException("name should be a string" + nameObject);
 
         } else {
-            String name = input.toString();
+            String name = input instanceof String? "\"" + input.toString() + "\"" : input.toString();
             return name.startsWith("?") || variableNames.contains(name) ? new Variable(name) : new Constant(name);
         }
 
@@ -246,7 +246,7 @@ public class Reader {
     }
 
     private static Phrase readPhrase(Object input, Set<String> variableNames) throws ParsingException {
-        if(input instanceof String) {
+        if (input instanceof String) {
 
             return new Atom((String) input, true);
 
@@ -429,7 +429,7 @@ public class Reader {
             String name = ((Symbol) input).getName();
             return new Atom(SNARK_BUILTIN_RELATIONS.getOrDefault(name, name));
         }
-        if(input instanceof String) {
+        if (input instanceof String) {
             return new Atom((String) input, true);
         }
 
@@ -521,19 +521,22 @@ public class Reader {
                 //EXISTS
                 if (name.equals(EXISTS)) {
 
-                    return constructNamedLambda(list, QuantifierType.Existential, variableNames);
+                    return constructQuantifier(list, QuantifierType.Existential, variableNames);
 
                 }
-
-                if(name.equals(DEF_FUN)){
-                    return constructNamedLambda(list, NamedLambda., variableNames);
-
-                }
-
                 if (name.equals(SCHEMA)) {
 
                     return constructQuantifier(list, QuantifierType.Schema, variableNames);
 
+
+                }
+
+                if (name.equals(DEF_FUN)) {
+                    return constructNamedLambda(list, NamedLambdaType.Function, variableNames);
+
+                }
+                if (name.equals(DEF_REL)) {
+                    return constructNamedLambda(list, NamedLambdaType.Relation, variableNames);
 
                 }
 
@@ -1062,7 +1065,6 @@ public class Reader {
                 String name = ((Symbol) nameObject).getName();
 
 
-
                 Value[] values = new Value[list.size() - 1];
 
                 for (int i = 1; i < list.size(); i++) {
@@ -1081,10 +1083,11 @@ public class Reader {
         }
     }
 
-    private static Formula constructNamedLambda(List list, QuantifierType quantifierType, Set<String> outerVariableNames) throws ParsingException {
-        if (list.size() == 3) {
-
-            Object varListObject = list.get(1);
+    private static Formula constructNamedLambda(List list, NamedLambdaType namedLambdaType, Set<String> outerVariableNames) throws ParsingException {
+        // (def name [vars] form)
+        if (list.size() == 4) {
+            String name = list.get(1).toString();
+            Object varListObject = list.get(2);
             if (varListObject instanceof List) {
                 List listOfVars = (List) varListObject;
                 Variable[] variables = new Variable[((List) varListObject).size()];
@@ -1106,16 +1109,14 @@ public class Reader {
                 }
                 Set<String> conflicts = Sets.intersection(outerVariableNames, variableNames);
                 if (!conflicts.isEmpty()) {
-                    throw new ParsingException("This quantifier's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
+                    throw new ParsingException("This named function/relation's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
                 }
-                Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames, variableNames));
-                if (quantifierType.equals(QuantifierType.Universal)) {
-                    return new Universal(variables, argument);
+                Formula argument = readFormula(list.get(3), Sets.union(outerVariableNames, variableNames));
+                if (namedLambdaType.equals(NamedLambdaType.Function)) {
+                    return new NamedLambda(name, false, variables, argument);
                 }
-                if (quantifierType.equals(QuantifierType.Existential)) {
-                    return new Existential(variables, argument);
-                } else {
-                    return new Schema(variables, argument);
+                if (namedLambdaType.equals(NamedLambdaType.Relation)) {
+                    return new NamedLambda(name, true, variables, argument);
                 }
 
             } else if (varListObject instanceof Symbol) {
@@ -1130,22 +1131,17 @@ public class Reader {
                 if (!conflicts.isEmpty()) {
                     throw new ParsingException("This quantifier's variables appear in the outer scope: " + list + ". Conflicting vars: " + conflicts);
                 }
-                Formula argument = readFormula(list.get(2), Sets.union(outerVariableNames, variableNames));
-                if (quantifierType.equals(QuantifierType.Universal)) {
-                    return new Universal(variables, argument);
+                Formula argument = readFormula(list.get(3), Sets.union(outerVariableNames, variableNames));
+                if (namedLambdaType.equals(NamedLambdaType.Function)) {
+                    return new NamedLambda(name, false, variables, argument);
                 }
-                if (quantifierType.equals(QuantifierType.Existential)) {
-                    return new Existential(variables, argument);
-                } else {
-                    return new Schema(variables, argument);
+                if (namedLambdaType.equals(NamedLambdaType.Relation)) {
+                    return new NamedLambda(name, true, variables, argument);
                 }
-
-
-            } else {
-
-                throw new ParsingException("The variable list for this quantifier formula is not valid: " + list);
-
             }
+
+            throw new ParsingException("The variable list for this quantifier formula is not valid: " + list);
+
 
 
         } else {
