@@ -1,18 +1,26 @@
+{:name        "Per.A "
+ :description
+ "Perecption"
+ :assumptions {:prior1 (e=>  (Perceives! a NOW (and (Red c1) (Red c2) ))
+                             (Perceives! a NOW (exists (X) (and (X c1) (X c2) ))))
+
+               :prior2 (e=>  (Perceives! a NOW (and (Green c1) (Green c2) ))
+                            (Perceives! a NOW (exists (X) (and (X c1) (X c2)))))
+
+;               :prior2 (e=> (Perceives! a (and (Q d1) (Q d2) ))
+;                           (Perceives! a (exists [X] (and (X d1) (X d2)))))
+
+
+               :input (Perceives! a (and (Q e1) (Q e2)))}
+ :goal      (Perceives! a (exists [X] (and (X e1) (X e2))))}
+
+
 {:name        "IC1.A "
  :description
- "Learning that knowledge leads to belief with an atomic example.
- DR5 in http://kryten.mm.rpi.edu/CognitiveCalculus092808.pdf"
- :assumptions {:prior (e=> (and P
-
-                             (forall gamma (iff (rho (NUM gamma)) gamma)))
-                        (exists chi (if (forall gamma (iff (rho (NUM gamma)) gamma))
-                                      (and (not (rho chi)) (not (rho (not chi)))))))
+ "Perecption"
+ :assumptions {:prior (e=> (and (IMP (P x) (Q x)) (HOLD (P x)))
+                           (HOLD (Q x)))
 
 
-               :input  (and P
-
-                            (forall gamma (iff (rho (NUM gamma)) gamma)))
-
-               }
- :goal       (exists chi (if (forall gamma (iff (rho (NUM gamma)) gamma))
-                           (and (not (rho chi)) (not (rho (not chi))))))}
+               :input (and (IMP (P a) (Q a)) (HOLD (P a)))}
+ :goal        (HOLD (Q a))}

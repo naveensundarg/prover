@@ -22,8 +22,8 @@ public class FormulaVariable extends Formula {
 
     public FormulaVariable(String name) {
 
-        if(!name.startsWith("@")){
-            throw new AssertionError("FormulaVariable should start with a @: "+name);
+        if(!name.startsWith("@") && !name.startsWith("$")){
+            throw new AssertionError("FormulaVariable should start with a @ or $: "+name);
         }
 
         this.name = name;

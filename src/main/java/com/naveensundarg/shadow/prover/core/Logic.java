@@ -757,6 +757,14 @@ public class Logic {
 
             return new Common(common.getTime(), transformSecondOrderToFirstOrder(common.getFormula()));
         }
+
+        if (formula instanceof Perception) {
+
+            Perception perception = (Perception) formula;
+
+            return new Perception(perception.getAgent(), perception.getTime(), transformSecondOrderToFirstOrder(perception.getFormula()));
+        }
+
         if (formula instanceof Knowledge) {
 
             Knowledge knowledge = (Knowledge) formula;

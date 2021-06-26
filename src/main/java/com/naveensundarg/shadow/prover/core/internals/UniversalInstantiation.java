@@ -6,6 +6,7 @@ import com.naveensundarg.shadow.prover.representations.formula.BaseFormula;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.formula.Predicate;
 import com.naveensundarg.shadow.prover.representations.formula.Universal;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
@@ -39,6 +40,7 @@ public final class UniversalInstantiation {
 
         Set<BaseFormula> allBaseFormulae = Logic.baseFormulae(formulae);
 
+        // Case 1: Variable is object level
         Set<BaseFormula> baseFormulaeContainingVariable = Logic.baseFormulae(universal).
                 stream().
                 filter(baseFormulae -> {return
@@ -48,38 +50,66 @@ public final class UniversalInstantiation {
                 }).
                 collect(Collectors.toSet());
 
+        // Case 2: Variable is higher order
+        Set<BaseFormula> baseFormulaeMatchingVariable = Logic.baseFormulae(universal).
+                stream().
+                filter(baseFormulae -> baseFormulae.getName().equals(firstVariable.getName())).
+                collect(Collectors.toSet());
 
 
-        Set<Value>   allValues = baseFormulaeContainingVariable.stream().
-                map(predicate -> {
-                   Set<BaseFormula> matches = allBaseFormulae.stream().
-                           filter(predicate1 -> predicate.getName().
-                                   equals(predicate1.getName())).collect(Collectors.toSet());
+        Set<Value>   allValues = Sets.newSet();
+        if(!baseFormulaeContainingVariable.isEmpty()){
+            Set<Value>   objectLevelValues = baseFormulaeContainingVariable.stream().
+                    map(predicate -> {
+                        Set<BaseFormula> matches = allBaseFormulae.stream().
+                                filter(predicate1 -> predicate.getName().
+                                        equals(predicate1.getName()) || Unifier.isVariable(predicate.getName())
+                                ).collect(Collectors.toSet());
 
 
-                    Set<Value> values = matches.stream().
-                            map(predicate1 -> {
+                        Set<Value> values = matches.stream().
+                                map(predicate1 -> {
 
-                                Map<Variable, Value> map = Unifier.unify(predicate1, predicate);
+                                    Map<Variable, Value> map = Unifier.unify(predicate1, predicate);
 
-                                        if(map==null){
-                                            return null;
-                                        } else {
+                                    if(map==null){
+                                        return null;
+                                    } else {
 
-                                          return  map.getOrDefault(firstVariable, null);
-                                        }
+                                        return  map.getOrDefault(firstVariable, null);
+                                    }
 
-                            }).
-                            filter(Objects::nonNull).
-                            collect(Collectors.toSet());
-                    return values;
+                                }).
+                                filter(Objects::nonNull).
+                                collect(Collectors.toSet());
+                        return values;
 
-                }).reduce(Sets.newSet(),Sets::union);
+                    }).reduce(Sets.newSet(),Sets::union);
 
 
+            allValues.addAll(objectLevelValues);
 
+        }
+
+        if(!baseFormulaeMatchingVariable.isEmpty()) {
+
+            Set<Value> allHigherValues = baseFormulaeMatchingVariable.stream().filter(f-> f instanceof Predicate).map(f->(Predicate) f)
+                    .map(baseFormula -> {
+
+                    int arity = baseFormula.getArguments().length;
+                    Set<Value> objectLevelValues = allBaseFormulae.stream().filter(f -> f instanceof Predicate && ((Predicate) f).getArguments().length == arity).
+                            map(f -> new Constant(f.getName())).collect(Collectors.toSet());
+                    objectLevelValues.remove(firstVariable);
+                    return objectLevelValues;
+
+            }).reduce(Sets.newSet(),Sets::union);
+
+            allValues.addAll(allHigherValues.stream().filter(v-> !Unifier.isVariable(v.toString())).collect(Collectors.toSet()));
+        }
 
         return allValues;
+
+
 
     }
 }

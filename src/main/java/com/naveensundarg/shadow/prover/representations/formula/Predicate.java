@@ -2,6 +2,7 @@ package com.naveensundarg.shadow.prover.representations.formula;
 
 import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.representations.value.Compound;
+import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
@@ -115,6 +116,10 @@ public class Predicate extends BaseFormula {
         String newName = name;
         Variable varName = new Variable(name);
         if (substitution.containsKey(varName)) {
+            if(substitution.get(varName) instanceof Constant){
+                return new Predicate(substitution.get(varName).toString(), argumentTheta);
+            }
+
             if (!(substitution.get(varName) instanceof Compound)) {
                 return new Atom(substitution.get(varName).toString());
             } else {

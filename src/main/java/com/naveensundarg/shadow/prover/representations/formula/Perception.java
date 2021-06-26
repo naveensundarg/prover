@@ -24,6 +24,8 @@ public class Perception extends BaseFormula implements UnaryModalFormula{
 
     private final int weight;
 
+
+
     public Perception(Value agent, Value time, Formula formula) {
 
 
@@ -110,6 +112,11 @@ public class Perception extends BaseFormula implements UnaryModalFormula{
     @Override
     public Set<Variable> boundVariablesPresent() {
         return formula.boundVariablesPresent();
+    }
+
+    @Override
+    public Formula generalize(Map<Value, Variable> substitution) {
+        return new Perception(agent.generalize(substitution), time.generalize(substitution), formula.generalize(substitution));
     }
 
     @Override

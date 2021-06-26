@@ -4,11 +4,17 @@ import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus.*;
+import com.naveensundarg.shadow.prover.core.expanders.inductivecalculus.AntiUnification;
 import com.naveensundarg.shadow.prover.core.expanders.inductivecalculus.Generalize;
+import com.naveensundarg.shadow.prover.core.expanders.inductivecalculus.ShallowImplication;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
+import com.naveensundarg.shadow.prover.core.proof.AntiUnifier;
+import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
+import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
 import com.naveensundarg.shadow.prover.representations.formula.Exemplar;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
+import com.naveensundarg.shadow.prover.representations.method.ModusPonens;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Logger;
 import com.naveensundarg.shadow.prover.utils.Reader;
@@ -23,7 +29,7 @@ public class InductiveCalculusProver implements Prover {
 
     public Prover prover;
     private final List<Expander> expanders;
-    private static int MAX_EXPAND_FACTOR = 100;
+    private static int MAX_EXPAND_FACTOR = 1000;
     protected Logger logger;
 
     public InductiveCalculusProver() {
@@ -34,10 +40,14 @@ public class InductiveCalculusProver implements Prover {
 
         expanders.add(Generalize.INSTANCE);
         expanders.add(BreakupBiConditionals.INSTANCE);
-        expanders.add(ModalConjunctions.INSTANCE);
+
         //expanders.add(ModalImplications.INSTANCE);
         expanders.add(UniversalElim.INSTANCE);
+
         expanders.add(NotExistsToForallNot.INSTANCE);
+        expanders.add(ShallowImplication.INSTANCE);
+        expanders.add(AntiUnification.INSTANCE);
+
         logger = new Logger();
 
     }
@@ -71,6 +81,9 @@ public class InductiveCalculusProver implements Prover {
                 order1ModalAssumptions.add(Reader.readFormulaFromString("(forall [?x] (= (ARGS) (ARGS ?x)))"));
             } catch (Reader.ParsingException e) {
                 e.printStackTrace();
+            }
+            if(shadow(order1ModalAssumptions).contains(order1Goal.shadow(1))){
+                return Optional.of(new TrivialJustification(shadow(order1ModalAssumptions), order1Goal.shadow(1)));
             }
             Optional<Justification> optionalJustification = prover.prove(shadow(order1ModalAssumptions), order1Goal.shadow(1));
             if (optionalJustification.isPresent()) {

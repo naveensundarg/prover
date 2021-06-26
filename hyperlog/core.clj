@@ -15,6 +15,7 @@
        (number? x)
        (vector? x)
        (string? x)
+       (keyword? x)
        (contains? allowed-operations x)))
  )
 

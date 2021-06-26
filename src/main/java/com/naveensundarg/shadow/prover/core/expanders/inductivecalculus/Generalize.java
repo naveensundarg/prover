@@ -7,6 +7,7 @@ import com.naveensundarg.shadow.prover.core.proof.Unifier;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Constants;
 import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
@@ -52,15 +53,25 @@ public enum Generalize implements Expander {
         }
     }
 
+    private Set<Variable> formulaVariables(Formula formula){
+
+        return formula.subFormulae().stream().filter(f-> f instanceof Predicate).
+                filter(f-> ((Predicate) f).getName().endsWith("?")).
+                map(f-> new Variable(((Predicate) f).getName())).
+                collect(Collectors.toSet());
+
+    }
     private Formula generalize(Exemplar exemplar) {
 
 
         Formula input = exemplar.getInput();
         Formula output = exemplar.getOutput();
 
-        Set<Value> inputValues = input.valuesPresent();
-        Set<Value> outputValues = output.valuesPresent();
+        Set<Value> inputValues = getFreeValues(input);
+        Set<Value> outputValues = getFreeValues(output);
 
+
+        Set<Variable> inputFormulaVariables = formulaVariables(input);
         Set<Formula> inputFormulae = input.subFormulae();
         Set<Formula> outputFormulae = output.subFormulae();
 
@@ -90,8 +101,8 @@ public enum Generalize implements Expander {
         Variable[] variables = new Variable[]{};
 
 
-        variables = Sets.union(new HashSet<>(valueGeneralizationMap.values()),
-                new HashSet<>(formulaGeneralizationMap.values())).toArray(variables);
+        variables = Sets.union(inputFormulaVariables, Sets.union(new HashSet<>(valueGeneralizationMap.values()),
+                new HashSet<>(formulaGeneralizationMap.values()))).toArray(variables);
 
         Formula valueGeneralizedInput = input.generalize(valueGeneralizationMap);
         Formula valueGeneralizedOutput = output.generalize(valueGeneralizationMap);
@@ -109,9 +120,13 @@ public enum Generalize implements Expander {
 
         Formula inferred = new Universal(
                 variables,
-                new Implication(valueGeneralizedInput, valueGeneralizedOutput));
+                new Implication((valueGeneralizedInput), valueGeneralizedOutput));
 
         return inferred;
+    }
+
+    private Set<Value> getFreeValues(Formula input) {
+        return Sets.difference(input.valuesPresent(), input.boundVariablesPresent().stream().map(variable -> (Value) variable).collect(Collectors.toSet()));
     }
 
 }

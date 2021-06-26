@@ -37,15 +37,34 @@ public class Sandbox {
 
         System.out.println(prover.prove((problem.getAssumptions()), problem.getGoal()));*/
 
+/*
        Formula exemplar = Reader.readFormulaFromString("(e=> (or P (not P))\n" +
                "                        (Common! now (if (Knows! a P) (Believes! a P))))");
-        Formula f1 = Reader.readFormulaFromString(" (Knows! a now Q)");
+*/
+      /*  Formula f1 = Reader.readFormulaFromString(" (Knows! a now Q)");
 
         InductiveCalculusProver inductiveCalculusProver = new InductiveCalculusProver();
 
 
         System.out.println(inductiveCalculusProver.prove(Sets.from(exemplar, f1),
                 Reader.readFormulaFromString("(Believes! a now Q)")));
+
+
+*/
+
+      //System.out.println(Reader.readLogicValueFromString("(= \"hyperlog\" (clojure.string/join \"\" (reverse (reverse  \"hyperlog\"))))"));
+
+        System.out.println(Reader.readFormulaFromString("(and A )"));
+    }
+
+    public static void main2(String[] args) throws Reader.ParsingException {
+        Formula f1 = Reader.readFormulaFromString("(e=> (Perceives! a (and (R? c1) (R? c2) ))\n" +
+                "                           (Perceives! a (exists [X] (and (X c1) (X c2)))))");
+
+        Formula f2 = Reader.readFormulaFromString("(e=> (Perceives! a (and (Q c1) (Q c2) ))\n" +
+                "                           (Perceives! a (exists [X] (and (X c1) (X c2)))))");
+
+        System.out.println(Unifier.unifyFormula(f1, f2));
 
     }
 

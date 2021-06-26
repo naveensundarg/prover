@@ -583,6 +583,61 @@ public class Unifier {
 
         }
 
+        if( f1 instanceof Exemplar && f2 instanceof Exemplar){
+
+            Exemplar exemplar1 = (Exemplar) f1;
+            Exemplar exemplar2 = (Exemplar) f2;
+
+
+            Optional<Map<Variable, Value>> map1 = Unifier.unifyFormula(exemplar1.getInput(), exemplar2.getInput());
+
+            if(!map1.isPresent()){
+
+                return Optional.empty();
+
+            }
+
+            Optional<Map<Variable, Value>> map2 = Unifier.unifyFormula(exemplar1.getOutput(), exemplar2.getOutput());
+
+            if(!map2.isPresent()){
+
+                return Optional.empty();
+
+            }
+
+            return Unifier.addTo(map1.get(), map2.get());
+
+
+        }
+
+        if(f1 instanceof UnaryModalFormula && f2 instanceof UnaryModalFormula && f1.getClass().equals(f2.getClass())) {
+            UnaryModalFormula uf1 = (UnaryModalFormula) f1;
+            UnaryModalFormula uf2 = (UnaryModalFormula) f2;
+
+            Value agent1 = uf1.getAgent();
+            Value agent2 = uf2.getAgent();
+
+            Map<Variable, Value> map1 = unify(agent1, agent2);
+
+            if(map1==null) {
+                return Optional.empty();
+            }
+            Value time1 = uf1.getTime();
+            Value time2 = uf2.getTime();
+
+            Map<Variable, Value> map2= unify(time1, time2, map1);
+            if(map2==null) {
+                return Optional.empty();
+            }
+
+            Formula innerFormula1 = uf1.getFormula();
+            Formula innerFormula2 = uf2.getFormula();
+
+            Optional<Map<Variable, Value>> map3Opt = Unifier.unifyFormula(innerFormula1, innerFormula2);
+            return map3Opt.flatMap(deltaMap -> Unifier.addTo(map2, deltaMap));
+
+
+        }
         return Optional.empty();
 
     }

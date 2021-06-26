@@ -457,6 +457,9 @@ public class Reader {
                     if (list.size() == 3) {
                         return new Implication(readFormula(list.get(1), variableNames), readFormula(list.get(2), variableNames));
 
+                    }else if (list.size() == 4) {
+                        return new Predicate(IF.toString(), new Value[]{readLogicValue(list.get(1), variableNames), readLogicValue(list.get(2), variableNames), readLogicValue(list.get(3), variableNames)}) ;
+
                     } else {
                         throw new ParsingException("If should have two arguments");
                     }

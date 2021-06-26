@@ -32,7 +32,8 @@ public class Evaluator {
 
         String[] PRIMITIVE_SYMBOLS = {
                 "letfn",
-                "=",
+                "=", "cond", ":else", "if",
+                "and", "or", "not", "not=",
                 "+", "-", "*", "/", "quot", "rem", "mod",
                 "inc", "dec", "max" , "min", "+'", "-'", "*'", "inc'", "dec'",
                 "==", "<", ">", "<=", ">=", "compare",
@@ -94,7 +95,7 @@ public class Evaluator {
 
         return result.get(RESULT);
 
-
+       // (letfn [(firstifeight [n m] (if (== m 8) n)) ] (firstifeight  8 4))
 
     }
 }
