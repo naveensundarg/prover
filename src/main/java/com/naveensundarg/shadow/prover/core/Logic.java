@@ -45,6 +45,7 @@ public class Logic {
     private static Formula TRUE;
     private static Formula FALSE;
     private static Formula INCONSISTENT_FORMULA;
+    public static final String TRUTHFUL =  "TRUTHFUL";
 
     public static Formula getTrueFormula() {
         return TRUE;
@@ -686,8 +687,13 @@ public class Logic {
 
     }
 
+    public static Formula transformSecondOrderToFirstOrder(Formula formula){
 
-    public static Formula transformSecondOrderToFirstOrder(Formula formula) {
+        Formula transformed = transformSecondOrderToFirstOrderInner(formula);
+        transformed.setJustificationLabelAndAncestors("transformSecondOrderToFirstOrder", CollectionUtils.listOf(formula));
+        return transformed;
+    }
+    public static Formula transformSecondOrderToFirstOrderInner(Formula formula) {
 
         if (formula instanceof Atom) {
             Atom atom = (Atom) formula;
@@ -777,6 +783,13 @@ public class Logic {
             Belief belief = (Belief) formula;
 
             return new Belief(belief.getAgent(), belief.getTime(), transformSecondOrderToFirstOrder(belief.getFormula()));
+        }
+
+        if (formula instanceof Says) {
+
+            Says says = (Says) formula;
+
+            return new Says(says.getAgent(), says.getTime(), transformSecondOrderToFirstOrder(says.getFormula()));
         }
 
 

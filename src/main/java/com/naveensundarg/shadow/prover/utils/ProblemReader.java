@@ -2,7 +2,7 @@ package com.naveensundarg.shadow.prover.utils;
 
 import com.naveensundarg.shadow.prover.axiomsets.AxiomSet;
 import com.naveensundarg.shadow.prover.representations.Phrase;
-import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
+import com.naveensundarg.shadow.prover.sandboxes.Simulator;
 import com.naveensundarg.shadow.prover.core.sortsystem.SortSystem;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Value;
@@ -39,6 +39,7 @@ public class ProblemReader {
     private static final Keyword ANSWERS_EXPECTED = Keyword.newKeyword("answers-expected");
     private static final Keyword INPUT = Keyword.newKeyword("input");
     private static final Keyword OUTPUT = Keyword.newKeyword("output");
+    private static final Keyword SKIP_KEY = Keyword.newKeyword("skip");
 
     public static List<Problem> readFrom(InputStream inputStream) throws Reader.ParsingException {
 
@@ -52,7 +53,10 @@ public class ProblemReader {
 
         while (problemDesc != Parser.END_OF_INPUT) {
 
-            problems.add(buildProblem((Map<?, ?>) problemDesc));
+            Problem problem = buildProblem((Map<?, ?>) problemDesc);
+            if(!problem.shouldSkip()){
+                problems.add(problem);
+            }
             problemDesc = p.nextValue(pbr);
         }
 
@@ -174,6 +178,7 @@ public class ProblemReader {
 
         Set<Formula> assumptions = readAssumptions(map.get(ASSUMPTIONS_KEY));
         Formula goal = Reader.readFormula(map.get(GOAL_KEY));
+        boolean skip =  (boolean) ((Map) map).getOrDefault(SKIP_KEY, false);
 
         if (map.containsKey(SORTSYSTEM_KEY)) {
             //TODO: Create a sorted problem
@@ -206,7 +211,8 @@ public class ProblemReader {
 
             } else {
 
-                return new Problem(((Map) map).getOrDefault(NAME_KEY, "").toString(), ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(), assumptions, goal);
+                return new Problem(((Map) map).getOrDefault(NAME_KEY, "").toString(),
+                    ((Map) map).getOrDefault(DESCRIPTION_KEY, "").toString(), assumptions, goal, skip);
 
             }
 
@@ -243,6 +249,6 @@ public class ProblemReader {
     }
 
     public static void main(String[] args) throws Reader.ParsingException {
-        System.out.println(readFrom(Sandbox.class.getResourceAsStream("firstorder-completness-tests.clj")));
+        System.out.println(readFrom(Simulator.class.getResourceAsStream("firstorder-completness-tests.clj")));
     }
 }

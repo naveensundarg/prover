@@ -142,3 +142,24 @@
                :input (Common! now Q)}
  :goal       (Knows! a now Q)}
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:name        "reverse"
+ :description
+ "Learn schema for reversing a list."
+ :assumptions {:example1 (e=> (= A (reverse [] )) (= A []))
+               :example2 (e=> (= A (reverse (list 1 2) )) (= A (list 2 1)))
+
+               :input (= B (reverse (list 1 2 3 4 5 6) ))}
+ :goal       (= B (list 6 5 4 3 2 1))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:name        "last name"
+ :description
+ "From examples of primitive rules, get more complex things derived. "
+ :assumptions {:list (e=> (= A (lastName john smith)) (= A smith))
+
+               :input (= B (lastName isaac newton))}
+ :goal      (= B newton )}
+

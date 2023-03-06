@@ -167,6 +167,7 @@ public class Says extends  BaseFormula{
         return new Says(agent, time, formula.replaceSubFormula(oldFormula, newFormula));
     }
 
+
     @Override
     public Set<Variable> boundVariablesPresent() {
         return formula.boundVariablesPresent();

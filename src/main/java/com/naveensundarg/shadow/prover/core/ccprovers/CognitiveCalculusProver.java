@@ -4,26 +4,23 @@ import com.naveensundarg.shadow.prover.core.Logic;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.SnarkWrapper;
 import com.naveensundarg.shadow.prover.core.expanders.cognitivecalculus.*;
+import com.naveensundarg.shadow.prover.core.expanders.inductivecalculus.AntiUnification;
+import com.naveensundarg.shadow.prover.core.expanders.inductivecalculus.Generalize;
 import com.naveensundarg.shadow.prover.core.internals.AgentSnapShot;
 import com.naveensundarg.shadow.prover.core.internals.ConsistentSubsetFinder;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
-import com.naveensundarg.shadow.prover.core.internals.UniversalInstantiation;
 import com.naveensundarg.shadow.prover.core.proof.AtomicJustification;
 import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
 import com.naveensundarg.shadow.prover.representations.formula.*;
-import com.naveensundarg.shadow.prover.representations.value.Compound;
 import com.naveensundarg.shadow.prover.representations.value.Constant;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.*;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static com.naveensundarg.shadow.prover.utils.Sets.cartesianProduct;
 
 
 public class CognitiveCalculusProver implements CCProver {
@@ -47,6 +44,9 @@ public class CognitiveCalculusProver implements CCProver {
         reductio = false;
         expanders = CollectionUtils.newEmptyList();
 
+        expanders.add(Generalize.INSTANCE);
+        expanders.add(AntiUnification.INSTANCE);
+
         expanders.add(BreakupBiConditionals.INSTANCE);
         expanders.add(R4.INSTANCE);
         expanders.add(SelfBelief.INSTANCE);
@@ -69,6 +69,10 @@ public class CognitiveCalculusProver implements CCProver {
         expanders.add(NotExistsToForallNot.INSTANCE);
 
         expanders.add(NecToPos.INSTANCE);
+
+        expanders.add(EqualitySubstitution.INSTANCE);
+        expanders.add(NegatedConditionals.INSTANCE);
+        expanders.add(SaysR1.INSTANCE);
 
         expanders.add(InnerModalForward.INSTANCE);
         if (theoremsToNec) {
@@ -438,6 +442,8 @@ public class CognitiveCalculusProver implements CCProver {
         }
         return Optional.empty();
     }
+
+
 
     protected Optional<Justification> tryOR(Set<Formula> base, Formula formula, Set<Formula> added) {
 

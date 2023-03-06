@@ -8,10 +8,7 @@ import com.naveensundarg.shadow.prover.core.expanders.inductivecalculus.AntiUnif
 import com.naveensundarg.shadow.prover.core.expanders.inductivecalculus.Generalize;
 import com.naveensundarg.shadow.prover.core.expanders.inductivecalculus.ShallowImplication;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
-import com.naveensundarg.shadow.prover.core.proof.AntiUnifier;
-import com.naveensundarg.shadow.prover.core.proof.CompoundJustification;
-import com.naveensundarg.shadow.prover.core.proof.Justification;
-import com.naveensundarg.shadow.prover.core.proof.TrivialJustification;
+import com.naveensundarg.shadow.prover.core.proof.*;
 import com.naveensundarg.shadow.prover.representations.formula.Exemplar;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.method.ModusPonens;
@@ -29,7 +26,7 @@ public class InductiveCalculusProver implements Prover {
 
     public Prover prover;
     private final List<Expander> expanders;
-    private static int MAX_EXPAND_FACTOR = 1000;
+    private static int MAX_EXPAND_FACTOR = 2000;
     protected Logger logger;
 
     public InductiveCalculusProver() {
@@ -39,14 +36,11 @@ public class InductiveCalculusProver implements Prover {
         expanders = CollectionUtils.newEmptyList();
 
         expanders.add(Generalize.INSTANCE);
+        expanders.add(AntiUnification.INSTANCE);
         expanders.add(BreakupBiConditionals.INSTANCE);
-
-        //expanders.add(ModalImplications.INSTANCE);
         expanders.add(UniversalElim.INSTANCE);
-
         expanders.add(NotExistsToForallNot.INSTANCE);
         expanders.add(ShallowImplication.INSTANCE);
-        expanders.add(AntiUnification.INSTANCE);
 
         logger = new Logger();
 
@@ -82,10 +76,15 @@ public class InductiveCalculusProver implements Prover {
             } catch (Reader.ParsingException e) {
                 e.printStackTrace();
             }
-            if(shadow(order1ModalAssumptions).contains(order1Goal.shadow(1))){
-                return Optional.of(new TrivialJustification(shadow(order1ModalAssumptions), order1Goal.shadow(1)));
+
+            Set<Formula> shadowedOrder1ModalAssumptions = shadow(order1ModalAssumptions, 1);
+            Formula shadowedOrder1Goal = shadow(order1Goal, 1);
+            if(shadowedOrder1ModalAssumptions.contains(shadowedOrder1Goal)){
+                return Optional.of(new AtomicJustification("",
+                        shadowedOrder1ModalAssumptions.stream().filter(f->f.equals(shadowedOrder1Goal)).findAny().get()
+                        ));
             }
-            Optional<Justification> optionalJustification = prover.prove(shadow(order1ModalAssumptions), order1Goal.shadow(1));
+            Optional<Justification> optionalJustification = prover.prove(shadowedOrder1ModalAssumptions, shadowedOrder1Goal);
             if (optionalJustification.isPresent()) {
                 return optionalJustification;
             }
@@ -93,6 +92,13 @@ public class InductiveCalculusProver implements Prover {
         }
 
 
+    }
+
+    private static Formula shadow(Formula formula, int level){
+
+        Formula shadowed = formula.shadow(level);
+        shadowed.setJustificationLabelAndAncestors("shadowed(" + level + ")", CollectionUtils.listOf(formula));
+        return shadowed;
     }
 
 
@@ -108,7 +114,7 @@ public class InductiveCalculusProver implements Prover {
         return logger;
     }
 
-    protected Set<Formula> shadow(Set<Formula> formulas) {
-        return formulas.stream().map(f -> f.shadow(1)).collect(Collectors.toSet());
+    protected Set<Formula> shadow(Set<Formula> formulas, int level) {
+        return formulas.stream().map(formula -> shadow(formula, level)).collect(Collectors.toSet());
     }
 }

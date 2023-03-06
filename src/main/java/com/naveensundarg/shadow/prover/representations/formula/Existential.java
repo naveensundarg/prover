@@ -34,7 +34,7 @@ public class Existential extends Formula implements Quantifier {
 
         this.vars = vars;
         this.argument = argument;
-        this.subFormulae = Sets.with(argument);
+        this.subFormulae = Sets.copy(argument.subFormulae());
         this.subFormulae.add(this);
 
         this.variables = argument.variablesPresent();

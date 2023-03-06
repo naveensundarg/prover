@@ -1,10 +1,10 @@
 package com.naveensundarg.shadow.prover.core.ccprovers;
 
+import com.naveensundarg.shadow.prover.sandboxes.Simulator;
 import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
 import com.naveensundarg.shadow.prover.utils.Reader;
@@ -58,7 +58,7 @@ public class SecondOrderCognitiveCalculusProverTests {
     @DataProvider(name="debugTestsProvider")
     public Object[][] debugTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Simulator.class.getResourceAsStream("../debug.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -87,7 +87,7 @@ public class SecondOrderCognitiveCalculusProverTests {
     @DataProvider(name="soundnessTestsProvider")
     public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("cognitivecalculus-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Simulator.class.getResourceAsStream("cognitivecalculus-soundness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

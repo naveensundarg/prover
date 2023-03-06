@@ -8,6 +8,7 @@ import com.naveensundarg.shadow.prover.core.proof.InferenceJustification;
 import com.naveensundarg.shadow.prover.core.proof.Justification;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.CommonUtils;
 
 import java.util.Set;
@@ -28,10 +29,17 @@ public enum BreakupBiConditionals implements Expander {
 
             Justification j = InferenceJustification.from(this.getClass().getSimpleName(), biConditional);
 
-            base.add(new Implication(biConditional.getLeft(), biConditional.getRight()).setJustification(j));
-            base.add(new Implication(biConditional.getRight(), biConditional.getLeft()).setJustification(j));
-            base.add(new Implication(Logic.negated(biConditional.getLeft()), Logic.negated(biConditional.getRight())).setJustification(j));
-            base.add(new Implication(Logic.negated(biConditional.getRight()), Logic.negated(biConditional.getLeft())).setJustification(j));
+            Formula f1 = new Implication(biConditional.getLeft(), biConditional.getRight()).setJustification(j);
+            Formula f2 = new Implication(biConditional.getRight(), biConditional.getLeft()).setJustification(j);
+            Formula f3 = new Implication(Logic.negated(biConditional.getLeft()), Logic.negated(biConditional.getRight())).setJustification(j);
+            Formula f4 = new Implication(Logic.negated(biConditional.getRight()), Logic.negated(biConditional.getLeft())).setJustification(j);
+
+            CollectionUtils.listOf(f1,f2,f3,f4).forEach(f-> f.setJustificationLabelAndAncestors(this.getClass().getSimpleName(), CollectionUtils.listOf(biConditional)));
+
+            base.add(f1);
+            base.add(f2);
+            base.add(f3);
+            base.add(f4);
 
         });
 

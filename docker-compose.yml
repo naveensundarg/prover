@@ -1,12 +1,12 @@
 version: "3.0"
 services:
   py-shadowprover:
-    image: naveensundarg/py-shadowprover:0.12-prover-1.34
+    image: naveensundarg/py-shadowprover:0.11-prover-1.34
     ports:
       - "25334:25334"
       - "25333:25333"
   interface:
-    image: naveensundarg/py-interface-shadowprover:0.122
+    image: naveensundarg/py-interface-shadowprover:0.121
     ports:
       - "8888:8888"
     volumes:

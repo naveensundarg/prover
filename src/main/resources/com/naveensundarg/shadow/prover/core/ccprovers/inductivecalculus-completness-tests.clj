@@ -142,3 +142,23 @@
                :input (Common! now Q)}
  :goal       (Knows! a now Q)}
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:name        "reverse"
+ :description
+ "From examples of primitive rules, get more complex things derived. "
+ :assumptions {:list-reverse-example (e=> (= A (reverse (list 1 2 3) )) (= A (list 3 2 1)))
+
+               :input (= B (reverse (list 4 5 6) ))}
+ :goal       (= B (list 6 5 4))}
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+{:name        "last name"
+ :description
+ "From examples of primitive rules, get more complex things derived. "
+ :assumptions {:last-name-example (e=> (= A (lastName john smith)) (= A smith))
+
+               :input (= B (lastName isaac newton))}
+ :goal      (= B newton )}
+

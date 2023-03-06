@@ -6,7 +6,7 @@
 
     <groupId>com.naveensundarg</groupId>
     <artifactId>prover</artifactId>
-    <version>1.40</version>
+    <version>1.42</version>
     <packaging>jar</packaging>
 
 
@@ -89,12 +89,6 @@
             <version>1.0.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/guru.nidi/graphviz-java -->
-        <dependency>
-            <groupId>guru.nidi</groupId>
-            <artifactId>graphviz-java</artifactId>
-            <version>0.0.2</version>
-        </dependency>
 
 
         <dependency>
@@ -150,7 +144,11 @@
             <version>0.8.1</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>guru.nidi</groupId>
+            <artifactId>graphviz-java</artifactId>
+            <version>0.18.1</version>
+        </dependency>
 
 
     </dependencies>

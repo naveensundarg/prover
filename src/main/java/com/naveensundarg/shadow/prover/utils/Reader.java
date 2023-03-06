@@ -33,6 +33,7 @@ public class Reader {
 
     private static final String ASSUME = "assume";
     private static final String ASSUME_STAR = "assume*";
+    private static final Symbol STRENGTH = Symbol.newSymbol("$");
 
     private static final Symbol NOT = Symbol.newSymbol("not");
     private static final Symbol AND = Symbol.newSymbol("and");
@@ -444,6 +445,18 @@ public class Reader {
             if (first instanceof Symbol) {
                 Symbol name = (Symbol) first;
 
+                if (name.equals(STRENGTH)){
+                    if (list.size() == 3) {
+                        int s = Integer.parseInt(list.get(1).toString());
+                        Formula f = readFormula(list.get(2), variableNames);
+                        f.setStrengthFactor(s);
+                        return f;
+
+                    } else {
+                        throw new ParsingException("STRENGTH assignment should have two arguments");
+                    }
+                }
+
                 if (name.equals(NOT)) {
                     if (list.size() == 2) {
                         return new Not(readFormula(list.get(1), variableNames));
@@ -836,7 +849,8 @@ public class Reader {
 
                 return new Belief(readLogicValue(agent), readLogicValue(time), readFormula(formula, variableNames));
 
-            } else {
+            }
+            {
 
                 Object agent = list.get(1);
                 Object formula = list.get(2);
@@ -846,7 +860,12 @@ public class Reader {
             }
         }
     }
-
+    // (B! agent time strength P)
+    private static Formula constructBelief(List list, Set<String> variableNames, int S) throws ParsingException {
+        Belief  belief = (Belief)constructBelief(list, variableNames);
+        belief.setStrengthFactor(S);
+        return belief;
+    }
     // (Ought! agent time strength P)
     private static Formula constructOught(List list, Set<String> variableNames) throws ParsingException {
         if (list.isEmpty()) {

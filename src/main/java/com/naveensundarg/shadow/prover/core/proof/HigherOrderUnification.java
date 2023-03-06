@@ -35,7 +35,7 @@ public final class HigherOrderUnification {
 
     private static boolean agreesWith(Map<Variable, Expression> bindings, Map<Variable, Value> newFirstOrderBinding) {
 
-        for(Map.Entry<Variable, Value> entry: newFirstOrderBinding.entrySet()){
+        for (Map.Entry<Variable, Value> entry : newFirstOrderBinding.entrySet()) {
 
             Variable variable = entry.getKey();
             Value value = entry.getValue();
@@ -43,10 +43,10 @@ public final class HigherOrderUnification {
 
                 Expression priorValue = bindings.get(variable);
 
-                 if(!priorValue.equals(value)){
+                if (!priorValue.equals(value)) {
 
-                     return false;
-                 }
+                    return false;
+                }
             }
         }
 
@@ -62,7 +62,7 @@ public final class HigherOrderUnification {
 
         bindings.forEach((variable, expression) -> {
 
-            if(expression instanceof Value){
+            if (expression instanceof Value) {
 
                 answer.put(variable, (Value) expression);
 
@@ -74,9 +74,14 @@ public final class HigherOrderUnification {
 
     }
 
-    public static Optional<Map<Variable, Expression>> unify(Expression e1, Expression e2){
+    public static Optional<Map<Variable, Expression>> unify(Expression e1, Expression e2) {
 
         return unify(e1, e2, Sets.newSet(), Sets.newSet(), CollectionUtils.newMap());
+    }
+
+    public static Optional<Map<Variable, Expression>> unify(Expression e1, Expression e2, Set<Variable> universalVars) {
+
+        return unify(e1, e2, universalVars, Sets.newSet(), CollectionUtils.newMap());
     }
 
     public static Optional<Map<Variable, Expression>> unify(Expression e1, Expression e2,
@@ -124,12 +129,12 @@ public final class HigherOrderUnification {
                 Map<Variable, Value> valAnswers = Unifier.unify((Value) e1, (Value) e2, firstOrderBindings(bindings));
 
 
-                if(valAnswers!=null){
+                if (valAnswers != null) {
 
                     //TODO: Check for agreement
-                    if(!agreesWith(bindings, valAnswers)){
+                    if (!agreesWith(bindings, valAnswers)) {
 
-                        return  Optional.empty();
+                        return Optional.empty();
 
                     } else {
 
@@ -140,7 +145,7 @@ public final class HigherOrderUnification {
 
                 } else {
 
-                    return  Optional.empty();
+                    return Optional.empty();
                 }
 
             }
@@ -163,22 +168,21 @@ public final class HigherOrderUnification {
         if (e1 instanceof Formula && e2 instanceof Formula) {
 
 
-            if(e1 instanceof Predicate ) {
-
+            if (e1 instanceof Predicate) {
 
 
                 return matchPredicateFormulae(e1, e2, universalVars, existentialVars, bindings);
 
 
             }
-            if(e2 instanceof Predicate){
+            if (e2 instanceof Predicate) {
 
                 return matchPredicateFormulae(e2, e1, universalVars, existentialVars, bindings);
 
 
             }
 
-            if(e1 instanceof Not && e2 instanceof Not){
+            if (e1 instanceof Not && e2 instanceof Not) {
 
                 Formula f1 = ((Not) e1).getArgument();
 
@@ -188,27 +192,27 @@ public final class HigherOrderUnification {
 
             }
 
-            if(e1 instanceof And && e2 instanceof And){
+            if (e1 instanceof And && e2 instanceof And) {
 
 
-                Formula[] args1  = ((And) e1).getArguments();
-                Formula[] args2  = ((And) e2).getArguments();
+                Formula[] args1 = ((And) e1).getArguments();
+                Formula[] args2 = ((And) e2).getArguments();
 
 
                 return matchArgsList(args1, args2, universalVars, existentialVars, bindings);
 
             }
 
-            if(e1 instanceof Or && e2 instanceof Or){
+            if (e1 instanceof Or && e2 instanceof Or) {
 
-                Formula[] args1  = ((Or) e1).getArguments();
-                Formula[] args2  = ((Or) e2).getArguments();
+                Formula[] args1 = ((Or) e1).getArguments();
+                Formula[] args2 = ((Or) e2).getArguments();
 
                 return matchArgsList(args1, args2, universalVars, existentialVars, bindings);
 
             }
 
-            if(e1 instanceof Implication && e2 instanceof Implication){
+            if (e1 instanceof Implication && e2 instanceof Implication) {
 
                 Formula f1Ant = ((Implication) e1).getAntecedent();
                 Formula f1Cons = ((Implication) e1).getConsequent();
@@ -219,7 +223,7 @@ public final class HigherOrderUnification {
 
                 Optional<Map<Variable, Expression>> part1 = unify(f1Ant, f2Ant, universalVars, existentialVars, bindings);
 
-                if(part1.isPresent()){
+                if (part1.isPresent()) {
 
 
                     return unify(f1Cons, f2Cons, universalVars, existentialVars, part1.get());
@@ -232,7 +236,7 @@ public final class HigherOrderUnification {
 
             }
 
-            if(e1 instanceof BiConditional && e2 instanceof BiConditional){
+            if (e1 instanceof BiConditional && e2 instanceof BiConditional) {
 
                 Formula f1Left = ((BiConditional) e1).getLeft();
                 Formula f1Right = ((BiConditional) e1).getRight();
@@ -243,7 +247,7 @@ public final class HigherOrderUnification {
 
                 Optional<Map<Variable, Expression>> part1 = unify(f1Left, f2Left, universalVars, existentialVars, bindings);
 
-                if(part1.isPresent()){
+                if (part1.isPresent()) {
 
 
                     return unify(f1Right, f2Right, universalVars, existentialVars, part1.get());
@@ -255,13 +259,13 @@ public final class HigherOrderUnification {
 
             }
 
-            if(e1 instanceof Universal && e2 instanceof Universal){
+            if (e1 instanceof Universal && e2 instanceof Universal) {
 
                 Universal universal1 = (Universal) e1;
                 Universal universal2 = (Universal) e2;
 
 
-                if(!Arrays.equals(universal1.vars(), universal2.vars())){
+                if (!Arrays.equals(universal1.vars(), universal2.vars())) {
 
                     return Optional.empty();
 
@@ -272,9 +276,9 @@ public final class HigherOrderUnification {
 
                 Optional<Map<Variable, Expression>> mapOpt = unify(arg1, arg2, Sets.union(universalVars, Sets.fromArray(universal1.vars())), existentialVars, bindings);
 
-                if(!mapOpt.isPresent()){
+                if (!mapOpt.isPresent()) {
 
-                    return  Optional.empty();
+                    return Optional.empty();
 
                 }
 
@@ -282,19 +286,19 @@ public final class HigherOrderUnification {
 
                 Map<Variable, Expression> map = mapOpt.get();
 
-                return Optional.of( map.entrySet().stream().filter(variableExpressionEntry -> !thisVars.contains(variableExpressionEntry.getKey())).collect(Collectors.toMap(
+                return Optional.of(map.entrySet().stream().filter(variableExpressionEntry -> !thisVars.contains(variableExpressionEntry.getKey())).collect(Collectors.toMap(
                         Map.Entry::getKey, Map.Entry::getValue)));
 
             }
 
 
-            if(e1 instanceof Existential && e2 instanceof Existential){
+            if (e1 instanceof Existential && e2 instanceof Existential) {
 
                 Existential existential1 = (Existential) e1;
                 Existential existential2 = (Existential) e2;
 
 
-                if(!Arrays.equals(existential1.vars(), existential2.vars())){
+                if (!Arrays.equals(existential1.vars(), existential2.vars())) {
 
                     return Optional.empty();
 
@@ -305,9 +309,9 @@ public final class HigherOrderUnification {
 
                 Optional<Map<Variable, Expression>> mapOpt = unify(arg1, arg2, universalVars, Sets.union(existentialVars, Sets.fromArray(existential1.vars())), bindings);
 
-                if(!mapOpt.isPresent()){
+                if (!mapOpt.isPresent()) {
 
-                    return  Optional.empty();
+                    return Optional.empty();
 
                 }
 
@@ -315,16 +319,13 @@ public final class HigherOrderUnification {
 
                 Map<Variable, Expression> map = mapOpt.get();
 
-                return Optional.of( map.entrySet().stream().filter(variableExpressionEntry -> !thisVars.contains(variableExpressionEntry.getKey())).collect(Collectors.toMap(
+                return Optional.of(map.entrySet().stream().filter(variableExpressionEntry -> !thisVars.contains(variableExpressionEntry.getKey())).collect(Collectors.toMap(
                         Map.Entry::getKey, Map.Entry::getValue)));
 
             }
 
 
-
-
             return Optional.empty();
-
 
 
         }
@@ -334,14 +335,14 @@ public final class HigherOrderUnification {
     }
 
 
-    private static Optional<Map<Variable, Expression>> matchValueFormula(Expression e1, Expression e2, Map<Variable, Expression> bindings){
+    private static Optional<Map<Variable, Expression>> matchValueFormula(Expression e1, Expression e2, Map<Variable, Expression> bindings) {
 
 
-        if(e1 instanceof Variable){
+        if (e1 instanceof Variable) {
 
-            Variable variable  = (Variable) e1;
+            Variable variable = (Variable) e1;
 
-            if(agreesWith(bindings, variable, e2)){
+            if (agreesWith(bindings, variable, e2)) {
 
                 bindings.put(variable, e2);
 
@@ -355,24 +356,23 @@ public final class HigherOrderUnification {
 
     }
 
-    private static Optional<Map<Variable, Expression>> matchArgsList(Formula[] args1, Formula[] args2, Set<Variable> universalVars, Set<Variable> existentialVars, Map<Variable, Expression> bindings){
+    private static Optional<Map<Variable, Expression>> matchArgsList(Formula[] args1, Formula[] args2, Set<Variable> universalVars, Set<Variable> existentialVars, Map<Variable, Expression> bindings) {
 
-        if(args1.length!=args2.length){
+        if (args1.length != args2.length) {
             return Optional.empty();
-        }
-        else {
+        } else {
 
             Map<Variable, Expression> currentBindings = bindings;
 
-            for(int i = 0; i< args1.length; i++){
+            for (int i = 0; i < args1.length; i++) {
 
 
                 Optional<Map<Variable, Expression>> thisAnswer = unify(args1[i], args2[i], universalVars, existentialVars, currentBindings);
 
-                if(!thisAnswer.isPresent()){
+                if (!thisAnswer.isPresent()) {
 
                     return Optional.empty();
-                }else {
+                } else {
 
                     currentBindings = thisAnswer.get();
                 }
@@ -385,23 +385,26 @@ public final class HigherOrderUnification {
         }
     }
 
-    private static Optional<Map<Variable, Expression>> matchPredicateFormulae(Expression e1, Expression e2, Set<Variable> universalVars, Set<Variable> existentialVars, Map<Variable, Expression> bindings){
+    private static Optional<Map<Variable, Expression>> matchPredicateFormulae(Expression e1, Expression e2, Set<Variable> universalVars, Set<Variable> existentialVars, Map<Variable, Expression> bindings) {
 
         String name = ((Predicate) e1).getName();
 
-        if(isVariable((Predicate) e1, universalVars, existentialVars)){
+        if (isVariable((Predicate) e1, universalVars, existentialVars)) {
 
             Variable variable = new Variable(name);
 
-            if(e2 instanceof Predicate){
+            if (e2 instanceof Predicate) {
                 Value[] args1 = ((Predicate) e1).getArguments();
                 Value[] args2 = ((Predicate) e2).getArguments();
 
                 Map<Variable, Value> argBindings = Unifier.unify(args1, args2, firstOrderBindings(bindings));
-                if(argBindings==null){
+                if (argBindings == null) {
 
                     bindings.put(variable, e2);
 
+                    if(args1.length>0) {
+                        return Optional.empty();
+                    }
                     return Optional.of(bindings);
 
                 } else {
@@ -416,23 +419,23 @@ public final class HigherOrderUnification {
 
             } else {
 
-                if(agreesWith(bindings, variable, e2)){
+                if (agreesWith(bindings, variable, e2)) {
 
                     bindings.put(variable, e2);
                     return Optional.of(bindings);
 
 
                 }
-        }
+            }
 
-        } else if(e2 instanceof Predicate) {
+        } else if (e2 instanceof Predicate) {
 
 
-            if(((Predicate) e2).getName().equals(((Predicate) e1).getName())){
+            if (((Predicate) e2).getName().equals(((Predicate) e1).getName())) {
 
                 Map<Variable, Value> valAnswers = Unifier.unify(((Predicate) e1).getArguments(), ((Predicate) e2).getArguments(), firstOrderBindings(bindings));
 
-                if(valAnswers==null){
+                if (valAnswers == null) {
 
                     return Optional.empty();
 
@@ -456,10 +459,10 @@ public final class HigherOrderUnification {
         return Optional.empty();
     }
 
-    private static boolean isVariable(Predicate predicate, Set<Variable> universalVars, Set<Variable> existentialVars){
+    private static boolean isVariable(Predicate predicate, Set<Variable> universalVars, Set<Variable> existentialVars) {
 
 
-        return  Sets.union(universalVars, existentialVars).stream().anyMatch(x-> x.getName().equals(predicate.getName()));
+        return Sets.union(universalVars, existentialVars).stream().anyMatch(x -> x.getName().equals(predicate.getName()));
 
     }
 

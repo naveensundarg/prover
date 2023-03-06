@@ -6,7 +6,7 @@ import com.naveensundarg.shadow.prover.core.ccprovers.CognitiveCalculusProver;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
+import com.naveensundarg.shadow.prover.sandboxes.Simulator;
 import com.naveensundarg.shadow.prover.utils.*;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
@@ -32,7 +32,7 @@ public class AnswerExtractionTests {
     @DataProvider(name="testsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem>tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../debug.clj"));
+        List<Problem>tests = ProblemReader.readFrom(Simulator.class.getResourceAsStream("../debug.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

@@ -4,6 +4,7 @@ import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.core.internals.Expander;
 import com.naveensundarg.shadow.prover.representations.formula.*;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Constants;
 
 import java.util.Set;
@@ -26,10 +27,13 @@ public enum NotExistsToForallNot implements Expander {
                     Existential existential = (Existential) notExists.getArgument();
                     Variable[]  variables   = existential.vars();
                     Formula     kernel      = existential.getArgument();
-                    return new Universal(variables, new Not(kernel));
+                    Formula newFormula =   new Universal(variables, new Not(kernel));
+                    newFormula.setJustificationLabelAndAncestors(this.getClass().getSimpleName(), CollectionUtils.listOf(notExists));
+                    return newFormula;
                 }).collect(Collectors.toSet());
 
         prover.getLogger().expansionLog("Not exists => Forall not", derived);
+
 
         base.addAll(derived);
         added.addAll(derived);

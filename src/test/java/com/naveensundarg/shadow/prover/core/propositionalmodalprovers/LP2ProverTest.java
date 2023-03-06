@@ -3,7 +3,7 @@ package com.naveensundarg.shadow.prover.core.propositionalmodalprovers;
 import com.naveensundarg.shadow.prover.core.Prover;
 import com.naveensundarg.shadow.prover.representations.cnf.Clause;
 import com.naveensundarg.shadow.prover.representations.formula.Formula;
-import com.naveensundarg.shadow.prover.sandboxes.Sandbox;
+import com.naveensundarg.shadow.prover.sandboxes.Simulator;
 import com.naveensundarg.shadow.prover.utils.Pair;
 import com.naveensundarg.shadow.prover.utils.Problem;
 import com.naveensundarg.shadow.prover.utils.ProblemReader;
@@ -32,7 +32,7 @@ public class LP2ProverTest {
     @DataProvider(name="completenessTestsProvider")
     public Object[][] completenessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem > tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../LP2-completness-tests.clj"));
+        List<Problem > tests = ProblemReader.readFrom(Simulator.class.getResourceAsStream("../LP2-completness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -60,7 +60,7 @@ public class LP2ProverTest {
     @DataProvider(name="debugTestsProvider")
     public Object[][] debugTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../LP2-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Simulator.class.getResourceAsStream("../LP2-soundness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){
@@ -89,7 +89,7 @@ public class LP2ProverTest {
     @DataProvider(name="soundnessTestsProvider")
     public Object[][] soundnessTestsProvider() throws Reader.ParsingException {
 
-        List<Problem >tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("../LP2-soundness-tests.clj"));
+        List<Problem >tests = ProblemReader.readFrom(Simulator.class.getResourceAsStream("../LP2-soundness-tests.clj"));
         Object[][] cases =  new Object[tests.size()][2];
 
         for(int  i = 0; i < tests.size(); i++){

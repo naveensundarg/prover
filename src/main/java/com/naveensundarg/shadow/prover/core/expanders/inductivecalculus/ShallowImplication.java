@@ -43,6 +43,8 @@ public enum ShallowImplication implements Expander {
             reducedBase.remove(implication);
 
             if (base.contains(antecedent)) {
+
+                consequent.setJustificationLabelAndAncestors(this.getClass().getSimpleName(), CollectionUtils.listOf(implication, antecedent));
                 base.add(consequent);
 
             }

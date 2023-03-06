@@ -1,121 +1,22 @@
 package com.naveensundarg.shadow.prover.sandboxes;
 
-import com.diogonunes.jcdp.color.ColoredPrinter;
-import com.diogonunes.jcdp.color.api.Ansi;
-import com.naveensundarg.shadow.prover.core.*;
-import com.naveensundarg.shadow.prover.core.ccprovers.*;
-import com.naveensundarg.shadow.prover.core.proof.Justification;
+import com.naveensundarg.shadow.prover.core.proof.HigherOrderUnification;
 import com.naveensundarg.shadow.prover.core.proof.Unifier;
-import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP;
-import com.naveensundarg.shadow.prover.core.propositionalmodalprovers.LP1;
-import com.naveensundarg.shadow.prover.representations.formula.*;
-import com.naveensundarg.shadow.prover.representations.measures.QuantifierRank;
-import com.naveensundarg.shadow.prover.representations.value.Value;
+import com.naveensundarg.shadow.prover.representations.formula.Formula;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
-import com.naveensundarg.shadow.prover.utils.*;
+import com.naveensundarg.shadow.prover.utils.CollectionUtils;
+import com.naveensundarg.shadow.prover.utils.Reader;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
-import java.io.FileInputStream;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import static us.bpsm.edn.Keyword.newKeyword;
-
-/**
- * Created by naveensundarg on 4/8/16.
- */
 public class Sandbox {
 
+    public static void main(String[] args) throws Reader.ParsingException {
 
+        Formula a = Reader.readFormulaFromString("(if (X a) (X b)))");
+        Formula b = Reader.readFormulaFromString("(if (Q a) (X b)))");
+        Variable X = new Variable("X");
 
-    public static void main1(String[] args) throws Exception {
-
-
-       /* Prover prover =  new CognitiveCalculusProver();
-
-        Problem problem = ProblemReader.readFrom(new FileInputStream("./example.clj")).get(0);
-
-        System.out.println(prover.prove((problem.getAssumptions()), problem.getGoal()));*/
-
-/*
-       Formula exemplar = Reader.readFormulaFromString("(e=> (or P (not P))\n" +
-               "                        (Common! now (if (Knows! a P) (Believes! a P))))");
-*/
-      /*  Formula f1 = Reader.readFormulaFromString(" (Knows! a now Q)");
-
-        InductiveCalculusProver inductiveCalculusProver = new InductiveCalculusProver();
-
-
-        System.out.println(inductiveCalculusProver.prove(Sets.from(exemplar, f1),
-                Reader.readFormulaFromString("(Believes! a now Q)")));
-
-
-*/
-
-      //System.out.println(Reader.readLogicValueFromString("(= \"hyperlog\" (clojure.string/join \"\" (reverse (reverse  \"hyperlog\"))))"));
-
-        System.out.println(Reader.readFormulaFromString("(and A )"));
-    }
-
-    public static void main2(String[] args) throws Reader.ParsingException {
-        Formula f1 = Reader.readFormulaFromString("(e=> (Perceives! a (and (R? c1) (R? c2) ))\n" +
-                "                           (Perceives! a (exists [X] (and (X c1) (X c2)))))");
-
-        Formula f2 = Reader.readFormulaFromString("(e=> (Perceives! a (and (Q c1) (Q c2) ))\n" +
-                "                           (Perceives! a (exists [X] (and (X c1) (X c2)))))");
-
-        System.out.println(Unifier.unifyFormula(f1, f2));
+        System.out.println(HigherOrderUnification.unify(a, b, Sets.from(X), Sets.from(), CollectionUtils.newMap()));
 
     }
-
-    public static void main(String[] args) throws Exception {
-
-
-        Prover prover =  new InductiveCalculusProver();
-
-        Problem problem = ProblemReader.readFrom(new FileInputStream("./example.clj")).get(0);
-
-        Optional<Justification> opt = (prover.prove((problem.getAssumptions()), problem.getGoal()));
-
-        System.out.println("");
-
-//setting a format for all messages
-
-        if(opt.isPresent()) {
-            System.out.println("=========================");
-
-            System.out.println(opt.get());
-            System.out.println("=========================");
-
-            ColoredPrinter cp = new ColoredPrinter.Builder(0, false)
-                    .foreground(Ansi.FColor.NONE).background(Ansi.BColor.GREEN)
-                    .build();
-            cp.print("GOAL REACHED", Ansi.Attribute.BOLD, Ansi.FColor.BLACK, Ansi.BColor.GREEN);
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-
-        } else {
-            ColoredPrinter cp = new ColoredPrinter.Builder(0, false)
-                    .foreground(Ansi.FColor.RED).background(Ansi.BColor.BLUE)   //setting format
-                    .build();
-            cp.println("GOAL FAILED.");
-            cp.clear();
-
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-
-        }
-
-    }
-
-
-    public static Formula read(String f) throws Reader.ParsingException {
-
-        return Reader.readFormulaFromString(f);
-    }
-
 }

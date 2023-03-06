@@ -55,6 +55,10 @@ public final class Belief extends BaseFormula implements UnaryModalFormula{
 
         this.weight = 1 + agent.getWeight() + time.getWeight() + formula.getWeight();
     }
+    public Belief(Value agent, Value time, Formula formula, int strengthFactor) {
+        this(agent, time, formula);
+        this.setStrengthFactor(strengthFactor);
+    }
 
     public Formula getFormula(){
         return formula;

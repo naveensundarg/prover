@@ -10,6 +10,7 @@ import com.naveensundarg.shadow.prover.utils.Reader;
 import com.naveensundarg.shadow.prover.utils.Sets;
 import org.apache.commons.lang3.NotImplementedException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.UnaryOperator;
@@ -26,6 +27,8 @@ public abstract class Formula extends Expression implements Cloneable{
     private Justification justification;
     private Set<Formula>  assumptions;
     private int           strengthFactor;
+    private List<Formula> ancestors;
+    private String justificationLabel;
 
     public Formula(){
         this.strengthFactor = Integer.MAX_VALUE;
@@ -134,5 +137,20 @@ public abstract class Formula extends Expression implements Cloneable{
                 mapToInt(c -> c.getArguments().length).
                 max().orElse(0);
     }
+
+    public List<Formula> getAncestors() {
+        return ancestors;
+    }
+
+    public String getJustificationLabel() {
+        return justificationLabel;
+    }
+
+    public void setJustificationLabelAndAncestors(String justificationLabel, List<Formula> ancestors) {
+        this.justificationLabel = justificationLabel;
+        this.ancestors = ancestors;
+    }
+
+
 
 }

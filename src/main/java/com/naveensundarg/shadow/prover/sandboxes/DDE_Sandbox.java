@@ -19,7 +19,7 @@ public class DDE_Sandbox {
 
     public static void main(String[] args) throws Reader.ParsingException {
 
-        List<Problem> tests = ProblemReader.readFrom(Sandbox.class.getResourceAsStream("dde_1_no_action.clj"));
+        List<Problem> tests = ProblemReader.readFrom(Simulator.class.getResourceAsStream("dde_1_no_action.clj"));
 
         Problem test = tests.get(0);
 

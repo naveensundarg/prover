@@ -122,6 +122,7 @@ public enum Generalize implements Expander {
                 variables,
                 new Implication((valueGeneralizedInput), valueGeneralizedOutput));
 
+        inferred.setJustificationLabelAndAncestors(this.getClass().getSimpleName(), CollectionUtils.listOf(exemplar));
         return inferred;
     }
 

@@ -20,11 +20,13 @@ public class Problem {
 
     private final String name;
     private final String description;
+    private final boolean skip;
 
 
 
     private final Optional<List<Variable>> answerVariable;
     private final Optional<Set<List<Value>>> answerExpected;
+
     public Problem(String name, String description, Set<Formula> assumptions, Formula goal) {
 
         this.assumptions = assumptions;
@@ -34,6 +36,19 @@ public class Problem {
         answerExpected = Optional.empty();
 
         answerVariable = Optional.empty();
+        this.skip = false;
+
+    }
+    public Problem(String name, String description, Set<Formula> assumptions, Formula goal, boolean skip) {
+
+        this.assumptions = assumptions;
+        this.goal = goal;
+        this.name = name;
+        this.description = description;
+        answerExpected = Optional.empty();
+
+        answerVariable = Optional.empty();
+        this.skip = skip;
 
     }
 
@@ -47,6 +62,7 @@ public class Problem {
         this.answerExpected = Optional.of(expectedAnswers);
 
         this.answerVariable = Optional.of(answerVariables);
+        this.skip = false;
 
     }
 
@@ -72,6 +88,10 @@ public class Problem {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean shouldSkip() {
+        return skip;
     }
 
     @Override

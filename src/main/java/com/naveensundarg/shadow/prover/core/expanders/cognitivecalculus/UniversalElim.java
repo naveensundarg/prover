@@ -10,7 +10,9 @@ import com.naveensundarg.shadow.prover.representations.value.Value;
 import com.naveensundarg.shadow.prover.representations.value.Variable;
 import com.naveensundarg.shadow.prover.utils.CollectionUtils;
 import com.naveensundarg.shadow.prover.utils.Constants;
+import com.naveensundarg.shadow.prover.utils.Sets;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,6 +28,7 @@ public enum UniversalElim implements Expander {
     public void expand(Prover prover, Set<Formula> base, Set<Formula> added, Formula goal) {
 
 
+         int MAX_HINTS  = 10;
         //TODO: Less stupid elimination
 
         Set<Formula> formulae = CollectionUtils.setFrom(base);
@@ -51,12 +54,16 @@ public enum UniversalElim implements Expander {
 
                         }
 
-                        Formula derived = universal.getArgument().apply(mapping);
+                   if (mapping.values().size() < MAX_HINTS || !Sets.intersection(new HashSet<>(mapping.values()), goal.valuesPresent()).isEmpty()) {
 
-                        if (!added.contains(derived)) {
-                            base.add(derived);
-                            added.add(derived);
-                        }
+                            Formula derived = universal.getArgument().apply(mapping);
+
+                            if (!added.contains(derived)) {
+                                derived.setJustificationLabelAndAncestors(this.getClass().getSimpleName(), CollectionUtils.listOf(universal));
+                                base.add(derived);
+                                added.add(derived);
+                            }
+                }
 
                     }
 
